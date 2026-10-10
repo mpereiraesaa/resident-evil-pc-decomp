@@ -71,4 +71,15 @@ bool IsConnected();
 // inside the 33 ms frame budget.
 DWORD Poll();
 
+// Normalized left-stick vector after a radial dead zone. X is right, Y is up;
+// magnitude is 0..1 after the dead-zone rescale. The D-pad is reported
+// separately so it can retain the original tank-control path.
+#ifdef _WIN32
+bool GetLeftStick(float* x, float* y, float* magnitude);
+bool IsDpadActive();
+#else
+inline bool GetLeftStick(float*, float*, float*) { return false; }
+inline bool IsDpadActive() { return false; }
+#endif
+
 } // namespace MarniXInput

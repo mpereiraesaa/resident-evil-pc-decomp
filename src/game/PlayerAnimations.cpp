@@ -1,8 +1,10 @@
 // PlayerAnimations.cpp - Player animation state machines (decompiled from Ghidra)
 #include "../Globals.h"
 #include "../marni/MarniSystem.h"
+#include "../marni/MarniXInput.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 #include "../DebugPrint.h"
 #include "entities/EntityCommon.h"
 #include "dc/Items.h"             // lockpick/ammo item ids the DC moved
@@ -3129,8 +3131,66 @@ static void player_door_open_sequence(void)      // 0x00457390
 // direction. The 0xC0 test accepts either 0x80 or 0xC0, i.e. action pressed with or
 // without the second modifier bit.
 // ============================================================================
+static bool s_alternateHeadingValid = false;
+static bool s_alternateMoving = false;
+static bool s_alternateRunning = false;
+static float s_alternateInputX = 0.0f;
+static float s_alternateInputY = 0.0f;
+static float s_alternateRightX = 1.0f;
+static float s_alternateRightZ = 0.0f;
+
+// Port addition: translate the analogue stick into one logical forward input
+// after orienting the player relative to the fixed camera. The cached camera
+// basis intentionally survives a camera cut until the stick direction changes,
+// avoiding the classic sudden reversal while a direction remains held.
+static void player_apply_alternate_controls(void)
+{
+    float x, y, magnitude;
+    if (!g_bAlternateControls || MarniXInput::IsDpadActive() ||
+        (g_PlayerDpadHeld & 0x100) != 0 ||
+        !MarniXInput::GetLeftStick(&x, &y, &magnitude)) {
+        s_alternateHeadingValid = false;
+        s_alternateMoving = false;
+        s_alternateRunning = false;
+        return;
+    }
+
+    const float length = std::sqrt(x * x + y * y);
+    if (length <= 0.001f) return;
+    const float nx = x / length;
+    const float ny = y / length;
+
+    if (!s_alternateHeadingValid ||
+        std::fabs(nx - s_alternateInputX) + std::fabs(ny - s_alternateInputY) > 0.2f) {
+        float rightX = (float)g_RoomCameraData.m[0][0];
+        float rightZ = (float)g_RoomCameraData.m[0][2];
+        const float rightLength = std::sqrt(rightX * rightX + rightZ * rightZ);
+        if (rightLength > 1.0f) {
+            s_alternateRightX = rightX / rightLength;
+            s_alternateRightZ = rightZ / rightLength;
+        }
+        s_alternateInputX = nx;
+        s_alternateInputY = ny;
+        s_alternateHeadingValid = true;
+    }
+
+    const float worldX = nx * s_alternateRightX - ny * s_alternateRightZ;
+    const float worldZ = nx * s_alternateRightZ + ny * s_alternateRightX;
+    const float angle = std::atan2(-worldZ, worldX) * (4096.0f / 6.28318530718f);
+    g_playerEntity.directionAngle = (short)((int)std::lround(angle) & 0xfff);
+
+    s_alternateRunning = magnitude >= (s_alternateRunning ? 0.65f : 0.70f);
+    WORD logical = (WORD)((g_PlayerDpadHeld & ~(0x20f)) | 1);
+    if (s_alternateRunning) logical |= 0x200;
+    g_PlayerDpadHeld = logical;
+    g_PlayerDpadPressed = (WORD)((g_PlayerDpadPressed & ~0xf) |
+                                 (s_alternateMoving ? 0 : 1));
+    s_alternateMoving = true;
+}
+
 static void player_input_to_behavior(void)
 {
+    player_apply_alternate_controls();
     unsigned int held = (unsigned int)g_PlayerDpadHeld;
 
     // 0x004956a0: action button newly pressed
@@ -3348,6 +3408,7 @@ static void player_ctrl_frame0(void)
 // ============================================================================
 static void player_behavior_0d_run(void)
 {
+    player_apply_alternate_controls();
     // 0x00496110: the climb/vault flag wins over running.
     if ((g_main_state_flags & MSF_OBJECT_PUSH) != 0) {
         g_playerEntity.animFrameId     = 1;

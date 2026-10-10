@@ -4,6 +4,7 @@
 #include "MarniXInput.h"
 #include <xinput.h>
 #include <cstdio>
+#include <cmath>
 
 #pragma comment(lib, "xinput.lib")
 
@@ -23,6 +24,9 @@ static int   s_activeSlot  = -1;
 // doing that every frame would eat into the 33 ms tick. Once we know we have
 // no pad we only look again once a second.
 static DWORD s_nextScanTick = 0;
+static float s_leftX = 0.0f;
+static float s_leftY = 0.0f;
+static bool  s_dpadActive = false;
 #define MARNI_XI_RESCAN_MS 1000
 
 // ---------------------------------------------------------------------------
@@ -105,10 +109,20 @@ static DWORD BuildMask(const XINPUT_GAMEPAD* pad)
     if (pad->wButtons & XINPUT_GAMEPAD_DPAD_LEFT)  mask |= 4;
     if (pad->wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) mask |= 8;
 
-    if (pad->sThumbLY >  s_deadzone) mask |= 1;   // UP
-    if (pad->sThumbLY < -s_deadzone) mask |= 2;   // DOWN
-    if (pad->sThumbLX < -s_deadzone) mask |= 4;   // LEFT
-    if (pad->sThumbLX >  s_deadzone) mask |= 8;   // RIGHT
+    s_dpadActive = (pad->wButtons & (XINPUT_GAMEPAD_DPAD_UP |
+        XINPUT_GAMEPAD_DPAD_DOWN | XINPUT_GAMEPAD_DPAD_LEFT |
+        XINPUT_GAMEPAD_DPAD_RIGHT)) != 0;
+    s_leftX = (float)pad->sThumbLX / 32768.0f;
+    s_leftY = (float)pad->sThumbLY / 32768.0f;
+
+    // A physical D-pad press owns the direction bits. This keeps it a pure
+    // tank-control input even if the analogue stick is resting off-centre.
+    if (!s_dpadActive) {
+        if (pad->sThumbLY >  s_deadzone) mask |= 1;   // UP
+        if (pad->sThumbLY < -s_deadzone) mask |= 2;   // DOWN
+        if (pad->sThumbLX < -s_deadzone) mask |= 4;   // LEFT
+        if (pad->sThumbLX >  s_deadzone) mask |= 8;   // RIGHT
+    }
 
     // Opposite directions cannot be held at once (a D-pad press plus a stick
     // deflection the other way would otherwise produce both). UP beats DOWN
@@ -134,6 +148,30 @@ static DWORD BuildMask(const XINPUT_GAMEPAD* pad)
     if (pad->bRightTrigger > XINPUT_GAMEPAD_TRIGGER_THRESHOLD) mask |= MARNI_XI_BTN_RTRIGGER;
 
     return mask;
+}
+
+bool GetLeftStick(float* x, float* y, float* magnitude)
+{
+    const float length = std::sqrt(s_leftX * s_leftX + s_leftY * s_leftY);
+    const float deadZone = 0.18f;
+    if (!IsConnected() || length <= deadZone) {
+        if (x) *x = 0.0f;
+        if (y) *y = 0.0f;
+        if (magnitude) *magnitude = 0.0f;
+        return false;
+    }
+
+    float scaled = (length - deadZone) / (1.0f - deadZone);
+    if (scaled > 1.0f) scaled = 1.0f;
+    if (x) *x = (s_leftX / length) * scaled;
+    if (y) *y = (s_leftY / length) * scaled;
+    if (magnitude) *magnitude = scaled;
+    return true;
+}
+
+bool IsDpadActive()
+{
+    return IsConnected() && s_dpadActive;
 }
 
 // ---------------------------------------------------------------------------

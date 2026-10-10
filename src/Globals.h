@@ -471,6 +471,9 @@ extern bool          g_bPs1FmvSubtitles;      // [Game] Ps1FmvSubtitles
 // per-FMV mask table (0x004c39dc) marks 0x0000 - the endings, the staff rolls
 // and DMF/DME. Off by default, so the original's masks are what ship.
 extern bool          g_bSkipUnskippableFmv;    // [Game] SkipUnskippableFmv
+// Port-added camera-relative analogue movement. Keyboard and D-pad retain the
+// original tank controls; only the left analogue stick uses this mode.
+extern bool          g_bAlternateControls;     // [Input] AlternateControls
 
 // Every "are we in Director's Cut mode" test in the port. Deliberately a macro
 // over g_GameMode rather than a second global: there is one stored value, so

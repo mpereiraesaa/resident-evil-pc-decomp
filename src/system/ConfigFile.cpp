@@ -404,6 +404,8 @@ void ConfigFile_EnsureExists(void)
         "ClearCount=%u\n"
         "\n"
         "[Input]\n"
+        "; 1 = camera-relative analogue movement; keyboard and D-pad retain tank controls.\n"
+        "AlternateControls=%d\n"
         "; 32 keyboard virtual-key codes, then 128 bytes of pad bindings, as hex.\n"
         "KeyDef=%s\n"
         "SideDef=%s\n",
@@ -421,6 +423,7 @@ void ConfigFile_EnsureExists(void)
         0,
 #endif
         (unsigned)g_dwPlayCount, (unsigned)g_dwClearCount,
+        g_bAlternateControls ? 1 : 0,
         keyHex, sideHex);
 
     fclose(f);
@@ -514,6 +517,9 @@ BOOL ConfigFile_Load(void)
     // Port-added: overrides the per-FMV skip mask so the movies the original
     // marks unskippable can be skipped too. Off unless the key is set.
     g_bSkipUnskippableFmv = ReadInt(path, "Game", "SkipUnskippableFmv", 0) != 0;
+    // Camera-relative analogue movement is the modern baseline. The keyboard
+    // and D-pad keep tank controls regardless of this setting.
+    g_bAlternateControls = ReadInt(path, "Input", "AlternateControls", 1) != 0;
     dbg_printf("[CONFIG] mode=%s overlay=%s ps1_credits=%d\n", GameModeName(g_GameMode),
                GetAssetModeName()[0] ? GetAssetModeName() : "(none)",
                g_bPs1EndingCredits ? 1 : 0);

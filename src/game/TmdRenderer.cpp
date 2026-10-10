@@ -28,6 +28,8 @@
 // have Y negated by PSXObject_Store (PS1 +Y is down, D3D +Y is up).
 #include "TmdRenderer.h"
 #include "SpriteRenderer.h"
+#include <algorithm>
+#include <cmath>
 #include "../Globals.h"
 #include "../marni/MarniDX.h"
 #include "../marni/MarniSystem.h"
@@ -41,8 +43,6 @@ extern void FUN_004896c0(void* joint, short p1, short p2, int p3); // 0x004896c0
 extern void FUN_0048a210(void* joint);                      // 0x0048a210 (PathTrail.cpp)
 extern int  is_entity_in_switch_zone(VECTOR* pos, void* zoneData); // 0x00462d90 (Room.cpp)
 extern void FUN_00483580(int* joint, MATRIX* out);          // 0x00483580 item_viewer_compose_matrix (MainMenu.cpp)
-#include <algorithm>
-#include <cmath>
 #include "../DebugPrint.h"
 
 // ============================================================================
@@ -1621,4 +1621,3 @@ void matrix_rotate_rows_xz(float turns, float* m)
     rot_row_xz(turns, m + 4);
     rot_row_xz(turns, m + 8);
 }
-

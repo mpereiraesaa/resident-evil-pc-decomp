@@ -1,4 +1,6 @@
 #include "SpriteRenderer.h"
+#include <algorithm>
+#include <cmath>
 #include "../Globals.h"
 #include "../DebugPrint.h"
 #include "../marni/MarniSystem.h"
@@ -6,9 +8,7 @@
 #include "../marni/MarniBits.h"
 #include "TmdRenderer.h"
 #include <cstdio>
-#include <algorithm>
 #include <cstdlib>
-#include <cmath>
 
 // ============================================================================
 // Global variables
@@ -1222,4 +1222,3 @@ int FUN_00470e60(void* prim, int depth)
     }
     return 1;
 }
-

@@ -15,6 +15,7 @@
 #include "dc/Items.h"    // lockpick item id (is_lockpick_item)
 #include <cstdio>
 #include <cstring>
+#include <cstdint>
 #include "../system/AssetPath.h"
 
 extern void logos_state(void);
@@ -1427,4 +1428,3 @@ void DebugSaveMenu(void)
     }
     g_SavesCounter++;
 }
-

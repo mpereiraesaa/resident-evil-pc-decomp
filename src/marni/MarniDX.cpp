@@ -19,6 +19,7 @@
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
+#include <cmath>
 #include "../game/Types.h"
 
 // config.ini [Display] VSync (Globals.cpp). Declared locally rather than

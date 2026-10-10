@@ -186,7 +186,84 @@ static void TaskSwitch_Resume(void)
     ReturnToScheduler_Resume();
 }
 
-#else  // !(MSVC x86)
+#elif defined(_WIN32) && defined(__i386__)
+
+// Clang/MinGW x86 uses the same stack-switching contract as MSVC.  Keep this
+// in GNU basic asm so a Windows build can be produced from Linux without
+// changing the scheduler's behaviour or depending on ucontext (which Windows
+// does not provide).
+#define RE1_NAKED __attribute__((naked, noinline))
+
+RE1_NAKED static void SwitchToTask_Asm(void)
+{
+    __asm__ __volatile__(
+        ".intel_syntax noprefix\n"
+        "pushad\n"
+        "pushfd\n"
+        "call 2f\n"
+        "1:\n"
+        "popfd\n"
+        "popad\n"
+        "ret\n"
+        "2:\n"
+        "mov eax, DWORD PTR [_g_CurrentTaskID]\n"
+        "mov DWORD PTR [_g_SchedulerESP], esp\n"
+        "mov esp, DWORD PTR [_g_TasksESP + eax*4]\n"
+        "jmp DWORD PTR [_g_TasksEIP + eax*4]\n"
+        ".att_syntax prefix\n");
+}
+
+RE1_NAKED static void ReturnToScheduler_Resume(void)
+{
+    __asm__ __volatile__(
+        ".intel_syntax noprefix\n"
+        "pushad\n"
+        "pushfd\n"
+        "call 2f\n"
+        "1:\n"
+        "popfd\n"
+        "popad\n"
+        "ret\n"
+        "2:\n"
+        "mov eax, DWORD PTR [_g_CurrentTaskID]\n"
+        "mov DWORD PTR [_g_SchedulerESP], esp\n"
+        "mov esp, DWORD PTR [_g_TasksESP + eax*4]\n"
+        "popad\n"
+        "ret\n"
+        ".att_syntax prefix\n");
+}
+
+RE1_NAKED static void TaskYield(void)
+{
+    __asm__ __volatile__(
+        ".intel_syntax noprefix\n"
+        "pushad\n"
+        "mov eax, DWORD PTR [_g_CurrentTaskID]\n"
+        "mov DWORD PTR [_g_TasksESP + eax*4], esp\n"
+        "mov esp, DWORD PTR [_g_SchedulerESP]\n"
+        "ret\n"
+        ".att_syntax prefix\n");
+}
+
+static uintptr_t TaskStackTop(int id)
+{
+    return (uintptr_t)(TaskStackBase(id) + TASK_STACK_SIZE) - 16;
+}
+
+static void TaskSwitch_Start(void)
+{
+    g_TasksESP[g_CurrentTaskID] = TaskStackTop(g_CurrentTaskID);
+    SwitchToTask_Asm();
+}
+
+static void TaskSwitch_Resume(void)
+{
+    ReturnToScheduler_Resume();
+}
+
+#undef RE1_NAKED
+
+#else  // portable non-Windows build
 
 // ============================================================================
 // Portable switch primitives (ucontext).
@@ -239,7 +316,7 @@ static void TaskYield(void)
     swapcontext(&s_TaskContext[g_CurrentTaskID], &s_SchedContext);
 }
 
-#endif  // _MSC_VER && _M_IX86
+#endif  // scheduler implementation
 
 // ============================================================================
 // TaskScheduler_Update (0x004200E0)

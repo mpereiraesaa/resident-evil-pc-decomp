@@ -133,6 +133,148 @@ static TmdDrawEntry  g_tmdQueue[TMD_MAX_QUEUE];
 static int           g_tmdQueueCount = 0;
 static TmdLightState* g_tmdLight = NULL;   // TMD_MAX_QUEUE records, heap, never freed
 
+// Matrix history is keyed by the stable object-data and geometry pointers in
+// the TMD slots. It is only a render-side snapshot: gameplay animation, actor
+// movement, collision and the retail 30 Hz tick remain untouched.
+struct TmdPoseSnapshot {
+    BYTE* objData;
+    BYTE* elem;
+    float matrix[16];
+};
+static TmdPoseSnapshot g_tmdPreviousPoses[TMD_MAX_QUEUE];
+static TmdPoseSnapshot g_tmdCurrentPoses[TMD_MAX_QUEUE];
+static int g_tmdPreviousPoseCount = 0;
+static int g_tmdCurrentPoseCount = 0;
+static unsigned int g_tmdPoseCameraKey = 0xFFFFFFFFu;
+static bool g_tmdPoseWasGameplay = false;
+
+static void TmdLerpPose(const float* previous, const float* current, float alpha,
+                        float* out)
+{
+    // Interpolate orientation as an orthonormal basis, preserving the matrix's
+    // per-axis scale. A component-wise 4x4 lerp shortens rotating limbs at the
+    // midpoint, which is the same visible distortion the screen-space blend
+    // was intended to avoid.
+    float basis[3][3];
+    float lengths[3];
+    for (int axis = 0; axis < 3; axis++) {
+        float blended[3];
+        float prevLen2 = 0.0f, currLen2 = 0.0f;
+        for (int row = 0; row < 3; row++) {
+            float a = previous[axis * 4 + row];
+            float b = current[axis * 4 + row];
+            blended[row] = a + (b - a) * alpha;
+            prevLen2 += a * a;
+            currLen2 += b * b;
+        }
+        float prevLen = sqrtf(prevLen2), currLen = sqrtf(currLen2);
+        lengths[axis] = prevLen + (currLen - prevLen) * alpha;
+        float len = sqrtf(blended[0] * blended[0] + blended[1] * blended[1] +
+                          blended[2] * blended[2]);
+        if (len < 0.0001f) {
+            for (int row = 0; row < 3; row++)
+                basis[axis][row] = current[axis * 4 + row];
+        } else {
+            for (int row = 0; row < 3; row++) basis[axis][row] = blended[row] / len;
+        }
+    }
+
+    // Gram-Schmidt the first two columns, then derive the third. This keeps
+    // the interpolated pose rigid even when the endpoints differ by a sizeable
+    // joint rotation.
+    float lenX = sqrtf(basis[0][0] * basis[0][0] + basis[0][1] * basis[0][1] +
+                       basis[0][2] * basis[0][2]);
+    if (lenX > 0.0001f)
+        for (int r = 0; r < 3; r++) basis[0][r] /= lenX;
+    float dotXY = basis[0][0] * basis[1][0] + basis[0][1] * basis[1][1] +
+                  basis[0][2] * basis[1][2];
+    for (int r = 0; r < 3; r++) basis[1][r] -= dotXY * basis[0][r];
+    float lenY = sqrtf(basis[1][0] * basis[1][0] + basis[1][1] * basis[1][1] +
+                       basis[1][2] * basis[1][2]);
+    if (lenY > 0.0001f)
+        for (int r = 0; r < 3; r++) basis[1][r] /= lenY;
+    basis[2][0] = basis[0][1] * basis[1][2] - basis[0][2] * basis[1][1];
+    basis[2][1] = basis[0][2] * basis[1][0] - basis[0][0] * basis[1][2];
+    basis[2][2] = basis[0][0] * basis[1][1] - basis[0][1] * basis[1][0];
+    float dotZ = basis[2][0] * (previous[8] + (current[8] - previous[8]) * alpha) +
+                 basis[2][1] * (previous[9] + (current[9] - previous[9]) * alpha) +
+                 basis[2][2] * (previous[10] + (current[10] - previous[10]) * alpha);
+    if (dotZ < 0.0f)
+        for (int r = 0; r < 3; r++) basis[2][r] = -basis[2][r];
+
+    memcpy(out, current, 16 * sizeof(float));
+    for (int axis = 0; axis < 3; axis++)
+        for (int row = 0; row < 3; row++)
+            out[axis * 4 + row] = basis[axis][row] * lengths[axis];
+    for (int i = 3; i < 16; i++)
+        if ((i & 3) == 3 || i >= 12)
+            out[i] = previous[i] + (current[i] - previous[i]) * alpha;
+}
+
+static void TmdPoseBeginFrame(void)
+{
+    const unsigned int cameraKey = ((unsigned int)g_stageId << 16) |
+        ((unsigned int)g_roomId << 8) | (unsigned int)g_roomCameraId;
+    const bool inGameplayScene = g_bGameActive != 0 &&
+        (g_main_state_flags & (MSF_MENU_BYTE | MSF_SCREEN_STANDALONE |
+                               MSF_ROOM_TRANSITION)) == 0;
+    if (cameraKey != g_tmdPoseCameraKey || inGameplayScene != g_tmdPoseWasGameplay) {
+        g_tmdPreviousPoseCount = 0;
+        g_tmdPoseCameraKey = cameraKey;
+        g_tmdPoseWasGameplay = inGameplayScene;
+    }
+    g_tmdCurrentPoseCount = 0;
+}
+
+static void TmdPoseMatrix(const TmdDrawEntry* entry, float alpha, float* out)
+{
+    static bool reportedInterpolation = false;
+    const float* current = (const float*)(entry->objData + 0x08);
+    const TmdPoseSnapshot* previous = NULL;
+    for (int i = 0; i < g_tmdPreviousPoseCount; i++) {
+        if (g_tmdPreviousPoses[i].objData == entry->objData &&
+            g_tmdPreviousPoses[i].elem == entry->elem) {
+            previous = &g_tmdPreviousPoses[i];
+            break;
+        }
+    }
+    TmdPoseSnapshot* currentSnapshot = NULL;
+    for (int i = 0; i < g_tmdCurrentPoseCount; i++) {
+        if (g_tmdCurrentPoses[i].objData == entry->objData &&
+            g_tmdCurrentPoses[i].elem == entry->elem) {
+            currentSnapshot = &g_tmdCurrentPoses[i];
+            break;
+        }
+    }
+    if (currentSnapshot == NULL && g_tmdCurrentPoseCount < TMD_MAX_QUEUE) {
+        currentSnapshot = &g_tmdCurrentPoses[g_tmdCurrentPoseCount++];
+        currentSnapshot->objData = entry->objData;
+        currentSnapshot->elem = entry->elem;
+        memcpy(currentSnapshot->matrix, current, 16 * sizeof(float));
+    }
+
+    const bool inGameplayScene = g_bGameActive != 0 &&
+        (g_main_state_flags & (MSF_MENU_BYTE | MSF_SCREEN_STANDALONE |
+                               MSF_ROOM_TRANSITION)) == 0;
+    if (g_bFrameInterpolation && inGameplayScene && previous != NULL && alpha < 1.0f) {
+        TmdLerpPose(previous->matrix, current, alpha, out);
+        if (!reportedInterpolation) {
+            dbg_printf("[POSE] interpolating TMD transforms at alpha %.2f\n", alpha);
+            reportedInterpolation = true;
+        }
+    } else {
+        memcpy(out, current, 16 * sizeof(float));
+    }
+}
+
+static void TmdPoseEndFrame(void)
+{
+    g_tmdPreviousPoseCount = g_tmdCurrentPoseCount;
+    if (g_tmdPreviousPoseCount > 0)
+        memcpy(g_tmdPreviousPoses, g_tmdCurrentPoses,
+               (size_t)g_tmdPreviousPoseCount * sizeof(TmdPoseSnapshot));
+}
+
 // Per-frame triangle pool. Triangles from every queued object are gathered here
 // and submitted only after a global depth sort (see FlushTmdObjects).
 // 3 vertices x {x, y, z(ndc), w, u, v, r, g, b, a}. `w` is the vertex's
@@ -361,7 +503,18 @@ static void TmdComputeLight(const TmdLightState* ls, const float* n, const float
 // how many scene depths can exist, so this bound can never actually be reached.
 #define TMD_MAX_SCENE_DEPTHS  320
 
-void FlushTmdObjects(void)
+void TmdInterpolationBeginFrame(void)
+{
+    TmdPoseBeginFrame();
+}
+
+void TmdInterpolationEndFrame(void)
+{
+    TmdPoseEndFrame();
+    g_tmdQueueCount = 0;
+}
+
+void FlushTmdObjects(float poseAlpha)
 {
     int queued = g_tmdQueueCount;
 
@@ -473,7 +626,9 @@ void FlushTmdObjects(void)
 
             // Read the transform and texture handle now (see TmdQueueObject):
             // both are written to the object entry after it was queued.
-            const float* M = (const float*)(e->objData + 0x08);
+            float interpolatedMatrix[16];
+            TmdPoseMatrix(e, poseAlpha, interpolatedMatrix);
+            const float* M = interpolatedMatrix;
             // A NULL slot marks a complex-pool entry. Those are only ever built
             // from textured triangle primitives (ComplexTmdObjectSetup filters
             // on flags == 0x34000609) and their 0x38-byte element has no +0x48
@@ -853,7 +1008,6 @@ void FlushTmdObjects(void)
         FlushSpriteCommandsRange(0, maskCursor, SPRITE_CLASS_SCENE);
     }
 
-    g_tmdQueueCount = 0;
 }
 
 // (0x00481660) - Update entity lighting from RDT point lights

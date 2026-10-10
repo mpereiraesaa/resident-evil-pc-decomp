@@ -77,7 +77,8 @@ static void UpdatePresentation(void)
     }
 
     const bool scene = g_bGameActive != 0 && g_titleLoopFlag == 0 &&
-        (g_main_state_flags & (MSF_MENU_BYTE | MSF_SCREEN_STANDALONE)) == 0 &&
+        (g_main_state_flags & (MSF_MENU_BYTE | MSF_SCREEN_STANDALONE |
+                               MSF_ROOM_TRANSITION)) == 0 &&
         g_debugMenuOpen == 0;
     if (!scene) {
         dx->SetPresentation(MARNI_PRESENT_FIT_4_3);
@@ -527,69 +528,26 @@ void FrameRateGovernor(void)
                 }
             }
 
-            // Collision boundary overlay ([Debug] ShowCollision, F8) - drawn
-            // only while debug features are enabled (the flag is set from
-            // config.ini / the F8 toggle under the same gate, and the draw
-            // itself early-returns on it). Between the background and the 3D
-            // so characters occlude the outlines and it reads as geometry
-            // lying on the floor.
-            CollisionDebug_Draw();
+            // The renderer already has a complete command snapshot here. Run
+            // it at the midpoint pose, present one refresh, restore the static
+            // scene, then replay it at the current pose for the next refresh.
+            // No game/update routine is called a second time.
+            auto renderQueuedScene = [&](float poseAlpha) {
+                // Collision boundaries belong between the background and
+                // geometry in both passes so actors occlude them consistently.
+                CollisionDebug_Draw();
+                FlushTmdObjects(poseAlpha);
 
-            // Render queued 3D TMD objects (entities, options-menu character)
-            FlushTmdObjects();
-
-            // Render command buffer sprites (game objects, title text, etc.).
-            // The >= 0x10000 half already drew before the TMD pass.
-            //
-            // An overlay whose depth falls INSIDE the command-sprite range has
-            // to be interleaved, not deferred to the pass below. Two cases:
-            //   * the file reader's fullscreen black (548) must cover the
-            //     pause-menu frame (command sprites at 1060-1140) while the
-            //     document page, its page arrows and the EXIT label (500-516)
-            //     draw on top of it;
-            //   * the pause menu's four black masking rects (980) must cover
-            //     the sliding file book / map pages (1060-1140) - otherwise
-            //     those show through the gaps between the frame panels - while
-            //     the frame parts (820-964), item icons, portrait and text all
-            //     stay above them.
-            // The pending list is already sorted far-to-near, so walking it and
-            // flushing the sprites behind each overlay reproduces the
-            // original's single ordering table.
-            //
-            // 500 is the floor because a command sprite's depthSort is
-            // depth*16 + 500: nothing from display_texture/draw_texture can
-            // land below it, so overlays under 500 (every screen fade, at
-            // 450-499) keep drawing after ALL of them exactly as before.
-            // Effect sprites used to be the one class that could sort lower;
-            // they are SPRITE_CLASS_EFFECT now and drew during the TMD pass, so
-            // this range sees nothing below 500 at all.
-            unsigned int spriteCursor = 0x10000;
-            for (int i = 0; i < g_pendingSpriteCount; i++) {
-                if (!g_pendingSprites[i].valid) continue;
-                unsigned int d = g_pendingSprites[i].depth;
-                if (d >= PENDING_SCENE_DEPTH || d < 500) continue;
-                FlushSpriteCommandsRange(d, spriteCursor);
-                spriteCursor = d;
-                MarniDrawSprite(
-                    g_pendingSprites[i].x, g_pendingSprites[i].y,
-                    g_pendingSprites[i].w, g_pendingSprites[i].h,
-                    g_pendingSprites[i].u0, g_pendingSprites[i].v0,
-                    g_pendingSprites[i].u1, g_pendingSprites[i].v1,
-                    g_pendingSprites[i].color,
-                    g_pendingSprites[i].tex);
-            }
-            FlushSpriteCommandsRange(0, spriteCursor);
-            // Both range flushes above drew; clear the queue now (the original
-            // reset it inside the single flush). Without this the command
-            // buffer accumulates across frames and display_texture returns 0
-            // on overflow - every 2D effect stops rendering.
-            g_SpriteQueueCount = 0;
-
-            // Render the remaining low-depth pending sprites last (the screen
-            // fade overlays and colour tinting under depth 500; the
-            // 500-PENDING_SCENE_DEPTH band already drew, interleaved, above).
-            for (int i = 0; i < g_pendingSpriteCount; i++) {
-                if (g_pendingSprites[i].valid && g_pendingSprites[i].depth < 500) {
+                // An overlay inside the command-sprite range must be
+                // interleaved at its ordering-table depth. The pending list is
+                // sorted far-to-near, preserving the original OT ordering.
+                unsigned int spriteCursor = 0x10000;
+                for (int i = 0; i < g_pendingSpriteCount; i++) {
+                    if (!g_pendingSprites[i].valid) continue;
+                    unsigned int d = g_pendingSprites[i].depth;
+                    if (d >= PENDING_SCENE_DEPTH || d < 500) continue;
+                    FlushSpriteCommandsRange(d, spriteCursor);
+                    spriteCursor = d;
                     MarniDrawSprite(
                         g_pendingSprites[i].x, g_pendingSprites[i].y,
                         g_pendingSprites[i].w, g_pendingSprites[i].h,
@@ -598,12 +556,63 @@ void FrameRateGovernor(void)
                         g_pendingSprites[i].color,
                         g_pendingSprites[i].tex);
                 }
-            }
+                FlushSpriteCommandsRange(0, spriteCursor);
+                g_SpriteQueueCount = 0;
 
-            if (!g_DisablePad) {
-                MarniPresent();
+                // Screen fades and tint overlays sort under depth 500.
+                for (int i = 0; i < g_pendingSpriteCount; i++) {
+                    if (g_pendingSprites[i].valid && g_pendingSprites[i].depth < 500) {
+                        MarniDrawSprite(
+                            g_pendingSprites[i].x, g_pendingSprites[i].y,
+                            g_pendingSprites[i].w, g_pendingSprites[i].h,
+                            g_pendingSprites[i].u0, g_pendingSprites[i].v0,
+                            g_pendingSprites[i].u1, g_pendingSprites[i].v1,
+                            g_pendingSprites[i].color,
+                            g_pendingSprites[i].tex);
+                    }
+                }
+                if (!g_DisablePad) MarniPresent();
+                g_numFramesPresented++;
+            };
+
+            TmdInterpolationBeginFrame();
+            const bool poseReplay = g_bFrameInterpolation && g_bGameActive != 0 &&
+                !g_DisablePad &&
+                (g_main_state_flags & (MSF_MENU_BYTE | MSF_SCREEN_STANDALONE |
+                                       MSF_ROOM_TRANSITION)) == 0;
+            MarniDX* renderer = Marni_DX();
+            BOOL capturedBase = poseReplay && renderer != NULL &&
+                renderer->CapturePoseInterpolationBase();
+            if (capturedBase) {
+                static bool reportedPoseReplay = false;
+                if (!reportedPoseReplay) {
+                    dbg_printf("[POSE] replaying midpoint/current scene at two refreshes per 30 Hz tick\n");
+                    reportedPoseReplay = true;
+                }
+                TextureDraw savedCommands[MAX_SPRITE_COMMANDS];
+                PendingSprite savedPending[MAX_PENDING_SPRITES];
+                const int savedCommandCount = g_SpriteQueueCount;
+                const int savedPendingCount = g_pendingSpriteCount;
+                memcpy(savedCommands, g_SpriteCommandBuffer,
+                       sizeof(TextureDraw) * savedCommandCount);
+                memcpy(savedPending, g_pendingSprites,
+                       sizeof(PendingSprite) * savedPendingCount);
+
+                renderQueuedScene(0.5f);
+                if (!renderer->RestorePoseInterpolationBase())
+                    dbg_printf("[POSE] scene restore failed; current-pose replay may be incomplete\n");
+
+                memcpy(g_SpriteCommandBuffer, savedCommands,
+                       sizeof(TextureDraw) * savedCommandCount);
+                g_SpriteQueueCount = savedCommandCount;
+                memcpy(g_pendingSprites, savedPending,
+                       sizeof(PendingSprite) * savedPendingCount);
+                g_pendingSpriteCount = savedPendingCount;
+                renderQueuedScene(1.0f);
+            } else {
+                renderQueuedScene(1.0f);
             }
-            g_numFramesPresented++;
+            TmdInterpolationEndFrame();
         }
 
         // Outside the ready check on purpose. Everything queued above belongs

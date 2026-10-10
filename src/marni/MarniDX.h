@@ -120,6 +120,12 @@ public:
     // Flip the back buffer to the front (was vtable[4] Present / 0x00448ff0).
     void Present();
 
+    // Save/restore the scene color just before/after TMD rendering. The pose
+    // interpolation path replays the queued draw commands at two render poses
+    // while the simulation advances only once.
+    BOOL CapturePoseInterpolationBase();
+    BOOL RestorePoseInterpolationBase();
+
     // ----------------------------------------------------------------------
     // Texture handle management
     // ----------------------------------------------------------------------

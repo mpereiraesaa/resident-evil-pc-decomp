@@ -20,11 +20,16 @@
 #include <cstring>
 #include <cstdlib>
 #include <cmath>
+#include <string>
 #include "../game/Types.h"
+#include "../third_party/smaa/AreaTex.h"
+#include "../third_party/smaa/SearchTex.h"
 
 // config.ini [Display] VSync (Globals.cpp). Declared locally rather than
 // pulling all of Globals.h into the Marni layer.
 extern BOOL g_bVSync;
+extern bool g_bSmaa;
+extern bool g_bFrameInterpolation;
 
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
@@ -138,6 +143,30 @@ struct MarniDX::Impl {
     ID3D11Texture2D*         depthStencil    = nullptr;
     ID3D11DepthStencilView*   depthStencilView = nullptr;
 
+    // Optional SMAA 1x post-process chain. Scene color is rendered offscreen;
+    // edge and blend weights are intermediate single-channel render targets.
+    ID3D11Texture2D*         smaaScene = nullptr;
+    ID3D11RenderTargetView*  smaaSceneRTV = nullptr;
+    ID3D11ShaderResourceView* smaaSceneSRV = nullptr;
+    ID3D11Texture2D*         smaaEdges = nullptr;
+    ID3D11RenderTargetView*  smaaEdgesRTV = nullptr;
+    ID3D11ShaderResourceView* smaaEdgesSRV = nullptr;
+    ID3D11Texture2D*         smaaWeights = nullptr;
+    ID3D11RenderTargetView*  smaaWeightsRTV = nullptr;
+    ID3D11ShaderResourceView* smaaWeightsSRV = nullptr;
+    ID3D11ShaderResourceView* smaaAreaSRV = nullptr;
+    ID3D11ShaderResourceView* smaaSearchSRV = nullptr;
+    ID3D11VertexShader*       smaaVS = nullptr;
+    ID3D11PixelShader*        smaaEdgePS = nullptr;
+    ID3D11PixelShader*        smaaWeightPS = nullptr;
+    ID3D11PixelShader*        smaaBlendPS = nullptr;
+    ID3D11Buffer*             smaaCB = nullptr;
+    bool                      smaaEnabled = false;
+
+    ID3D11Texture2D*          frameCurrent = nullptr;
+    ID3D11ShaderResourceView* frameCurrentSRV = nullptr;
+    bool                       frameInterpolation = false;
+
     // pipeline state
     ID3D11RasterizerState*   rasterScissor = nullptr;
     ID3D11BlendState*        blendAlpha    = nullptr;
@@ -190,6 +219,13 @@ struct MarniDX::Impl {
                    int w, int h);
     void ReleaseAllState();
     void ReleaseAllTextures();
+    void ReleaseSmaa();
+    BOOL CreateSmaa();
+    BOOL ResizeSmaa();
+    void RenderSmaa();
+    void ReleaseFrameInterpolation();
+    BOOL CreateFrameInterpolation();
+    BOOL ResizeFrameInterpolation();
 };
 
 // ----------------------------------------------------------------------------
@@ -231,6 +267,49 @@ static void BuildOrthoMatrix(float* m, float left, float right,
     m[12] = (left + right) / (left - right);
     m[13] = (top + bottom) / (bottom - top);
     m[15] = 1.0f;
+}
+
+static D3D11_RECT BuildPresentationScissor(MarniDX::Impl* p)
+{
+    D3D11_RECT rect = { 0, 0,
+        (LONG)(p && p->width ? p->width : 640),
+        (LONG)(p && p->height ? p->height : 480) };
+    if (!p || !p->width || !p->height ||
+        p->presentation == MARNI_PRESENT_STRETCH)
+        return rect;
+
+    const float outputW = (float)p->width;
+    const float outputH = (float)p->height;
+    float aspect = outputW / outputH;
+    if (aspect < (4.0f / 3.0f)) aspect = 4.0f / 3.0f;
+    if (aspect > (16.0f / 9.0f)) aspect = 16.0f / 9.0f;
+
+    float viewportW = outputW;
+    float viewportH = viewportW / aspect;
+    if (viewportH > outputH) {
+        viewportH = outputH;
+        viewportW = viewportH * aspect;
+    }
+    const float viewportX = (outputW - viewportW) * 0.5f;
+    const float viewportY = (outputH - viewportH) * 0.5f;
+    float x = viewportX, y = viewportY, w = viewportW, h = viewportH;
+
+    if (p->presentation == MARNI_PRESENT_FIT_4_3) {
+        w = viewportW;
+        h = w * (3.0f / 4.0f);
+        if (h > viewportH) {
+            h = viewportH;
+            w = h * (4.0f / 3.0f);
+        }
+        x = viewportX + (viewportW - w) * 0.5f;
+        y = viewportY + (viewportH - h) * 0.5f;
+    }
+
+    rect.left   = (LONG)floorf(x);
+    rect.top    = (LONG)floorf(y);
+    rect.right  = (LONG)ceilf(x + w);
+    rect.bottom = (LONG)ceilf(y + h);
+    return rect;
 }
 
 static void BuildPresentationMatrix(float* m, MarniDX::Impl* p)
@@ -375,6 +454,281 @@ static bool CompileModel3DShader(ID3D11Device* dev,
     return SUCCEEDED(hr);
 }
 
+// SMAA 1x uses the official three-pass HLSL implementation. The shader stays
+// as a shipped source file so upstream license/provenance remain auditable.
+static const char* g_SmaaWrappers = R"(
+Texture2D ColorTex : register(t0);
+Texture2D EdgesTex : register(t1);
+Texture2D AreaTex : register(t2);
+Texture2D SearchTex : register(t3);
+Texture2D WeightsTex : register(t4);
+struct SmaaIn { float4 pos:SV_Position; float2 uv:TEXCOORD0; float4 o0:TEXCOORD1; float4 o1:TEXCOORD2; float4 o2:TEXCOORD3; float2 pix:TEXCOORD4; };
+SmaaIn SmaaVS(uint id:SV_VertexID) {
+    SmaaIn o; float2 uv=float2((id<<1)&2, id&2);
+    o.pos=float4(uv.x*2.0-1.0, 1.0-uv.y*2.0, 0.0, 1.0); o.uv=uv;
+    float4 e[3]; SMAAEdgeDetectionVS(uv,e); o.o0=e[0]; o.o1=e[1]; o.o2=e[2];
+    float2 p; float4 b[3]; SMAABlendingWeightCalculationVS(uv,p,b); o.pix=p;
+    return o;
+}
+float4 SmaaEdgePS(SmaaIn i):SV_Target { float4 o[3]={i.o0,i.o1,i.o2}; return float4(SMAALumaEdgeDetectionPS(i.uv,o,ColorTex),0,1); }
+float4 SmaaWeightPS(SmaaIn i):SV_Target { float4 o[3]={i.o0,i.o1,i.o2}; return SMAABlendingWeightCalculationPS(i.uv,i.pix,o,EdgesTex,AreaTex,SearchTex,float4(0,0,0,0)); }
+float4 SmaaBlendPS(SmaaIn i):SV_Target { float4 o; SMAANeighborhoodBlendingVS(i.uv,o); return SMAANeighborhoodBlendingPS(i.uv,o,ColorTex,WeightsTex); }
+)";
+
+static bool MakeFrameHistoryTexture(ID3D11Device* device, DWORD width,
+                                    DWORD height, ID3D11Texture2D** tex,
+                                    ID3D11ShaderResourceView** srv)
+{
+    D3D11_TEXTURE2D_DESC td = {};
+    td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+    td.Format = DXGI_FORMAT_R8G8B8A8_UNORM; td.SampleDesc.Count = 1;
+    td.Usage = D3D11_USAGE_DEFAULT; td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    if (FAILED(device->CreateTexture2D(&td, nullptr, tex))) return false;
+    if (FAILED(device->CreateShaderResourceView(*tex, nullptr, srv))) return false;
+    return true;
+}
+
+static bool CompileSmaaShader(const std::string& source, const char* entry,
+                              const char* profile, ID3DBlob** out)
+{
+    ID3DBlob* errors = nullptr;
+    HRESULT hr = D3DCompile(source.data(), source.size(), "SMAA.hlsl", nullptr,
+        nullptr, entry, profile, D3DCOMPILE_ENABLE_STRICTNESS, 0, out, &errors);
+    if (FAILED(hr)) {
+        OutputDebugStringA("[SMAA] shader compile failed: ");
+        if (errors) OutputDebugStringA((const char*)errors->GetBufferPointer());
+        OutputDebugStringA("\n");
+    }
+    if (errors) errors->Release();
+    return SUCCEEDED(hr);
+}
+
+static bool MakeSmaaTarget(ID3D11Device* device, DWORD width, DWORD height,
+                           DXGI_FORMAT format, ID3D11Texture2D** tex,
+                           ID3D11RenderTargetView** rtv,
+                           ID3D11ShaderResourceView** srv)
+{
+    D3D11_TEXTURE2D_DESC td = {};
+    td.Width = width; td.Height = height; td.MipLevels = 1; td.ArraySize = 1;
+    td.Format = format; td.SampleDesc.Count = 1; td.Usage = D3D11_USAGE_DEFAULT;
+    td.BindFlags = D3D11_BIND_RENDER_TARGET | D3D11_BIND_SHADER_RESOURCE;
+    if (FAILED(device->CreateTexture2D(&td, nullptr, tex))) return false;
+    if (FAILED(device->CreateRenderTargetView(*tex, nullptr, rtv)) ||
+        FAILED(device->CreateShaderResourceView(*tex, nullptr, srv))) return false;
+    return true;
+}
+
+void MarniDX::Impl::ReleaseFrameInterpolation()
+{
+    frameInterpolation = false;
+    if (frameCurrentSRV) { frameCurrentSRV->Release(); frameCurrentSRV = nullptr; }
+    if (frameCurrent) { frameCurrent->Release(); frameCurrent = nullptr; }
+}
+
+BOOL MarniDX::Impl::ResizeFrameInterpolation()
+{
+    if (frameCurrentSRV) { frameCurrentSRV->Release(); frameCurrentSRV = nullptr; }
+    if (frameCurrent) { frameCurrent->Release(); frameCurrent = nullptr; }
+    return MakeFrameHistoryTexture(device, width, height, &frameCurrent,
+                                   &frameCurrentSRV);
+}
+
+BOOL MarniDX::Impl::CreateFrameInterpolation()
+{
+    if (!g_bFrameInterpolation) return TRUE;
+    if (!ResizeFrameInterpolation()) { ReleaseFrameInterpolation(); return FALSE; }
+    frameInterpolation = true;
+    OutputDebugStringA("[FrameInterpolation] 30 Hz simulation / 60 Hz pose rendering enabled\n");
+    return TRUE;
+}
+
+void MarniDX::Impl::ReleaseSmaa()
+{
+    if (smaaSceneSRV) { smaaSceneSRV->Release(); smaaSceneSRV = nullptr; }
+    if (smaaSceneRTV) { smaaSceneRTV->Release(); smaaSceneRTV = nullptr; }
+    if (smaaScene) { smaaScene->Release(); smaaScene = nullptr; }
+    if (smaaEdgesSRV) { smaaEdgesSRV->Release(); smaaEdgesSRV = nullptr; }
+    if (smaaEdgesRTV) { smaaEdgesRTV->Release(); smaaEdgesRTV = nullptr; }
+    if (smaaEdges) { smaaEdges->Release(); smaaEdges = nullptr; }
+    if (smaaWeightsSRV) { smaaWeightsSRV->Release(); smaaWeightsSRV = nullptr; }
+    if (smaaWeightsRTV) { smaaWeightsRTV->Release(); smaaWeightsRTV = nullptr; }
+    if (smaaWeights) { smaaWeights->Release(); smaaWeights = nullptr; }
+    if (smaaAreaSRV) { smaaAreaSRV->Release(); smaaAreaSRV = nullptr; }
+    if (smaaSearchSRV) { smaaSearchSRV->Release(); smaaSearchSRV = nullptr; }
+    if (smaaVS) { smaaVS->Release(); smaaVS = nullptr; }
+    if (smaaEdgePS) { smaaEdgePS->Release(); smaaEdgePS = nullptr; }
+    if (smaaWeightPS) { smaaWeightPS->Release(); smaaWeightPS = nullptr; }
+    if (smaaBlendPS) { smaaBlendPS->Release(); smaaBlendPS = nullptr; }
+    if (smaaCB) { smaaCB->Release(); smaaCB = nullptr; }
+    smaaEnabled = false;
+}
+
+BOOL MarniDX::Impl::ResizeSmaa()
+{
+    if (!smaaEnabled) return TRUE;
+    if (smaaSceneSRV) { smaaSceneSRV->Release(); smaaSceneSRV = nullptr; }
+    if (smaaSceneRTV) { smaaSceneRTV->Release(); smaaSceneRTV = nullptr; }
+    if (smaaScene) { smaaScene->Release(); smaaScene = nullptr; }
+    if (smaaEdgesSRV) { smaaEdgesSRV->Release(); smaaEdgesSRV = nullptr; }
+    if (smaaEdgesRTV) { smaaEdgesRTV->Release(); smaaEdgesRTV = nullptr; }
+    if (smaaEdges) { smaaEdges->Release(); smaaEdges = nullptr; }
+    if (smaaWeightsSRV) { smaaWeightsSRV->Release(); smaaWeightsSRV = nullptr; }
+    if (smaaWeightsRTV) { smaaWeightsRTV->Release(); smaaWeightsRTV = nullptr; }
+    if (smaaWeights) { smaaWeights->Release(); smaaWeights = nullptr; }
+    return MakeSmaaTarget(device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM,
+                          &smaaScene, &smaaSceneRTV, &smaaSceneSRV) &&
+           MakeSmaaTarget(device, width, height, DXGI_FORMAT_R8G8_UNORM,
+                          &smaaEdges, &smaaEdgesRTV, &smaaEdgesSRV) &&
+           MakeSmaaTarget(device, width, height, DXGI_FORMAT_R8G8B8A8_UNORM,
+                          &smaaWeights, &smaaWeightsRTV, &smaaWeightsSRV);
+}
+
+BOOL MarniDX::Impl::CreateSmaa()
+{
+    if (!g_bSmaa) return TRUE;
+    char module[MAX_PATH + 32] = {};
+    if (!GetModuleFileNameA(nullptr, module, MAX_PATH)) return FALSE;
+    char* slash = strrchr(module, '\\');
+    if (!slash) slash = strrchr(module, '/');
+    if (!slash) return FALSE;
+    slash[1] = '\0';
+    strcat_s(module, sizeof(module), "smaa\\SMAA.hlsl");
+    FILE* file = fopen(module, "rb");
+    if (!file) {
+        OutputDebugStringA("[SMAA] missing smaa/SMAA.hlsl; disabling SMAA\n");
+        return FALSE;
+    }
+    fseek(file, 0, SEEK_END);
+    long length = ftell(file);
+    rewind(file);
+    if (length <= 0) { fclose(file); return FALSE; }
+    std::string source;
+    source.resize((size_t)length);
+    if (fread(&source[0], 1, source.size(), file) != source.size()) {
+        fclose(file); return FALSE;
+    }
+    fclose(file);
+    const char* sampleLevel = "SampleLevel(LinearSampler, coord, 0)";
+    size_t sampleAt = source.find(sampleLevel);
+    if (sampleAt != std::string::npos)
+        source.replace(sampleAt, strlen(sampleLevel), "Sample(LinearSampler, coord)");
+    sampleAt = source.find("SampleLevel(PointSampler, coord, 0)");
+    if (sampleAt != std::string::npos)
+        source.replace(sampleAt, strlen("SampleLevel(PointSampler, coord, 0)"), "Sample(PointSampler, coord)");
+    sampleAt = source.find("SampleLevel(LinearSampler, coord, 0, offset)");
+    if (sampleAt != std::string::npos)
+        source.replace(sampleAt, strlen("SampleLevel(LinearSampler, coord, 0, offset)"), "Sample(LinearSampler, coord, offset)");
+    // Wine's current D3DCompile implementation rejects HLSL flow-control
+    // attributes even though they are optimization hints only.
+    for (const char* attribute : { "[flatten]", "[branch]" }) {
+        size_t at = 0;
+        while ((at = source.find(attribute, at)) != std::string::npos)
+            source.erase(at, strlen(attribute));
+    }
+    // The portable Wine compiler lacks discard/clip; edge pixels with zero
+    // edges already produce the correct transparent intermediate value.
+    size_t discardAt = 0;
+    while ((discardAt = source.find("discard;", discardAt)) != std::string::npos) {
+        source.replace(discardAt, 8, ";");
+        discardAt += 1;
+    }
+    size_t loadBlock = source.find("#ifdef SMAALoad");
+    if (loadBlock != std::string::npos)
+        source.replace(loadBlock, strlen("#ifdef SMAALoad"), "#if 0");
+    source.insert(0, "#define SMAA_HLSL_4\n#define SMAA_PRESET_HIGH\n"
+        "#define mad(a,b,c) ((a)*(b)+(c))\n"
+        "#define SMAA_RT_METRICS g_SmaaMetrics\n"
+        "cbuffer SmaaCB : register(b0) { float4 g_SmaaMetrics; };\n");
+    source += "\n#undef SMAALoad\n"; // this port uses 1x SMAA, never the optional MSAA pass
+    source += g_SmaaWrappers;
+
+    ID3DBlob *vs = nullptr, *edge = nullptr, *weight = nullptr, *blend = nullptr;
+    if (!CompileSmaaShader(source, "SmaaVS", "vs_4_0", &vs) ||
+        !CompileSmaaShader(source, "SmaaEdgePS", "ps_4_0", &edge) ||
+        !CompileSmaaShader(source, "SmaaWeightPS", "ps_4_0", &weight) ||
+        !CompileSmaaShader(source, "SmaaBlendPS", "ps_4_0", &blend)) {
+        if (vs) vs->Release(); if (edge) edge->Release();
+        if (weight) weight->Release(); if (blend) blend->Release();
+        return FALSE;
+    }
+    HRESULT hr = device->CreateVertexShader(vs->GetBufferPointer(), vs->GetBufferSize(), nullptr, &smaaVS);
+    if (SUCCEEDED(hr)) hr = device->CreatePixelShader(edge->GetBufferPointer(), edge->GetBufferSize(), nullptr, &smaaEdgePS);
+    if (SUCCEEDED(hr)) hr = device->CreatePixelShader(weight->GetBufferPointer(), weight->GetBufferSize(), nullptr, &smaaWeightPS);
+    if (SUCCEEDED(hr)) hr = device->CreatePixelShader(blend->GetBufferPointer(), blend->GetBufferSize(), nullptr, &smaaBlendPS);
+    vs->Release(); edge->Release(); weight->Release(); blend->Release();
+    if (FAILED(hr)) { ReleaseSmaa(); return FALSE; }
+
+    D3D11_BUFFER_DESC cb = {};
+    cb.ByteWidth = 16; cb.Usage = D3D11_USAGE_DYNAMIC;
+    cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER; cb.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    if (FAILED(device->CreateBuffer(&cb, nullptr, &smaaCB))) { ReleaseSmaa(); return FALSE; }
+
+    ID3D11Texture2D *area = nullptr, *search = nullptr;
+    D3D11_TEXTURE2D_DESC td = {};
+    td.Width = AREATEX_WIDTH; td.Height = AREATEX_HEIGHT; td.MipLevels = 1;
+    td.ArraySize = 1; td.Format = DXGI_FORMAT_R8G8_UNORM; td.SampleDesc.Count = 1;
+    td.Usage = D3D11_USAGE_IMMUTABLE; td.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    D3D11_SUBRESOURCE_DATA init = {}; init.pSysMem = areaTexBytes; init.SysMemPitch = AREATEX_PITCH;
+    hr = device->CreateTexture2D(&td, &init, &area);
+    if (SUCCEEDED(hr)) hr = device->CreateShaderResourceView(area, nullptr, &smaaAreaSRV);
+    if (area) area->Release();
+    td.Width = SEARCHTEX_WIDTH; td.Height = SEARCHTEX_HEIGHT; td.Format = DXGI_FORMAT_R8_UNORM;
+    init.pSysMem = searchTexBytes; init.SysMemPitch = SEARCHTEX_PITCH;
+    if (SUCCEEDED(hr)) hr = device->CreateTexture2D(&td, &init, &search);
+    if (SUCCEEDED(hr)) hr = device->CreateShaderResourceView(search, nullptr, &smaaSearchSRV);
+    if (search) search->Release();
+    if (FAILED(hr)) { ReleaseSmaa(); return FALSE; }
+    smaaEnabled = true;
+    if (!ResizeSmaa()) { ReleaseSmaa(); return FALSE; }
+    OutputDebugStringA("[SMAA] SMAA 1x enabled\n");
+    return TRUE;
+}
+
+void MarniDX::Impl::RenderSmaa()
+{
+    if (!smaaEnabled || !context || !rtv) return;
+    D3D11_MAPPED_SUBRESOURCE mapped = {};
+    if (SUCCEEDED(context->Map(smaaCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped))) {
+        float* metrics = (float*)mapped.pData;
+        metrics[0] = 1.0f / width; metrics[1] = 1.0f / height;
+        metrics[2] = (float)width; metrics[3] = (float)height;
+        context->Unmap(smaaCB, 0);
+    }
+    context->OMSetRenderTargets(0, nullptr, nullptr);
+    D3D11_VIEWPORT vp = {};
+    vp.Width = (float)width; vp.Height = (float)height; vp.MaxDepth = 1.0f;
+    context->RSSetViewports(1, &vp);
+    D3D11_RECT rect = {0, 0, (LONG)width, (LONG)height};
+    context->RSSetScissorRects(1, &rect);
+    context->RSSetState(rasterScissor);
+    context->OMSetBlendState(blendDisabled, nullptr, 0xffffffff);
+    context->OMSetDepthStencilState(depthDisabled, 0);
+    context->IASetInputLayout(nullptr);
+    context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    context->VSSetShader(smaaVS, nullptr, 0);
+    context->VSSetConstantBuffers(0, 1, &smaaCB);
+    context->PSSetConstantBuffers(0, 1, &smaaCB);
+    ID3D11ShaderResourceView* srvs[5] = {};
+
+    context->OMSetRenderTargets(1, &smaaEdgesRTV, nullptr);
+    srvs[0] = smaaSceneSRV; context->PSSetShaderResources(0, 1, srvs);
+    context->PSSetShader(smaaEdgePS, nullptr, 0); context->Draw(3, 0);
+    srvs[0] = nullptr; context->PSSetShaderResources(0, 1, srvs);
+
+    context->OMSetRenderTargets(1, &smaaWeightsRTV, nullptr);
+    srvs[1] = smaaEdgesSRV; srvs[2] = smaaAreaSRV; srvs[3] = smaaSearchSRV;
+    context->PSSetShaderResources(1, 3, &srvs[1]);
+    context->PSSetShader(smaaWeightPS, nullptr, 0); context->Draw(3, 0);
+    srvs[1] = srvs[2] = srvs[3] = nullptr; context->PSSetShaderResources(1, 3, &srvs[1]);
+
+    context->OMSetRenderTargets(1, &rtv, nullptr);
+    srvs[0] = smaaSceneSRV; srvs[4] = smaaWeightsSRV;
+    context->PSSetShaderResources(0, 1, srvs); context->PSSetShaderResources(4, 1, &srvs[4]);
+    context->PSSetShader(smaaBlendPS, nullptr, 0); context->Draw(3, 0);
+    srvs[0] = srvs[4] = nullptr; context->PSSetShaderResources(0, 1, srvs); context->PSSetShaderResources(4, 1, &srvs[4]);
+    context->OMSetRenderTargets(1, &smaaSceneRTV, depthStencilView);
+}
+
 // Convert host bpp (4/8/16/24/32) to a contiguous RGBA8 (one DWORD/pixel)
 // buffer suitable for DXGI_FORMAT_R8G8B8A8_UNORM upload.
 // Returns a heap-allocated array (caller frees via free) or nullptr.
@@ -477,6 +831,8 @@ void MarniDX::Impl::ReleaseAllTextures()
 void MarniDX::Impl::ReleaseAllState()
 {
     if (context) context->ClearState();
+    ReleaseFrameInterpolation();
+    ReleaseSmaa();
     if (quadLayout)    { quadLayout->Release();    quadLayout    = nullptr; }
     if (quadVS)        { quadVS->Release();        quadVS        = nullptr; }
     if (quadPS)        { quadPS->Release();        quadPS        = nullptr; }
@@ -736,8 +1092,16 @@ BOOL MarniDX::Create(HWND hWnd, int width, int height, BOOL fullScreen,
         p->device->CreateShaderResourceView(p->whiteTex, &wsd, &p->whiteSRV);
     }
 
-    // bind RTV + set viewport/scissor
-    p->context->OMSetRenderTargets(1, &p->rtv, p->depthStencilView);
+    // SMAA is an optional final pass; a missing shader asset falls back to the
+    // original direct-to-backbuffer path instead of preventing the game boot.
+    if (!p->CreateSmaa())
+        OutputDebugStringA("[SMAA] initialization failed; using normal D3D11 output\n");
+    if (!p->CreateFrameInterpolation())
+        OutputDebugStringA("[FrameInterpolation] initialization failed; keeping 30 Hz presentation\n");
+
+    // bind game target + set viewport/scissor
+    ID3D11RenderTargetView* gameTarget = p->smaaEnabled ? p->smaaSceneRTV : p->rtv;
+    p->context->OMSetRenderTargets(1, &gameTarget, p->depthStencilView);
     D3D11_VIEWPORT vp = {};
     vp.Width = (float)p->width; vp.Height = (float)p->height; vp.MaxDepth = 1.0f;
     p->context->RSSetViewports(1, &vp);
@@ -803,6 +1167,8 @@ int MarniDX::ChangeDisplayMode(DWORD newW, DWORD newH, BOOL fullScreen)
     if (newH < 240) newH = 240;
 
     p->context->OMSetRenderTargets(0, nullptr, nullptr);
+    ID3D11ShaderResourceView* nullSrvs[5] = {};
+    p->context->PSSetShaderResources(0, 5, nullSrvs);
     if (p->rtv) { p->rtv->Release(); p->rtv = nullptr; }
     // The depth surface has to be resized with the render target: D3D11 rejects
     // a depth view whose dimensions differ from the colour view, which would
@@ -815,6 +1181,9 @@ int MarniDX::ChangeDisplayMode(DWORD newW, DWORD newH, BOOL fullScreen)
     if (FAILED(hr)) return 0;
 
     p->width = newW; p->height = newH;
+    if (p->frameInterpolation && !p->ResizeFrameInterpolation())
+        p->ReleaseFrameInterpolation();
+    if (p->smaaEnabled && !p->ResizeSmaa()) p->ReleaseSmaa();
     ID3D11Texture2D* bb = nullptr;
     hr = p->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&bb);
     if (SUCCEEDED(hr)) {
@@ -838,7 +1207,8 @@ int MarniDX::ChangeDisplayMode(DWORD newW, DWORD newH, BOOL fullScreen)
     p->context->RSSetViewports(1, &vp);
     D3D11_RECT sr = { 0, 0, (LONG)newW, (LONG)newH };
     p->context->RSSetScissorRects(1, &sr);
-    p->context->OMSetRenderTargets(1, &p->rtv, p->depthStencilView);
+    ID3D11RenderTargetView* gameTarget = p->smaaEnabled ? p->smaaSceneRTV : p->rtv;
+    p->context->OMSetRenderTargets(1, &gameTarget, p->depthStencilView);
     return 1;
 }
 
@@ -983,7 +1353,7 @@ void MarniDX::Clear(float r, float g, float b, float a)
         a = 1.0f;
     }
     float c[4] = { r, g, b, a };
-    p->context->ClearRenderTargetView(p->rtv, c);
+    p->context->ClearRenderTargetView(p->smaaEnabled ? p->smaaSceneRTV : p->rtv, c);
     if (p->depthStencilView)
         p->context->ClearDepthStencilView(p->depthStencilView,
             D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -994,12 +1364,29 @@ void MarniDX::SetPresentation(MarniPresentationMode mode, float verticalPan)
     if (!m_pImpl) return;
     m_pImpl->presentation = mode;
     m_pImpl->verticalPan = verticalPan;
+    if (m_pImpl->context) {
+        const D3D11_RECT rect = BuildPresentationScissor(m_pImpl);
+        m_pImpl->context->RSSetScissorRects(1, &rect);
+    }
 }
 
 void MarniDX::Present()
 {
     Impl* p = m_pImpl;
     if (!p || !p->swapChain) return;
+
+    if (p->smaaEnabled) p->RenderSmaa();
+
+    if (p->frameInterpolation) {
+        // Pose interpolation renders two complete scene passes per 30 Hz
+        // simulation tick. Each one consumes one refresh; do not blend the
+        // completed images here, because that ghosts moving actors and gives
+        // the same pixels to both presentation slots.
+        p->swapChain->Present(1, 0);
+        ID3D11RenderTargetView* gameTarget = p->smaaEnabled ? p->smaaSceneRTV : p->rtv;
+        p->context->OMSetRenderTargets(1, &gameTarget, p->depthStencilView);
+        return;
+    }
 
     // Do NOT wait on a vblank by default. This engine paces itself in software:
     // the pump limits main_loop to one call per 33 ms (g_dwFrameIntervalMs) and
@@ -1014,8 +1401,53 @@ void MarniDX::Present()
     // fast, oscillating. The original blitted to the window without waiting for
     // a vblank, so its limiter always won.
     p->swapChain->Present(g_bVSync ? 1 : 0, 0);
-    if (p->rtv)
-        p->context->OMSetRenderTargets(1, &p->rtv, p->depthStencilView);
+    ID3D11RenderTargetView* gameTarget = p->smaaEnabled ? p->smaaSceneRTV : p->rtv;
+    if (gameTarget) p->context->OMSetRenderTargets(1, &gameTarget, p->depthStencilView);
+}
+
+BOOL MarniDX::CapturePoseInterpolationBase()
+{
+    Impl* p = m_pImpl;
+    if (!p || !p->frameInterpolation || !p->frameCurrent || !p->context)
+        return FALSE;
+
+    ID3D11Texture2D* source = p->smaaEnabled ? p->smaaScene : nullptr;
+    ID3D11Texture2D* backBuffer = nullptr;
+    if (source == nullptr) {
+        if (FAILED(p->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D),
+                                           (void**)&backBuffer))) return FALSE;
+        source = backBuffer;
+    }
+    p->context->OMSetRenderTargets(0, nullptr, nullptr);
+    p->context->CopyResource(p->frameCurrent, source);
+    if (backBuffer) backBuffer->Release();
+    ID3D11RenderTargetView* gameTarget = p->smaaEnabled ? p->smaaSceneRTV : p->rtv;
+    p->context->OMSetRenderTargets(1, &gameTarget, p->depthStencilView);
+    return TRUE;
+}
+
+BOOL MarniDX::RestorePoseInterpolationBase()
+{
+    Impl* p = m_pImpl;
+    if (!p || !p->frameInterpolation || !p->frameCurrent || !p->context)
+        return FALSE;
+
+    ID3D11Texture2D* destination = p->smaaEnabled ? p->smaaScene : nullptr;
+    ID3D11Texture2D* backBuffer = nullptr;
+    if (destination == nullptr) {
+        if (FAILED(p->swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D),
+                                           (void**)&backBuffer))) return FALSE;
+        destination = backBuffer;
+    }
+    p->context->OMSetRenderTargets(0, nullptr, nullptr);
+    p->context->CopyResource(destination, p->frameCurrent);
+    if (backBuffer) backBuffer->Release();
+    if (p->depthStencilView)
+        p->context->ClearDepthStencilView(p->depthStencilView,
+            D3D11_CLEAR_DEPTH, 1.0f, 0);
+    ID3D11RenderTargetView* gameTarget = p->smaaEnabled ? p->smaaSceneRTV : p->rtv;
+    p->context->OMSetRenderTargets(1, &gameTarget, p->depthStencilView);
+    return TRUE;
 }
 
 // ============================================================================

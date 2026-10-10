@@ -103,6 +103,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Content Include="src\third_party\smaa\SMAA.hlsl">
+      <Link>smaa\SMAA.hlsl</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <ClCompile Include="src\platform\win32\main.cpp" />
     <ClCompile Include="src\platform\win32\window_proc.cpp" />
     <ClCompile Include="src\platform\win32\platform.cpp" />

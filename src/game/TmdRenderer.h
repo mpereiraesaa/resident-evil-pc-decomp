@@ -12,9 +12,10 @@
 //   ...at present time the OT was walked and every queued TMD object was
 //   rendered with D3D5 execute buffers.
 //
-// In this port the OT is replaced by a flat per-frame queue (TmdQueueObject)
-// that FlushTmdObjects() drains once per frame from FrameRateGovernor,
-// drawing through MarniDX::DrawTriangles.
+// In this port the OT is replaced by a flat per-tick queue (TmdQueueObject)
+// that FrameRateGovernor replays at midpoint and current poses when pose
+// interpolation is enabled. The simulation and its animation matrices still
+// advance exactly once per original 30 Hz tick.
 //
 // The original also had a D3D depth buffer resolving the triangles within one
 // queued object. MarniDX::DrawTriangles carries no Z, so FlushTmdObjects
@@ -91,11 +92,15 @@ void  TmdQueueComplexObject(void* objData, void* elem, int depth);
 // any animation object ComplexTmdObjectSetup has processed (spriteData[4] == 1).
 void  FUN_00486df0(void* spriteData);
 
-// Draw every queued TMD object, then clear the queue. Called once per frame
-// from FrameRateGovernor after the background sprites and before the 2D sprite
-// command flush. Triangles from all objects are pooled, depth-sorted far to
-// near, and submitted with adjacent same-texture runs merged.
-void  FlushTmdObjects(void);
+// Pose snapshots bracket one simulation frame. The queued TMDs can then be
+// drawn twice, at alpha 0.5 and 1.0, without advancing game logic.
+void  TmdInterpolationBeginFrame(void);
+void  TmdInterpolationEndFrame(void);
+
+// Draw queued TMDs at the requested pose fraction between the previous and
+// current simulation transforms. Queue ownership remains with the caller so
+// it can replay the same scene for the current pose after the midpoint pass.
+void  FlushTmdObjects(float poseAlpha);
 
 // View-space Z -> the normalised [0,1] depth the TMD triangles write into the
 // D3D11 depth buffer. The translucent ground-shadow / blood pool quads test

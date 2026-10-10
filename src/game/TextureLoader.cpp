@@ -4,6 +4,8 @@
 #include "../marni/MarniSystem.h"
 #include "../marni/MarniBits.h"
 #include "../DebugPrint.h"
+#include "../platform/platform.h"
+#include "../system/AssetPath.h"
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
@@ -24,6 +26,105 @@ struct TextureCLUTCache {
     int    bpp;           // bit depth (4 or 8)
 };
 static TextureCLUTCache g_CLUTCache[256];
+
+// Classic REbirth's HD plugin names ordinary texture replacements after the
+// CRC32 of the logical DirectDraw surface. DirectDraw expanded each RGB555
+// channel with a three-bit shift (31 -> 248), stored BGRA bytes, and applied
+// the black colour key before the plugin saw the pixels. Reproduce that byte
+// stream so existing hires/{misc,skin,skin2}/XXXXXXXX.webp packs work without
+// loading the original ASI or depending on its executable-address hooks.
+static DWORD ClassicHdTextureHash(const PSXTexture& texture)
+{
+    if (texture.m_pPixelData == NULL || texture.m_WidthPixels <= 0 ||
+        texture.m_Height <= 0) {
+        return 0;
+    }
+
+    DWORD crc = 0xFFFFFFFFu;
+    int pixelCount = texture.m_WidthPixels * texture.m_Height;
+    for (int position = 0; position < pixelCount; position++) {
+        WORD colour = 0;
+        if (texture.m_BitDepth == 4) {
+            const BYTE packed = ((BYTE*)texture.m_pPixelData)[position / 2];
+            const BYTE index = (position & 1) ? (packed >> 4) : (packed & 0x0F);
+            colour = texture.m_pCLUTData[index];
+        } else if (texture.m_BitDepth == 8) {
+            const BYTE index = ((BYTE*)texture.m_pPixelData)[position];
+            colour = texture.m_pCLUTData[index];
+        } else if (texture.m_BitDepth == 16) {
+            colour = ((WORD*)texture.m_pPixelData)[position];
+        } else {
+            return 0;
+        }
+
+        const BYTE bgra[4] = {
+            (BYTE)(((colour >> 10) & 0x1F) << 3),
+            (BYTE)(((colour >> 5) & 0x1F) << 3),
+            (BYTE)((colour & 0x1F) << 3),
+            (BYTE)(((colour & 0x7FFF) == 0) ? 0 : 0xFF),
+        };
+        for (int channel = 0; channel < 4; channel++) {
+            crc ^= bgra[channel];
+            for (int bit = 0; bit < 8; bit++) {
+                crc = (crc >> 1) ^ ((crc & 1) ? 0xEDB88320u : 0);
+            }
+        }
+    }
+    return ~crc;
+}
+
+static bool LoadClassicHdTexture(const PSXTexture& texture,
+                                 MarniHandle* output,
+                                 int* imageWidth, int* imageHeight)
+{
+    if (output == NULL || imageWidth == NULL || imageHeight == NULL) {
+        return false;
+    }
+    *output = MARNI_NULL_HANDLE;
+
+    const DWORD hash = ClassicHdTextureHash(texture);
+    if (hash == 0) return false;
+
+    static const char* categories[] = { "misc", "skin2", "skin" };
+    for (int category = 0; category < 3; category++) {
+        char requested[260];
+        int length = sprintf_s(requested, sizeof(requested),
+                               GAME_DATA_ROOT "hires/%s/%08X.webp",
+                               categories[category], hash);
+        if (length < 0) continue;
+
+        char resolved[520];
+        const char* imagePath = ResolveAssetRoot(requested, resolved,
+                                                 sizeof(resolved));
+        size_t encodedSize = 0;
+        void* encoded = plat_file_read_all(imagePath, &encodedSize);
+        if (encoded == NULL) continue;
+
+        char libraryResolved[520];
+        const char* libraryPath = ResolveAssetRoot(
+            GAME_DATA_ROOT "libwebp.dll", libraryResolved,
+            sizeof(libraryResolved));
+        void* rgba = plat_webp_decode_rgba(libraryPath, encoded, encodedSize,
+                                           imageWidth, imageHeight);
+        free(encoded);
+        if (rgba == NULL || *imageWidth <= 0 || *imageHeight <= 0 ||
+            *imageWidth > 8192 || *imageHeight > 8192) {
+            plat_webp_free(rgba);
+            continue;
+        }
+
+        BOOL created = MarniCreateTexture(*imageWidth, *imageHeight, 32, rgba,
+                                          output);
+        plat_webp_free(rgba);
+        if (created && *output != MARNI_NULL_HANDLE) {
+            dbg_printf("[hd] %s active: %s (%dx%d, logical %dx%d)\n",
+                       categories[category], imagePath, *imageWidth,
+                       *imageHeight, texture.m_WidthPixels, texture.m_Height);
+            return true;
+        }
+    }
+    return false;
+}
 
 // ============================================================================
 // LoadEffectTextureSheet — parse one effect-sprite sheet TIM (256-wide PSX
@@ -48,6 +149,20 @@ void LoadEffectTextureSheet(int slot, void* timData)
     int h = psxTex.m_Height;
     int bpp = psxTex.m_BitDepth;
     if (w <= 0 || h <= 0 || psxTex.m_pPixelData == NULL) return;
+
+    MarniHandle hdTexture = MARNI_NULL_HANDLE;
+    int hdWidth = 0;
+    int hdHeight = 0;
+    if (LoadClassicHdTexture(psxTex, &hdTexture, &hdWidth, &hdHeight)) {
+        if (g_TexturePageSRV[slot] != MARNI_NULL_HANDLE) {
+            Marni_DX()->DestroyTexture(g_TexturePageSRV[slot]);
+        }
+        g_TexturePageSRV[slot] = hdTexture;
+        g_TexturePageWidth[slot] = w;
+        g_TexturePageHeight[slot] = h;
+        g_TexturePageBpp[slot] = 32;
+        return;
+    }
 
     DWORD* rgba = new DWORD[w * h];
     if (bpp == 4 || bpp == 8) {
@@ -732,6 +847,27 @@ void LoadTexturePage(void* imageBuffer, short texId, short pageOffset, int slotI
         int w = psxTex.m_WidthPixels;
         int h = psxTex.m_Height;
         int bpp = psxTex.m_BitDepth;
+
+        MarniHandle hdTexture = MARNI_NULL_HANDLE;
+        int hdWidth = 0;
+        int hdHeight = 0;
+        if (slotIndex >= 0 && slotIndex < 256 &&
+            LoadClassicHdTexture(psxTex, &hdTexture, &hdWidth, &hdHeight)) {
+            if (g_TexturePageSRV[slotIndex] != MARNI_NULL_HANDLE) {
+                Marni_DX()->DestroyTexture(g_TexturePageSRV[slotIndex]);
+            }
+            g_TexturePageSRV[slotIndex] = hdTexture;
+            // The renderer's UVs remain in the original page's pixel space;
+            // the SRV may be four times larger in each dimension.
+            g_TexturePageWidth[slotIndex] = w;
+            g_TexturePageHeight[slotIndex] = h;
+            g_TexturePageBpp[slotIndex] = 32;
+            g_TexturePageOriginX[slotIndex] = posX;
+            g_TexturePageOriginY[slotIndex] = posY;
+            g_TexturePageId[slotIndex] = texId;
+            g_TexturePageClutBase[slotIndex] = pageOffset + 0x1E0;
+            return;
+        }
 
         if (bpp == 4 || bpp == 8) {
             int numClutEntries = (bpp == 4) ? 16 : 256;
@@ -1684,4 +1820,3 @@ void SetupTextureBankData(short param_1)
         } while ((unsigned int)idx < (DWORD)DAT_00ae9f06 * 0x80);
     }
 }
-

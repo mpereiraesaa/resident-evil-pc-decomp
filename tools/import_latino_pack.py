@@ -2,15 +2,17 @@
 """Import compatible Latino/HD pack content as a native asset mod.
 
 The published pack targets the Japanese/Sourcenext layout. This tool extracts
-its voice WAVs, modern movie files and confidently matched USA GOG room
-backgrounds, then writes the layout consumed by config.ini [Assets] Mods. It
-does not install the replacement executable, hook DLLs, ASI plugin or saves.
+its voice WAVs, modern movie files, confidently matched USA GOG room art and
+hash-addressed HD texture pages, then writes the layout consumed by config.ini
+[Assets] Mods. It does not install the replacement executable, hook DLLs, ASI
+plugin or saves.
 """
 
 from __future__ import annotations
 
 import argparse
 import csv
+import re
 import shutil
 import struct
 import subprocess
@@ -130,6 +132,29 @@ def copy_hd_files(source: Path, destination: Path, mapping_file: Path,
             output_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(input_file, output_file)
             count += 1
+    return count
+
+
+def copy_hash_hd_files(source: Path, destination: Path, kind: str) -> int:
+    if not source.is_dir():
+        raise RuntimeError(f"archive has no hires/{kind} directory")
+    count = 0
+    output = destination / "hires" / kind
+    output.mkdir(parents=True, exist_ok=True)
+    existing_by_name = {
+        item.name.lower(): item for item in output.glob("*.webp")
+    }
+    for item in sorted(source.glob("*.webp")):
+        if re.fullmatch(r"[0-9A-Fa-f]{8}(?:_[0-9A-Fa-f]{1,2})?",
+                        item.stem) is None:
+            raise RuntimeError(f"invalid HD {kind} hash filename: {item.name}")
+        target = output / f"{item.stem.upper()}.webp"
+        previous = existing_by_name.get(target.name.lower())
+        if previous is not None and previous != target:
+            previous.unlink()
+        shutil.copy2(item, target)
+        existing_by_name[target.name.lower()] = target
+        count += 1
     return count
 
 
@@ -257,7 +282,8 @@ def main() -> int:
     if not args.voices_only:
         selections.append("movie/*")
     if import_hd:
-        selections.extend(("hires/bgd/*", "hires/mask/*", "libwebp.dll"))
+        selections.extend(("hires/bgd/*", "hires/mask/*", "hires/misc/*",
+                           "hires/skin/*", "hires/skin2/*", "libwebp.dll"))
     if import_text:
         selections.append("ddraw.dll")
 
@@ -268,11 +294,11 @@ def main() -> int:
     if not args.voices_only:
         content += " + movies"
     if import_hd:
-        content += " + HD room art"
+        content += " + HD room/texture art"
     if import_text:
         content += " + Spanish text/font"
     print(f"content:     {content}")
-    print("excluded:    executable, hook DLLs/ASI, saves, sound tree, HD misc/skins")
+    print("excluded:    executable, hook DLLs/ASI, saves, sound tree")
     if args.region == "JPN" and not args.voices_only and not args.no_hd:
         print("note:        direct HD room map currently targets USA GOG assets")
     if args.dry_run:
@@ -301,6 +327,9 @@ def main() -> int:
 
         hd_count = 0
         mask_count = 0
+        misc_count = 0
+        skin_count = 0
+        skin2_count = 0
         if import_hd:
             hd_source = temp_root / "hires" / "bgd"
             if not hd_source.is_dir():
@@ -312,6 +341,12 @@ def main() -> int:
                 raise RuntimeError("archive has no hires/mask directory")
             mask_count = copy_hd_files(mask_source, args.destination,
                                        HD_MASK_MAP, "mask")
+            misc_count = copy_hash_hd_files(temp_root / "hires" / "misc",
+                                            args.destination, "misc")
+            skin_count = copy_hash_hd_files(temp_root / "hires" / "skin",
+                                            args.destination, "skin")
+            skin2_count = copy_hash_hd_files(temp_root / "hires" / "skin2",
+                                             args.destination, "skin2")
             webp_runtime = temp_root / "libwebp.dll"
             if not webp_runtime.is_file():
                 raise RuntimeError("archive has no 32-bit libwebp.dll")
@@ -329,6 +364,8 @@ def main() -> int:
 
     print(f"imported:    {voice_count} voice files, {movie_count} movie files, "
           f"{hd_count} HD backgrounds, {mask_count} HD masks, "
+          f"{misc_count} HD misc, {skin_count} HD skin, "
+          f"{skin2_count} HD skin2, "
           f"{text_bank_count} text banks ({text_entry_count} entries)")
     print(f"config:      add {args.destination} to [Assets] Mods")
     return 0

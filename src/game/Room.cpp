@@ -778,6 +778,19 @@ void load_room_masks(int param_1) // 0x00475a90
 // For each camera in the room, loads the background PAK file, decompresses it,
 // and either displays it immediately (mode 0) or caches it (mode non-zero).
 // ============================================================================
+static void display_room_bg(int slot, void* buffer, int width, int height,
+                            int cameraIdx)
+{
+    // Keep the original mutable template untouched. Cache mode leaves its
+    // camera digit at the last preloaded image, while this helper may display
+    // any camera later; the override path therefore gets its own current digit.
+    char sourcePath[sizeof(g_bgPathTemplate)];
+    memcpy(sourcePath, g_bgPathTemplate, sizeof(sourcePath));
+    sourcePath[sizeof(sourcePath) - 1] = '\0';
+    sourcePath[GAME_DATA_PATH_IDX(0x12)] = g_hexCharTable[cameraIdx];
+    display_image_override(slot, buffer, width, height, sourcePath);
+}
+
 void load_room_bg(void) // 0x00462b00
 {
     if (g_bgCacheMode == 0) {
@@ -834,7 +847,8 @@ void load_room_bg(void) // 0x00462b00
                     height = 236;
                 }
 
-                display_image(cameraIdx, g_TimImageBuffer__bitmap, width, height);
+                display_room_bg(cameraIdx, g_TimImageBuffer__bitmap,
+                                width, height, cameraIdx);
                 title_setup_texture_pages(cameraIdx, 1);
                 cameraIdx++;
             } while (cameraIdx < (int)(unsigned int)g_RdtPointer->cameras_count);
@@ -934,7 +948,8 @@ void load_room_bg_image(void) // 0x004629c0
         height = 236;
     }
 
-    display_image(8, g_TimImageBuffer__bitmap, width, height);
+    display_room_bg(8, g_TimImageBuffer__bitmap, width, height,
+                    g_roomCameraId);
     title_setup_texture_pages(8, 1);
     // empty_00470960(8): empty in the original - call dropped
 }

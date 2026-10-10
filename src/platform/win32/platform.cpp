@@ -203,6 +203,57 @@ void* plat_file_read_all(const char* path, size_t* outSize)
 }
 
 // ---------------------------------------------------------------------------
+// Optional WebP runtime
+// ---------------------------------------------------------------------------
+
+typedef unsigned char* (__cdecl *PlatWebPDecodeRGBA)(
+    const unsigned char*, size_t, int*, int*);
+typedef void (__cdecl *PlatWebPFree)(void*);
+
+static HMODULE             s_webpModule = NULL;
+static PlatWebPDecodeRGBA  s_webpDecodeRGBA = NULL;
+static PlatWebPFree        s_webpFree = NULL;
+static int                 s_webpLoadAttempted = 0;
+
+static void PlatLoadWebP(const char* libraryPath)
+{
+    if (s_webpLoadAttempted) return;
+    s_webpLoadAttempted = 1;
+
+    if (libraryPath != NULL && libraryPath[0] != '\0') {
+        s_webpModule = LoadLibraryA(libraryPath);
+    }
+    if (s_webpModule == NULL) {
+        s_webpModule = LoadLibraryA("libwebp.dll");
+    }
+    if (s_webpModule == NULL) return;
+
+    s_webpDecodeRGBA = (PlatWebPDecodeRGBA)GetProcAddress(
+        s_webpModule, "WebPDecodeRGBA");
+    s_webpFree = (PlatWebPFree)GetProcAddress(s_webpModule, "WebPFree");
+    if (s_webpDecodeRGBA == NULL || s_webpFree == NULL) {
+        FreeLibrary(s_webpModule);
+        s_webpModule = NULL;
+        s_webpDecodeRGBA = NULL;
+        s_webpFree = NULL;
+    }
+}
+
+void* plat_webp_decode_rgba(const char* libraryPath, const void* data,
+                            size_t size, int* outWidth, int* outHeight)
+{
+    PlatLoadWebP(libraryPath);
+    if (s_webpDecodeRGBA == NULL || data == NULL || size == 0) return NULL;
+    return s_webpDecodeRGBA((const unsigned char*)data, size,
+                            outWidth, outHeight);
+}
+
+void plat_webp_free(void* pixels)
+{
+    if (pixels != NULL && s_webpFree != NULL) s_webpFree(pixels);
+}
+
+// ---------------------------------------------------------------------------
 // Diagnostics
 // ---------------------------------------------------------------------------
 

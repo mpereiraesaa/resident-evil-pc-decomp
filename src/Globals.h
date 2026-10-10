@@ -2025,6 +2025,8 @@ void  operator_delete(void* ptr);
 // --- Title screen ---
 void set_display_resolution(int w, int h, int mode);
 void display_image(int slot, void* buffer, int width, int height);
+void display_image_override(int slot, void* buffer, int width, int height,
+                            const char* sourcePath);
 void title_setup_texture_pages(int slot, int mode);
 int  check_save_files_exist(void);
 void UpdateTitleTextSprite(unsigned char brightness, unsigned char selectionId);

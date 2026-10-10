@@ -80,6 +80,15 @@ size_t plat_readable_bytes(const void* p);
 // PSXTexture::LoadFromFile.
 void* plat_file_read_all(const char* path, size_t* outSize);
 
+// Decode a WebP image through the platform's shared libwebp runtime. Windows
+// loads the user-supplied 32-bit DLL at `libraryPath`; Linux first tries that
+// path and then its system libwebp. The returned RGBA8 buffer belongs to
+// libwebp and must be released with plat_webp_free(). A missing library,
+// malformed image, or unsupported runtime returns NULL.
+void* plat_webp_decode_rgba(const char* libraryPath, const void* data,
+                            size_t size, int* outWidth, int* outHeight);
+void  plat_webp_free(void* pixels);
+
 // ---------------------------------------------------------------------------
 // Diagnostics
 // ---------------------------------------------------------------------------

@@ -244,6 +244,56 @@ void* plat_file_read_all(const char* path, size_t* outSize)
     return buffer;
 }
 
+// ---------------------------------------------------------------------------
+// Optional WebP runtime
+// ---------------------------------------------------------------------------
+
+typedef unsigned char* (*PlatWebPDecodeRGBA)(
+    const unsigned char*, size_t, int*, int*);
+typedef void (*PlatWebPFree)(void*);
+
+static void*               s_webpObject = NULL;
+static PlatWebPDecodeRGBA  s_webpDecodeRGBA = NULL;
+static PlatWebPFree        s_webpFree = NULL;
+static int                 s_webpLoadAttempted = 0;
+
+static void PlatLoadWebP(const char* libraryPath)
+{
+    if (s_webpLoadAttempted) return;
+    s_webpLoadAttempted = 1;
+
+    if (libraryPath != NULL && libraryPath[0] != '\0') {
+        s_webpObject = SDL_LoadObject(libraryPath);
+    }
+    if (s_webpObject == NULL) s_webpObject = SDL_LoadObject("libwebp.so.7");
+    if (s_webpObject == NULL) s_webpObject = SDL_LoadObject("libwebp.so");
+    if (s_webpObject == NULL) return;
+
+    s_webpDecodeRGBA = (PlatWebPDecodeRGBA)SDL_LoadFunction(
+        s_webpObject, "WebPDecodeRGBA");
+    s_webpFree = (PlatWebPFree)SDL_LoadFunction(s_webpObject, "WebPFree");
+    if (s_webpDecodeRGBA == NULL || s_webpFree == NULL) {
+        SDL_UnloadObject(s_webpObject);
+        s_webpObject = NULL;
+        s_webpDecodeRGBA = NULL;
+        s_webpFree = NULL;
+    }
+}
+
+void* plat_webp_decode_rgba(const char* libraryPath, const void* data,
+                            size_t size, int* outWidth, int* outHeight)
+{
+    PlatLoadWebP(libraryPath);
+    if (s_webpDecodeRGBA == NULL || data == NULL || size == 0) return NULL;
+    return s_webpDecodeRGBA((const unsigned char*)data, size,
+                            outWidth, outHeight);
+}
+
+void plat_webp_free(void* pixels)
+{
+    if (pixels != NULL && s_webpFree != NULL) s_webpFree(pixels);
+}
+
 size_t plat_readable_bytes(const void* p)
 {
     // Walk /proc/self/maps for the mapping that contains p and report how much

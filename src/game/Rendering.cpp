@@ -12,6 +12,7 @@
 #include "TmdRenderer.h"
 #include <cstdlib>
 #include <cstdio>
+#include <cstring>
 #include <cmath>
 #include <time.h>
 
@@ -1091,7 +1092,53 @@ int SubmitEffectSprite_Ex(TextureDesc* texture, unsigned short fade, int slot,
 // display_image (0x00470770)
 // Loads raw 16-bit PS1 pixel data and creates a D3D11 texture + SRV.
 // ============================================================================
-void display_image(int slot, void* buffer, int width, int height)
+static bool LoadDisplayImageWebP(const char* sourcePath)
+{
+    if (sourcePath == NULL || sourcePath[0] == '\0') return false;
+
+    char requested[260];
+    strncpy(requested, sourcePath, sizeof(requested) - 1);
+    requested[sizeof(requested) - 1] = '\0';
+    char* extension = strrchr(requested, '.');
+    if (extension == NULL) return false;
+    strcpy(extension, ".webp");
+
+    char resolved[520];
+    const char* imagePath = ResolveAssetRoot(requested, resolved,
+                                             sizeof(resolved));
+    size_t encodedSize = 0;
+    void* encoded = plat_file_read_all(imagePath, &encodedSize);
+    if (encoded == NULL) return false;
+
+    char libraryResolved[520];
+    const char* libraryPath = ResolveAssetRoot(
+        GAME_DATA_ROOT "libwebp.dll", libraryResolved,
+        sizeof(libraryResolved));
+    int imageWidth = 0;
+    int imageHeight = 0;
+    void* rgba = plat_webp_decode_rgba(libraryPath, encoded, encodedSize,
+                                       &imageWidth, &imageHeight);
+    free(encoded);
+    if (rgba == NULL || imageWidth <= 0 || imageHeight <= 0 ||
+        imageWidth > 8192 || imageHeight > 8192) {
+        plat_webp_free(rgba);
+        return false;
+    }
+
+    MarniHandle texture = MARNI_NULL_HANDLE;
+    BOOL created = MarniCreateTexture(imageWidth, imageHeight, 32, rgba,
+                                      &texture);
+    plat_webp_free(rgba);
+    if (!created || texture == MARNI_NULL_HANDLE) return false;
+
+    g_displayImageSRV = texture;
+    dbg_printf("[hd] background active: %s (%dx%d)\n", imagePath,
+               imageWidth, imageHeight);
+    return true;
+}
+
+void display_image_override(int slot, void* buffer, int width, int height,
+                            const char* sourcePath)
 {
     g_DisplayImageWidth = width;
     g_DisplayImageHeight = height;
@@ -1100,6 +1147,12 @@ void display_image(int slot, void* buffer, int width, int height)
         Marni_DX()->DestroyTexture(g_displayImageSRV);
         g_displayImageSRV = MARNI_NULL_HANDLE;
     }
+
+    // HD packs mirror the original PAK path and replace only its extension:
+    // Stage1/RC1000.pak -> Stage1/RC1000.webp. ResolveAssetRoot applies the
+    // normal mod/overlay/base priority. A missing or invalid WebP is an ordinary
+    // miss and falls through to the original 16-bit background below.
+    if (LoadDisplayImageWebP(sourcePath)) return;
 
     unsigned short* src = (unsigned short*)buffer;
     int pixelCount = width * height;
@@ -1129,6 +1182,11 @@ void display_image(int slot, void* buffer, int width, int height)
 
     MarniCreateTexture(width, height, 32, rgba, &g_displayImageSRV);
     free(rgba);
+}
+
+void display_image(int slot, void* buffer, int width, int height)
+{
+    display_image_override(slot, buffer, width, height, NULL);
 }
 
 // ============================================================================

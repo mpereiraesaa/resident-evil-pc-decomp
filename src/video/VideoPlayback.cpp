@@ -165,6 +165,7 @@ static DWORD g_videoFlagA4 = 0;
 static WORD  g_videoSkipInput = 0;
 static int   g_videoSkipCounter = 0;
 static char  g_videoFilePath[MAX_PATH] = {};
+static char  g_videoFallbackPath[MAX_PATH] = {};
 static BOOL  s_overlayCallbackRegistered = FALSE;
 
 static BOOL Ps1VideoOverlayCallback(DWORD32 frameTexture, int frameMs)
@@ -247,6 +248,8 @@ BOOL CheckVideoFileExists(const char* filename)
 {
     if (filename == NULL) return FALSE;
 
+    g_videoFallbackPath[0] = '\0';
+
     char creditsPath[MAX_PATH];
     if (Ps1EndingCredits_ResolveVideoPath(g_CurrentFMVID, creditsPath,
                                           sizeof(creditsPath)) &&
@@ -259,6 +262,13 @@ BOOL CheckVideoFileExists(const char* filename)
     char modern[MAX_PATH];
     if (PreferModernSibling(filename, modern, sizeof(modern))) {
         strcpy_s(g_videoFilePath, sizeof(g_videoFilePath), modern);
+        dbg_printf("[VIDEO] selected modern sibling: %s\n", g_videoFilePath);
+        char legacy[MAX_PATH];
+        if (NormalizeVideoPath(filename, legacy, sizeof(legacy)) &&
+            FileReadable(legacy)) {
+            strcpy_s(g_videoFallbackPath, sizeof(g_videoFallbackPath), legacy);
+            dbg_printf("[VIDEO] legacy fallback available: %s\n", g_videoFallbackPath);
+        }
         Ps1EndingCredits_SetVideoPath(g_videoFilePath);
         return TRUE;
     }
@@ -274,6 +284,7 @@ BOOL CheckVideoFileExists(const char* filename)
     }
 
     strcpy_s(g_videoFilePath, sizeof(g_videoFilePath), normalized);
+    dbg_printf("[VIDEO] selected legacy asset: %s\n", g_videoFilePath);
     Ps1EndingCredits_SetVideoPath(g_videoFilePath);
     return TRUE;
 }
@@ -362,8 +373,25 @@ void UpdateVideoPlayback(void)
 
             Ps1EndingCredits_StartVideo();
             if (!plat_video_open_and_play(g_videoFilePath, playTo)) {
-                g_FMVPlaybackState = 3;
-                break;
+                // The Latino pack (and other mods) may provide MP4 siblings.
+                // Wine's Media Foundation support varies by prefix; if its MP4
+                // decoder rejects the replacement, fall back to the original
+                // AVI instead of silently dropping the cutscene.
+                if (g_videoFallbackPath[0] != '\0') {
+                    dbg_safe_str("[VIDEO] MP4 open failed; trying original AVI\n");
+                    strcpy_s(g_videoFilePath, sizeof(g_videoFilePath),
+                             g_videoFallbackPath);
+                    Ps1EndingCredits_SetVideoPath(g_videoFilePath);
+                    if (!plat_video_open_and_play(g_videoFilePath, playTo)) {
+                        dbg_safe_str("[VIDEO] Original AVI fallback also failed\n");
+                        g_FMVPlaybackState = 3;
+                        break;
+                    }
+                    g_videoFallbackPath[0] = '\0';
+                } else {
+                    g_FMVPlaybackState = 3;
+                    break;
+                }
             }
 
             g_FMVPlaybackState = 2;

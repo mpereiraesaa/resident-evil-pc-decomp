@@ -21,6 +21,7 @@ PROJECT = ROOT / "Game.vcxproj"
 BUILD = ROOT / "build" / "windows-cross"
 OBJ = BUILD / "obj"
 EXE = BUILD / "residentevil.exe"
+FFMPEG_PREFIX = ROOT / "build" / "ffmpeg-win32-prefix"
 TARGET = "i686-w64-windows-gnu"
 
 
@@ -44,6 +45,8 @@ def main() -> int:
                         help="reserved for compatibility; compilation is incremental")
     args = parser.parse_args()
 
+    run([sys.executable, str(ROOT / "tools" / "build_ffmpeg_win32.py")])
+
     if args.clean and BUILD.exists():
         shutil.rmtree(BUILD)
     OBJ.mkdir(parents=True, exist_ok=True)
@@ -56,6 +59,7 @@ def main() -> int:
         compiler, f"--target={TARGET}", "-std=c++17", "-O2",
         "-fomit-frame-pointer", "-ffunction-sections", "-fdata-sections",
         "-fms-extensions", "-Wno-everything", "-Isrc",
+        f"-I{FFMPEG_PREFIX / 'include'}", "-DRE1_USE_FFMPEG",
         "-DWIN32", "-D_WINDOWS", "-DNDEBUG",
         "-DDIRECT3D_VERSION=0x0b00", "-D_CRT_SECURE_NO_WARNINGS",
     ]
@@ -66,6 +70,8 @@ def main() -> int:
         obj = OBJ / (relative + ".o")
         objects.append(obj)
         dependencies = [source, PROJECT]
+        if source.name == "video.cpp" and source.parent.name == "win32":
+            dependencies.append(source.parent / "video_ffmpeg.inc")
         if obj.exists() and obj.stat().st_mtime >= max(p.stat().st_mtime for p in dependencies):
             continue
         run(common + ["-c", str(source), "-o", str(obj)])
@@ -73,16 +79,26 @@ def main() -> int:
     response = BUILD / "objects.rsp"
     response.write_text("\n".join(f'"{obj}"' for obj in objects) + "\n")
     libraries = [
+        "-Wl,--start-group",
+        "-lavformat", "-lavcodec", "-lswscale", "-lswresample", "-lavutil",
+        "-Wl,--end-group",
+        "-lm", "-latomic", "-lpthread", "-lbcrypt",
         "d3d11", "dxgi", "d3dcompiler_47", "dxguid", "xinput",
         "winmm", "imm32", "xaudio2_8", "mfplat", "mfreadwrite",
         "mfuuid", "ole32", "dbghelp", "user32", "gdi32", "advapi32",
         "shell32", "uuid",
     ]
     run([
-        compiler, f"--target={TARGET}", f"@{response}", "-o", str(EXE),
+        compiler, f"--target={TARGET}", f"-L{FFMPEG_PREFIX / 'lib'}",
+        f"@{response}", "-o", str(EXE),
         "-static", "-static-libgcc", "-static-libstdc++", "-mwindows",
-        "-Wl,--gc-sections", *(f"-l{name}" for name in libraries),
+        "-Wl,--gc-sections",
+        *(arg if arg.startswith("-") else f"-l{arg}" for arg in libraries),
     ])
+    smaa_dir = BUILD / "smaa"
+    smaa_dir.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT / "src" / "third_party" / "smaa" / "SMAA.hlsl",
+                 smaa_dir / "SMAA.hlsl")
     print(f"Built {EXE.relative_to(ROOT)}")
     return 0
 

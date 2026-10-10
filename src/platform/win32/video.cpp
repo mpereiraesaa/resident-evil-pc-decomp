@@ -21,21 +21,35 @@
 #endif
 #include <windows.h>
 #include <mmsystem.h>
+#if defined(RE1_USE_FFMPEG)
+extern "C" {
+#include <libavcodec/avcodec.h>
+#include <libavformat/avformat.h>
+#include <libavutil/channel_layout.h>
+#include <libavutil/imgutils.h>
+#include <libavutil/opt.h>
+#include <libswresample/swresample.h>
+#include <libswscale/swscale.h>
+}
+#else
 #include <mfapi.h>
 #include <mfidl.h>
 #include <mfreadwrite.h>
 #include <mferror.h>
 #include <propvarutil.h>
+#endif
 
 #include "../../Globals.h"
 #include "../../marni/MarniDX.h"
 #include "../../marni/MarniSystem.h"
 
 #pragma comment(lib, "winmm.lib")
+#if !defined(RE1_USE_FFMPEG)
 #pragma comment(lib, "mfplat.lib")
 #pragma comment(lib, "mfreadwrite.lib")
 #pragma comment(lib, "mfuuid.lib")
 #pragma comment(lib, "ole32.lib")
+#endif
 
 static PlatVideoOverlayCallback s_overlayCallback = NULL;
 
@@ -179,6 +193,7 @@ static void MciPlayFrom(int playFromMs)
 // ===========================================================================
 // Media Foundation backend (modern containers)
 // ===========================================================================
+#if !defined(RE1_USE_FFMPEG)
 namespace mf {
 
 static BOOL             s_ready   = FALSE;   // MFStartup succeeded
@@ -735,6 +750,15 @@ void Tick(void)
 }
 
 }  // namespace mf
+#else
+#include "video_ffmpeg.inc"
+#endif
+
+#if defined(RE1_USE_FFMPEG)
+#define VIDEO_BACKEND ffmpeg_win
+#else
+#define VIDEO_BACKEND mf
+#endif
 
 // ===========================================================================
 // Dispatch (see platform.h)
@@ -759,21 +783,30 @@ BOOL plat_video_init(void)
     // minimal system, which must not stop the modern backend. Either backend
     // being usable is enough to report FMV support.
     MCIERROR err = mciSendStringA("open avivideo alias _test_", NULL, 0, NULL);
+#if !defined(RE1_USE_FFMPEG)
     BOOL mciOk = FALSE;
+#endif
     if (err == 0) {
         mciSendStringA("close _test_", NULL, 0, NULL);
+#if !defined(RE1_USE_FFMPEG)
         mciOk = TRUE;
+#endif
     } else {
         plat_debug_output("[VIDEO] OpenMCIAviVideo failed - MCI AVI driver "
                           "not available\n");
     }
 
+#if defined(RE1_USE_FFMPEG)
+    // FFmpeg initializes per file in Open(); no global startup can fail here.
+    return TRUE;
+#else
     return (mciOk || mf::Init()) ? TRUE : FALSE;
+#endif
 }
 
 BOOL plat_video_open_and_play(const char* filePath, int playToMs)
 {
-    mf::Close();
+    VIDEO_BACKEND::Close();
     MciCloseAll();
 
     // Convert to absolute path (MCI and MF both want one).
@@ -793,13 +826,13 @@ BOOL plat_video_open_and_play(const char* filePath, int playToMs)
         s_mciFps = AviFrameRate(absPath);
         return MciOpenAndPlay(absPath, playToMs);
     }
-    return mf::Open(absPath, playToMs);
+    return VIDEO_BACKEND::Open(absPath, playToMs);
 }
 
 void plat_video_play_from(int fromMs)
 {
-    if (mf::IsActive() || mf::HasMedia()) {
-        mf::PlayFrom(fromMs);
+    if (VIDEO_BACKEND::IsActive() || VIDEO_BACKEND::HasMedia()) {
+        VIDEO_BACKEND::PlayFrom(fromMs);
     } else {
         MciPlayFrom(fromMs);
     }
@@ -807,8 +840,8 @@ void plat_video_play_from(int fromMs)
 
 void plat_video_stop(void)
 {
-    if (mf::HasMedia()) {
-        mf::Stop();
+    if (VIDEO_BACKEND::HasMedia()) {
+        VIDEO_BACKEND::Stop();
     } else {
         MCISend("stop movie", FALSE);
         g_mciVideoDeviceID = 0;
@@ -817,20 +850,20 @@ void plat_video_stop(void)
 
 void plat_video_close(void)
 {
-    mf::Close();
+    VIDEO_BACKEND::Close();
     MciCloseAll();
 }
 
 BOOL plat_video_is_active(void)
 {
-    if (mf::HasMedia()) return mf::IsActive();
+    if (VIDEO_BACKEND::HasMedia()) return VIDEO_BACKEND::IsActive();
     return (g_mciVideoDeviceID != 0);
 }
 
 BOOL plat_video_take_end_event(void)
 {
-    if (mf::HasMedia()) {
-        if (mf::TakeEndEvent()) return TRUE;
+    if (VIDEO_BACKEND::HasMedia()) {
+        if (VIDEO_BACKEND::TakeEndEvent()) return TRUE;
         return FALSE;
     }
     if (!g_bMCIVideoEvent) return FALSE;
@@ -840,7 +873,7 @@ BOOL plat_video_take_end_event(void)
 
 void plat_video_tick(void)
 {
-    mf::Tick();   // MCI paints the window itself
+    VIDEO_BACKEND::Tick();   // MCI paints the window itself
 }
 
 // ============================================================================

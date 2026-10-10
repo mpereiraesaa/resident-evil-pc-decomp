@@ -19,6 +19,7 @@
 #include "MarniXInput.h"
 #include "Globals.h"
 #include "../game/TmdRenderer.h"
+#include "../system/AssetPath.h"
 #include <cstdio>
 #include <cstring>
 #include <new>
@@ -354,6 +355,105 @@ MarniHandle MarniStpKnockoutTwin(MarniHandle tex)
     return (MarniHandle)s_stpKnock[(unsigned int)tex];
 }
 
+BOOL MarniLoadClassicHdTexture(const void* pixelData, const WORD* palette,
+                               int width, int height, int bitDepth, int pitch,
+                               MarniHandle* outTex)
+{
+    if (outTex == NULL || pixelData == NULL || width <= 0 || height <= 0 ||
+        (bitDepth != 4 && bitDepth != 8 && bitDepth != 16) ||
+        ((bitDepth == 4 || bitDepth == 8) && palette == NULL)) {
+        return FALSE;
+    }
+    *outTex = MARNI_NULL_HANDLE;
+    if (pitch <= 0) {
+        pitch = (bitDepth == 4) ? (width + 1) / 2
+              : (bitDepth == 8) ? width : width * 2;
+    }
+
+    // The HD plugin hashes the BGRA bytes visible after DirectDraw expands the
+    // logical RGB555 surface. DirectDraw uses a three-bit shift (31 -> 248),
+    // and the page's black colour key has already set alpha to zero.
+    const BYTE* source = (const BYTE*)pixelData;
+    DWORD crc = 0xFFFFFFFFu;
+    for (int y = 0; y < height; y++) {
+        const BYTE* row = source + (size_t)y * pitch;
+        for (int x = 0; x < width; x++) {
+            WORD colour = 0;
+            if (bitDepth == 4) {
+                BYTE packed = row[x / 2];
+                BYTE index = (x & 1) ? (packed >> 4) : (packed & 0x0F);
+                colour = palette[index];
+            } else if (bitDepth == 8) {
+                colour = palette[row[x]];
+            } else {
+                colour = ((const WORD*)row)[x];
+            }
+
+            const BYTE bgra[4] = {
+                (BYTE)(((colour >> 10) & 0x1F) << 3),
+                (BYTE)(((colour >> 5) & 0x1F) << 3),
+                (BYTE)((colour & 0x1F) << 3),
+                (BYTE)(((colour & 0x7FFF) == 0) ? 0 : 0xFF),
+            };
+            for (int channel = 0; channel < 4; channel++) {
+                crc ^= bgra[channel];
+                for (int bit = 0; bit < 8; bit++) {
+                    crc = (crc >> 1) ^
+                          ((crc & 1) ? 0xEDB88320u : 0);
+                }
+            }
+        }
+    }
+    crc = ~crc;
+    if (crc == 0) return FALSE;
+
+    static const char* categories[] = { "misc", "skin2", "skin" };
+    for (int category = 0; category < 3; category++) {
+        char requested[260];
+        if (sprintf_s(requested, sizeof(requested),
+                      GAME_DATA_ROOT "hires/%s/%08X.webp",
+                      categories[category], crc) < 0) {
+            continue;
+        }
+
+        char resolved[520];
+        const char* imagePath = ResolveAssetRoot(requested, resolved,
+                                                 sizeof(resolved));
+        size_t encodedSize = 0;
+        void* encoded = plat_file_read_all(imagePath, &encodedSize);
+        if (encoded == NULL) continue;
+
+        char libraryResolved[520];
+        const char* libraryPath = ResolveAssetRoot(
+            GAME_DATA_ROOT "libwebp.dll", libraryResolved,
+            sizeof(libraryResolved));
+        int imageWidth = 0;
+        int imageHeight = 0;
+        void* rgba = plat_webp_decode_rgba(libraryPath, encoded, encodedSize,
+                                           &imageWidth, &imageHeight);
+        free(encoded);
+        if (rgba == NULL || imageWidth <= 0 || imageHeight <= 0 ||
+            imageWidth > 8192 || imageHeight > 8192) {
+            plat_webp_free(rgba);
+            continue;
+        }
+
+        BOOL created = MarniCreateTexture(imageWidth, imageHeight, 32, rgba,
+                                          outTex);
+        plat_webp_free(rgba);
+        if (created && *outTex != MARNI_NULL_HANDLE) {
+            char message[768];
+            sprintf_s(message, sizeof(message),
+                      "[hd] %s active: %s (%dx%d, logical %dx%d)\n",
+                      categories[category], imagePath, imageWidth, imageHeight,
+                      width, height);
+            OutputDebugStringA(message);
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 // [6] CreateTextureHandle — 0x0044c900
 // Converts a CMarniBits surface (PSX VRAM-format pixel data + RGB555 CLUT)
 // into a D3D11 texture and returns its MarniHandle (>= 1), exactly how the
@@ -429,6 +529,12 @@ static int VTable_CreateTextureHandle(void* self, void* texDesc,
             OutputDebugStringA(dbg);
             return 0;
         }
+    }
+
+    MarniHandle hdTexture = MARNI_NULL_HANDLE;
+    if (MarniLoadClassicHdTexture(base, clut, w, h, bpp, pitch, &hdTexture)) {
+        if (outHandle) *(unsigned int*)outHandle = 1;
+        return (int)hdTexture;
     }
 
     // --- STP accounting for the knock-out twin (see the note above) ---

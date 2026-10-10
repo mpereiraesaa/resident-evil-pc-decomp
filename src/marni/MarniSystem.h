@@ -162,6 +162,13 @@ void  MarniGetRenderScale(float* outScaleX, float* outScaleY);
 BOOL  MarniCreateTexture(int width, int height, int bpp, const void* pixelData,
                          MarniHandle* outTex);
 
+// Load a Classic REbirth-compatible hash-addressed WebP for a logical PSX
+// surface. Returns FALSE when no matching override exists, leaving the caller
+// to upload the original pixels.
+BOOL  MarniLoadClassicHdTexture(const void* pixelData, const WORD* palette,
+                                int width, int height, int bitDepth, int pitch,
+                                MarniHandle* outTex);
+
 // STP knock-out twin of a model texture handle: a copy of the same texture
 // holding ONLY its opaque texels (every texel whose palette entry carries the
 // PS1 STP bit forced to palette index 0, i.e. fully transparent). Created by

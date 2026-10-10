@@ -27,6 +27,7 @@ HD_BACKGROUND_MAP = (
     Path(__file__).parent / "data" / "re1_gog_usa_hd_backgrounds.csv"
 )
 HD_MASK_MAP = Path(__file__).parent / "data" / "re1_gog_usa_hd_masks.csv"
+HD_SKIN_MAP = Path(__file__).parent / "data" / "re1_gog_usa_hd_skins.csv"
 
 
 USA_MOVIE_ALIASES = {
@@ -155,6 +156,38 @@ def copy_hash_hd_files(source: Path, destination: Path, kind: str) -> int:
         shutil.copy2(item, target)
         existing_by_name[target.name.lower()] = target
         count += 1
+    return count
+
+
+def copy_hash_hd_aliases(source: Path, destination: Path,
+                         mapping_file: Path) -> int:
+    if not mapping_file.is_file():
+        raise RuntimeError(f"HD skin map not found: {mapping_file}")
+
+    count = 0
+    with mapping_file.open(newline="", encoding="ascii") as mapping:
+        for row in csv.DictReader(mapping):
+            kind = row.get("kind", "")
+            usa_hash = row.get("usa_hash", "")
+            webp = row.get("webp", "")
+            if kind not in ("skin", "skin2"):
+                raise RuntimeError(f"invalid HD skin kind in map: {kind}")
+            if re.fullmatch(r"[0-9A-Fa-f]{8}", usa_hash) is None:
+                raise RuntimeError(f"invalid USA HD skin hash in map: {usa_hash}")
+            if (Path(webp).name != webp or
+                    re.fullmatch(r"[0-9A-Fa-f]{8}\.webp", webp) is None):
+                raise RuntimeError(f"invalid HD skin source in map: {webp}")
+
+            input_file = source / kind / webp
+            if not input_file.is_file():
+                raise RuntimeError(
+                    f"archive has no mapped HD {kind} file: {webp}"
+                )
+            output_file = (destination / "hires" / kind /
+                           f"{usa_hash.upper()}.webp")
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(input_file, output_file)
+            count += 1
     return count
 
 
@@ -330,6 +363,7 @@ def main() -> int:
         misc_count = 0
         skin_count = 0
         skin2_count = 0
+        skin_alias_count = 0
         if import_hd:
             hd_source = temp_root / "hires" / "bgd"
             if not hd_source.is_dir():
@@ -347,6 +381,9 @@ def main() -> int:
                                             args.destination, "skin")
             skin2_count = copy_hash_hd_files(temp_root / "hires" / "skin2",
                                              args.destination, "skin2")
+            skin_alias_count = copy_hash_hd_aliases(
+                temp_root / "hires", args.destination, HD_SKIN_MAP
+            )
             webp_runtime = temp_root / "libwebp.dll"
             if not webp_runtime.is_file():
                 raise RuntimeError("archive has no 32-bit libwebp.dll")
@@ -365,7 +402,7 @@ def main() -> int:
     print(f"imported:    {voice_count} voice files, {movie_count} movie files, "
           f"{hd_count} HD backgrounds, {mask_count} HD masks, "
           f"{misc_count} HD misc, {skin_count} HD skin, "
-          f"{skin2_count} HD skin2, "
+          f"{skin2_count} HD skin2, {skin_alias_count} USA skin aliases, "
           f"{text_bank_count} text banks ({text_entry_count} entries)")
     print(f"config:      add {args.destination} to [Assets] Mods")
     return 0

@@ -68,11 +68,19 @@ The importer also preserves the pack's hash-addressed `misc`, `skin` and
 `skin2` pages. The source build computes the same CRC32 identifiers as the HD
 plugin from the logical DirectDraw texture: RGB555 channels use the original
 three-bit expansion, pixels are signed as BGRA, and black is the transparent
-colour key. A matching WebP replaces the D3D11 SRV while its logical width,
-height and UV coordinates stay unchanged. For example, USA GOG's
-`Data/STATUS.TIM` resolves to `hires/misc/97DE3E43.webp`, the Spanish HD menu
-sheet. Missing hashes fall back to the original TIM without changing startup
-or requiring `bio1hd.asi`.
+colour key. This lookup runs for menu/effect pages and for the TMD/EMD model
+texture path used by players, enemies and room objects. A matching WebP
+replaces the D3D11 texture while its logical width, height and UV coordinates
+stay unchanged. For example, USA GOG's `Data/STATUS.TIM` resolves to
+`hires/misc/97DE3E43.webp`, the Spanish HD menu sheet.
+
+The Japanese and USA model atlases sometimes contain the same art but produce
+different hashes. The committed skin map supplies 26 high-confidence USA
+aliases selected by comparing the decoded embedded TIM surfaces with the pack
+art; this includes both palettes used by Chris and Jill. The importer copies
+those aliases alongside the original pack names. Missing or ambiguous hashes
+fall back to the original texture without changing startup or requiring
+`bio1hd.asi`.
 
 The Spanish translation is stored as a 7z resource inside the pack's
 `ddraw.dll`. The importer locates that resource, copies its 256x256 extended

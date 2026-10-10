@@ -5,7 +5,7 @@
 #include "../Globals.h"
 #include "../DebugPrint.h"
 #include "../platform/platform.h"
-#include "AssetPath.h"   // SetAssetBase / SetSaveRoot / SetAssetVersion
+#include "AssetPath.h"   // asset/save roots and runtime override stack
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -159,6 +159,31 @@ const char* ResolveConfiguredPath(const char* exeDir, const char* value,
     strncpy(out, value, outSize - 1);
     out[outSize - 1] = '\0';
     return out;
+}
+
+// [Assets] Mods is a semicolon-separated priority list. Resolve each entry on
+// its own so relative roots remain anchored to the executable while absolute
+// Windows and POSIX paths keep their normal meaning.
+void LoadAssetMods(const char* exeDir, const char* value)
+{
+    char list[768];
+    strncpy(list, value, sizeof(list) - 1);
+    list[sizeof(list) - 1] = '\0';
+
+    char* entry = list;
+    for (;;) {
+        char* next = strchr(entry, ';');
+        if (next != NULL) *next = '\0';
+
+        char* trimmed = Trim(entry);
+        if (trimmed[0] != '\0') {
+            char resolved[320];
+            AddAssetMod(ResolveConfiguredPath(exeDir, trimmed, resolved,
+                                              sizeof(resolved)));
+        }
+        if (next == NULL) break;
+        entry = next + 1;
+    }
 }
 
 // Static line pool for keys that have to be inserted rather than replaced.
@@ -365,6 +390,10 @@ void ConfigFile_EnsureExists(void)
         "; Which tree to run. USA = North American/GOG, JPN = Japanese PC\n"
         "; (Biohazard). Selects the subfolder of Path that every asset uses.\n"
         "Version=%s\n"
+        "; Optional semicolon-separated mod folders, highest priority first.\n"
+        "; Each folder mirrors paths below USA/JPN, such as voice/ or movie/.\n"
+        "; Relative paths are resolved from the game binary's directory.\n"
+        "Mods=\n"
         "\n"
         "[Save]\n"
         "; Folder holding savedat*.dat, relative to the binary's directory unless\n"
@@ -445,6 +474,7 @@ BOOL ConfigFile_Load(void)
     plat_exe_dir(exeDir, sizeof(exeDir));
     SetAssetBase(exeDir);
     SetSaveRoot(NULL);
+    ClearAssetMods();
 
     const char* path = ConfigFile_Find();
     if (!FileExists(path)) return FALSE;
@@ -484,6 +514,11 @@ BOOL ConfigFile_Load(void)
     }
     if (ReadValue(path, "Save", "Path", value, sizeof(value)) && value[0] != '\0') {
         SetSaveRoot(ResolveConfiguredPath(exeDir, value, resolved, sizeof(resolved)));
+    }
+
+    char mods[768];
+    if (ReadValue(path, "Assets", "Mods", mods, sizeof(mods)) && mods[0] != '\0') {
+        LoadAssetMods(exeDir, mods);
     }
 
     char version[16];

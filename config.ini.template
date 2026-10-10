@@ -33,6 +33,10 @@ Path=
 ; Which tree to run. USA = North American/GOG, JPN = Japanese PC (Biohazard).
 ; Selects the subfolder of Path that every asset uses.
 Version=USA
+; Optional semicolon-separated mod folders, highest priority first. Each folder
+; mirrors paths below USA/JPN, such as voice/, movie/ or data/. Relative paths
+; are resolved from the game binary's directory.
+Mods=
 
 [Save]
 ; Folder holding savedat*.dat, relative to the binary's directory unless

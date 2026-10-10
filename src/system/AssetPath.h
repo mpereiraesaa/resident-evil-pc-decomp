@@ -111,6 +111,15 @@ void         SetAssetMode(const char* mode);
 // The active overlay's folder name, "" when none (OG).
 const char*  GetAssetModeName(void);
 
+// Optional mod roots, searched before the content-mode overlay and the selected
+// USA/JPN tree. Each root mirrors the contents below a region folder: for
+// example "mods/latino/voice/v001_00.wav" overrides
+// "USA/voice/v001_00.wav". Roots are searched in the order they are added, so
+// the first matching file wins. ClearAssetMods() is safe to call when reloading
+// config.ini; AddAssetMod() ignores empty paths and roots beyond the fixed limit.
+void         ClearAssetMods(void);
+void         AddAssetMod(const char* path);
+
 // Rewrites whichever known asset-root form a path was compiled with (debug
 // ".\assets\USA\" or retail ".\usa\") to the current runtime root, writing the
 // result into `out` (outSize bytes) and returning `out`. Returns `path`

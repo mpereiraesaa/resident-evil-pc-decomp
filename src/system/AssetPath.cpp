@@ -67,6 +67,14 @@ static char s_modeName[16] = "";
 static char s_overlayRootBuf[260] = "";
 static const char* s_overlayRoot = NULL;
 
+// User-selected asset mods. These are independent of content modes: a voice or
+// texture pack can therefore be used with OG or DC without copying either base
+// tree. The first root containing a requested file wins.
+static const int kMaxAssetMods = 8;
+static char s_modRoots[kMaxAssetMods][260];
+static int  s_modRootCount = 0;
+static int  s_modHitLogged[kMaxAssetMods];
+
 // Which top-level folders a non-OG mode is allowed to take from the BASE tree.
 //
 // The intent is that a mode's own tree is authoritative for its content, so
@@ -219,6 +227,41 @@ const char* GetAssetModeName(void)
     return s_modeName;
 }
 
+void ClearAssetMods(void)
+{
+    s_modRootCount = 0;
+    memset(s_modRoots, 0, sizeof(s_modRoots));
+    memset(s_modHitLogged, 0, sizeof(s_modHitLogged));
+}
+
+void AddAssetMod(const char* path)
+{
+    if (path == NULL || path[0] == '\0') return;
+    if (s_modRootCount >= kMaxAssetMods) {
+        dbg_printf("[assets] ignoring mod root beyond limit (%d): %s\n",
+                   kMaxAssetMods, path);
+        return;
+    }
+
+    char* root = s_modRoots[s_modRootCount];
+    strncpy(root, path, sizeof(s_modRoots[0]) - 1);
+    root[sizeof(s_modRoots[0]) - 1] = '\0';
+
+    size_t n = strlen(root);
+    while (n > 1 && (root[n - 1] == '/' || root[n - 1] == '\\')) {
+        root[--n] = '\0';
+    }
+    if (n + 1 >= sizeof(s_modRoots[0])) {
+        dbg_printf("[assets] ignoring mod root that is too long: %s\n", path);
+        root[0] = '\0';
+        return;
+    }
+    root[n] = PATH_SEP;
+    root[n + 1] = '\0';
+    dbg_printf("[assets] mod[%d]=%s\n", s_modRootCount, root);
+    s_modRootCount++;
+}
+
 void SetAssetBase(const char* base)
 {
     if (base == NULL || base[0] == '\0') {
@@ -348,6 +391,29 @@ const char* ResolveAssetRoot(const char* path, char* out, size_t outSize)
     if (match == NULL) return path; // Not an asset-rooted path.
 
     const char* tail = path + matchLen;
+
+    // Explicit mods take priority over release/content trees. Probe each root
+    // through the platform layer so a Windows-authored mod also works on a
+    // case-sensitive host under the native build.
+    for (int i = 0; i < s_modRootCount; i++) {
+        char candidate[520];
+        int c = sprintf_s(candidate, sizeof(candidate), "%s%s", s_modRoots[i], tail);
+        if (c < 0) continue;
+
+        char probeBuf[520];
+        const char* probe = plat_normalize_path(candidate, probeBuf, sizeof(probeBuf));
+        FILE* fp = fopen(probe, "rb");
+        if (fp == NULL) continue;
+        fclose(fp);
+
+        int n = sprintf_s(out, outSize, "%s%s", s_modRoots[i], tail);
+        if (n < 0) continue;
+        if (!s_modHitLogged[i]) {
+            dbg_printf("[assets] mod[%d] active: %s\n", i, tail);
+            s_modHitLogged[i] = 1;
+        }
+        return out;
+    }
 
     // Content-mode overlay first (config.ini [Game] Mode). A non-OG mode ships
     // only the files it changes or adds, so a miss here is the normal case and

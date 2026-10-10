@@ -225,6 +225,9 @@ void TexturePage_Load(int slotIndex, void* imageData);
 void TexturePage_ClearAll(void);
 void TexturePage_Create(int slotIndex);
 void TexturePage_SetupFull(void* imageData, short bankID, short pageOffset, int slotIndex);
+void TexturePage_SetupFullOverride(void* imageData, short bankID,
+                                   short pageOffset, int slotIndex,
+                                   const char* sourcePath);
 void TexturePage_Refresh(int slotIndex, int mode);
 void TexturePage_RefreshCLUT(int slotIndex, int mode, int clutIndex);
 void TexturePage_DeleteSet(int slotIndex);

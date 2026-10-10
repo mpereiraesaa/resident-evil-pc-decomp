@@ -766,8 +766,10 @@ void load_room_masks(int param_1) // 0x00475a90
         // handle is stored in texture set 4 internally (SetupFull adds the 4),
         // while this port keeps the D3D SRV at the direct slot - see
         // ROOM_MASK_TEXTURE_SLOT.
-        TexturePage_SetupFull(g_TimImageBuffer__bitmap, g_TextureBankID,
-                              g_TextureCurrentPage, ROOM_MASK_TEXTURE_SLOT);
+        TexturePage_SetupFullOverride(g_TimImageBuffer__bitmap,
+                                      g_TextureBankID, g_TextureCurrentPage,
+                                      ROOM_MASK_TEXTURE_SLOT,
+                                      g_maskPathTemplate);
     } else {
         TexturePage_DeleteSet(ROOM_MASK_TEXTURE_SLOT);
     }

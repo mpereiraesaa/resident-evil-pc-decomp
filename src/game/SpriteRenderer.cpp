@@ -6,9 +6,12 @@
 #include "../marni/MarniSystem.h"
 #include "../marni/PSXTexture.h"
 #include "../marni/MarniBits.h"
+#include "../platform/platform.h"
+#include "../system/AssetPath.h"
 #include "TmdRenderer.h"
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 // ============================================================================
 // Global variables
@@ -918,12 +921,82 @@ void TexturePage_Create(int slotIndex) {
     }
 }
 
-void TexturePage_SetupFull(void* imageData, short bankID, short pageOffset, int slotIndex) {
+static bool LoadTexturePageWebP(int slotIndex, void* imageData,
+                               const char* sourcePath)
+{
+    if (sourcePath == NULL || sourcePath[0] == '\0' || imageData == NULL ||
+        slotIndex < 0 || slotIndex >= 256) {
+        return false;
+    }
+
+    PSXTexture original;
+    if (original.Store((int*)imageData, 1) == 0 ||
+        original.m_WidthPixels <= 0 || original.m_Height <= 0) {
+        return false;
+    }
+
+    char requested[260];
+    strncpy(requested, sourcePath, sizeof(requested) - 1);
+    requested[sizeof(requested) - 1] = '\0';
+    char* extension = strrchr(requested, '.');
+    if (extension == NULL) return false;
+    strcpy(extension, ".webp");
+
+    char resolved[520];
+    const char* imagePath = ResolveAssetRoot(requested, resolved,
+                                             sizeof(resolved));
+    size_t encodedSize = 0;
+    void* encoded = plat_file_read_all(imagePath, &encodedSize);
+    if (encoded == NULL) return false;
+
+    char libraryResolved[520];
+    const char* libraryPath = ResolveAssetRoot(
+        GAME_DATA_ROOT "libwebp.dll", libraryResolved,
+        sizeof(libraryResolved));
+    int imageWidth = 0;
+    int imageHeight = 0;
+    void* rgba = plat_webp_decode_rgba(libraryPath, encoded, encodedSize,
+                                       &imageWidth, &imageHeight);
+    free(encoded);
+    if (rgba == NULL || imageWidth <= 0 || imageHeight <= 0 ||
+        imageWidth > 8192 || imageHeight > 8192) {
+        plat_webp_free(rgba);
+        return false;
+    }
+
+    MarniHandle texture = MARNI_NULL_HANDLE;
+    BOOL created = MarniCreateTexture(imageWidth, imageHeight, 32, rgba,
+                                      &texture);
+    plat_webp_free(rgba);
+    if (!created || texture == MARNI_NULL_HANDLE) return false;
+
+    if (g_TexturePageSRV[slotIndex] != MARNI_NULL_HANDLE) {
+        Marni_DX()->DestroyTexture(g_TexturePageSRV[slotIndex]);
+    }
+    g_TexturePageSRV[slotIndex] = texture;
+
+    // Sprite UVs remain in the original PSX page's pixel space. Keeping its
+    // logical dimensions makes 0..255 normalize over the complete 1024-wide
+    // WebP rather than sampling only its upper-left quarter.
+    g_TexturePageWidth[slotIndex] = original.m_WidthPixels;
+    g_TexturePageHeight[slotIndex] = original.m_Height;
+    g_TexturePageBpp[slotIndex] = 32;
+    dbg_printf("[hd] mask active: %s (%dx%d, logical %dx%d)\n", imagePath,
+               imageWidth, imageHeight, original.m_WidthPixels,
+               original.m_Height);
+    return true;
+}
+
+void TexturePage_SetupFullOverride(void* imageData, short bankID,
+                                   short pageOffset, int slotIndex,
+                                   const char* sourcePath) {
     ProcessTextureImage(imageData, bankID, pageOffset, slotIndex);
     // ProcessTextureImage rebuilds the legacy Marni page, but the DX11 path
     // needs an explicit SRV as well. Room masks are loaded through this entry
     // point and AddSprite samples the resulting page directly.
-    LoadEffectTextureSheet(slotIndex, imageData);
+    if (!LoadTexturePageWebP(slotIndex, imageData, sourcePath)) {
+        LoadEffectTextureSheet(slotIndex, imageData);
+    }
     if (slotIndex >= 0 && slotIndex < 256) {
         // This is the same origin written by ProcessTextureImage's original
         // descriptor at 0x008ed838/0x008ed83a. AddSprite subtracts it after
@@ -932,6 +1005,12 @@ void TexturePage_SetupFull(void* imageData, short bankID, short pageOffset, int 
             (short)(bankID * 0x40 - ((bankID < 0x10) ? 0 : 0x400));
         g_TexturePageOriginY[slotIndex] = (bankID < 0x10) ? 0 : 0x100;
     }
+}
+
+void TexturePage_SetupFull(void* imageData, short bankID, short pageOffset,
+                           int slotIndex) {
+    TexturePage_SetupFullOverride(imageData, bankID, pageOffset, slotIndex,
+                                  NULL);
 }
 
 void TexturePage_Refresh(int slotIndex, int mode) {

@@ -1999,7 +1999,8 @@ int            g_GameMode = GAME_MODE_OG;
 int            g_DcDifficulty = DC_DIFFICULTY_STANDARD;
 bool           g_bPs1EndingCredits = false;
 bool           g_bPs1FmvSubtitles = false;
-bool           g_bSkipUnskippableFmv = false;
+bool           g_bSkipUnskippableFmv = true;
+bool           g_bSkipDoorAnimations = true;
 bool           g_bAlternateControls = true;
 bool           g_bWidescreen = true;
 

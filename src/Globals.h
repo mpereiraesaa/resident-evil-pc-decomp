@@ -469,8 +469,10 @@ extern bool          g_bPs1EndingCredits;
 extern bool          g_bPs1FmvSubtitles;      // [Game] Ps1FmvSubtitles
 // Port-added: treat every FMV as skippable, including the ones the original's
 // per-FMV mask table (0x004c39dc) marks 0x0000 - the endings, the staff rolls
-// and DMF/DME. Off by default, so the original's masks are what ship.
+// and DMF/DME. On by default for newly created configurations.
 extern bool          g_bSkipUnskippableFmv;    // [Game] SkipUnskippableFmv
+// Port-added: allow the usual button skip after frame 10 of door animations.
+extern bool          g_bSkipDoorAnimations;    // [Game] SkipDoorAnimations
 // Port-added camera-relative analogue movement. Keyboard and D-pad retain the
 // original tank controls; only the left analogue stick uses this mode.
 extern bool          g_bAlternateControls;     // [Input] AlternateControls

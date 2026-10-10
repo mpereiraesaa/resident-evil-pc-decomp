@@ -39,6 +39,8 @@ const OwnedKey kOwnedKeys[] = {
     { "Display", "Height" },
     { "Display", "BitDepth" },
     { "Display", "VSync" },
+    { "Game",    "SkipUnskippableFmv" },
+    { "Game",    "SkipDoorAnimations" },
     { "Player",  "PlayCount" },
     { "Player",  "ClearCount" },
     { "Input",   "KeyDef" },
@@ -425,6 +427,8 @@ void ConfigFile_EnsureExists(void)
         "; per-movie mask leaves the endings, the staff rolls and two of the\n"
         "; cutscenes unskippable; set this to 1 to make those skippable too.\n"
         "SkipUnskippableFmv=%d\n"
+        "; 1 = allow the normal button skip after the first 10 frames of door animations.\n"
+        "SkipDoorAnimations=%d\n"
         "\n"
         "[Debug]\n"
         "; Master switch for the port-added debug features: F1 debug menu, F6\n"
@@ -450,6 +454,7 @@ void ConfigFile_EnsureExists(void)
         g_bPs1EndingCredits ? 1 : 0,
         g_bPs1FmvSubtitles ? 1 : 0,
         g_bSkipUnskippableFmv ? 1 : 0,
+        g_bSkipDoorAnimations ? 1 : 0,
 #ifdef _DEBUG
         1,
 #else
@@ -554,9 +559,12 @@ BOOL ConfigFile_Load(void)
     // JPN FMV subtitle overlay. Off by default: the assets only exist in the
     // JPN tree, and the USA build has no equivalent.
     g_bPs1FmvSubtitles = ReadInt(path, "Game", "Ps1FmvSubtitles", 0) != 0;
-    // Port-added: overrides the per-FMV skip mask so the movies the original
-    // marks unskippable can be skipped too. Off unless the key is set.
-    g_bSkipUnskippableFmv = ReadInt(path, "Game", "SkipUnskippableFmv", 0) != 0;
+    // Port-added: overrides the per-FMV skip mask so every movie can be
+    // skipped. New configurations default to on; existing explicit values win.
+    g_bSkipUnskippableFmv = ReadInt(path, "Game", "SkipUnskippableFmv",
+                                    g_bSkipUnskippableFmv ? 1 : 0) != 0;
+    g_bSkipDoorAnimations = ReadInt(path, "Game", "SkipDoorAnimations",
+                                    g_bSkipDoorAnimations ? 1 : 0) != 0;
     // Camera-relative analogue movement is the modern baseline. The keyboard
     // and D-pad keep tank controls regardless of this setting.
     g_bAlternateControls = ReadInt(path, "Input", "AlternateControls", 1) != 0;
@@ -614,10 +622,12 @@ void ConfigFile_Save(void)
     snprintf(values[2], sizeof(values[2]), "%u", (unsigned)g_dwScreenHeight);
     snprintf(values[3], sizeof(values[3]), "%u", (unsigned)g_dwBitDepth);
     snprintf(values[4], sizeof(values[4]), "%d", g_bVSync ? 1 : 0);
-    snprintf(values[5], sizeof(values[5]), "%u", (unsigned)g_dwPlayCount);
-    snprintf(values[6], sizeof(values[6]), "%u", (unsigned)g_dwClearCount);
-    snprintf(values[7], sizeof(values[7]), "%s", keyHex);
-    snprintf(values[8], sizeof(values[8]), "%s", sideHex);
+    snprintf(values[5], sizeof(values[5]), "%d", g_bSkipUnskippableFmv ? 1 : 0);
+    snprintf(values[6], sizeof(values[6]), "%d", g_bSkipDoorAnimations ? 1 : 0);
+    snprintf(values[7], sizeof(values[7]), "%u", (unsigned)g_dwPlayCount);
+    snprintf(values[8], sizeof(values[8]), "%u", (unsigned)g_dwClearCount);
+    snprintf(values[9], sizeof(values[9]), "%s", keyHex);
+    snprintf(values[10], sizeof(values[10]), "%s", sideHex);
 
     for (int i = 0; i < kOwnedKeyCount; ++i) {
         SetValue(kOwnedKeys[i].section, kOwnedKeys[i].key, values[i], lines, &count);

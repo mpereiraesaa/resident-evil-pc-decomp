@@ -1174,7 +1174,8 @@ static void DoorAnimLoop(void)
         }
 
         // Holding any d-pad/circle button skips the animation (after frame 10).
-        if (((g_PlayerPadHeld & 0xC0) != 0) && (g_doorFrameCount > 10)) {
+        if (g_bSkipDoorAnimations && (g_PlayerPadHeld & 0xC0) != 0 &&
+            g_doorFrameCount > 10) {
             g_SpriteAsyncFlag = 1;
             g_doorState = 0;
         }

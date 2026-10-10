@@ -21,6 +21,7 @@ from pathlib import Path
 HD_BACKGROUND_MAP = (
     Path(__file__).parent / "data" / "re1_gog_usa_hd_backgrounds.csv"
 )
+HD_MASK_MAP = Path(__file__).parent / "data" / "re1_gog_usa_hd_masks.csv"
 
 
 USA_MOVIE_ALIASES = {
@@ -53,9 +54,11 @@ def parse_args() -> argparse.Namespace:
         help="skip MP4 movies and HD backgrounds",
     )
     parser.add_argument(
+        "--no-hd",
         "--no-hd-backgrounds",
+        dest="no_hd",
         action="store_true",
-        help="skip native HD room backgrounds and the libwebp runtime",
+        help="skip native HD room backgrounds, masks and the libwebp runtime",
     )
     parser.add_argument(
         "--dry-run",
@@ -99,19 +102,22 @@ def copy_movies(source: Path, destination: Path, region: str) -> int:
     return count
 
 
-def copy_hd_backgrounds(source: Path, destination: Path) -> int:
-    if not HD_BACKGROUND_MAP.is_file():
-        raise RuntimeError(f"HD background map not found: {HD_BACKGROUND_MAP}")
+def copy_hd_files(source: Path, destination: Path, mapping_file: Path,
+                  kind: str) -> int:
+    if not mapping_file.is_file():
+        raise RuntimeError(f"HD {kind} map not found: {mapping_file}")
 
     count = 0
-    with HD_BACKGROUND_MAP.open(newline="", encoding="ascii") as mapping:
+    with mapping_file.open(newline="", encoding="ascii") as mapping:
         for row in csv.DictReader(mapping):
             output = Path(row["path"])
             if output.is_absolute() or ".." in output.parts:
                 raise RuntimeError(f"unsafe HD output path in map: {output}")
             input_file = source / row["webp"]
             if not input_file.is_file():
-                raise RuntimeError(f"archive has no mapped HD file: {row['webp']}")
+                raise RuntimeError(
+                    f"archive has no mapped HD {kind} file: {row['webp']}"
+                )
             output_file = destination / output
             output_file.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(input_file, output_file)
@@ -127,13 +133,13 @@ def main() -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
-    import_hd = (not args.voices_only and not args.no_hd_backgrounds and
+    import_hd = (not args.voices_only and not args.no_hd and
                  args.region == "USA")
     selections = ["JPN/voice/*"]
     if not args.voices_only:
         selections.append("movie/*")
     if import_hd:
-        selections.extend(("hires/bgd/*", "libwebp.dll"))
+        selections.extend(("hires/bgd/*", "hires/mask/*", "libwebp.dll"))
 
     print(f"archive:     {args.archive.resolve()}")
     print(f"destination: {args.destination.resolve()}")
@@ -142,10 +148,10 @@ def main() -> int:
     if not args.voices_only:
         content += " + movies"
     if import_hd:
-        content += " + HD room backgrounds"
+        content += " + HD room art"
     print(f"content:     {content}")
-    print("excluded:    executable, hook DLLs/ASI, saves, sound tree, HD masks")
-    if args.region == "JPN" and not args.voices_only and not args.no_hd_backgrounds:
+    print("excluded:    executable, hook DLLs/ASI, saves, sound tree, HD misc/skins")
+    if args.region == "JPN" and not args.voices_only and not args.no_hd:
         print("note:        direct HD room map currently targets USA GOG assets")
     if args.dry_run:
         return 0
@@ -172,18 +178,25 @@ def main() -> int:
                                       args.region)
 
         hd_count = 0
+        mask_count = 0
         if import_hd:
             hd_source = temp_root / "hires" / "bgd"
             if not hd_source.is_dir():
                 raise RuntimeError("archive has no hires/bgd directory")
-            hd_count = copy_hd_backgrounds(hd_source, args.destination)
+            hd_count = copy_hd_files(hd_source, args.destination,
+                                     HD_BACKGROUND_MAP, "background")
+            mask_source = temp_root / "hires" / "mask"
+            if not mask_source.is_dir():
+                raise RuntimeError("archive has no hires/mask directory")
+            mask_count = copy_hd_files(mask_source, args.destination,
+                                       HD_MASK_MAP, "mask")
             webp_runtime = temp_root / "libwebp.dll"
             if not webp_runtime.is_file():
                 raise RuntimeError("archive has no 32-bit libwebp.dll")
             shutil.copy2(webp_runtime, args.destination / "libwebp.dll")
 
     print(f"imported:    {voice_count} voice files, {movie_count} movie files, "
-          f"{hd_count} HD room backgrounds")
+          f"{hd_count} HD backgrounds, {mask_count} HD masks")
     print(f"config:      add {args.destination} to [Assets] Mods")
     return 0
 

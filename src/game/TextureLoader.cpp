@@ -4,9 +4,13 @@
 #include "../marni/MarniSystem.h"
 #include "../marni/MarniBits.h"
 #include "../DebugPrint.h"
+#include "../system/AssetPath.h"
+#include "../platform/platform.h"
+#include "LatinoItemIconOverrides.h"
 #include <stdio.h>
 #include <cstdlib>
 #include <cstring>
+#include <stdint.h>
 
 #undef LoadImage  // Win32 WinUser.h macro conflicts with Marni LoadImage
 
@@ -25,6 +29,43 @@ struct TextureCLUTCache {
 };
 static TextureCLUTCache g_CLUTCache[256];
 
+static void CacheTextureCLUT(int slotIndex, const PSXTexture& texture)
+{
+    const int bpp = texture.m_BitDepth;
+    if (slotIndex < 0 || slotIndex >= 256 || texture.m_NumCLUTs <= 1 ||
+        texture.m_pPixelData == NULL || texture.m_pCLUTData == NULL ||
+        (bpp != 4 && bpp != 8)) {
+        return;
+    }
+
+    TextureCLUTCache* cache = &g_CLUTCache[slotIndex];
+    delete[] cache->pixelData;
+    delete[] cache->clutData;
+    const int entriesPerCLUT = (bpp == 4) ? 16 : 256;
+    const int pixelBytes = (bpp == 4)
+        ? (texture.m_WidthPixels / 2) * texture.m_Height
+        : texture.m_WidthPixels * texture.m_Height;
+    const int totalCLUTEntries = (int)texture.m_NumCLUTs * entriesPerCLUT;
+    if (pixelBytes <= 0 || totalCLUTEntries <= 0) {
+        cache->pixelData = NULL;
+        cache->clutData = NULL;
+        cache->pixelDataSize = cache->clutDataSize = 0;
+        cache->numCLUTs = cache->clutEntries = cache->bpp = 0;
+        return;
+    }
+
+    cache->pixelData = new BYTE[pixelBytes];
+    memcpy(cache->pixelData, texture.m_pPixelData, pixelBytes);
+    cache->pixelDataSize = pixelBytes;
+    cache->clutData = new WORD[totalCLUTEntries];
+    memcpy(cache->clutData, texture.m_pCLUTData,
+           (size_t)totalCLUTEntries * sizeof(WORD));
+    cache->clutDataSize = totalCLUTEntries * sizeof(WORD);
+    cache->numCLUTs = (int)texture.m_NumCLUTs;
+    cache->clutEntries = entriesPerCLUT;
+    cache->bpp = bpp;
+}
+
 // Classic REbirth's HD plugin names ordinary texture replacements after the
 // CRC32 of the logical DirectDraw surface. DirectDraw expanded each RGB555
 // channel with a three-bit shift (31 -> 248), stored BGRA bytes, and applied
@@ -38,6 +79,89 @@ static bool LoadClassicHdTexture(const PSXTexture& texture,
         texture.m_pPixelData, texture.m_pCLUTData,
         texture.m_WidthPixels, texture.m_Height, texture.m_BitDepth,
         texture.m_RowStride, output) == TRUE;
+}
+
+// The Latino pack's 256x256 item WebPs contain the 4x icon in their upper-left
+// 160x120 area. Load by the stable ITEM_ALL image type when the source is from
+// that sheet; the pack's CRCs were generated from a different regional build.
+static bool LoadLatinoItemIcon(int imageType, BYTE** pixels,
+                               int* width, int* height)
+{
+    if (imageType < 0 || imageType >= 72 || pixels == NULL ||
+        width == NULL || height == NULL || kLatinoItemIconCrc[imageType] == NULL) {
+        return false;
+    }
+
+    char requested[260];
+    if (sprintf_s(requested, sizeof(requested),
+                  GAME_DATA_ROOT "hires/misc/%s.webp",
+                  kLatinoItemIconCrc[imageType]) < 0) {
+        return false;
+    }
+    char resolved[520];
+    const char* imagePath = ResolveAssetRoot(requested, resolved, sizeof(resolved));
+    size_t encodedSize = 0;
+    void* encoded = plat_file_read_all(imagePath, &encodedSize);
+    if (encoded == NULL) return false;
+
+    char libraryResolved[520];
+    const char* libraryPath = ResolveAssetRoot(
+        GAME_DATA_ROOT "libwebp.dll", libraryResolved, sizeof(libraryResolved));
+    int imageWidth = 0;
+    int imageHeight = 0;
+    void* rgba = plat_webp_decode_rgba(libraryPath, encoded, encodedSize,
+                                       &imageWidth, &imageHeight);
+    free(encoded);
+    if (rgba == NULL || imageWidth < 160 || imageHeight < 120 ||
+        imageWidth > 8192 || imageHeight > 8192) {
+        plat_webp_free(rgba);
+        return false;
+    }
+
+    *pixels = (BYTE*)malloc((size_t)imageWidth * imageHeight * 4);
+    if (*pixels == NULL) {
+        plat_webp_free(rgba);
+        return false;
+    }
+    memcpy(*pixels, rgba, (size_t)imageWidth * imageHeight * 4);
+    plat_webp_free(rgba);
+    *width = imageWidth;
+    *height = imageHeight;
+    char message[320];
+    sprintf_s(message, sizeof(message),
+              "[hd] Latino item image %d: %s (%dx%d)\n",
+              imageType, imagePath, imageWidth, imageHeight);
+    OutputDebugStringA(message);
+    return true;
+}
+
+static int FindItemImageType(const BYTE* pixels)
+{
+    if (pixels == NULL) return -1;
+    // LoadItemImage and itembox_draw_slot_icon both pass a 1200-byte sprite
+    // from ITEM_ALL.PIX. The main-menu buffer can contain other PIX files, so
+    // identify it by its bytes against the startup copy instead of assuming
+    // every pointer into that scratch buffer is item art.
+    const uintptr_t address = (uintptr_t)pixels;
+    const uintptr_t itemsBegin = (uintptr_t)g_ItemsImageBuffer;
+    const uintptr_t itemsEnd = itemsBegin + sizeof(g_ItemsImageBuffer);
+    if (address >= itemsBegin && address + 1200 <= itemsEnd &&
+        (address - itemsBegin) % 1200 == 0) {
+        int imageType = (int)((address - itemsBegin) / 1200);
+        return imageType < 72 ? imageType : -1;
+    }
+
+    const uintptr_t scratchBegin = (uintptr_t)(g_TimImageBuffer + 20);
+    const uintptr_t scratchEnd = (uintptr_t)(g_TimImageBuffer + sizeof(g_TimImageBuffer));
+    if (address < scratchBegin || address + 1200 > scratchEnd ||
+        (address - scratchBegin) % 1200 != 0) {
+        return -1;
+    }
+    for (int i = 0; i < 72; i++) {
+        if (memcmp(pixels, g_ItemsImageBuffer + i * 1200, 1200) == 0)
+            return i;
+    }
+    return -1;
 }
 
 // ============================================================================
@@ -699,6 +823,9 @@ void LoadTexturePage(void* imageBuffer, short texId, short pageOffset, int slotI
     PSXTexture psxTex;
     int storeResult = psxTex.Store((int*)imageBuffer, 1);
     if (storeResult == 0) return;
+    // LoadImage needs the indexed source CLUT even when the display page is
+    // replaced by a hires WebP in the fast path below.
+    CacheTextureCLUT(slotIndex, psxTex);
 
     // Same rule as above: only write the descriptor when the slot's offset is
     // actually inside the port's fragment. The low slots (0-3, used by
@@ -864,38 +991,6 @@ void LoadTexturePage(void* imageBuffer, short texId, short pageOffset, int slotI
                 g_TexturePageId[slotIndex] = texId;
                 g_TexturePageClutBase[slotIndex] = pageOffset + 0x1E0;
 
-                // Cache pixel + CLUT data for CLUT palette cycling in texture viewer
-                if (psxTex.m_NumCLUTs > 1 && psxTex.m_pPixelData != NULL) {
-                    // Free previous cache if any
-                    if (g_CLUTCache[slotIndex].pixelData != NULL) {
-                        delete[] g_CLUTCache[slotIndex].pixelData;
-                    }
-                    if (g_CLUTCache[slotIndex].clutData != NULL) {
-                        delete[] g_CLUTCache[slotIndex].clutData;
-                    }
-
-                    int entriesPerCLUT = (bpp == 4) ? 16 : 256;
-                    int totalCLUTEntries = (int)psxTex.m_NumCLUTs * entriesPerCLUT;
-                    int pixelBytes = (bpp == 4) ? (w / 2) * h : w * h;
-
-                    // Copy indexed pixel data
-                    g_CLUTCache[slotIndex].pixelData = new BYTE[pixelBytes];
-                    memcpy(g_CLUTCache[slotIndex].pixelData, psxTex.m_pPixelData, pixelBytes);
-                    g_CLUTCache[slotIndex].pixelDataSize = pixelBytes;
-
-                    // Copy all CLUT palettes from the raw TIM buffer
-                    // (the heap CLUT copy in PSXTexture only holds the parsed
-                    //  copy; reading the file data keeps every palette row)
-                    int* hdr = (int*)imageBuffer;
-                    WORD* rawCLUT = (WORD*)(hdr + 5);  // CLUT data starts at imageData[5]
-                    g_CLUTCache[slotIndex].clutData = new WORD[totalCLUTEntries];
-                    memcpy(g_CLUTCache[slotIndex].clutData, rawCLUT, totalCLUTEntries * sizeof(WORD));
-                    g_CLUTCache[slotIndex].clutDataSize = totalCLUTEntries * sizeof(WORD);
-
-                    g_CLUTCache[slotIndex].numCLUTs = (int)psxTex.m_NumCLUTs;
-                    g_CLUTCache[slotIndex].clutEntries = entriesPerCLUT;
-                    g_CLUTCache[slotIndex].bpp = bpp;
-                }
             }
             delete[] rgba;
             delete[] clutRGBA;
@@ -1441,8 +1536,15 @@ void LoadImage(int srcData, int srcSlot, int dstSlot, short format,
     // Multiple destSlots may share the same source VRAM page (e.g. item images
     // composited at different y-offsets all share srcSlot=0, mode=2). We track
     // all destSlots per VRAM page so the SRV is updated everywhere it's needed.
-    #define VRAM_PAGE_W 256
-    #define VRAM_PAGE_H 256
+    // The Latino HD pack stores Classic REbirth replacements as straight-alpha
+    // RGBA WebP, normally at 4x the logical PSX page size. Keep the game's UV
+    // space at 256x256 while backing these runtime-composited pages with 4x
+    // pixels, just like LoadTexturePage does for a hash-matched TIM page.
+    #define VRAM_PAGE_SCALE 4
+    #define VRAM_PAGE_LOGICAL_W 256
+    #define VRAM_PAGE_LOGICAL_H 256
+    #define VRAM_PAGE_W (VRAM_PAGE_LOGICAL_W * VRAM_PAGE_SCALE)
+    #define VRAM_PAGE_H (VRAM_PAGE_LOGICAL_H * VRAM_PAGE_SCALE)
     #define VRAM_PAGE_MAX_SLOTS 64
     #define VRAM_MAX_DESTS 16
     struct VRAMPage {
@@ -1450,7 +1552,16 @@ void LoadImage(int srcData, int srcSlot, int dstSlot, short format,
         int destSlots[VRAM_MAX_DESTS];
         int numDests;
     };
+    struct HDIconCacheEntry {
+        const BYTE* source;
+        const WORD* palette;
+        BYTE* rgba;
+        int width;
+        int height;
+        int checked;
+    };
     static VRAMPage s_vramPages[VRAM_PAGE_MAX_SLOTS];
+    static HDIconCacheEntry s_hdIcons[128];
     static int s_vramInit = 0;
     if (!s_vramInit) { memset(s_vramPages, 0, sizeof(s_vramPages)); s_vramInit = 1; }
 
@@ -1494,22 +1605,89 @@ void LoadImage(int srcData, int srcSlot, int dstSlot, short format,
             int clutIndex = 2;
             WORD* clutPalette = clut->clutData + clutIndex * 256;
 
-            for (int row = 0; row < pixH; row++) {
-                for (int col = 0; col < pixW; col++) {
-                    BYTE idx = src8[row * pixW + col];
-                    WORD clr = clutPalette[idx];
-                    DWORD r = ((clr >> 0)  & 0x1F) * 255 / 31;
-                    DWORD g = ((clr >> 5)  & 0x1F) * 255 / 31;
-                    DWORD b = ((clr >> 10) & 0x1F) * 255 / 31;
-                    DWORD a = (idx == 0) ? 0x00 : 0xFF;
-                    DWORD rgba = (a << 24) | (b << 16) | (g << 8) | r;
-                    int px = dstX + col;
-                    int py = dstY + row;
-                    if (px >= 0 && px < VRAM_PAGE_W && py >= 0 && py < VRAM_PAGE_H) {
-                        page[py * VRAM_PAGE_W + px] = rgba;
+            // An item icon is a 40x30 logical surface inside ITEM_ALL.PIX.
+            // The HD pack uses the same CRC32 naming and RGBA WebP payload as
+            // other pages. Decode a matching replacement before composing the
+            // atlas; reject non-4x images because the containing page uses a
+            // fixed 4x UV scale. The default indexed art is expanded with
+            // nearest-neighbour replication below when there is no override.
+            HDIconCacheEntry* icon = NULL;
+            HDIconCacheEntry* emptyIcon = NULL;
+            for (int i = 0; i < 128; i++) {
+                if (s_hdIcons[i].checked && s_hdIcons[i].source == src8 &&
+                    s_hdIcons[i].palette == clutPalette) {
+                    icon = &s_hdIcons[i];
+                    break;
+                }
+                if (!s_hdIcons[i].checked && emptyIcon == NULL)
+                    emptyIcon = &s_hdIcons[i];
+            }
+            if (icon == NULL && emptyIcon != NULL) {
+                emptyIcon->checked = 1;
+                emptyIcon->source = src8;
+                emptyIcon->palette = clutPalette;
+                int imageType = FindItemImageType(src8);
+                BOOL loaded = LoadLatinoItemIcon(imageType, &emptyIcon->rgba,
+                    &emptyIcon->width, &emptyIcon->height) ? TRUE : FALSE;
+                if (!loaded) {
+                    loaded = MarniLoadClassicHdPixels(src8, clutPalette,
+                        pixW, pixH, 8, pixW, &emptyIcon->rgba,
+                        &emptyIcon->width, &emptyIcon->height);
+                }
+                // Item replacements from the Latino pack are 256x256 page
+                // images with the 4x 40x30 icon at the upper-left. Ordinary
+                // Classic REbirth replacements may instead be exactly the
+                // icon crop (160x120). Both feed the same 4x atlas placement.
+                if (loaded && (pixW <= 0 || pixH <= 0 ||
+                    emptyIcon->width < pixW * VRAM_PAGE_SCALE ||
+                    emptyIcon->height < pixH * VRAM_PAGE_SCALE)) {
+                    MarniFreeClassicHdPixels(emptyIcon->rgba);
+                    emptyIcon->rgba = NULL;
+                    emptyIcon->width = emptyIcon->height = 0;
+                }
+                icon = emptyIcon;
+            }
+            BYTE* hdPixels = icon ? icon->rgba : NULL;
+            int hdWidth = icon ? icon->width : 0;
+            int hdHeight = icon ? icon->height : 0;
+            BOOL hasHdIcon = hdPixels != NULL;
+
+            if (hasHdIcon) {
+                const int copyWidth = pixW * VRAM_PAGE_SCALE;
+                const int copyHeight = pixH * VRAM_PAGE_SCALE;
+                for (int row = 0; row < copyHeight; row++) {
+                    int py = dstY * VRAM_PAGE_SCALE + row;
+                    int px = dstX * VRAM_PAGE_SCALE;
+                    if (py < 0 || py >= VRAM_PAGE_H) continue;
+                    const DWORD* srcRow = (const DWORD*)(hdPixels +
+                        (size_t)row * hdWidth * 4);
+                    for (int col = 0; col < copyWidth; col++) {
+                        if (px + col >= 0 && px + col < VRAM_PAGE_W)
+                            page[py * VRAM_PAGE_W + px + col] = srcRow[col];
+                    }
+                }
+            } else {
+                for (int row = 0; row < pixH; row++) {
+                    for (int col = 0; col < pixW; col++) {
+                        BYTE idx = src8[row * pixW + col];
+                        WORD clr = clutPalette[idx];
+                        DWORD r = ((clr >> 0)  & 0x1F) * 255 / 31;
+                        DWORD g = ((clr >> 5)  & 0x1F) * 255 / 31;
+                        DWORD b = ((clr >> 10) & 0x1F) * 255 / 31;
+                        DWORD a = (idx == 0) ? 0x00 : 0xFF;
+                        DWORD rgba = (a << 24) | (b << 16) | (g << 8) | r;
+                        int px = (dstX + col) * VRAM_PAGE_SCALE;
+                        int py = (dstY + row) * VRAM_PAGE_SCALE;
+                        if (px < 0 || py < 0 || px + VRAM_PAGE_SCALE > VRAM_PAGE_W ||
+                            py + VRAM_PAGE_SCALE > VRAM_PAGE_H) continue;
+                        for (int sy = 0; sy < VRAM_PAGE_SCALE; sy++) {
+                            for (int sx = 0; sx < VRAM_PAGE_SCALE; sx++)
+                                page[(py + sy) * VRAM_PAGE_W + px + sx] = rgba;
+                        }
                     }
                 }
             }
+
         } else {
             WORD* pixels = (WORD*)srcData;
             int w = (int)width;
@@ -1523,13 +1701,13 @@ void LoadImage(int srcData, int srcSlot, int dstSlot, short format,
                     DWORD b = ((pixel >> 10) & 0x1F) * 255 / 31;
                     DWORD a = (r == 0 && g == 0 && b == 0) ? 0x00 : 0xFF;
                     DWORD rgba = (a << 24) | (b << 16) | (g << 8) | r;
-                    for (int sx = 0; sx < 2; sx++) {
-                        int px = dstX + col * 2 + sx;
-                        int py = dstY + row;
-                        if (px >= 0 && px < VRAM_PAGE_W && py >= 0 && py < VRAM_PAGE_H) {
-                            page[py * VRAM_PAGE_W + px] = rgba;
-                        }
-                    }
+                int px = (dstX + col * 2) * VRAM_PAGE_SCALE;
+                int py = (dstY + row) * VRAM_PAGE_SCALE;
+                if (px < 0 || py < 0 || px + VRAM_PAGE_SCALE * 2 > VRAM_PAGE_W ||
+                    py + VRAM_PAGE_SCALE > VRAM_PAGE_H) continue;
+                for (int sy = 0; sy < VRAM_PAGE_SCALE; sy++)
+                    for (int sx = 0; sx < VRAM_PAGE_SCALE * 2; sx++)
+                        page[(py + sy) * VRAM_PAGE_W + px + sx] = rgba;
                 }
             }
         }
@@ -1542,8 +1720,8 @@ void LoadImage(int srcData, int srcSlot, int dstSlot, short format,
                     g_TexturePageSRV[slot] = MARNI_NULL_HANDLE;
                 }
                 MarniCreateTexture(VRAM_PAGE_W, VRAM_PAGE_H, 32, page, &g_TexturePageSRV[slot]);
-                g_TexturePageWidth[slot] = VRAM_PAGE_W;
-                g_TexturePageHeight[slot] = VRAM_PAGE_H;
+                g_TexturePageWidth[slot] = VRAM_PAGE_LOGICAL_W;
+                g_TexturePageHeight[slot] = VRAM_PAGE_LOGICAL_H;
                 g_TexturePageBpp[slot] = 16;
                 // Set VRAM page metadata so display_texture can locate this
                 // SRV by depth/UV bounds. Items are rendered at depth=0x1d

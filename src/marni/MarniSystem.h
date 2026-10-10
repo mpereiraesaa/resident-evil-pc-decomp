@@ -169,6 +169,15 @@ BOOL  MarniLoadClassicHdTexture(const void* pixelData, const WORD* palette,
                                 int width, int height, int bitDepth, int pitch,
                                 MarniHandle* outTex);
 
+// Decode the matching Classic REbirth WebP replacement into caller-owned
+// RGBA8 pixels. `outPixels` is freed with MarniFreeClassicHdPixels. This is
+// used by runtime-composited pages (such as the inventory icon atlas) that
+// need to place a high-resolution replacement into a larger texture.
+BOOL  MarniLoadClassicHdPixels(const void* pixelData, const WORD* palette,
+                               int width, int height, int bitDepth, int pitch,
+                               BYTE** outPixels, int* outWidth, int* outHeight);
+void  MarniFreeClassicHdPixels(BYTE* pixels);
+
 // STP knock-out twin of a model texture handle: a copy of the same texture
 // holding ONLY its opaque texels (every texel whose palette entry carries the
 // PS1 STP bit forced to palette index 0, i.e. fully transparent). Created by

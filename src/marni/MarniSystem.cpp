@@ -355,16 +355,19 @@ MarniHandle MarniStpKnockoutTwin(MarniHandle tex)
     return (MarniHandle)s_stpKnock[(unsigned int)tex];
 }
 
-BOOL MarniLoadClassicHdTexture(const void* pixelData, const WORD* palette,
-                               int width, int height, int bitDepth, int pitch,
-                               MarniHandle* outTex)
+BOOL MarniLoadClassicHdPixels(const void* pixelData, const WORD* palette,
+                              int width, int height, int bitDepth, int pitch,
+                              BYTE** outPixels, int* outWidth, int* outHeight)
 {
-    if (outTex == NULL || pixelData == NULL || width <= 0 || height <= 0 ||
+    if (outPixels == NULL || outWidth == NULL || outHeight == NULL ||
+        pixelData == NULL || width <= 0 || height <= 0 ||
         (bitDepth != 4 && bitDepth != 8 && bitDepth != 16) ||
         ((bitDepth == 4 || bitDepth == 8) && palette == NULL)) {
         return FALSE;
     }
-    *outTex = MARNI_NULL_HANDLE;
+    *outPixels = NULL;
+    *outWidth = 0;
+    *outHeight = 0;
     if (pitch <= 0) {
         pitch = (bitDepth == 4) ? (width + 1) / 2
               : (bitDepth == 8) ? width : width * 2;
@@ -437,21 +440,46 @@ BOOL MarniLoadClassicHdTexture(const void* pixelData, const WORD* palette,
             plat_webp_free(rgba);
             continue;
         }
-
-        BOOL created = MarniCreateTexture(imageWidth, imageHeight, 32, rgba,
-                                          outTex);
-        plat_webp_free(rgba);
-        if (created && *outTex != MARNI_NULL_HANDLE) {
-            char message[768];
-            sprintf_s(message, sizeof(message),
-                      "[hd] %s active: %s (%dx%d, logical %dx%d)\n",
-                      categories[category], imagePath, imageWidth, imageHeight,
-                      width, height);
-            OutputDebugStringA(message);
-            return TRUE;
+        *outPixels = (BYTE*)malloc((size_t)imageWidth * imageHeight * 4);
+        if (*outPixels == NULL) {
+            plat_webp_free(rgba);
+            return FALSE;
         }
+        memcpy(*outPixels, rgba, (size_t)imageWidth * imageHeight * 4);
+        plat_webp_free(rgba);
+        *outWidth = imageWidth;
+        *outHeight = imageHeight;
+        char message[768];
+        sprintf_s(message, sizeof(message),
+                  "[hd] %s pixels: %s (%dx%d, logical %dx%d)\n",
+                  categories[category], imagePath, imageWidth, imageHeight,
+                  width, height);
+        OutputDebugStringA(message);
+        return TRUE;
     }
     return FALSE;
+}
+
+void MarniFreeClassicHdPixels(BYTE* pixels)
+{
+    free(pixels);
+}
+
+BOOL MarniLoadClassicHdTexture(const void* pixelData, const WORD* palette,
+                               int width, int height, int bitDepth, int pitch,
+                               MarniHandle* outTex)
+{
+    if (outTex == NULL) return FALSE;
+    *outTex = MARNI_NULL_HANDLE;
+    BYTE* rgba = NULL;
+    int imageWidth = 0, imageHeight = 0;
+    if (!MarniLoadClassicHdPixels(pixelData, palette, width, height, bitDepth,
+                                  pitch, &rgba, &imageWidth, &imageHeight)) {
+        return FALSE;
+    }
+    BOOL created = MarniCreateTexture(imageWidth, imageHeight, 32, rgba, outTex);
+    free(rgba);
+    return created && *outTex != MARNI_NULL_HANDLE;
 }
 
 // [6] CreateTextureHandle — 0x0044c900

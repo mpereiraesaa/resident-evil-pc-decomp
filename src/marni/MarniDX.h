@@ -15,6 +15,12 @@
 #include "../platform/types.h"
 #include "MarniBits.h"
 
+enum MarniPresentationMode {
+    MARNI_PRESENT_STRETCH = 0,
+    MARNI_PRESENT_FIT_4_3,
+    MARNI_PRESENT_CROP_16_9,
+};
+
 // ============================================================================
 // MarniHandle - Opaque texture handle.
 //
@@ -105,6 +111,11 @@ public:
     // Clear the render target (and depth/stencil if present) with the given
     // RGBA float color. (was vtable[3] Clear / 0x0044b320)
     void Clear(float r, float g, float b, float a);
+
+    // Select how the authored 320x240 frame maps to the backbuffer. Crop mode
+    // fills up to 16:9 uniformly and takes a logical-pixel vertical pan value;
+    // fit mode preserves 4:3 for menus and standalone screens.
+    void SetPresentation(MarniPresentationMode mode, float verticalPan = 0.0f);
 
     // Flip the back buffer to the front (was vtable[4] Present / 0x00448ff0).
     void Present();

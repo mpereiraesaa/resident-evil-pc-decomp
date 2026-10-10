@@ -173,6 +173,8 @@ struct MarniDX::Impl {
     DWORD                    width         = 0;
     DWORD                    height        = 0;
     BOOL                     ready         = FALSE;
+    MarniPresentationMode    presentation  = MARNI_PRESENT_STRETCH;
+    float                    verticalPan   = 0.0f;
 
     // texture handle table (index 0 reserved = NULL)
     TexSlot                  slots[MARNI_MAX_TEXTURES];
@@ -228,6 +230,65 @@ static void BuildOrthoMatrix(float* m, float left, float right,
     m[10] = 1.0f;
     m[12] = (left + right) / (left - right);
     m[13] = (top + bottom) / (bottom - top);
+    m[15] = 1.0f;
+}
+
+static void BuildPresentationMatrix(float* m, MarniDX::Impl* p)
+{
+    if (!p || p->width == 0 || p->height == 0 ||
+        p->presentation == MARNI_PRESENT_STRETCH) {
+        const float width = p && p->width ? (float)p->width : 640.0f;
+        const float height = p && p->height ? (float)p->height : 480.0f;
+        BuildOrthoMatrix(m, 0.0f, width, height, 0.0f);
+        return;
+    }
+
+    const float outputW = (float)p->width;
+    const float outputH = (float)p->height;
+    float aspect = outputW / outputH;
+    if (aspect < (4.0f / 3.0f)) aspect = 4.0f / 3.0f;
+    if (aspect > (16.0f / 9.0f)) aspect = 16.0f / 9.0f;
+
+    float viewportW = outputW;
+    float viewportH = viewportW / aspect;
+    if (viewportH > outputH) {
+        viewportH = outputH;
+        viewportW = viewportH * aspect;
+    }
+    const float viewportX = (outputW - viewportW) * 0.5f;
+    const float viewportY = (outputH - viewportH) * 0.5f;
+
+    float scaleX, scaleY, offsetX, offsetY;
+    if (p->presentation == MARNI_PRESENT_CROP_16_9) {
+        const float uniformScale = viewportW / 320.0f;
+        const float visibleHeight = fminf(240.0f, 320.0f * viewportH / viewportW);
+        const float maxPan = 240.0f - visibleHeight;
+        float pan = p->verticalPan;
+        if (pan < 0.0f) pan = 0.0f;
+        if (pan > maxPan) pan = maxPan;
+        scaleX = viewportW / outputW;
+        scaleY = uniformScale * 240.0f / outputH;
+        offsetX = viewportX;
+        offsetY = viewportY - pan * uniformScale;
+    } else {
+        float imageW = viewportW;
+        float imageH = imageW * (3.0f / 4.0f);
+        if (imageH > viewportH) {
+            imageH = viewportH;
+            imageW = imageH * (4.0f / 3.0f);
+        }
+        scaleX = imageW / outputW;
+        scaleY = imageH / outputH;
+        offsetX = viewportX + (viewportW - imageW) * 0.5f;
+        offsetY = viewportY + (viewportH - imageH) * 0.5f;
+    }
+
+    for (int i = 0; i < 16; ++i) m[i] = 0.0f;
+    m[0] = 2.0f * scaleX / outputW;
+    m[5] = -2.0f * scaleY / outputH;
+    m[10] = 1.0f;
+    m[12] = 2.0f * offsetX / outputW - 1.0f;
+    m[13] = 1.0f - 2.0f * offsetY / outputH;
     m[15] = 1.0f;
 }
 
@@ -913,11 +974,26 @@ void MarniDX::Clear(float r, float g, float b, float a)
 {
     Impl* p = m_pImpl;
     if (!p || !p->context || !p->rtv) return;
+    // Presentation modes can leave bars outside the configured viewport. Keep
+    // those deterministic during fades: the authored frame paints its own
+    // opaque background, while a coloured ClearRenderTargetView would make the
+    // side bars flash red/white with title and transition clear colours.
+    if (p->presentation != MARNI_PRESENT_STRETCH) {
+        r = g = b = 0.0f;
+        a = 1.0f;
+    }
     float c[4] = { r, g, b, a };
     p->context->ClearRenderTargetView(p->rtv, c);
     if (p->depthStencilView)
         p->context->ClearDepthStencilView(p->depthStencilView,
             D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
+
+void MarniDX::SetPresentation(MarniPresentationMode mode, float verticalPan)
+{
+    if (!m_pImpl) return;
+    m_pImpl->presentation = mode;
+    m_pImpl->verticalPan = verticalPan;
 }
 
 void MarniDX::Present()
@@ -1072,8 +1148,7 @@ static void DrawQuadInternal(MarniDX::Impl* p, const QuadVertex verts[6],
     // bottom=height, top=0 so that pos.y=0 -> NDC +1 (top) and
     // pos.y=height -> NDC -1 (bottom). Without this swap the image
     // is rendered vertically flipped.
-    BuildOrthoMatrix(&cb.mvp[0][0], 0.0f, (float)p->width,
-                                   (float)p->height, 0.0f);
+    BuildPresentationMatrix(&cb.mvp[0][0], p);
     D3D11_MAPPED_SUBRESOURCE cm = {};
     if (SUCCEEDED(p->context->Map(p->spriteCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &cm))) {
         memcpy(cm.pData, &cb, sizeof(cb));
@@ -1155,8 +1230,7 @@ void MarniDX::DrawTriangles(const float* verts, int triCount, MarniHandle tex,
     p->context->Unmap(p->quadVB, 0);
 
     SpriteConstantBuffer cb;
-    BuildOrthoMatrix(&cb.mvp[0][0], 0.0f, (float)p->width,
-                                   (float)p->height, 0.0f);
+    BuildPresentationMatrix(&cb.mvp[0][0], p);
     D3D11_MAPPED_SUBRESOURCE cm = {};
     if (SUCCEEDED(p->context->Map(p->spriteCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &cm))) {
         memcpy(cm.pData, &cb, sizeof(cb));
@@ -1212,8 +1286,7 @@ void MarniDX::DrawTriangles3D(const float* verts, int triCount, MarniHandle tex,
     p->context->Unmap(p->model3DVB, 0);
 
     SpriteConstantBuffer cb;
-    BuildOrthoMatrix(&cb.mvp[0][0], 0.0f, (float)p->width,
-                                   (float)p->height, 0.0f);
+    BuildPresentationMatrix(&cb.mvp[0][0], p);
     D3D11_MAPPED_SUBRESOURCE cm = {};
     if (SUCCEEDED(p->context->Map(p->spriteCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &cm))) {
         memcpy(cm.pData, &cb, sizeof(cb));
@@ -1280,8 +1353,7 @@ void MarniDX::DrawTrianglesPersp(const float* verts, int triCount, MarniHandle t
     p->context->Unmap(p->model3DVB, 0);
 
     SpriteConstantBuffer cb;
-    BuildOrthoMatrix(&cb.mvp[0][0], 0.0f, (float)p->width,
-                                   (float)p->height, 0.0f);
+    BuildPresentationMatrix(&cb.mvp[0][0], p);
     D3D11_MAPPED_SUBRESOURCE cm = {};
     if (SUCCEEDED(p->context->Map(p->spriteCB, 0, D3D11_MAP_WRITE_DISCARD, 0, &cm))) {
         memcpy(cm.pData, &cb, sizeof(cb));

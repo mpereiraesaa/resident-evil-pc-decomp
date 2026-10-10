@@ -474,6 +474,9 @@ extern bool          g_bSkipUnskippableFmv;    // [Game] SkipUnskippableFmv
 // Port-added camera-relative analogue movement. Keyboard and D-pad retain the
 // original tank controls; only the left analogue stick uses this mode.
 extern bool          g_bAlternateControls;     // [Input] AlternateControls
+// Port-added 16:9 presentation. Gameplay uses a vertically panned crop while
+// standalone screens and menus retain their authored 4:3 proportions.
+extern bool          g_bWidescreen;            // [Display] Widescreen
 
 // Every "are we in Director's Cut mode" test in the port. Deliberately a macro
 // over g_GameMode rather than a second global: there is one stored value, so

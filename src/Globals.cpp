@@ -46,9 +46,9 @@ DWORD g_dwSelectedDisplayAdapterID = 0;
 // 0x007d914c
 DWORD g_dwSelectedDisplayModeID = 0;
 // 0x007d9150
-DWORD g_dwScreenWidth = 640;
+DWORD g_dwScreenWidth = 1280;
 // 0x007d9154
-DWORD g_dwScreenHeight = 480;
+DWORD g_dwScreenHeight = 720;
 // 0x007d9158
 BOOL g_bFullScreen = FALSE;
 // config.ini [Display] VSync. Off by default: the engine paces itself in
@@ -2001,6 +2001,7 @@ bool           g_bPs1EndingCredits = false;
 bool           g_bPs1FmvSubtitles = false;
 bool           g_bSkipUnskippableFmv = false;
 bool           g_bAlternateControls = true;
+bool           g_bWidescreen = true;
 
 // ---------------------------------------------------------------------------
 // re1_rand / re1_srand (port-only)

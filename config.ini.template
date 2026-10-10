@@ -13,14 +13,17 @@
 ; 0 = windowed, 1 = fullscreen
 FullScreen=0
 ; Resolution width
-Width=640
+Width=1280
 ; Resolution height
-Height=480
+Height=720
 ; Bits per pixel (16 or 32)
 BitDepth=16
 ; Wait for vblank on present. 0 = off (default, and what the original did
 ; in a window): the engine paces itself to 33 ms per tick in software.
 VSync=0
+; 1 = fill displays up to 16:9 without stretching. Gameplay follows the player
+; with a vertical crop; menus retain their authored 4:3 proportions.
+Widescreen=1
 
 [Assets]
 ; Folder that holds the USA/ and JPN/ data trees. Relative paths are resolved

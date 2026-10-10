@@ -11,6 +11,7 @@
 #include "TmdRenderer.h"
 #include <cstdlib>
 #include <cstdio>
+#include <cmath>
 #include <time.h>
 
 extern unsigned int set_message_display(unsigned short msg_id, unsigned short pause_game);
@@ -35,6 +36,80 @@ extern void rearrange_item_slots(void);
 // must sit above the pause menu's black masking rects (blend 0x1e -> 980) and
 // below the menu window fills and room background (2100 / 0xFFF).
 #define PENDING_SCENE_DEPTH 0x400u
+
+// Port-added widescreen presentation. The authored frame is always 320x240;
+// a 16:9 display can therefore show 180 logical rows without distortion. The
+// crop follows the projected player with a small safe band and snaps to the
+// right place on a camera cut, matching fixed-camera scene composition.
+static float s_widescreenPan = 30.0f;
+static unsigned int s_widescreenCameraKey = 0xFFFFFFFFu;
+
+static float ProjectPlayerScreenY(void)
+{
+    const float point[3] = {
+        (float)g_playerEntity.position.x,
+        800.0f - (float)g_playerEntity.position.y,
+        (float)g_playerEntity.position.z,
+    };
+    float projected[3];
+    for (int row = 0; row < 3; ++row) {
+        projected[row] = (float)g_RoomCameraData.t[row];
+        for (int column = 0; column < 3; ++column) {
+            float value = (float)g_RoomCameraData.m[row][column] * point[column] / 4096.0f;
+            projected[row] += (row == 1) ? -value : value;
+        }
+    }
+    if (projected[2] <= 1.0f) return 120.0f;
+    return 120.0f + projected[1] * (float)g_sceneRenderParam / projected[2];
+}
+
+static void UpdatePresentation(void)
+{
+    MarniDX* dx = Marni_DX();
+    if (!dx) return;
+    if (!g_bWidescreen) {
+        dx->SetPresentation(MARNI_PRESENT_STRETCH);
+        s_widescreenCameraKey = 0xFFFFFFFFu;
+        return;
+    }
+
+    const bool scene = g_bGameActive != 0 && g_titleLoopFlag == 0 &&
+        (g_main_state_flags & (MSF_MENU_BYTE | MSF_SCREEN_STANDALONE)) == 0 &&
+        g_debugMenuOpen == 0;
+    if (!scene) {
+        dx->SetPresentation(MARNI_PRESENT_FIT_4_3);
+        s_widescreenCameraKey = 0xFFFFFFFFu;
+        return;
+    }
+
+    DWORD width = 0, height = 0;
+    dx->GetBackBufferSize(&width, &height);
+    float aspect = height ? (float)width / (float)height : (16.0f / 9.0f);
+    if (aspect < (4.0f / 3.0f)) aspect = 4.0f / 3.0f;
+    if (aspect > (16.0f / 9.0f)) aspect = 16.0f / 9.0f;
+    const float visibleHeight = fminf(240.0f, 320.0f / aspect);
+    const float travelLimit = 240.0f - visibleHeight;
+    float target = ProjectPlayerScreenY() - visibleHeight * 0.5f;
+    if (target < 0.0f) target = 0.0f;
+    if (target > travelLimit) target = travelLimit;
+
+    const unsigned int cameraKey = ((unsigned int)g_stageId << 16) |
+        ((unsigned int)g_roomId << 8) | (unsigned int)g_roomCameraId;
+    if (cameraKey != s_widescreenCameraKey) {
+        s_widescreenPan = target;
+    } else {
+        const float difference = target - s_widescreenPan;
+        float travel = fabsf(difference) - 8.0f;
+        if (travel > 0.0f) {
+            travel = copysignf(travel, difference);
+            s_widescreenPan += travel * (1.0f - expf(-6.0f / 30.0f));
+        }
+    }
+    if (s_widescreenPan < 0.0f) s_widescreenPan = 0.0f;
+    if (s_widescreenPan > travelLimit) s_widescreenPan = travelLimit;
+    s_widescreenCameraKey = cameraKey;
+    dx->SetPresentation(MARNI_PRESENT_CROP_16_9, s_widescreenPan);
+}
 
 struct PendingSprite {
     float x, y, w, h;
@@ -389,6 +464,7 @@ void FrameRateGovernor(void)
         ResetSpriteQueue();
     } else {
         if (g_ScreenAccessReady && g_RenderAccessReady) {
+            UpdatePresentation();
             MarniClear();
 
             FUN_0040a8f0(NULL);

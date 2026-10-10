@@ -353,6 +353,9 @@ void ConfigFile_EnsureExists(void)
         "; Wait for vblank on present. 0 = off (default, and what the original did\n"
         "; in a window): the engine paces itself to 33 ms per tick in software.\n"
         "VSync=%d\n"
+        "; 1 = fill displays up to 16:9 without stretching. Gameplay uses a\n"
+        "; vertically panned crop; menus retain their authored 4:3 proportions.\n"
+        "Widescreen=%d\n"
         "\n"
         "[Assets]\n"
         "; Folder that holds the USA/ and JPN/ data trees. Relative paths are\n"
@@ -412,6 +415,7 @@ void ConfigFile_EnsureExists(void)
         g_bFullScreen ? 1 : 0,
         (unsigned)g_dwScreenWidth, (unsigned)g_dwScreenHeight,
         (unsigned)g_dwBitDepth, g_bVSync ? 1 : 0,
+        g_bWidescreen ? 1 : 0,
         (GetAssetVersion() == 1) ? "JPN" : "USA",
         GameModeName(g_GameMode),
         g_bPs1EndingCredits ? 1 : 0,
@@ -450,6 +454,7 @@ BOOL ConfigFile_Load(void)
     g_dwScreenHeight = (DWORD)ReadInt(path, "Display", "Height", (int)g_dwScreenHeight);
     g_dwBitDepth     = (DWORD)ReadInt(path, "Display", "BitDepth", (int)g_dwBitDepth);
     g_bVSync         = ReadInt(path, "Display", "VSync", g_bVSync ? 1 : 0) ? TRUE : FALSE;
+    g_bWidescreen    = ReadInt(path, "Display", "Widescreen", 1) != 0;
 
     // Same clamps the Windows build applied.
     if (g_dwScreenWidth < 320) g_dwScreenWidth = 640;

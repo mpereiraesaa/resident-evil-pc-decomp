@@ -22,6 +22,9 @@ mods/latino/movie/PU.mp4
 mods/latino/Stage1/RC1000.webp
 mods/latino/Objspr/OSP00000.webp
 mods/latino/libwebp.dll
+mods/latino/data/fontus.tim
+mods/latino/translation/global.bin
+mods/latino/translation/room/room_100_0.bin
 mods/my-textures/data/title.pix
 ```
 
@@ -58,9 +61,17 @@ and room geometry continue to select the correct part of the higher-resolution
 texture. The imported 32-bit `libwebp.dll` decodes these files in the Win32
 build; Linux uses its system libwebp when available.
 
+The Spanish translation is stored as a 7z resource inside the pack's
+`ddraw.dll`. The importer locates that resource, copies its 256x256 extended
+font as the mod's `data/fontus.tim`, and compiles 2,664 translated strings into
+275 compact binary banks. These cover global messages, item names,
+descriptions, and both character variants of 272 rooms. The original XML stays
+outside the runtime tree and the hook DLL itself is never installed. The
+native game-side bank loader is the component that consumes these files.
+
 The custom executable, `ddraw.dll`, `dinput8.dll`, `bio1hd.asi`, saves and the
 replacement sound tree remain excluded. Those hooks target another executable
-and the source build now handles supported assets directly. Use `--no-hd` to
-import only voices and movies, or `--voices-only` for voices alone. Other HD
-texture classes (`misc`, `skin`, `skin2`) and Spanish menu/game text embedded by
-the replacement executable/DLL remain separate native ports.
+and the source build handles supported assets directly. Use `--no-hd` to skip
+room art, `--no-translation` to skip Spanish text, or `--voices-only` for
+voices alone. Other HD texture classes (`misc`, `skin`, `skin2`) remain
+separate native ports.

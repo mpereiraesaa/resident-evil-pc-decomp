@@ -4,6 +4,7 @@
 #include "../platform/platform.h"
 #include "../DebugPrint.h"
 #include "../marni/MarniSystem.h"
+#include "../marni/MarniXInput.h"
 #include "../marni/PSXTexture.h"
 #include "../system/AssetPath.h"
 #include "dc/Items.h"    // lockpick item id (is_lockpick_item)
@@ -90,6 +91,15 @@ static void UpdatePresentation(void)
     const float visibleHeight = fminf(240.0f, 320.0f / aspect);
     const float travelLimit = 240.0f - visibleHeight;
     float target = ProjectPlayerScreenY() - visibleHeight * 0.5f;
+
+    // The right stick temporarily moves the pan around the automatic player
+    // framing. Full up/down reaches the corresponding edge; releasing it
+    // returns smoothly to player follow. This only changes presentation of the
+    // authored frame, so camera logic, masks and collision stay untouched.
+    float rightY = 0.0f;
+    if (MarniXInput::GetRightStick(NULL, &rightY, NULL)) {
+        target -= rightY * travelLimit;
+    }
     if (target < 0.0f) target = 0.0f;
     if (target > travelLimit) target = travelLimit;
 

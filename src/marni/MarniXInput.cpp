@@ -26,6 +26,8 @@ static int   s_activeSlot  = -1;
 static DWORD s_nextScanTick = 0;
 static float s_leftX = 0.0f;
 static float s_leftY = 0.0f;
+static float s_rightX = 0.0f;
+static float s_rightY = 0.0f;
 static bool  s_dpadActive = false;
 #define MARNI_XI_RESCAN_MS 1000
 
@@ -114,6 +116,8 @@ static DWORD BuildMask(const XINPUT_GAMEPAD* pad)
         XINPUT_GAMEPAD_DPAD_RIGHT)) != 0;
     s_leftX = (float)pad->sThumbLX / 32768.0f;
     s_leftY = (float)pad->sThumbLY / 32768.0f;
+    s_rightX = (float)pad->sThumbRX / 32768.0f;
+    s_rightY = (float)pad->sThumbRY / 32768.0f;
 
     // A physical D-pad press owns the direction bits. This keeps it a pure
     // tank-control input even if the analogue stick is resting off-centre.
@@ -150,9 +154,10 @@ static DWORD BuildMask(const XINPUT_GAMEPAD* pad)
     return mask;
 }
 
-bool GetLeftStick(float* x, float* y, float* magnitude)
+static bool GetStick(float rawX, float rawY, float* x, float* y,
+                     float* magnitude)
 {
-    const float length = std::sqrt(s_leftX * s_leftX + s_leftY * s_leftY);
+    const float length = std::sqrt(rawX * rawX + rawY * rawY);
     const float deadZone = 0.18f;
     if (!IsConnected() || length <= deadZone) {
         if (x) *x = 0.0f;
@@ -163,10 +168,20 @@ bool GetLeftStick(float* x, float* y, float* magnitude)
 
     float scaled = (length - deadZone) / (1.0f - deadZone);
     if (scaled > 1.0f) scaled = 1.0f;
-    if (x) *x = (s_leftX / length) * scaled;
-    if (y) *y = (s_leftY / length) * scaled;
+    if (x) *x = (rawX / length) * scaled;
+    if (y) *y = (rawY / length) * scaled;
     if (magnitude) *magnitude = scaled;
     return true;
+}
+
+bool GetLeftStick(float* x, float* y, float* magnitude)
+{
+    return GetStick(s_leftX, s_leftY, x, y, magnitude);
+}
+
+bool GetRightStick(float* x, float* y, float* magnitude)
+{
+    return GetStick(s_rightX, s_rightY, x, y, magnitude);
 }
 
 bool IsDpadActive()

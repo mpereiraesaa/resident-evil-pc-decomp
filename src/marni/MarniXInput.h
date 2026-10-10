@@ -76,9 +76,14 @@ DWORD Poll();
 // separately so it can retain the original tank-control path.
 #ifdef _WIN32
 bool GetLeftStick(float* x, float* y, float* magnitude);
+// Normalized right-stick vector with the same radial dead zone. Widescreen
+// presentation consumes Y for manual pan; X remains available to later camera
+// modes without exposing XInput types outside this backend.
+bool GetRightStick(float* x, float* y, float* magnitude);
 bool IsDpadActive();
 #else
 inline bool GetLeftStick(float*, float*, float*) { return false; }
+inline bool GetRightStick(float*, float*, float*) { return false; }
 inline bool IsDpadActive() { return false; }
 #endif
 

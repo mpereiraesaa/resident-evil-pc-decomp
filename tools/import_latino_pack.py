@@ -1,21 +1,26 @@
 #!/usr/bin/env python3
-"""Import the source-compatible parts of the Latino/HD mod as an asset mod.
+"""Import compatible Latino/HD pack content as a native asset mod.
 
 The published pack targets the Japanese/Sourcenext layout. This tool extracts
-only its voice WAVs and modern movie files, then writes the region-neutral
-layout consumed by config.ini [Assets] Mods. It deliberately does not install
-the replacement executable, DLL hooks, ASI plugin, saves, or hash-addressed HD
-WebP files.
+its voice WAVs, modern movie files and confidently matched USA GOG room
+backgrounds, then writes the layout consumed by config.ini [Assets] Mods. It
+does not install the replacement executable, hook DLLs, ASI plugin or saves.
 """
 
 from __future__ import annotations
 
 import argparse
+import csv
 import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+
+HD_BACKGROUND_MAP = (
+    Path(__file__).parent / "data" / "re1_gog_usa_hd_backgrounds.csv"
+)
 
 
 USA_MOVIE_ALIASES = {
@@ -32,7 +37,7 @@ USA_MOVIE_ALIASES = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Import Latino voices and MP4s into a native asset override"
+        description="Import Latino voices, MP4s and USA room backgrounds"
     )
     parser.add_argument("archive", type=Path, help="source .7z mod archive")
     parser.add_argument("destination", type=Path, help="output mod root")
@@ -45,7 +50,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--voices-only",
         action="store_true",
-        help="skip MP4 movies (the archive is solid, so this may not save time)",
+        help="skip MP4 movies and HD backgrounds",
+    )
+    parser.add_argument(
+        "--no-hd-backgrounds",
+        action="store_true",
+        help="skip native HD room backgrounds and the libwebp runtime",
     )
     parser.add_argument(
         "--dry-run",
@@ -89,6 +99,26 @@ def copy_movies(source: Path, destination: Path, region: str) -> int:
     return count
 
 
+def copy_hd_backgrounds(source: Path, destination: Path) -> int:
+    if not HD_BACKGROUND_MAP.is_file():
+        raise RuntimeError(f"HD background map not found: {HD_BACKGROUND_MAP}")
+
+    count = 0
+    with HD_BACKGROUND_MAP.open(newline="", encoding="ascii") as mapping:
+        for row in csv.DictReader(mapping):
+            output = Path(row["path"])
+            if output.is_absolute() or ".." in output.parts:
+                raise RuntimeError(f"unsafe HD output path in map: {output}")
+            input_file = source / row["webp"]
+            if not input_file.is_file():
+                raise RuntimeError(f"archive has no mapped HD file: {row['webp']}")
+            output_file = destination / output
+            output_file.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(input_file, output_file)
+            count += 1
+    return count
+
+
 def main() -> int:
     args = parse_args()
     try:
@@ -97,15 +127,26 @@ def main() -> int:
         print(f"error: {exc}", file=sys.stderr)
         return 2
 
+    import_hd = (not args.voices_only and not args.no_hd_backgrounds and
+                 args.region == "USA")
     selections = ["JPN/voice/*"]
     if not args.voices_only:
         selections.append("movie/*")
+    if import_hd:
+        selections.extend(("hires/bgd/*", "libwebp.dll"))
 
     print(f"archive:     {args.archive.resolve()}")
     print(f"destination: {args.destination.resolve()}")
     print(f"region:      {args.region}")
-    print(f"content:     voices{' + movies' if not args.voices_only else ''}")
-    print("excluded:    executable, DLL/ASI hooks, saves, sound tree, HD WebP tree")
+    content = "voices"
+    if not args.voices_only:
+        content += " + movies"
+    if import_hd:
+        content += " + HD room backgrounds"
+    print(f"content:     {content}")
+    print("excluded:    executable, hook DLLs/ASI, saves, sound tree, HD masks")
+    if args.region == "JPN" and not args.voices_only and not args.no_hd_backgrounds:
+        print("note:        direct HD room map currently targets USA GOG assets")
     if args.dry_run:
         return 0
 
@@ -130,7 +171,19 @@ def main() -> int:
             movie_count = copy_movies(movie_source, args.destination / "movie",
                                       args.region)
 
-    print(f"imported:    {voice_count} voice files, {movie_count} movie files")
+        hd_count = 0
+        if import_hd:
+            hd_source = temp_root / "hires" / "bgd"
+            if not hd_source.is_dir():
+                raise RuntimeError("archive has no hires/bgd directory")
+            hd_count = copy_hd_backgrounds(hd_source, args.destination)
+            webp_runtime = temp_root / "libwebp.dll"
+            if not webp_runtime.is_file():
+                raise RuntimeError("archive has no 32-bit libwebp.dll")
+            shutil.copy2(webp_runtime, args.destination / "libwebp.dll")
+
+    print(f"imported:    {voice_count} voice files, {movie_count} movie files, "
+          f"{hd_count} HD room backgrounds")
     print(f"config:      add {args.destination} to [Assets] Mods")
     return 0
 

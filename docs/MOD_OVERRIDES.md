@@ -19,6 +19,8 @@ Each mod mirrors the path below the region folder. Typical files are:
 ```text
 mods/latino/voice/V001_00.WAV
 mods/latino/movie/PU.mp4
+mods/latino/Stage1/RC1000.webp
+mods/latino/libwebp.dll
 mods/my-textures/data/title.pix
 ```
 
@@ -44,13 +46,17 @@ For `build/windows-cross/residentevil.exe`, enable it with:
 Mods=../../mods/latino
 ```
 
-The importer copies the voices and MP4s and maps the Japanese movie names to
-their USA counterparts. It excludes the custom executable, `ddraw.dll`,
-`dinput8.dll`, `bio1hd.asi`, saves and the replacement sound tree. Those hooks
-target another executable and are unnecessary for source-native overrides.
+The importer copies the voices and MP4s, maps the Japanese movie names to their
+USA counterparts, and rewrites compatible hash-named backgrounds to stable
+`StageN/RCxxxx.webp` names. The committed map contains 598 high-confidence
+matches against the 676 USA GOG room PAKs. Unmapped cameras keep their original
+background instead of risking art from another room. The imported 32-bit
+`libwebp.dll` decodes these files in the Win32 build; Linux uses its system
+libwebp when available.
 
-The pack's `hires/*.webp` files use names derived from the ASI plugin's texture
-hashes. They require a native hash lookup and WebP upload path before this build
-can use them; the importer intentionally leaves them out. Spanish menu and game
-text embedded by the replacement executable/DLL also needs a separate native
-text-data port.
+The custom executable, `ddraw.dll`, `dinput8.dll`, `bio1hd.asi`, saves and the
+replacement sound tree remain excluded. Those hooks target another executable
+and the source build now handles supported assets directly. Use
+`--no-hd-backgrounds` to import only voices and movies, or `--voices-only` for
+voices alone. HD occlusion masks and Spanish menu/game text embedded by the
+replacement executable/DLL remain separate native ports.

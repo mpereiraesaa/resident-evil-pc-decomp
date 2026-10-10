@@ -172,8 +172,74 @@ def import_translation(ddraw: Path, destination: Path,
         raise RuntimeError("embedded translation has no DATA/PBFONT0.tim")
     font_destination = destination / "data" / "fontus.tim"
     font_destination.parent.mkdir(parents=True, exist_ok=True)
-    shutil.copy2(font, font_destination)
+    normalize_font_tim(font, font_destination)
     return compile_payload(payload, destination / "translation")
+
+
+def normalize_font_tim(source: Path, destination: Path) -> None:
+    """Convert the proportional 14x14 translation font to USA 8x14 cells."""
+    data = source.read_bytes()
+    if len(data) < 20 or data[:8] != struct.pack("<II", 0x10, 0x08):
+        raise RuntimeError("embedded PBFONT0.tim is not a 4-bit CLUT TIM")
+    clut_size = struct.unpack_from("<I", data, 8)[0]
+    clut_width, clut_height = struct.unpack_from("<HH", data, 16)
+    image_offset = 8 + clut_size
+    if (clut_width != 16 or clut_height < 1 or
+            clut_size != 12 + clut_width * clut_height * 2 or
+            image_offset + 12 > len(data)):
+        raise RuntimeError("embedded PBFONT0.tim has an invalid CLUT block")
+
+    image_size, image_x, image_y, image_words, image_height = struct.unpack_from(
+        "<IhhHH", data, image_offset
+    )
+    image_width = image_words * 4
+    image_data = data[image_offset + 12:image_offset + image_size]
+    if (image_width != 256 or image_height != 256 or
+            len(image_data) != image_width * image_height // 2):
+        raise RuntimeError("embedded PBFONT0.tim is not a 256x256 4-bit font")
+
+    source_pixels = []
+    for packed in image_data:
+        source_pixels.extend((packed & 0x0F, packed >> 4))
+    output_pixels = bytearray(image_width * image_height)
+
+    # The 8x8 ASCII/debug region already uses the USA layout.
+    output_pixels[:image_width * 28] = source_pixels[:image_width * 28]
+
+    # Classic REbirth's font stores each game glyph in a 14x14 cell (18
+    # columns), with the visible 3-8 pixel glyph at the cell's left edge. The
+    # USA renderer samples the same 18-column encoding from 8x14 cells. Repack
+    # the visible eight columns so the translated sheet works without a
+    # proportional-font hook or any renderer-specific metadata.
+    for code in range(18 * 16):
+        row, column = divmod(code, 18)
+        source_x = column * 14
+        destination_x = column * 8
+        y = 28 + row * 14
+        if y + 14 > image_height:
+            break
+        for line in range(14):
+            source_start = (y + line) * image_width + source_x
+            destination_start = (y + line) * image_width + destination_x
+            output_pixels[destination_start:destination_start + 8] = \
+                source_pixels[source_start:source_start + 8]
+
+    packed_pixels = bytearray()
+    for position in range(0, len(output_pixels), 2):
+        packed_pixels.append(output_pixels[position] |
+                             (output_pixels[position + 1] << 4))
+
+    # The game supplies text colours by tinting the grayscale palette, so the
+    # green and blue Classic REbirth CLUT rows are unnecessary.
+    output = bytearray(data[:8])
+    output.extend(struct.pack("<I", 12 + clut_width * 2))
+    output.extend(data[12:18])              # CLUT origin + width
+    output.extend(struct.pack("<H", 1))
+    output.extend(data[20:20 + clut_width * 2])
+    output.extend(struct.pack("<IhhHH", image_size, image_x, image_y,
+                              image_words, image_height))
+    output.extend(packed_pixels)
+    destination.write_bytes(output)
 
 
 def main() -> int:

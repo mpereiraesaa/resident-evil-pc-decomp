@@ -64,7 +64,10 @@ build; Linux uses its system libwebp when available.
 The Spanish translation is stored as a 7z resource inside the pack's
 `ddraw.dll`. The importer locates that resource, copies its 256x256 extended
 font as the mod's `data/fontus.tim`, and compiles 2,664 translated strings into
-275 compact binary banks. These cover global messages, item names,
+275 compact binary banks. The proportional 14x14 source glyphs are repacked
+into the USA renderer's 8x14 cells, and its three CLUT rows are reduced to the
+single grayscale row the renderer expects. Colour remains supplied by the
+engine's existing text tints. The banks cover global messages, item names,
 descriptions, and both character variants of 272 rooms. The original XML stays
 outside the runtime tree and the hook DLL itself is never installed. The
 native game-side bank loader is the component that consumes these files.

@@ -201,6 +201,12 @@ their own table — they are neither RDT nor global messages.
 Room-specific dialogue lives inside `.rdt` files (see `docs/RDT_FILE_FORMAT.md`)
 and is **not** STR-encoded; it is already in font-encoding form when loaded.
 
+An asset mod may override these strings with compiled `RE1TXT1` banks under
+`translation/`. `tools/compile_translation.py` converts Classic REbirth XML
+controls (`color`, `string`, `branch`, `clear`, `scroll`, and `timed`) to this
+same byte protocol. The runtime validates every offset and falls back to the
+RDT or built-in table when a bank or entry is absent.
+
 ### ASCII file names & paths — plain string literals, never STR()
 
 Not every byte string in the menu tables is rendered text. Filenames and paths

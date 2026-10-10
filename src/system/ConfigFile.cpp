@@ -39,6 +39,8 @@ const OwnedKey kOwnedKeys[] = {
     { "Display", "Height" },
     { "Display", "BitDepth" },
     { "Display", "VSync" },
+    { "Display", "SMAA" },
+    { "Display", "FrameInterpolation" },
     { "Game",    "SkipUnskippableFmv" },
     { "Game",    "SkipDoorAnimations" },
     { "Player",  "PlayCount" },
@@ -380,6 +382,10 @@ void ConfigFile_EnsureExists(void)
         "; Wait for vblank on present. 0 = off (default, and what the original did\n"
         "; in a window): the engine paces itself to 33 ms per tick in software.\n"
         "VSync=%d\n"
+        "; D3D11-only SMAA 1x spatial anti-aliasing. 0 preserves the original pixels.\n"
+        "SMAA=%d\n"
+        "; 1 = present temporal frame blends at 60 Hz while game logic stays 30 Hz.\n"
+        "FrameInterpolation=%d\n"
         "; 1 = fill displays up to 16:9 without stretching. Gameplay uses a\n"
         "; vertically panned crop; menus retain their authored 4:3 proportions.\n"
         "Widescreen=%d\n"
@@ -447,7 +453,8 @@ void ConfigFile_EnsureExists(void)
         "SideDef=%s\n",
         g_bFullScreen ? 1 : 0,
         (unsigned)g_dwScreenWidth, (unsigned)g_dwScreenHeight,
-        (unsigned)g_dwBitDepth, g_bVSync ? 1 : 0,
+        (unsigned)g_dwBitDepth, g_bVSync ? 1 : 0, g_bSmaa ? 1 : 0,
+        g_bFrameInterpolation ? 1 : 0,
         g_bWidescreen ? 1 : 0,
         (GetAssetVersion() == 1) ? "JPN" : "USA",
         GameModeName(g_GameMode),
@@ -489,6 +496,9 @@ BOOL ConfigFile_Load(void)
     g_dwScreenHeight = (DWORD)ReadInt(path, "Display", "Height", (int)g_dwScreenHeight);
     g_dwBitDepth     = (DWORD)ReadInt(path, "Display", "BitDepth", (int)g_dwBitDepth);
     g_bVSync         = ReadInt(path, "Display", "VSync", g_bVSync ? 1 : 0) ? TRUE : FALSE;
+    g_bSmaa          = ReadInt(path, "Display", "SMAA", g_bSmaa ? 1 : 0) != 0;
+    g_bFrameInterpolation = ReadInt(path, "Display", "FrameInterpolation",
+                                    g_bFrameInterpolation ? 1 : 0) != 0;
     g_bWidescreen    = ReadInt(path, "Display", "Widescreen", 1) != 0;
 
     // Same clamps the Windows build applied.
@@ -622,12 +632,14 @@ void ConfigFile_Save(void)
     snprintf(values[2], sizeof(values[2]), "%u", (unsigned)g_dwScreenHeight);
     snprintf(values[3], sizeof(values[3]), "%u", (unsigned)g_dwBitDepth);
     snprintf(values[4], sizeof(values[4]), "%d", g_bVSync ? 1 : 0);
-    snprintf(values[5], sizeof(values[5]), "%d", g_bSkipUnskippableFmv ? 1 : 0);
-    snprintf(values[6], sizeof(values[6]), "%d", g_bSkipDoorAnimations ? 1 : 0);
-    snprintf(values[7], sizeof(values[7]), "%u", (unsigned)g_dwPlayCount);
-    snprintf(values[8], sizeof(values[8]), "%u", (unsigned)g_dwClearCount);
-    snprintf(values[9], sizeof(values[9]), "%s", keyHex);
-    snprintf(values[10], sizeof(values[10]), "%s", sideHex);
+    snprintf(values[5], sizeof(values[5]), "%d", g_bSmaa ? 1 : 0);
+    snprintf(values[6], sizeof(values[6]), "%d", g_bFrameInterpolation ? 1 : 0);
+    snprintf(values[7], sizeof(values[7]), "%d", g_bSkipUnskippableFmv ? 1 : 0);
+    snprintf(values[8], sizeof(values[8]), "%d", g_bSkipDoorAnimations ? 1 : 0);
+    snprintf(values[9], sizeof(values[9]), "%u", (unsigned)g_dwPlayCount);
+    snprintf(values[10], sizeof(values[10]), "%u", (unsigned)g_dwClearCount);
+    snprintf(values[11], sizeof(values[11]), "%s", keyHex);
+    snprintf(values[12], sizeof(values[12]), "%s", sideHex);
 
     for (int i = 0; i < kOwnedKeyCount; ++i) {
         SetValue(kOwnedKeys[i].section, kOwnedKeys[i].key, values[i], lines, &count);

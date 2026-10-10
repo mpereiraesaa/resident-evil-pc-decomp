@@ -479,6 +479,8 @@ extern bool          g_bAlternateControls;     // [Input] AlternateControls
 // Port-added 16:9 presentation. Gameplay uses a vertically panned crop while
 // standalone screens and menus retain their authored 4:3 proportions.
 extern bool          g_bWidescreen;            // [Display] Widescreen
+extern bool          g_bSmaa;                  // [Display] SMAA (D3D11, port-added)
+extern bool          g_bFrameInterpolation;   // [Display] FrameInterpolation (D3D11, port-added)
 
 // Every "are we in Director's Cut mode" test in the port. Deliberately a macro
 // over g_GameMode rather than a second global: there is one stored value, so

@@ -2003,6 +2003,8 @@ bool           g_bSkipUnskippableFmv = true;
 bool           g_bSkipDoorAnimations = true;
 bool           g_bAlternateControls = true;
 bool           g_bWidescreen = true;
+bool           g_bSmaa = true;
+bool           g_bFrameInterpolation = true;
 
 // ---------------------------------------------------------------------------
 // re1_rand / re1_srand (port-only)

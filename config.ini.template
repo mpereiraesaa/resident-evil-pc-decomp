@@ -21,6 +21,10 @@ BitDepth=16
 ; Wait for vblank on present. 0 = off (default, and what the original did
 ; in a window): the engine paces itself to 33 ms per tick in software.
 VSync=0
+; D3D11-only SMAA 1x spatial anti-aliasing. 0 preserves the original pixels.
+SMAA=1
+; 1 = render the midpoint and current TMD poses at 60 Hz while simulation stays 30 Hz.
+FrameInterpolation=1
 ; 1 = fill displays up to 16:9 without stretching. Gameplay follows the player
 ; with a vertical crop; menus retain their authored 4:3 proportions.
 Widescreen=1
@@ -53,7 +57,9 @@ Mode=OG
 Ps1EndingCredits=0
 ; Set to 1 to let the movies the original leaves unskippable (the endings, the
 ; staff rolls, DMF and DME) be skipped with the usual buttons like any other FMV.
-SkipUnskippableFmv=0
+SkipUnskippableFmv=1
+; 1 = allow skipping door animations after the initial 10 frames.
+SkipDoorAnimations=1
 
 [Debug]
 ; Master switch for the port-added debug features: F1 debug menu, F6

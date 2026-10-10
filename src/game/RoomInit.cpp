@@ -4,6 +4,7 @@
 #include "../marni/PSXTexture.h"
 #include "FileLoader.h"
 #include "SpriteRenderer.h"
+#include "TranslationBank.h"
 #include "dc/ItemDescriptions.h"
 #include "dc/EntityModels.h"    // the arrange wardrobe's two outfit flags
 #include "../system/AssetPath.h"
@@ -71,24 +72,36 @@ unsigned int set_message_display(unsigned short msg_id, unsigned short pause_gam
     g_message_flags = g_message_flags & ~pause_game;
 
     if ((msg_id & 0x40) == 0) {
+        const unsigned int index = msg_id & 0x3F;
+        const unsigned char variant =
+            (g_main_state_flags & MSF_CHAR_VARIANT) ? 1 : 0;
+        const unsigned char* translated = Translation_RoomMessage(
+            room_file_stage(), g_roomId, variant, index);
+        if (translated != NULL) {
+            g_MessagePtr = (unsigned char*)translated;
+        }
         // Room-specific message from RDT data
         // messages pointer at RDT+0x74 points to a message table:
         //   [offset_table: uint16[msg_count]] followed by [message_data...]
-        if (g_RdtPointer != NULL && g_RdtPointer->messages != NULL) {
+        else if (g_RdtPointer != NULL && g_RdtPointer->messages != NULL) {
             unsigned char* msgBase = g_RdtPointer->messages;
             unsigned short offset = *(unsigned short*)(msgBase + (msg_id & 0x3F) * 2);
             g_MessagePtr = msgBase + offset;
         }
     } else {
+        const unsigned int index = msg_id & 0x3F;
+        const unsigned char* translated = Translation_GlobalMessage(index);
         // Global message from the global_messages lookup table. The Japanese
         // release keeps its own copy of the table (Biohazard.exe 0x004cde58,
         // its set_message_display at 0x00491980), so the region that owns the
         // asset tree owns the text too — the JPN glyph encoding only makes
         // sense against data\FONT.TIM.
-        if (GetAssetVersion() != 0) {
-            g_MessagePtr = global_messages_jpn[msg_id & 0x3F];
+        if (translated != NULL) {
+            g_MessagePtr = (unsigned char*)translated;
+        } else if (GetAssetVersion() != 0) {
+            g_MessagePtr = global_messages_jpn[index];
         } else {
-            g_MessagePtr = global_messages[msg_id & 0x3F];
+            g_MessagePtr = global_messages[index];
         }
     }
 
@@ -206,7 +219,10 @@ unsigned int set_item_description_message(unsigned short descIndex, unsigned sho
     g_MessageStateCounter = 0;
     g_MessageSpeedUpFlag = 0x80;
     g_lastScanCodeOrMsgID = (DWORD)descIndex;
-    g_MessagePtr = descriptions[descIndex];
+    const unsigned char* translated = Translation_ItemDescription(descIndex);
+    g_MessagePtr = translated != NULL
+        ? (unsigned char*)translated
+        : descriptions[descIndex];
     g_MessageScreenY = 0xba - (short)g_ScreenOffsetY;
 
     return 0;

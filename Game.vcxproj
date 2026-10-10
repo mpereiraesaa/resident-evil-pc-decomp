@@ -191,6 +191,7 @@
     <ClCompile Include="src\game\JpnTextTables.cpp" />
     <ClCompile Include="src\game\PrintText.cpp" />
     <ClCompile Include="src\game\TextureLoader.cpp" />
+    <ClCompile Include="src\game\TranslationBank.cpp" />
     <ClCompile Include="src\game\FadeSprite.cpp" />
     <ClCompile Include="src\game\EffectSystem.cpp" />
     <ClCompile Include="src\game\SpriteRenderer.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="src\game\Ps1FmvSubtitles.h" />
     <ClInclude Include="src\game\Ps1FmvSubtitleData.h" />
     <ClInclude Include="src\game\TmdRenderer.h" />
+    <ClInclude Include="src\game\TranslationBank.h" />
     <ClInclude Include="src\game\entities\EntityCommon.h" />
     <ClInclude Include="src\game\entities\Zombie.h" />
     <ClInclude Include="src\system\PngImage.h" />

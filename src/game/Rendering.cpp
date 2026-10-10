@@ -10,6 +10,7 @@
 #include "dc/Items.h"    // lockpick item id (is_lockpick_item)
 #include "SpriteRenderer.h"
 #include "TmdRenderer.h"
+#include "TranslationBank.h"
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -1346,11 +1347,15 @@ unsigned char* message_item_name_lookup(unsigned char itemId)
 
     unsigned char bVar2 = itemId - 1;
     unsigned char* puVar3 = (unsigned char*)names[bVar2];
+    unsigned int translatedIndex = itemId;
     if ((bVar2 < 0x4d) && ((bVar2 = g_ItemImageLookupTable[(unsigned int)bVar2 * 4 + 6], (bVar2 & 0x80) == 0))) {
         if (Flg_ck((int)g_itemExaminedFlags, (unsigned int)bVar2) == 0) {
             puVar3 = (unsigned char*)unknown[bVar2];
+            translatedIndex = 113 + bVar2;
         }
     }
+    const unsigned char* translated = Translation_ItemName(translatedIndex);
+    if (translated != NULL) puVar3 = (unsigned char*)translated;
     return puVar3;
 }
 

@@ -88,6 +88,7 @@ set(RE1_SOURCES
     src/game/SpriteRenderer.cpp
     src/game/TaskScheduler.cpp
     src/game/TextureLoader.cpp
+    src/game/TranslationBank.cpp
     src/game/TitleScreen.cpp
     src/game/TmdAnimation.cpp
     src/game/TmdRenderer.cpp

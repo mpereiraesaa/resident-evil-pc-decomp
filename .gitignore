@@ -5,6 +5,8 @@ assets/
 bin/
 obj/
 build/
+# User-owned mod payloads imported by tools/import_latino_pack.py.
+mods/
 # Self-contained Linux bundles from tools/package_linux.sh.
 dist/
 *.BMP

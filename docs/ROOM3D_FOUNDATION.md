@@ -691,3 +691,11 @@ centers must regenerate unchanged; otherwise the function abstains. Failed
 support leaves the original object intact. Initial ROOM502 trials from
 `19a3de5` could not refit any brackets using their old oblique shafts; this
 failure is retained as development evidence, not a rejected depth experiment.
+
+Optional `local=True` limits the retreat span to the retained rail/rung bounds
+plus two rail thicknesses of margin on each side. It retains outer wall strips
+on their original plane and connects the inset to them, avoiding an unsupported
+whole-wall translation. This remains a proposal requiring the same scene vetoes.
+The whole-run ROOM502 experiment at `d259f0e` chose a 270-unit retreat on training
+renders but failed fixed-support depth checks in three cameras; it was rejected
+without reselection. The original completed room export remains unchanged.

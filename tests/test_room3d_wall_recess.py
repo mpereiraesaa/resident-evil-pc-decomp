@@ -107,6 +107,22 @@ class WallRecessTests(unittest.TestCase):
             failed,_ = refit_support(attached,triangles,groups,{'missing'})
             self.assertIs(failed,attached)
 
+    def test_local_recess_keeps_outer_wall_strips_at_original_plane(self):
+        rows = proposals(self.room,self.recipe,0,self.cameras,distances=(360,),local=True)
+        self.assertEqual(len(rows),1)
+        candidate,evidence = rows[0]
+        self.assertEqual(evidence['span'],'object')
+        surfaces = candidate['structural_surfaces']
+        self.assertEqual(len(surfaces),5)
+        front = np.asarray(surfaces[0]['points'])
+        self.assertGreater(front[:,0].min(),-2000)
+        self.assertLess(front[:,0].max(),2000)
+        original_vertices = np.asarray(self.recipe['structural_surfaces'][0]['points'])
+        retained = np.concatenate([np.asarray(s['points']) for s in surfaces[3:]])
+        self.assertTrue((retained[:,2]==0).all())
+        for vertex in original_vertices:
+            self.assertTrue((retained==vertex).all(axis=1).any())
+
 
 if __name__ == '__main__':
     unittest.main()

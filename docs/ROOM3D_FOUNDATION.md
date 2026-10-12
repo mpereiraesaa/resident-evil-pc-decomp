@@ -443,3 +443,12 @@ estimated design choices. The default remains disabled pending independent-room
 validation. ROOM502 exposed the missing family and is now development data:
 its original run accepted a nine-arm shade profile for a fluorescent assembly.
 A better ROOM502 result alone will not establish generalization.
+
+The first committed-source ROOM502 ON/OFF replay was negative: no eligible
+linear initialization was generated. The available wall-plane projection of
+both masks spans approximately 2874 by 1269 game units (aspect 2.26), failing
+the generator's required elongation of 3. All four final rendered views are
+byte-identical to the pre-change run and retain its incorrect nine-arm shade
+family. This establishes abstention, not a native quality improvement. A
+source-compatible orientation/support initialization and additional-room
+validation remain necessary before enabling this option by default.

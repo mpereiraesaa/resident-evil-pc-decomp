@@ -74,6 +74,39 @@ The clipping check covers polygon order, near-plane boundaries, interpolated
 attributes and immutable inputs. Checkpoint checks cover changed/missing
 artifacts, changed keys, failed/partial results, empty slots and interrupted JSON.
 
+Evidence reports and visual reviews
+-----------------------------------
+
+`tools/evaluate_room3d_details.py` builds a comparison HTML from completed export
+manifests. It can inspect an existing run independently of the fitting code:
+
+```sh
+python tools/evaluate_room3d_details.py --run path/to/run --out build/evaluation \
+  --completed-only --audits path/to/external-audits
+```
+
+`--completed-only` requires the matching checkpoint and unchanged full export
+inventory. Actual final-detail measurements are checked against the current OBJ
+and visibility sidecar hashes; scores from a replaced shape are not reused as
+evidence for its replacement. Missing acceptance, reserved-view measurements or
+visual review remain explicitly missing. This report does not rerun the fitter.
+
+`tools/room3d_confidence.py` summarizes original detector and SAM scores per mask
+and rejected category. These raw scores are not fidelity probabilities. Missing
+legacy scores remain unknown, and invalid values cannot become nonfinite JSON.
+
+`tools/room3d_visual_audit.py` stores explicit image-review findings outside the
+input run and binds them to its complete checkpoint and reviewed image hashes.
+Changing the export invalidates the binding. `approximate_visual_pass` is an
+explicit review status, never an automatic consequence of a successful export.
+Use `python tools/room3d_visual_audit.py --help` for its required review fields.
+
+The report and audit regression checks run without game assets:
+
+```sh
+python -m unittest discover -s tests -p test_room3d_evaluation.py
+```
+
 Publication follows dependency order in small changes. This foundation is
 separate from runtime integration and the full batcher; those remain subsequent
 steps until their source and validation are included. Generated room exports,

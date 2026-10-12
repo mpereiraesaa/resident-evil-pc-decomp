@@ -625,3 +625,11 @@ Explicit inspection of all four final textured views still records
 rungs, with coarse bracket appearance and duplicated source ladder projection.
 The no-ladder view is byte-identical. These gates are not a fidelity approval;
 the option remains experimental and disabled by default.
+
+The metadata-selected independent ROOM303 helipad negative control also
+replays from source `dbebeaf`. It produces no supported shared-rail proposal
+and retains the previous recipe: all eight final PNGs are byte-identical
+between ON and OFF. Explicit eight-view review confirms no positive ladder
+case and records substantial existing architecture/appearance defects.
+Committed-source, cached-input and complete-checkpoint verification pass.
+This proves safe abstention for this control, not positive generalization.

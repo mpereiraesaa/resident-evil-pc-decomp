@@ -666,3 +666,20 @@ ROOM303 negative control preserves all eight PNGs and was explicitly reviewed;
 it is not a positive case or a new-room validation of the later policy revision.
 Current code passes 212 room-tool tests. Further wall/object visibility fitting
 and object appearance are required before enabling this option by default.
+
+### Bounded wall retreat proposals
+
+`room3d_wall_recess.proposals` supplies experimental geometry alternatives
+behind retained vertical ladders. It considers only finite axis-aligned shared
+wall runs named by the existing bracket attachment, with training cameras on
+one side and ladder rails strictly inside the run's horizontal extent. Each
+retreat stays within the original collision footprint, preserves the ladder
+and adds finite side connectors at the old wall ends. Collision records and
+neighboring walls are unchanged. Door-bearing groups, unshared volumes,
+invalid geometry and opposing training cameras abstain. Roof geometry remains
+unknown; the tool does not fabricate a ceiling.
+
+These are proposals only, not accepted batch replacements. They require
+training-render selection, reserved-view veto where available, fixed-support
+all-camera depth checks and bracket refitting/contact checks before retention.
+The proposal evidence explicitly marks the new wall location as estimated.

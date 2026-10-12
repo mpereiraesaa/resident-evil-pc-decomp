@@ -205,3 +205,32 @@ This publication step supports surveys and baseline meshes. The complete CLI
 already contains reconstruction hooks; their remaining fitting, model and review
 modules arrive in subsequent dependency steps. A baseline export is not a
 completed reconstruction or an approval of its appearance or navigation.
+
+Shared observations and bounded detail fitting
+----------------------------------------------
+
+`tools/room3d_shape_fit.py` forms per-mask observations, associates compatible
+observations across cameras and fits one parameterized object to them. Shape
+candidates are rendered with the original projection; the objective compares
+silhouette, edges and estimated depth. When a group has at least three observed
+cameras, its last camera is reserved for validation rather than initialization
+or optimization. Acceptance thresholds remain agreement checks, not fidelity.
+
+`tools/room3d_objects.py` supplies depth-derived object proposals.
+`tools/room3d_connections.py` checks finite surface contact and stair headroom;
+`tools/room3d_assemblies.py` provides connected landing and stair-proportion
+priors. `tools/room3d_fixtures.py` anchors fixture hypotheses to finite surfaces.
+These checks cannot establish gameplay traversal or recover never-visible parts.
+
+The core fitter preserves each original mask's detector/SAM scores and pixel
+hash, including masks merged into one observation and rejected fits. Invalid
+model scores are excluded, refined-mask and original scores remain separate,
+and failures retain evidence for category summaries. Run this integration check:
+
+```sh
+python -m unittest discover -s tests -p test_room3d_confidence.py
+```
+
+This step provides the default fitting functions. Experimental creative/support
+options in the full source use additional modules supplied by subsequent steps;
+the complete `creative-v2` profile is not yet the isolated publication target.

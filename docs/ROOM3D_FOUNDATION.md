@@ -357,3 +357,28 @@ python -m unittest discover -s tests -p test_room3d_review_queue.py
 With these dependencies present, the batcher can finish image-assisted exports
 using cached masks/depth and `--defer-review`. Pending review remains visible in
 the report rather than being reported as a visual pass.
+
+Non-destructive room retouching
+-------------------------------
+
+`tools/room3d_retouch.py` edits generated OBJ groups in a separate output folder.
+It supports finite translation, positive scaling, yaw and hiding, while retaining
+the original export. Optional reprojection updates appearance for the changed
+geometry. The assisted mesh is the editing authority; its appearance context and
+fixture material roles survive sequential edits. Unsupported indices, paths or
+transforms are rejected rather than silently normalized.
+
+`tools/room3d_additions.py` adds explicitly estimated procedural objects when
+requested. It does not send images elsewhere or change native collision/scripts.
+See `python tools/room3d_retouch.py --help` for the operation schema and switches.
+Retouching helps finish approximate outputs; it does not mean every generated
+room is already correct enough for only small changes.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_retouch.py
+python -m unittest discover -s tests -p test_room3d_additions.py
+python -m unittest discover -s tests -p test_room3d_fixture_appearance.py
+```
+
+These checks cover actual rendered edits, source-export immutability, sequential
+reprojection, bounded additions and preservation of fixture support/shade roles.

@@ -516,3 +516,25 @@ selection still needs actual render comparison, reliable scene depth, finite
 wall/contact checks and independent-room validation. Rung spacing and the
 inferred plane behind the rails are estimated; triangulation does not prove
 that such a support wall exists.
+
+`room3d_ladder_rungs.refine_count` compares actual rasterized rung edges with
+original image edges inside the shared ladder's interior. It excludes rail
+sides and favors edges parallel to projected rungs. Candidate counts preserve
+the shared pose, rail dimensions and brackets. Selection requires a consistent
+training improvement; when a reserved observation exists, missing or worse
+reserved evidence vetoes the selected candidate without choosing another count.
+Flat/insufficient training images abstain. All trials remain inspectable.
+
+This refines an initialization, not an accepted room replacement. Reliable
+whole-scene depth, finite support/contact and independent-room checks remain
+necessary before automatic batch integration. Image edges can come from the
+background or baked lighting and are not proof of individual rung identity.
+
+The edge target uses local perspective direction rather than one averaged
+orientation for the whole ladder. Short noisy fragments do not establish
+rungs: coherent segments must span a substantial fraction of the projected
+interior width. Controlled raster tests recover nine rungs from a seventeen-
+rung initialization and confirm reserved-image rollback. Strong background
+grain can still cause abstention. In the ROOM502 development control the
+filtered training evidence is insufficient, so the seventeen-rung proposal
+is retained exactly. This is a recorded limitation, not a native quality gain.

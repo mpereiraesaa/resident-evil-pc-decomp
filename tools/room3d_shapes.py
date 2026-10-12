@@ -98,6 +98,12 @@ def local_parts(kind, p):
         phase = float(p.get('rung_phase', 0))
         if not math.isfinite(phase) or not -.45 <= phase <= .45:
             raise ValueError('Ladder rung phase must be finite and within -.45..+.45')
+        levels = np.asarray(p.get('bracket_levels', [.1, .9]), float)
+        if (levels.shape != (2,) or not np.isfinite(levels).all()
+                or not 0 < levels[0] < levels[1] < 1
+                or levels[0]*height <= thickness/2
+                or (1-levels[1])*height <= thickness/2):
+            raise ValueError('Expected two ordered interior ladder bracket levels')
         if (width <= 4 * thickness or height <= 2 * thickness * (rungs + 1)
                 or stand_off < thickness):
             raise ValueError("Ladder needs open rung spacing, rail clearance and positive wall stand-off")
@@ -111,8 +117,18 @@ def local_parts(kind, p):
             parts.append(prism([-half_span, y - thickness / 2, stand_off - thickness / 2],
                                [half_span, y + thickness / 2, stand_off + thickness / 2]))
         for x in (-half_span, half_span):
-            for y in (-height * .1, -height * .9):
+            for y in -height * levels:
                 parts.append(beam([x, y, 0], [x, y, stand_off], thickness / 2))
+        if 'bracket_parts' in p:
+            brackets = np.asarray(p['bracket_parts'], float)
+            if brackets.shape != (4, 8, 3) or not np.isfinite(brackets).all():
+                raise ValueError('Expected four finite local bracket prisms')
+            for bracket in brackets:
+                volume = abs(np.linalg.det([bracket[1]-bracket[0], bracket[3]-bracket[0],
+                                            bracket[4]-bracket[0]]))
+                if volume <= 1e-6:
+                    raise ValueError('Ladder bracket must have positive volume')
+            parts[-4:] = brackets.tolist()
     elif kind == "staircase":
         width, run, rise = (_positive(p, k) for k in ("width", "run", "rise"))
         steps = _count(p, "steps", 2, 64)

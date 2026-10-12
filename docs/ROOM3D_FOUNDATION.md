@@ -562,3 +562,20 @@ four-view review shows less excessive rung density, and all-camera model-depth
 checks pass. This is not a whole-room visual pass: brackets remain up to 667
 game units from the current finite walls, so wall contact fails. Support and
 independent-room validation still prevent automatic replacement integration.
+
+`room3d_ladder_supports.anchor_brackets` adapts only four bracket wall caps and
+links to nearby finite vertical surfaces. Rails, rungs and pose stay unchanged.
+Every cap corner and center must lie within 10 game units of its assigned wall
+group. A missing or excessively distant support causes exact rollback of the
+whole attachment; partial attachment is not returned. Original surfaces are
+not extended. The local `bracket_parts` parameter stores the four fitted closed
+prisms so regenerating the shape preserves them. Invalid/nonfinite/zero-volume
+overrides are rejected. Optional ordered `bracket_levels` define ordinary
+bracket heights when no fitted override is present.
+
+Wall-aligned pose alternatives are available separately; bounded bracket-height
+adjustments retain finite cap contact without extending the wall. They still
+need render/depth selection. Neither finite contact nor a short link proves
+mechanical support or absence of intersections with provisional wall volumes.
+Existing scene occlusion, source appearance and independent-room checks remain
+necessary before a reconstructed room is accepted.

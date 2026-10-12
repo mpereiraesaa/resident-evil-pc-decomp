@@ -95,6 +95,9 @@ def local_parts(kind, p):
             _positive(p, name) for name in ("width", "height", "thickness", "stand_off")
         )
         rungs = _count(p, "rungs", 2, 64)
+        phase = float(p.get('rung_phase', 0))
+        if not math.isfinite(phase) or not -.45 <= phase <= .45:
+            raise ValueError('Ladder rung phase must be finite and within -.45..+.45')
         if (width <= 4 * thickness or height <= 2 * thickness * (rungs + 1)
                 or stand_off < thickness):
             raise ValueError("Ladder needs open rung spacing, rail clearance and positive wall stand-off")
@@ -104,7 +107,7 @@ def local_parts(kind, p):
         for x in (-half_span, half_span):
             parts.append(beam([x, 0, stand_off], [x, -height, stand_off], thickness / 2))
         for rung in range(rungs):
-            y = -height * (rung + 1) / (rungs + 1)
+            y = -height * (rung + 1 + phase) / (rungs + 1)
             parts.append(prism([-half_span, y - thickness / 2, stand_off - thickness / 2],
                                [half_span, y + thickness / 2, stand_off + thickness / 2]))
         for x in (-half_span, half_span):

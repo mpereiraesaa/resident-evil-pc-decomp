@@ -538,3 +538,18 @@ rung initialization and confirm reserved-image rollback. Strong background
 grain can still cause abstention. In the ROOM502 development control the
 filtered training evidence is insufficient, so the seventeen-rung proposal
 is retained exactly. This is a recorded limitation, not a native quality gain.
+
+`room3d_ladder_spacing.refine_spacing` provides a separate structural cue when
+image edges are weak. It rectifies a narrow central strip of each training
+mask using the shared rail plane. Filled envelopes supply no count evidence.
+At least three separated occupied bands with intervening holes must admit a
+regular period; one omitted rung per interval is allowed and recorded. Hidden
+rungs and total count remain inferred. Inconsistent counts across informative
+training views abstain. With at least three observations, the final mask is
+reserved and can only veto the training selection, without reselection.
+
+Actual rung rasterization selects count and phase while keeping rails, brackets
+and pose fixed. Optional `rung_phase` (-.45..+.45, default 0) shifts the regular
+sequence by a fraction of its pitch while leaving positive end clearances.
+This remains an initialization tool; scene-depth/contact checks and independent
+native-room validation are required before batch replacement integration.

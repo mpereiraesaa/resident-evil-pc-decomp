@@ -483,3 +483,20 @@ validate positive fluorescent reconstruction. Selection excluded recorded
 development room stems and exact cached RGB reuse without filtering fit scores
 or acceptance. Neither selected lamp has a reserved observation. Both rooms
 still need substantial geometry work; the option remains disabled by default.
+
+### Vertical ladder geometry prior
+
+`room3d_shapes.generate('ladder', parameters, origin, yaw)` generates two
+vertical rails, regularly spaced open rungs and four wall brackets. Required
+parameters are `width`, `height`, `thickness`, `stand_off` and integer `rungs`
+(2..64). The base origin lies on the local wall plane Z=0; rails sit at
+Z=`stand_off` and extend upward along negative game Y. Rungs intersect the
+rails, brackets reach the wall plane, and gaps remain actual empty geometry.
+Parts retain explicit rail/rung/bracket roles and export through the ordinary
+room mesh path. Width, spacing and stand-off checks reject degenerate solids.
+
+This is a reusable geometry foundation. Automatic ladder recognition, shared
+wall placement, render fitting and independent native-room validation are
+still required; the existing batch classifier does not select this family.
+Bracket depth and unobserved parts remain estimated, and the generator adds
+no climbing or navigation behavior.

@@ -90,6 +90,26 @@ def local_parts(kind, p):
         half = width * 0.75
         parts.append(prism([-half, -base, -half], [half, 0, half]))
         parts.append(prism([-half, -height, -half], [half, -height + capital, half]))
+    elif kind == "ladder":
+        width, height, thickness, stand_off = (
+            _positive(p, name) for name in ("width", "height", "thickness", "stand_off")
+        )
+        rungs = _count(p, "rungs", 2, 64)
+        if (width <= 4 * thickness or height <= 2 * thickness * (rungs + 1)
+                or stand_off < thickness):
+            raise ValueError("Ladder needs open rung spacing, rail clearance and positive wall stand-off")
+        half_span = (width - thickness) / 2
+        # Rails end on the base/top planes. Rungs intersect their center lines;
+        # four brackets connect the rails to the local wall plane Z=0.
+        for x in (-half_span, half_span):
+            parts.append(beam([x, 0, stand_off], [x, -height, stand_off], thickness / 2))
+        for rung in range(rungs):
+            y = -height * (rung + 1) / (rungs + 1)
+            parts.append(prism([-half_span, y - thickness / 2, stand_off - thickness / 2],
+                               [half_span, y + thickness / 2, stand_off + thickness / 2]))
+        for x in (-half_span, half_span):
+            for y in (-height * .1, -height * .9):
+                parts.append(beam([x, y, 0], [x, y, stand_off], thickness / 2))
     elif kind == "staircase":
         width, run, rise = (_positive(p, k) for k in ("width", "run", "rise"))
         steps = _count(p, "steps", 2, 64)
@@ -331,6 +351,8 @@ def generate(kind, parameters, origin=(0, 0, 0), yaw=0):
         lights = int(parameters["arms"])
         result["part_roles"] = ["support", "support"] + ["shade"] * lights + [
             "support"] * (len(parts) - 2 - lights)
+    if kind == "ladder":
+        result["part_roles"] = ["rail"] * 2 + ["rung"] * int(parameters["rungs"]) + ["bracket"] * 4
     if kind == "lamp" and parameters.get("profile") == "wall_linear":
         result["part_roles"] = ["support", "support"] + ["shade"] * int(parameters["arms"])
     if kind == "lamp" and parameters.get("profile") == "ceiling_fan":

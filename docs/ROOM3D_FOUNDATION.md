@@ -500,3 +500,19 @@ wall placement, render fitting and independent native-room validation are
 still required; the existing batch classifier does not select this family.
 Bracket depth and unobserved parts remain estimated, and the generator adds
 no climbing or navigation behavior.
+
+`room3d_ladder_fit.proposals` adds training-only shared-rail hypotheses. Long
+mask edges must agree with projected game gravity; matching rail planes from
+two cameras triangulate a pair of world axes. A viewport-clipped rail may
+extrapolate outside the image at the comparison row. Height uses the union of
+training extents rather than requiring a partial view to reproduce the whole
+ladder. With at least three observations the final view remains reserved and
+cannot affect initialization. Ill-conditioned baselines, implausible widths
+and heights, and inconsistent extra training axes abstain.
+
+These proposals tolerate a filled SAM envelope in one image and visible rung
+holes in another. They do not yet replace the batcher's stair fit: candidate
+selection still needs actual render comparison, reliable scene depth, finite
+wall/contact checks and independent-room validation. Rung spacing and the
+inferred plane behind the rails are estimated; triangulation does not prove
+that such a support wall exists.

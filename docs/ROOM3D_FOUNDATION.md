@@ -1,8 +1,41 @@
 # Offline room reconstruction foundations
 
-These modules provide the first independently usable part of the room batcher.
+These modules provide independently usable foundations for the room batcher.
 They do not change the game renderer or reconstruct a room on their own. Later
-changes add room surveys, procedural shapes, fitting, appearance and reporting.
+changes add room surveys, fitting, appearance and reporting.
+
+Procedural shapes
+-----------------
+
+`tools/room3d_shapes.py` generates serializable columns, stair flights with an
+optional landing, railings and lamps. Its only dependency is NumPy. For example:
+
+```python
+from room3d_shapes import generate
+
+stairs = generate("staircase", {"width": 1200, "run": 3600, "rise": 1800,
+                                "steps": 9, "landing": 900})
+```
+
+The result contains closed eight-vertex parts, bounding limits and the parameters
+used to generate them. Coordinates use negative Y upwards; origin and yaw apply
+one rigid transform to all parts. Stairs support solid or suspended construction;
+railings support posts, a continuous handrail or a bounded assembly of segments.
+Lamp profiles include wall fixtures, candles and ceiling fans. These are estimated
+design priors, not recovered original meshes. This library does not locate objects
+in images, choose a fitting family, export OBJ or establish traversability.
+
+`test_room3d_primitives.py` separates the existing generator invariants from the
+later fitting integration suite. It checks regular steps and landing continuity,
+suspended-flight clearance, valid closed columns, rigid transforms, rail contact,
+lamp symmetry and rejection of invalid dimensions. Run it with:
+
+```sh
+python -m unittest discover -s tests -p test_room3d_primitives.py
+```
+
+Offline rendering and checkpoints
+---------------------------------
 
 `tools/room3d_preview.py` renders an existing OBJ with an explicit game camera:
 

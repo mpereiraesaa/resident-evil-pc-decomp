@@ -499,6 +499,8 @@ def process(
             raise ValueError('ceiling_fan_prompt_recovery requires masks/depth, parametric_details, ceiling_fan_fixtures and ceiling_fan_anchors')
         if recipe.get('visual_stair_proxy_cleanup', False) and not recipe.get('parametric_details', False):
             raise ValueError('visual_stair_proxy_cleanup requires parametric_details')
+        if recipe.get('object_wall_fitting', False) and not recipe.get('parametric_details', False):
+            raise ValueError('object_wall_fitting requires parametric_details')
         if recipe.get('vertical_ladders', False) and not recipe.get('parametric_details', False):
             raise ValueError('vertical_ladders requires parametric_details')
         if segmentation_root:
@@ -700,6 +702,14 @@ def process(
                 dest/'vertical-ladders', generate_mesh)
             result['vertical_ladders'] = ladder_report
             write_json(dest/'after-ladders-recipe.json', fitted)
+        if recipe.get('object_wall_fitting', False):
+            from room3d_object_wall_fit import fit as fit_object_walls
+
+            fitted, wall_report = fit_object_walls(
+                room, fitted, detail_segments, depth_views,
+                dest/'object-wall-fitting', generate_mesh)
+            result['object_wall_fitting'] = wall_report
+            write_json(dest/'after-object-walls-recipe.json', fitted)
         if fixture_segments is not None:
             from room3d_fixture_recovery import appearance_segments
 

@@ -713,3 +713,29 @@ unchanged. Explicit four-view final texture inspection still records
 missing upper architecture and distorted cabinet appearance persist. This
 is a development diagnostic, not automatic batch integration, independent
 positive validation or runtime/navigation approval.
+
+### Opt-in batch object/wall fitting
+
+Room recipes may enable `object_wall_fitting: true` with parametric details,
+segmentation and depth. After vertical ladder reconstruction, the batcher runs
+versioned local wall proposals and training-render selection before texture
+baking. Only retained shared-rail interpretations with at least two referenced,
+high-confidence source views qualify. Multiple referenced masks in a camera
+are combined, preserving their original confidence and pixel hashes.
+
+The last observation is reserved when there are at least three. Selection
+uses mean visible-mask agreement plus a visibility term, with per-view
+regression limits and a required visibility gain. Once chosen, a candidate
+can only be vetoed by the reserved view, fixed-support all-camera depth,
+finite wall/floor contacts or detachment of an existing supported ladder or
+lamp. The fitter never tries another candidate after a veto. Failed objects
+leave the prior recipe unchanged. A retained object is marked to prevent
+repeated wall retreats. Script/manual geometry is not selected for this fit.
+
+`object-wall-fitting/results.json` records trials, the frozen training choice
+and every veto; `after-object-walls-recipe.json` contains retained geometry.
+Post-selection measurements and appearance baking use the final mesh. These
+reports are separate from the earlier ladder and ordinary detail fit reports.
+The option is disabled by default. Estimated visual wall location, model
+agreement and contact do not establish original fidelity, hidden geometry,
+mechanical support, independent generalization or navigation.

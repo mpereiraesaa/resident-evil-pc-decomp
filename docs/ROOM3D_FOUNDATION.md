@@ -615,3 +615,13 @@ retains the foreground-fixture veto. Post-selection detail measurement includes
 the actual exported ladder group. The option remains disabled by default;
 retention is estimated reconstruction, not a whole-room visual pass, mechanical
 support, independent positive generalization or navigation validation.
+
+The frozen ROOM502 full-batch ON/OFF trial at source `dbebeaf` retains one
+seven-rung ladder. All four fixed-support depth gates, finite floor/wall
+contact, door clearance and observed visibility pass. Source archives match
+the committed Git blobs; cached inputs and baseline exports remain unchanged.
+Explicit inspection of all four final textured views still records
+`needs_further_geometry_work`: provisional walls hide part of the rails and
+rungs, with coarse bracket appearance and duplicated source ladder projection.
+The no-ladder view is byte-identical. These gates are not a fidelity approval;
+the option remains experimental and disabled by default.

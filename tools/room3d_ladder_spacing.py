@@ -79,7 +79,7 @@ def spacing_evidence(obj, observation):
             'rungs': rungs, 'phase': phase}, report
 
 
-def refine_spacing(room, obj, observations, out, generate_mesh):
+def refine_spacing(room, obj, observations, out, generate_mesh, *, reserve_last=True):
     """Select count/phase on open training masks; reserve the final view.
 
     This is initialization refinement only. Scene depth and finite support
@@ -90,7 +90,7 @@ def refine_spacing(room, obj, observations, out, generate_mesh):
     ids = [o['camera'] for o in observations]
     if len(ids) != len(set(ids)):
         raise ValueError('Expected distinct observations')
-    training = observations[:-1] if len(observations) >= 3 else observations
+    training = observations[:-1] if reserve_last and len(observations) >= 3 else observations
     reserved = observations[len(training):]
     report = {'status': 'insufficient_open_training_masks',
               'training_cameras': [o['camera'] for o in training],

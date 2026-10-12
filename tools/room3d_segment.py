@@ -97,6 +97,7 @@ def texture_support(entries, kind, xy, foreground_fixture_guard=False):
                 fixture_safe &= ~mask[xy[:, 1], xy[:, 0]]
     allowed = {
         "staircase": ("staircase",),
+        "ladder": ("staircase", "ladder"),
         "railing": ("railing",),
         "barrel": ("barrel",),
         "lamp": ("lamp", "chandelier", "ceiling fan"),
@@ -128,7 +129,7 @@ def texture_support(entries, kind, xy, foreground_fixture_guard=False):
         fixture = any(
             word in item["label"] for word in ("lamp", "chandelier", "railing", "ceiling fan")
         )
-        if fixture and kind in ("wall", "floor", "ceiling", "staircase", "door_panel"):
+        if fixture and kind in ("wall", "floor", "ceiling", "staircase", "ladder", "door_panel"):
             hard_conflict |= hit
         elif matches_material(item["label"], allowed):
             compatible |= hit

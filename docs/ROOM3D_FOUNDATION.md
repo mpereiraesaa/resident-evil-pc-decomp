@@ -589,3 +589,29 @@ establish absence of intersections. Wall-aligned alternatives were also tried
 but worsened close-view mask agreement. A fixed shared-rail scan of three new
 metadata groups found no eligible positive ladder case; no independent positive
 generalization or automatic batch integration is claimed.
+
+### Opt-in batch vertical ladders
+
+Room recipes can enable `vertical_ladders: true` with parametric details,
+segmentation and depth inputs. After ordinary detail fitting, the batcher
+associates staircase observations, proposes shared upright rails, estimates
+open-mask rung spacing, and anchors brackets to finite existing walls. Filled
+masks constrain the silhouette envelope; open masks constrain actual geometry.
+Raw detector/SAM confidence remains attached to each source observation.
+
+Candidate choice uses training masks only. The final observation is reserved
+when at least three exist; reserved evidence and scene gates can veto the
+fixed selection without choosing another candidate. Retention requires minimum
+mask agreement, sufficient visible geometry, all-camera fixed-support depth
+safety, finite bracket/floor contact and clear door volumes. Only inferred,
+matched staircase primitives can be removed; script-owned geometry is retained.
+Repeated execution detects an existing shared ladder instead of duplicating it.
+Rejected groups leave the recipe unchanged.
+
+Reports live in `vertical-ladders/results.json` and the exported fitted recipe
+records the ladder, evidence and reproducible bracket parameters. The texture
+baker recognizes ladder pixels through staircase/ladder semantic masks and
+retains the foreground-fixture veto. Post-selection detail measurement includes
+the actual exported ladder group. The option remains disabled by default;
+retention is estimated reconstruction, not a whole-room visual pass, mechanical
+support, independent positive generalization or navigation validation.

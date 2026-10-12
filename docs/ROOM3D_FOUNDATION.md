@@ -699,3 +699,17 @@ whole-wall translation. This remains a proposal requiring the same scene vetoes.
 The whole-run ROOM502 experiment at `d259f0e` chose a 270-unit retreat on training
 renders but failed fixed-support depth checks in three cameras; it was rejected
 without reselection. The original completed room export remains unchanged.
+
+The local-span frozen ROOM502 experiment at `d3e2d31` selects a 270-unit
+retreat using training renders, then passes unchanged fixed-support depth
+tolerance (+0.005) in all four cameras. Visible ladder fraction rises from
+0.548 to 0.852 and from 0.617 to 1.000 in its two observed views; these are
+visibility fractions, not fidelity percentages. Rails/rungs and rail-end
+attachment centers remain unchanged. Finite bracket contact is verified on
+the actual final baked mesh, rail feet remain on the floor, all 162 archived
+tool files match their Git blobs, and original export/input hashes remain
+unchanged. Explicit four-view final texture inspection still records
+`needs_further_geometry_work`: gray ladder/brackets, smeared wall continuation,
+missing upper architecture and distorted cabinet appearance persist. This
+is a development diagnostic, not automatic batch integration, independent
+positive validation or runtime/navigation approval.

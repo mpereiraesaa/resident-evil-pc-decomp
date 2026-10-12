@@ -302,3 +302,31 @@ silhouette; the guarded replay restored every final image to the disabled contro
 python -m unittest discover -s tests -p test_room3d_fixture_parts.py
 python -m unittest discover -s tests -p test_room3d_creative_fixture_parts.py
 ```
+
+Wall handrails and missing surface recovery
+-------------------------------------------
+
+`tools/room3d_railings.py` adds continuous and segmented handrail candidates to
+the existing open-baluster family. Candidates use training observations only;
+visible native wall patches can supply an explicitly estimated placement prior.
+The existing fitter chooses among the families and applies the same silhouette
+and depth checks. The rendered open-baluster control retains its original shape.
+Full ROOM400 and independent ROOM405 comparisons improved the observed handrail
+silhouettes; their overall room geometry still needs work. The bounded alternative
+is enabled by `creative-v2`, with explicit per-room disabling preserved.
+
+`tools/room3d_enclosure.py` fits shared architectural planes. The optional
+`tools/room3d_visual_surfaces.py` uses them only when every baseline view lacks
+visible geometry and adequate multiview surface evidence exists. It does not
+silently repair partially empty exports. A conservative existing-floor prior
+requires consistent support in all training views, and the reserved depth view
+can veto the proposal. New walls and floors remain estimated visual surfaces;
+native collision and scripts stay unchanged.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_railings.py
+python -m unittest discover -s tests -p test_room3d_visual_surfaces.py
+```
+
+The detailed local experiments and limitations remain in `docs/ROOM3D_BATCH.md`,
+which accompanies the complete pipeline publication after its dependencies.

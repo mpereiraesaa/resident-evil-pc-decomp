@@ -2,7 +2,7 @@
 
 These modules provide independently usable foundations for the room batcher.
 They do not change the game renderer or reconstruct a room on their own. Later
-changes add room surveys, fitting, appearance and reporting.
+changes add detail fitting and complete reconstruction orchestration.
 
 Procedural shapes
 -----------------
@@ -169,3 +169,39 @@ python -m unittest discover -s tests -p test_room3d_correspondence.py
 python -m unittest discover -s tests -p test_room3d_fixture_tints.py
 python -m unittest discover -s tests -p test_room3d_bake_cache.py
 ```
+
+Batch survey and baseline export
+--------------------------------
+
+`tools/survey_room3d.py` exports native cameras, collision bounds and an SVG plan
+from a USA PC RDT. The existing decoder is preserved; original assets stay
+read-only. Collision records describe gameplay constraints, not scenery meshes.
+
+`tools/batch_room3d.py` provides resumable room selection and baseline export:
+
+```sh
+python tools/batch_room3d.py --assets path/to/USA --out build/room-survey \
+  --survey-only
+python tools/batch_room3d.py --assets path/to/USA --out build/room-mesh \
+  --rooms ROOM4050 --mesh-only
+```
+
+The first command inventories all RDT entries. The second exports a provisional
+collision extrusion and its survey. Neither command runs a vision model or
+modifies game files. `--resume` reuses only matching input/code/recipe keys and
+complete, unchanged exports. An empty RDT slot is distinct from a failed export.
+
+`tools/room3d_floor.py` subtracts explicit openings from floor patches.
+`tools/room3d_scene.py` supplies decoded room anchors and provisional object
+priors. `tools/room3d_profiles.py` merges versioned options without mutating
+caller recipes; explicit room settings override profile defaults. The `existing`
+profile retains existing recipes. Profile isolation and CLI checks run with:
+
+```sh
+python -m unittest discover -s tests -p test_room3d_profiles.py
+```
+
+This publication step supports surveys and baseline meshes. The complete CLI
+already contains reconstruction hooks; their remaining fitting, model and review
+modules arrive in subsequent dependency steps. A baseline export is not a
+completed reconstruction or an approval of its appearance or navigation.

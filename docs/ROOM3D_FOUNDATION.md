@@ -330,3 +330,30 @@ python -m unittest discover -s tests -p test_room3d_visual_surfaces.py
 
 The detailed local experiments and limitations remain in `docs/ROOM3D_BATCH.md`,
 which accompanies the complete pipeline publication after its dependencies.
+
+Local model inference and review queues
+---------------------------------------
+
+`tools/room3d_vision.py`, `tools/room3d_depth.py` and `tools/room3d_review.py` supply
+local Grounding DINO detections, DA3 depth proposals and Qwen visual discrepancy
+proposals. The modules declare pinned model revisions. Inference requires their
+Torch/Transformers/DA3 dependencies and downloaded weights; cached evidence can
+be consumed by the fitting pipeline without running these models again. Images
+are processed locally, and model output never acts as authoritative acceptance.
+
+DA3 aligns multiview depth to input camera baselines. A single-view room instead
+uses an explicit estimated camera-target-distance editing prior; that scale is
+not claimed to be a metric reconstruction. Neither path changes native cameras.
+
+`tools/room3d_review_queue.py` separates completed exports from pending reviews
+and reuses a review only when both image hashes, model revision and prompt match.
+`tools/room3d_novel_views.py` renders provisional new viewpoints; these have no
+original image reference and do not establish shoulder-camera gameplay.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_review_queue.py
+```
+
+With these dependencies present, the batcher can finish image-assisted exports
+using cached masks/depth and `--defer-review`. Pending review remains visible in
+the report rather than being reported as a visual pass.

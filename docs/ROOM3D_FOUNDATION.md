@@ -859,6 +859,21 @@ mounting plate leaves its finite roof although its suspension link is unchanged.
 All 235 room-tool tests pass. These tests verify fitting/attachment invariants;
 they do not establish native-room visual improvement or positive generalization.
 
+The frozen `71fa33a` full-batch ROOM512 ON/OFF pair retains one compact panel
+attached to the actual finite ceiling underside (`primitive_1`). Measurement
+on the final baked geometry raises its two source-mask IoUs from 0.898/0.910
+to 0.922/0.926. Final images change by 655/783 pixels in cameras 0/1; camera 2
+remains RGBA-identical. Explicit inspection of all three source/OFF/ON images
+finds a cleaner shared rectangular silhouette than the fragmented OFF shade,
+but its flat pale face loses tube highlights and frame detail. Distorted door,
+sink, rail appearance and gray side geometry remain. Both bound reviews retain
+`needs_further_geometry_work`. Raw-depth gate scores stay unchanged although
+actual rendered depth changes in cameras 0/1; that gate does not independently
+recover the light's depth. Git blobs, frozen inputs and completed checkpoints
+were verified without modifying original exports. This development room has
+two object observations, no reserved object view and no independent positive
+validation; the ceiling prior itself used detector boxes in all room cameras.
+
 ```sh
 python -m unittest discover -s tests -p test_room3d_ceiling_linear.py
 ```

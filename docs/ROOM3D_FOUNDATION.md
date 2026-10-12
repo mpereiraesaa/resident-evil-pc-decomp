@@ -793,3 +793,18 @@ and excluded-source sampling checks. Both room reviews retain
 `needs_further_geometry_work`; two object observations provide no third
 reserved view, and neither comparison establishes independent positive
 generalization, whole-room fidelity or runtime/navigation approval.
+
+A metadata-first recheck at `ff2a80d` uses the current observation, association
+and rail-initialization code on 13 additional cached scenario-0 room entries
+with high-confidence staircase masks in at least two cameras. Previously
+reviewed room stems and exact reused RGB hashes are excluded before geometric
+analysis. Of these entries, two have associated multi-view staircase groups;
+neither initializes a valid vertical ladder. Enumerating previously unassociated
+camera pairs with the same unchanged rail predicate also yields no proposal.
+This does not justify relaxing association or rail-size gates: most observations
+lack a gravity-compatible rail pair, while one shared group exceeds the current
+ladder width prior. The diagnostic freezes Git tools and verifies 992 input
+file hashes before and after analysis. It leaves completed exports unchanged
+and supplies no independent positive validation. Cached detector proposals and
+exact-image exclusions do not establish unseen training data or perceptual
+independence; ordinary staircases still require their separate shape generator.

@@ -579,3 +579,13 @@ need render/depth selection. Neither finite contact nor a short link proves
 mechanical support or absence of intersections with provisional wall volumes.
 Existing scene occlusion, source appearance and independent-room checks remain
 necessary before a reconstructed room is accepted.
+
+The frozen ROOM502 replay at source `17bbd5f` adapts all four brackets while
+preserving rails, seven rungs and pose exactly. Finite cap distance is below
+1e-12 game units, rail feet remain on the floor, and all four model-depth
+checks pass. Explicit four-view review retains `needs_further_geometry_work`:
+provisional volumes still occlude part of the ladder and contact does not
+establish absence of intersections. Wall-aligned alternatives were also tried
+but worsened close-view mask agreement. A fixed shared-rail scan of three new
+metadata groups found no eligible positive ladder case; no independent positive
+generalization or automatic batch integration is claimed.

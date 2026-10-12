@@ -4,6 +4,7 @@ Mask ownership is estimated from retained geometry evidence. It does not recover
 the wall behind an object or change geometry, source images or model confidence.
 """
 import numpy as np
+from room3d_segment import matches_material
 
 ARCHITECTURE = {'wall', 'floor', 'ceiling', 'door_panel'}
 
@@ -28,8 +29,9 @@ def owned_masks(room, segments, observations, group_kinds, exclude_camera=None):
             for item, mask in segments[index]:
                 scores = [item.get('score', 0), item.get('predicted_iou', 0)]
                 if ((camera['index'], item['mask']) not in wanted
-                        or item['label'].strip().casefold() not in ('staircase', 'ladder')
-                        or not np.isfinite(scores).all() or scores[0] < .4 or scores[1] < .7):
+                        or not matches_material(item['label'].strip().casefold(), ('staircase', 'ladder'))
+                        or not np.isfinite(scores).all() or not all(0 <= s <= 1 for s in scores)
+                        or scores[0] < .3 or scores[1] < .8):
                     continue
                 if mask.shape != owned.shape or mask.dtype != bool:
                     raise ValueError('Expected native boolean ownership mask')

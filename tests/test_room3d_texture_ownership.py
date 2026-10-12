@@ -41,10 +41,18 @@ class TextureOwnershipTests(unittest.TestCase):
             masks, evidence = owned_masks(self.room,self.segments,sources,kinds,excluded)
             self.assertFalse(masks[0].any())
             self.assertEqual(evidence,[])
-        for bad in (float('nan'),.2):
+        for bad in (float('nan'),.2,1.1):
             item = dict(self.item,score=bad)
             masks,_ = owned_masks(self.room,[[(item,self.mask)]],self.sources,self.kinds)
             self.assertFalse(masks[0].any())
+        for label in ('staircase','wooden staircase','ladder'):
+            item = dict(self.item,label=label,score=.34,predicted_iou=.81)
+            masks,evidence = owned_masks(self.room,[[(item,self.mask)]],self.sources,self.kinds)
+            np.testing.assert_array_equal(masks[0],self.mask)
+            self.assertEqual(evidence[0]['score'],.34)
+        item = dict(self.item,score=.9,predicted_iou=.79)
+        masks,_ = owned_masks(self.room,[[(item,self.mask)]],self.sources,self.kinds)
+        self.assertFalse(masks[0].any())
         for (a,b),(c,d) in zip(self.segments[0],original[0],strict=True):
             self.assertEqual(a,c)
             np.testing.assert_array_equal(b,d)

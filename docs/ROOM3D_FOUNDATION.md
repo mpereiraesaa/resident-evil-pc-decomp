@@ -640,7 +640,7 @@ The opt-in recipe `reconstructed_object_appearance: true` prevents retained
 shared vertical ladders from being projected a second time onto architecture.
 Only exact camera/mask references belonging to present, retained ladder
 primitives qualify. Finite detector and mask confidence must meet the existing
-0.4/0.7 thresholds. An overlapping wall mask cannot override this exclusion.
+0.3/0.8 thresholds used for high-confidence object observations. An overlapping wall mask cannot override this exclusion.
 Wall, floor, ceiling and door projection samples and filtered source textures
 exclude owned pixels; inferred architectural patches also exclude them before
 patch selection. Original images, geometry and raw model confidence are unchanged.

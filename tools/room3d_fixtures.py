@@ -335,6 +335,10 @@ def linear_wall_proposals(reference, training, triangles, groups, images=None, t
 def anchor_fixture(candidate, prior):
     """Keep the selected support family and contact point during shape fitting."""
     if prior.get('support') == 'ceiling':
+        if candidate['shape']['parameters'].get('profile') in ('ceiling_linear', 'ceiling_panel'):
+            from room3d_ceiling_linear import anchor
+
+            return anchor(candidate, prior)
         return anchor_ceiling_fan(candidate, prior)
     if prior.get('support') != 'horizontal':
         return anchor_wall_lamp(candidate, prior)
@@ -347,6 +351,10 @@ def anchor_fixture(candidate, prior):
 def fixture_contact(obj, triangles, groups, tolerance=10):
     prior = obj.get('attachment_prior', {})
     if prior.get('support') == 'ceiling':
+        if obj['shape']['parameters'].get('profile') in ('ceiling_linear', 'ceiling_panel'):
+            from room3d_ceiling_linear import contact
+
+            return contact(obj, triangles, groups, tolerance)
         if obj['shape']['parameters'].get('profile') != 'ceiling_fan':
             return False
         surfaces = [t for t, g in zip(triangles, groups, strict=True) if g == prior['group']]

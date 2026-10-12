@@ -189,24 +189,33 @@ def local_parts(kind, p):
         arms = _count(p, "arms", 1, 12)
         shade = _positive(p, "shade")
         profile = p.get("profile", "shade")
-        if profile not in ("shade", "candle", "candelabra", "wall_sconce", "wall_candelabra", "table_lamp", "ceiling_fan", "wall_linear", "ceiling_linear"):
+        if profile not in ("shade", "candle", "candelabra", "wall_sconce", "wall_candelabra", "table_lamp", "ceiling_fan", "wall_linear", "ceiling_linear", "ceiling_panel"):
             raise ValueError("Unknown lamp profile")
-        if profile == "ceiling_linear":
+        if profile in ("ceiling_linear", "ceiling_panel"):
             width = _positive(p, "housing_width")
-            if (not 1 <= arms <= 3 or radius * 2 < width * 3
-                    or thickness >= shade or height <= 2 * thickness + .7 * shade
-                    or ((arms - 1) * 1.25 + .7) * shade > width):
-                raise ValueError("Ceiling linear fixture needs elongated housing, separate tubes and positive suspension")
+            light_depth = .7 * shade if profile == 'ceiling_linear' else shade
+            valid_body = (1 <= arms <= 3 and radius * 2 >= width * 3
+                          and thickness < shade
+                          and ((arms - 1) * 1.25 + .7) * shade <= width
+                          if profile == 'ceiling_linear' else
+                          arms == 1 and radius * 2 >= width > 4 * thickness
+                          and shade <= thickness)
+            if not valid_body or height <= 2 * thickness + light_depth:
+                raise ValueError("Ceiling light needs valid housing/light dimensions and positive suspension")
             # Local origin is the tube underside. Only the mounting plate and
             # suspension change when an estimated ceiling height changes.
             parts.append(prism([-radius * .8, -height, -width * .3],
                                [radius * .8, -height + thickness, width * .3]))
-            housing_top = -thickness - .7 * shade
+            housing_top = -thickness - light_depth
             for x in (-radius * .6, radius * .6):
                 parts.append(beam([x, -height + thickness, 0],
                                   [x, housing_top, 0], thickness / 2))
             parts.append(prism([-radius, housing_top, -width / 2],
-                               [radius, -.7 * shade, width / 2]))
+                               [radius, -light_depth, width / 2]))
+            if profile == 'ceiling_panel':
+                parts.append(prism([-radius+thickness, -shade, -width/2+thickness],
+                                   [radius-thickness, 0, width/2-thickness]))
+                return parts
             for tube in range(arms):
                 z = (tube - (arms - 1) / 2) * shade * 1.25
                 parts.append(beam([-radius + shade, -.35 * shade, z],
@@ -395,7 +404,7 @@ def generate(kind, parameters, origin=(0, 0, 0), yaw=0):
         result["part_roles"] = ["rail"] * 2 + ["rung"] * int(parameters["rungs"]) + ["bracket"] * 4
     if kind == "lamp" and parameters.get("profile") == "wall_linear":
         result["part_roles"] = ["support", "support"] + ["shade"] * int(parameters["arms"])
-    if kind == "lamp" and parameters.get("profile") == "ceiling_linear":
+    if kind == "lamp" and parameters.get("profile") in ("ceiling_linear", "ceiling_panel"):
         result["part_roles"] = ["support"] * 4 + ["shade"] * int(parameters["arms"])
     if kind == "lamp" and parameters.get("profile") == "ceiling_fan":
         result["part_roles"] = ["support", "support", "shade"] + ["support"] * int(parameters["arms"])

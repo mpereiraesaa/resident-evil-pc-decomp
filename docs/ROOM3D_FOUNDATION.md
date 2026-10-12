@@ -832,10 +832,32 @@ Four actual-geometry tests cover closed exported parts and material roles,
 unchanged rendered depth under role coloring, rotated mounting contact,
 center-only/far/sloped/wrong-group rejection, unchanged visible body under
 extension and invalid dimensions. All 231 room-tool tests pass. ROOM512 was
-explicitly inspected as development data for this category: its current fitted
-recipe contains no ceiling surface, so this attachment foundation alone cannot
-replace its light. Its cached ceiling masks may supply evidence for a future
-separate surface fit; their existence is not a recovered or validated ceiling.
+explicitly inspected as development data for this category. Its current fitted
+recipe does contain a ceiling box (`primitive_1`), estimated from detector boxes.
+The earlier claim that it had no ceiling inspected only `structural_surfaces`
+and missed that primitive. The actual exported finite underside is available
+for attachment; its height remains estimated rather than original geometry.
+
+`ceiling_light_fixtures: true` adds bounded ceiling-light initializations to
+the existing shared object fitter. Only training masks intersect the finite
+ceiling plane; inferred elongation, pose and dimensions initialize one- and
+two-tube design alternatives at four suspension drops. A separate compact
+`ceiling_panel` profile provides a rectangular housing with one inset light
+face for masks that do not establish elongated tube geometry. These are design
+alternatives, not recovered light types or verified component counts. The final observation
+is reserved when there are at least three. Existing silhouette, raw depth,
+support and final attachment checks still decide retention, without using a
+reserved view to select another candidate. Ceiling attachment remains finite
+through continuous fitting, and its contact cache includes the actual mounting
+plate rather than a suspension link. The option is disabled by default and
+requires native-room and independent positive validation.
+
+Four additional actual-render tests cover panel dimensions, finite proposal
+contact, default-off behavior, unchanged training initializations and selected
+shape when the reserved mask changes, and contact-cache rejection when a wider
+mounting plate leaves its finite roof although its suspension link is unchanged.
+All 235 room-tool tests pass. These tests verify fitting/attachment invariants;
+they do not establish native-room visual improvement or positive generalization.
 
 ```sh
 python -m unittest discover -s tests -p test_room3d_ceiling_linear.py

@@ -489,7 +489,7 @@ def variants(obj, scale=1.0):
     for angle in (-0.15 * scale, 0.15 * scale):
         yield generate(obj["kind"], p, origin, yaw + angle)
     for key in p:
-        if key == "arms" and p.get("profile") == "wall_linear":
+        if key == "arms" and p.get("profile") in ("wall_linear", "ceiling_linear", "ceiling_panel"):
             # Tube counts are separate initialized families; do not erase
             # repeated training-strip evidence during continuous fitting.
             continue
@@ -799,6 +799,16 @@ def fit_group(
     }
     scene_path = out / "scene.obj"
     generate_mesh(room, scene_path, recipe)
+    if (initial_candidates is None and group[0]['kind'] == 'lamp'
+            and recipe.get('ceiling_light_fixtures', False)):
+        from room3d_ceiling_linear import mask_starts
+        from room3d_connections import support_mesh
+
+        ceilings = {f'primitive_{i}' for i, p in enumerate(recipe.get('primitives', []))
+                    if p.get('kind') == 'ceiling'}
+        ceilings |= {s['group'] for s in recipe.get('structural_surfaces', [])
+                     if s['material'] == 'ceiling'}
+        starts.extend(mask_starts(training, *support_mesh(scene_path), ceilings))
     if (
         initial_candidates is None and group[0]["kind"] == "lamp"
         and recipe.get("creative_fallback", False)
@@ -959,9 +969,9 @@ def fit_group(
 
             # Radius/shade changes leave the same plate on the same immutable
             # scene. Reuse its geometric check across views and shape trials.
-            key = (obj["attachment_prior"]["group"],
-                   obj["shape"]["parameters"].get("profile"),
-                   np.asarray(obj["parts"][1], float).tobytes())
+            profile = obj["shape"]["parameters"].get("profile")
+            key = (obj["attachment_prior"]["group"], profile,
+                   np.asarray(obj["parts"][0 if profile in ('ceiling_linear', 'ceiling_panel') else 1], float).tobytes())
             if key not in attachment_checks:
                 attachment_checks[key] = fixture_contact(obj, *attachment_mesh)
             attached = attachment_checks[key]
@@ -1494,6 +1504,20 @@ def fit_objects(room, recipe, segments, depths, out, generate_mesh, images=None)
                     'stem_cap_contact': bool(contact),
                     'qualification': 'Finite stem-cap contact with inferred ceiling; mechanical support unverified',
                 }
+                attached &= bool(contact)
+            if obj['shape']['parameters'].get('profile') in ('ceiling_linear', 'ceiling_panel'):
+                from room3d_connections import support_mesh
+                from room3d_fixtures import fixture_contact
+
+                ceilings = {f'primitive_{i}' for i, p in enumerate(candidate['primitives'])
+                            if p.get('kind') == 'ceiling'}
+                ceilings |= {s['group'] for s in candidate.get('structural_surfaces', [])
+                             if s['material'] == 'ceiling'}
+                prior = obj.get('attachment_prior', {})
+                contact = (prior.get('group') in ceilings
+                           and fixture_contact(obj, *support_mesh(after_path)))
+                report['ceiling_attachment'] = {'mount_cap_contact': bool(contact),
+                    'qualification': 'Finite estimated ceiling/mount contact; hidden suspension and mechanical support unverified'}
                 attached &= bool(contact)
             fixture_prior = (
                 recipe.get("creative_fallback", False)

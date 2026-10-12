@@ -234,3 +234,23 @@ python -m unittest discover -s tests -p test_room3d_confidence.py
 This step provides the default fitting functions. Experimental creative/support
 options in the full source use additional modules supplied by subsequent steps;
 the complete `creative-v2` profile is not yet the isolated publication target.
+
+Supported stairs and independent depth vetoes
+---------------------------------------------
+
+`tools/room3d_supports.py` jointly considers a stair flight and nearby candidate
+supports, retaining native collision records and an explicit training/validation
+split. `tools/room3d_supported_occlusion.py` searches bounded raised alternatives
+using the same tread objective as the initial fit. A foreground occluder does not
+become proof of an object's recovered geometry.
+
+`tools/room3d_depth_guard.py` checks a selected assembly against independent raw
+depth and a conservative floor reference. Optional floor calibration requires
+consistent evidence and cannot turn disagreement into a favorable score. The
+reserved view can veto the selection; it cannot select another optimized winner.
+These modules are opt-in support/safety components, not proof of navigation.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_supported_occlusion.py
+python -m unittest discover -s tests -p test_room3d_depth_guard.py
+```

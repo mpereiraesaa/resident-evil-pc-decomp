@@ -7,6 +7,27 @@ scene-depth, finite support and independent-room checks remain necessary.
 import copy
 
 import numpy as np
+from room3d_ladder_supports import anchor_brackets
+from room3d_shapes import generate
+
+
+def refit_support(obj, triangles, groups, wall_groups):
+    """Reinitialize only bracket caps before attaching to a changed wall.
+
+    Previously fitted links can be oblique: their old shaft direction is not
+    a new wall normal. The procedural seed retains each rail-end attachment.
+    """
+    shape = obj['shape']
+    parameters = {k: v for k, v in shape['parameters'].items() if k != 'bracket_parts'}
+    seed = generate('ladder', parameters, shape['origin'], shape['yaw'])
+    if (not np.array_equal(seed['parts'][:-4], obj['parts'][:-4])
+            or not np.allclose(np.asarray(seed['parts'][-4:])[:, 4:].mean(1),
+                               np.asarray(obj['parts'][-4:])[:, 4:].mean(1), atol=1e-8, rtol=0)):
+        return obj, {'status':'nonregenerable_attachment', 'qualification':'Rails and rail-end attachments must remain unchanged'}
+    attached, report = anchor_brackets(seed, triangles, groups, wall_groups)
+    if report['status'] != 'anchored':
+        return obj, report
+    return {**copy.deepcopy(obj), **attached}, report
 
 
 def proposals(room, recipe, primitive_index, camera_origins,

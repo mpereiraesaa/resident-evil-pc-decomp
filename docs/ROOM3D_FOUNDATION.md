@@ -683,3 +683,11 @@ These are proposals only, not accepted batch replacements. They require
 training-render selection, reserved-view veto where available, fixed-support
 all-camera depth checks and bracket refitting/contact checks before retention.
 The proposal evidence explicitly marks the new wall location as estimated.
+
+When a wall changes, `refit_support` regenerates only the procedural bracket
+seed before finite attachment fitting. An already fitted oblique link cannot
+be used as the new wall-normal prior. Rails, rungs and rail-end attachment
+centers must regenerate unchanged; otherwise the function abstains. Failed
+support leaves the original object intact. Initial ROOM502 trials from
+`19a3de5` could not refit any brackets using their old oblique shafts; this
+failure is retained as development evidence, not a rejected depth experiment.

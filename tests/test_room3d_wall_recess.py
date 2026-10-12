@@ -9,9 +9,11 @@ import numpy as np
 
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'tools'))
 from batch_room3d import generate_mesh
+from room3d_connections import support_mesh
+from room3d_ladder_supports import anchor_brackets, finite_contact
 from room3d_preview import render
 from room3d_shapes import generate
-from room3d_wall_recess import proposals
+from room3d_wall_recess import proposals, refit_support
 
 
 class WallRecessTests(unittest.TestCase):
@@ -82,6 +84,28 @@ class WallRecessTests(unittest.TestCase):
                     fractions.append(visible.sum()/np.isfinite(part_before).sum())
                 self.assertGreater(fractions[1]-fractions[0],.1)
                 self.assertGreater(fractions[1],.95)
+
+    def test_refitted_brackets_keep_rail_endpoints_and_failed_support_rolls_back(self):
+        self.room['boundaries'][0]['type'] = 1
+        self.room['cameras'] = []
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            generate_mesh(self.room,root/'before.obj',self.recipe)
+            attached,report = anchor_brackets(self.recipe['primitives'][0],
+                *support_mesh(root/'before.obj'),{'boundary_0'})
+            self.assertEqual(report['status'],'anchored')
+            self.recipe['primitives'][0] = attached
+            candidate,_ = proposals(self.room,self.recipe,0,self.cameras,distances=(360,))[0]
+            generate_mesh(self.room,root/'after.obj',candidate)
+            triangles,groups = support_mesh(root/'after.obj')
+            result,report = refit_support(attached,triangles,groups,{'boundary_0'})
+            self.assertEqual(report['status'],'anchored')
+            self.assertTrue(finite_contact(result,triangles,groups))
+            np.testing.assert_array_equal(result['parts'][:-4],attached['parts'][:-4])
+            np.testing.assert_allclose(np.asarray(result['parts'][-4:])[:,4:].mean(1),
+                                       np.asarray(attached['parts'][-4:])[:,4:].mean(1),atol=1e-8)
+            failed,_ = refit_support(attached,triangles,groups,{'missing'})
+            self.assertIs(failed,attached)
 
 
 if __name__ == '__main__':

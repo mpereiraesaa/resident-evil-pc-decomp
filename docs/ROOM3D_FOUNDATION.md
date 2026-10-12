@@ -452,3 +452,11 @@ byte-identical to the pre-change run and retain its incorrect nine-arm shade
 family. This establishes abstention, not a native quality improvement. A
 source-compatible orientation/support initialization and additional-room
 validation remain necessary before enabling this option by default.
+
+The initializer can additionally use elongated, parallel bright components
+inside training masks when original images are available. This proposes a
+housing extent without replacing the object masks used by fitting or changing
+acceptance tolerances. Flat regions, round glints and fragmented highlights
+abstain. Cropped components are recorded as partial extent evidence; brightness
+is not proof of tube identity or emission. Only training cameras supply these
+pixels, and the complete observed object and scene-depth gates remain active.

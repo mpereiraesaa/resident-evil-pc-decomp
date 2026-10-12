@@ -6,12 +6,14 @@ import unittest
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]/'tools'))
 from batch_room3d import generate_mesh
 from room3d_connections import support_mesh
 from room3d_fixtures import (
     anchor_wall_lamp,
+    linear_highlights,
     linear_wall_proposals,
     multilight_wall_proposals,
     wall_plate_contact,
@@ -85,6 +87,45 @@ class LinearFixtureTests(unittest.TestCase):
             short['boundaries'][0].update(xmin=-100, xmax=100)
             generate_mesh(short, wall, {})
             self.assertEqual(list(linear_wall_proposals(seed, observations, *support_mesh(wall))), [])
+
+    def test_broad_dark_housing_uses_tube_seed_without_replacing_masks(self):
+        mask = np.zeros((240, 320), bool)
+        mask[80:160, 100:220] = True
+        rgb = np.full((240, 320, 3), 12, dtype='uint8')
+        rgb[105:113, 100:220] = 255
+        rgb[125:133, 100:220] = 255
+        image = Image.fromarray(rgb)
+        core, evidence = linear_highlights(image, mask)
+        self.assertEqual(evidence['components'], 2)
+        self.assertFalse(evidence['clipped'])
+        self.assertTrue((core <= mask).all())
+        saved_mask = mask.copy()
+        seed = anchor_wall_lamp(generate('lamp', {**self.params, 'profile': 'wall_sconce',
+                                                'arms': 1}), self.prior)
+        observations = [{'camera': c['index'], 'camera_model': c, 'mask': mask.copy()}
+                        for c in self.room['cameras']]
+        with tempfile.TemporaryDirectory() as temp:
+            wall = Path(temp)/'wall.obj'
+            generate_mesh(self.room, wall, {})
+            support = support_mesh(wall)
+            self.assertEqual(list(linear_wall_proposals(seed, observations, *support)), [])
+            proposals = list(linear_wall_proposals(seed, observations, *support,
+                             images={4: image, 7: image}))
+            self.assertEqual(len(proposals), 2)
+            for obj in proposals:
+                self.assertEqual(obj['attachment_prior']['region'], 'elongated_training_highlights')
+                self.assertEqual([e['camera'] for e in obj['attachment_prior']['highlight_evidence']], [4, 7])
+        for obs in observations:
+            np.testing.assert_array_equal(obs['mask'], saved_mask)
+        np.testing.assert_array_equal(np.asarray(image), rgb)
+        self.assertIsNone(linear_highlights(Image.new('RGB', (320, 240), 'white'), mask))
+        glints = np.full_like(rgb, 12)
+        glints[95:125, 145:175] = 255
+        self.assertIsNone(linear_highlights(Image.fromarray(glints), mask))
+        # Bright strips touching the image edge remain partial evidence.
+        shifted = np.roll(rgb, -100, axis=1)
+        shifted_mask = np.roll(mask, -100, axis=1)
+        self.assertTrue(linear_highlights(Image.fromarray(shifted), shifted_mask)[1]['clipped'])
 
     def test_invalid_dimensions_and_existing_family(self):
         for changed in ({'arms': 4}, {'radius': 100}, {'thickness': 100}, {'shade': float('nan')}):

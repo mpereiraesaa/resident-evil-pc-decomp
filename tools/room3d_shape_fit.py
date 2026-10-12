@@ -693,6 +693,7 @@ def fit_group(
     support=None,
     initial_candidates=None,
     fixed_parameters=(),
+    images=None,
 ):
     """Optimize on training views only; reserve one view when >=3 observe it."""
     out.mkdir(parents=True, exist_ok=True)
@@ -838,8 +839,11 @@ def fit_group(
 
             seeds = [s for s in starts if wall_plate_contact(s, triangles, surface_groups)]
             seeds.sort(key=lambda s: not s.get("initialization", "").startswith("wall_ray"))
+            training_cameras = {obs['camera'] for obs in training}
+            source_images = ({c['index']: im for c, im in zip(room['cameras'], images, strict=True)
+                              if c['index'] in training_cameras} if images is not None else None)
             for seed, start in enumerate(seeds[:4]):
-                for index, proposal in enumerate(linear_wall_proposals(start, training, triangles, surface_groups)):
+                for index, proposal in enumerate(linear_wall_proposals(start, training, triangles, surface_groups, source_images)):
                     proposal["initialization"] = f"linear_wall_{seed}_{index}"
                     starts.append(proposal)
         from room3d_fixtures import ray_table_lamp_proposals
@@ -1329,10 +1333,10 @@ def fit_objects(room, recipe, segments, depths, out, generate_mesh, images=None)
             from room3d_fixtures import fit_fixture_supports
 
             obj, report, stripped = fit_fixture_supports(
-                room, stripped, group, depths, dest, generate_mesh
+                room, stripped, group, depths, dest, generate_mesh, images=images
             )
         else:
-            obj, report = fit_group(room, stripped, group, depths, dest, generate_mesh)
+            obj, report = fit_group(room, stripped, group, depths, dest, generate_mesh, images=images)
         report.update(
             kind=kind,
             observations=[

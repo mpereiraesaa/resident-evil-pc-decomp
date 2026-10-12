@@ -206,7 +206,51 @@ def ray_wall_lamp_proposals(reference, training, triangles, groups, wall_groups)
                     return
 
 
-def linear_wall_proposals(reference, training, triangles, groups):
+def linear_highlights(image, mask):
+    """Return dominant elongated bright components, not a replacement object mask.
+
+    Border-clipped tubes can initialize a lower-bound housing extent. Flat
+    regions, round glints and fragmented highlights abstain. Brightness does
+    not establish emission or tube identity.
+    """
+    import cv2
+
+    rgb = np.asarray(image.convert('RGB'), float)/255
+    if mask.dtype != bool or mask.shape != rgb.shape[:2]:
+        raise ValueError('Expected a boolean mask matching the source image')
+    if mask.sum() < 40:
+        return None
+    luminance = rgb @ np.array([.2126, .7152, .0722])
+    low, high = np.quantile(luminance[mask], [.25, .85])
+    if high-low < .15:
+        return None
+    region = mask & (luminance >= high)
+    if region.sum() > mask.sum()*.35:
+        return None
+    count, labels, stats, _ = cv2.connectedComponentsWithStats(region.astype('uint8'), 8)
+    selected, axes = [], []
+    for index in range(1, count):
+        area = stats[index, cv2.CC_STAT_AREA]
+        if area < max(8, .15*region.sum()):
+            continue
+        yy, xx = np.nonzero(labels == index)
+        eigenvalues, vectors = np.linalg.eigh(np.cov(np.column_stack((xx, yy)).T))
+        if eigenvalues[-1] < 25 or eigenvalues[-1] < 25*max(eigenvalues[0], 1e-8):
+            continue
+        selected.append(index)
+        axes.append(vectors[:, -1])
+    if not 1 <= len(selected) <= 3 or any(abs(a @ b) < .95 for a in axes for b in axes):
+        return None
+    core = np.isin(labels, selected)
+    if core.sum() < max(40, .8*region.sum()):
+        return None
+    clipped = bool(core[0].any() or core[-1].any() or core[:, 0].any() or core[:, -1].any())
+    return core, {'components': len(selected), 'pixels': int(core.sum()),
+                  'clipped': clipped, 'luminance_contrast': float(high-low),
+                  'qualification': 'Elongated training highlights only; clipped extent is partial, identity and emission unverified'}
+
+
+def linear_wall_proposals(reference, training, triangles, groups, images=None):
     """Infer a long housing in a finite wall plane using training masks only.
 
     Cropped observations supply partial extents, combined across cameras.
@@ -218,6 +262,22 @@ def linear_wall_proposals(reference, training, triangles, groups):
     prior = reference.get('attachment_prior', {})
     if prior.get('support') in ('horizontal', 'ceiling') or not wall_plate_contact(reference, triangles, groups):
         return
+    if images is not None:
+        highlighted, evidence = [], []
+        for obs in training:
+            if obs['camera'] not in images:
+                continue
+            core = linear_highlights(images[obs['camera']], obs['mask'])
+            if core is None:
+                continue
+            mask, record = core
+            highlighted.append({**obs, 'mask': mask})
+            evidence.append({'camera': obs['camera'], **record})
+        if highlighted:
+            for proposal in linear_wall_proposals(reference, highlighted, triangles, groups):
+                proposal['attachment_prior'].update(region='elongated_training_highlights',
+                                                    highlight_evidence=evidence)
+                yield proposal
     normal = np.array(prior['normal'], dtype=float, copy=True)
     normal /= np.linalg.norm(normal)
     tangent = np.array([normal[2], 0, -normal[0]])
@@ -479,7 +539,7 @@ def lamp_support_hypotheses(room, recipe, training):
                         return
 
 
-def fit_fixture_supports(room, recipe, group, depths, out, generate_mesh):
+def fit_fixture_supports(room, recipe, group, depths, out, generate_mesh, images=None):
     """Compare existing supports with joint top-height/fixture hypotheses.
 
     Selection uses training views only. The caller must retain its final
@@ -493,7 +553,7 @@ def fit_fixture_supports(room, recipe, group, depths, out, generate_mesh):
     from room3d_refine import depth_error
     from room3d_shape_fit import compare, fit_group, initial_shapes
 
-    obj, report = fit_group(room, recipe, group, depths, out, generate_mesh)
+    obj, report = fit_group(room, recipe, group, depths, out, generate_mesh, images=images)
     training = group[:-1] if len(group) >= 3 else group
     reference = next(initial_shapes(room, training), None)
     if reference is None:

@@ -467,3 +467,19 @@ each initialized count; it cannot silently collapse two observed strips into
 one tube. This is a brightness-based structural hypothesis, not bulb identity
 proof. Linear fixtures also export explicit support/tube material roles so
 the existing local palette bake keeps their bright tubes and dark housing.
+
+The native ROOM502 replay at source `a9cc663` exports two tube parts with
+explicit shade roles. Actual final-mesh rasterization exposes 1130 and 1166
+white shade pixels in its two training views. Explicit review of all four
+source/OFF/ON views confirms that the earlier dark-material regression is
+resolved, but the bright assembly is still thick and fine tube separation is
+weak at native resolution. The other two final views are byte-identical.
+This is a development-room result, not a whole-room visual pass.
+
+A metadata-selected ROOM506 replay at the same source is an independent
+negative control: all six final views are byte-identical with the option ON
+and OFF. Explicit review shows round suspended source lamps, so this does not
+validate positive fluorescent reconstruction. Selection excluded recorded
+development room stems and exact cached RGB reuse without filtering fit scores
+or acceptance. Neither selected lamp has a reserved observation. Both rooms
+still need substantial geometry work; the option remains disabled by default.

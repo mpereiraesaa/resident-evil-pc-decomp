@@ -279,3 +279,26 @@ python -m unittest discover -s tests -p test_room3d_landing_fit.py
 These tests exercise training-only selection, reserved-view rejection, immutable
 inputs and actual rendered contact/depth cases. They establish those invariants,
 not fidelity across the full game's rooms.
+
+Fixture parts with final-scene rollback
+---------------------------------------
+
+`tools/room3d_fixture_parts.py` fits recognizable lamp parts from bounded bright
+regions, keeping ambiguous evidence separate. Its optional creative search can
+resize shades jointly with their orientation and offset. The selected shape is
+checked in the full scene by `tools/room3d_creative_fixture_parts.py`: raw depth,
+floor reference, finite attachment, door clearance and whole-object silhouette
+must remain within their declared bounds. A failed training or reserved-view
+check restores the exact earlier recipe and object, without selecting a new
+candidate using reserved evidence.
+
+`tools/room3d_fixture_pedestals.py` proposes estimated finite support pads for
+table fixtures when enabled; they are design alternatives, not original assets.
+These features remain opt-in. The final-scene guard was added after the ROOM20A
+trial revealed that brighter, smaller shades could worsen the object's overall
+silhouette; the guarded replay restored every final image to the disabled control.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_fixture_parts.py
+python -m unittest discover -s tests -p test_room3d_creative_fixture_parts.py
+```

@@ -649,4 +649,20 @@ bakes and retouch reprojection use the same rule; excluded source cameras never
 supply ownership evidence or material patches. Unobserved wall material remains
 an estimated continuation, and filled object masks can exclude gaps between
 rails. This cannot repair provisional wall occlusion or recover hidden art.
-The option is disabled by default pending real-view comparison.
+The option remains disabled by default; real-view comparison is described below.
+
+The first frozen full-batch trial at `a72b415` changed no ROOM502 PNGs: its
+0.4 detector cutoff incorrectly excluded a retained 0.3403-score observation.
+The subsequent `0023b5e` replay aligns ownership with the existing high-confidence
+object criterion (0.3 detector, 0.8 mask), without changing raw confidence.
+Both source observations then qualify. Explicit four-view inspection finds
+less ladder projection on architectural surfaces in cameras 0, 2 and 3;
+camera 1 stays byte-identical. Fitted mesh files and rendered all-camera depth
+are unchanged, and OFF output matches the earlier frozen ladder-on export.
+This is not a global fidelity gain: the actual ladder remains gray and partly
+occluded, so removal of painted duplicates exposes the underlying geometry
+failure. The room retains `needs_further_geometry_work`. The earlier `a72b415`
+ROOM303 negative control preserves all eight PNGs and was explicitly reviewed;
+it is not a positive case or a new-room validation of the later policy revision.
+Current code passes 212 room-tool tests. Further wall/object visibility fitting
+and object appearance are required before enabling this option by default.

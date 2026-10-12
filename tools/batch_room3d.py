@@ -499,6 +499,8 @@ def process(
             raise ValueError('ceiling_fan_prompt_recovery requires masks/depth, parametric_details, ceiling_fan_fixtures and ceiling_fan_anchors')
         if recipe.get('visual_stair_proxy_cleanup', False) and not recipe.get('parametric_details', False):
             raise ValueError('visual_stair_proxy_cleanup requires parametric_details')
+        if recipe.get('local_ladder_appearance', False) and not (segmentation_root and recipe.get('reconstructed_object_appearance', False)):
+            raise ValueError('local_ladder_appearance requires segmentation and reconstructed_object_appearance')
         if recipe.get('object_wall_fitting', False) and not recipe.get('parametric_details', False):
             raise ValueError('object_wall_fitting requires parametric_details')
         if recipe.get('vertical_ladders', False) and not recipe.get('parametric_details', False):
@@ -765,6 +767,7 @@ def process(
             interpreted_groups=interpreted_groups,
             fixture_observations=fixture_observations,
             reconstructed_observations=reconstructed_observations,
+            local_ladder_appearance=recipe.get("local_ladder_appearance", False),
             depth_cache=bake_depth_cache,
             foreground_fixture_guard=recipe.get("foreground_fixture_guard", False),
             fixture_core_appearance=recipe.get("fixture_core_appearance", False),
@@ -854,6 +857,7 @@ def process(
                 interpreted_groups=interpreted_groups,
                 fixture_observations=fixture_observations,
                 reconstructed_observations=reconstructed_observations,
+                local_ladder_appearance=recipe.get("local_ladder_appearance", False),
                 depth_cache=bake_depth_cache,
                 foreground_fixture_guard=recipe.get("foreground_fixture_guard", False),
                 fixture_core_appearance=recipe.get("fixture_core_appearance", False),

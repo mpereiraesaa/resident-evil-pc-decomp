@@ -274,6 +274,7 @@ def bake_projected(
     fixture_core_appearance=False,
     preserve_fixture_appearance=False,
     reconstructed_observations=None,
+    local_ladder_appearance=False,
 ):
     """Bake visible source textures onto subdivided mesh triangles, with depth tests.
 
@@ -346,6 +347,7 @@ def bake_projected(
     preserved_materials = {}
     if preserve_fixture_appearance:
         from room3d_fixture_appearance import baked_fixture_role
+        from room3d_ladder_appearance import baked_ladder_material
 
         for (_, material), group in zip(triangles, groups, strict=True):
             role = baked_fixture_role(material)
@@ -353,6 +355,18 @@ def bake_projected(
             if (role is not None and material in loaded[1] and group in interpreted_groups
                     and (group_kinds or {}).get(group) == 'lamp' and key not in preserved_materials):
                 preserved_materials[key] = f'preserved_fixture_{len(preserved_materials)}_{role}'
+            elif (baked_ladder_material(material) and material in loaded[1]
+                  and group in interpreted_groups and (group_kinds or {}).get(group) == 'ladder'
+                  and key not in preserved_materials):
+                preserved_materials[key] = f'preserved_ladder_{len(preserved_materials)}'
+    ladder_colors = {}
+    if local_ladder_appearance:
+        from room3d_ladder_appearance import palettes
+
+        ladder_colors = palettes(mesh, room, images, segments,
+            {g:s for g,s in retained_observations.items() if g in interpreted_groups},
+            group_kinds, depth, exclude_camera)
+    ladder_materials = {group:f'ladder_tint_{i}' for i,group in enumerate(sorted(ladder_colors))}
     camera_rotations = [camera_basis(camera) for camera in room['cameras']]
     lines = ["# Projected original appearance; not recovered albedo or lighting."]
     material_lines = [
@@ -361,6 +375,8 @@ def bake_projected(
         "newmtl creative_stone",
         "Kd 0.34 0.31 0.27",
     ]
+    for group, name in ladder_materials.items():
+        material_lines += ['newmtl '+name, 'Kd '+' '.join(map(str, ladder_colors[group]['rgb']))]
     for k, image in enumerate(images):
         image.save(output.parent / f"source-camera{k}.png")
         material_lines += [
@@ -569,11 +585,13 @@ def bake_projected(
                     material += '_' + source_material.removeprefix('fixture_')
                 elif source_material in ('retouch_added_support', 'retouch_added_shade'):
                     material += '_' + source_material.removeprefix('retouch_added_')
+            if group in ladder_materials:
+                material = ladder_materials[group]
             if preserved is not None:
                 material = preserved
             lines.append(f"usemtl {material}")
             for corner, (point, color) in enumerate(zip(points, cols, strict=True)):
-                rgb = [1, 1, 1] if textured or inferred or styled or group in fixture_materials else color
+                rgb = [1, 1, 1] if textured or inferred or styled or group in fixture_materials or group in ladder_materials else color
                 uv = (
                     coordinates[chosen, index * 3 + corner] / [319, 239]
                     if textured
@@ -607,10 +625,16 @@ def bake_projected(
         "depth_calibration": depth_calibration,
         "styled_faces": styled_faces,
         "fixture_tints": fixture_colors,
+        **({"ladder_tints": ladder_colors} if local_ladder_appearance else {}),
         **({'fixture_cores': fixture_cores} if fixture_core_appearance else {}),
         **({'preserved_fixture_materials': [
             {'group': group, 'source_material': material, 'material': alias}
             for (group, material), alias in preserved_materials.items()
+            if alias.startswith('preserved_fixture_')
+        ], 'preserved_ladder_materials': [
+            {'group':group,'source_material':material,'material':alias}
+            for (group, material), alias in preserved_materials.items()
+            if alias.startswith('preserved_ladder_')
         ]} if preserve_fixture_appearance else {}),
         "creative_support_material": "classic_mansion stone; artistic choice, not recovered albedo",
         "minimum_projection_cosine": minimum_projection_cosine,

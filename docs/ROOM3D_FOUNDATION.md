@@ -752,3 +752,23 @@ projection persist. The separate previously reviewed ROOM303 negative control
 has no eligible ladder: all eight ON/OFF final PNGs remain byte-identical, with
 explicit eight-view review. This is safe abstention, not independent positive
 generalization. All 223 room-tool tests pass; the option stays disabled by default.
+
+### Local ladder material
+
+The opt-in `local_ladder_appearance: true` recipe requires segmentation and
+`reconstructed_object_appearance`. The baker intersects each retained ladder's
+own high-confidence source masks with its actual visible raster geometry.
+Known foreground fixtures are excluded even inside a filled staircase mask.
+Each eligible view supplies a source-pixel median; their equal-view median
+becomes a uniform material. Raw detector/SAM confidence, shape, placement and
+wall fitting remain unchanged. The reported tint is baked appearance, not
+recovered albedo, metallic reflectance, texture detail or lighting. Unsupported
+objects retain their previous appearance.
+
+Full and excluded-camera bakes use the same sampler; excluded source cameras
+cannot contribute palette evidence. Already baked ladder materials survive
+repeated retouch reprojection without the original masks, alongside existing
+fixture materials. Preserved material cannot be used in heldout appearance
+evaluation. Reports expose sampled visible pixels, confidence and sample-mask
+hashes. Hidden material appearance remains estimated. The option stays disabled
+by default pending real-room and independent validation.

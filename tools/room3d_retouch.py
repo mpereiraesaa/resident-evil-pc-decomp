@@ -182,6 +182,7 @@ def reproject_appearance(room, out, survey, segmentation=None, depth=None):
                             interpreted_groups=interpreted,
                             fixture_observations=fixture_observations,
                             reconstructed_observations=reconstructed_sources(recipe),
+                            local_ladder_appearance=recipe.get("local_ladder_appearance", False),
                             foreground_fixture_guard=recipe.get('foreground_fixture_guard', False),
                             fixture_core_appearance=recipe.get('fixture_core_appearance', False),
                             preserve_fixture_appearance=True)

@@ -460,3 +460,10 @@ acceptance tolerances. Flat regions, round glints and fragmented highlights
 abstain. Cropped components are recorded as partial extent evidence; brightness
 is not proof of tube identity or emission. Only training cameras supply these
 pixels, and the complete observed object and scene-depth gates remain active.
+
+When at least two training cameras agree on the number of dominant bright
+strips, that count initializes the linear family. Continuous fitting retains
+each initialized count; it cannot silently collapse two observed strips into
+one tube. This is a brightness-based structural hypothesis, not bulb identity
+proof. Linear fixtures also export explicit support/tube material roles so
+the existing local palette bake keeps their bright tubes and dark housing.

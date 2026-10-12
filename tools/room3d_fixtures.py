@@ -250,7 +250,7 @@ def linear_highlights(image, mask):
                   'qualification': 'Elongated training highlights only; clipped extent is partial, identity and emission unverified'}
 
 
-def linear_wall_proposals(reference, training, triangles, groups, images=None):
+def linear_wall_proposals(reference, training, triangles, groups, images=None, tube_counts=(1, 2)):
     """Infer a long housing in a finite wall plane using training masks only.
 
     Cropped observations supply partial extents, combined across cameras.
@@ -274,9 +274,14 @@ def linear_wall_proposals(reference, training, triangles, groups, images=None):
             highlighted.append({**obs, 'mask': mask})
             evidence.append({'camera': obs['camera'], **record})
         if highlighted:
-            for proposal in linear_wall_proposals(reference, highlighted, triangles, groups):
+            counts = {record['components'] for record in evidence}
+            agreed = len({record['camera'] for record in evidence}) >= 2 and len(counts) == 1
+            hypotheses = tuple(sorted(counts)) if agreed else tube_counts
+            for proposal in linear_wall_proposals(reference, highlighted, triangles, groups,
+                                                  tube_counts=hypotheses):
                 proposal['attachment_prior'].update(region='elongated_training_highlights',
-                                                    highlight_evidence=evidence)
+                                                    highlight_evidence=evidence,
+                                                    tube_count_consensus=agreed)
                 yield proposal
     normal = np.array(prior['normal'], dtype=float, copy=True)
     normal /= np.linalg.norm(normal)
@@ -313,7 +318,7 @@ def linear_wall_proposals(reference, training, triangles, groups, images=None):
         return
     center = point + tangent*((lo[0]+hi[0])/2-point @ tangent)
     center[1] = (lo[1]+hi[1])/2
-    for arms in (1, 2):
+    for arms in tube_counts:
         shade = vertical/(arms+.75)
         thickness = min(40., shade*.2)
         params = {'profile': 'wall_linear', 'height': float(vertical),

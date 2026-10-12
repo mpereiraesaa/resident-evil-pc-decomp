@@ -489,6 +489,10 @@ def variants(obj, scale=1.0):
     for angle in (-0.15 * scale, 0.15 * scale):
         yield generate(obj["kind"], p, origin, yaw + angle)
     for key in p:
+        if key == "arms" and p.get("profile") == "wall_linear":
+            # Tube counts are separate initialized families; do not erase
+            # repeated training-strip evidence during continuous fitting.
+            continue
         if key in ("steps", "posts", "arms"):
             choices = [p[key] - 1, p[key] + 1]
         elif key in ("profile", "structure", "segments"):

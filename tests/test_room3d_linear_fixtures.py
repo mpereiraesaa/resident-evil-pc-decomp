@@ -111,8 +111,10 @@ class LinearFixtureTests(unittest.TestCase):
             self.assertEqual(list(linear_wall_proposals(seed, observations, *support)), [])
             proposals = list(linear_wall_proposals(seed, observations, *support,
                              images={4: image, 7: image}))
-            self.assertEqual(len(proposals), 2)
+            self.assertEqual(len(proposals), 1)
             for obj in proposals:
+                self.assertEqual(obj['shape']['parameters']['arms'], 2)
+                self.assertTrue(obj['attachment_prior']['tube_count_consensus'])
                 self.assertEqual(obj['attachment_prior']['region'], 'elongated_training_highlights')
                 self.assertEqual([e['camera'] for e in obj['attachment_prior']['highlight_evidence']], [4, 7])
         for obs in observations:
@@ -126,6 +128,42 @@ class LinearFixtureTests(unittest.TestCase):
         shifted = np.roll(rgb, -100, axis=1)
         shifted_mask = np.roll(mask, -100, axis=1)
         self.assertTrue(linear_highlights(Image.fromarray(shifted), shifted_mask)[1]['clipped'])
+
+    def test_export_and_bake_keep_bright_tubes_separate_from_dark_housing(self):
+        from room3d_reconstruct import bake_projected
+
+        obj = anchor_wall_lamp(generate('lamp', self.params), self.prior)
+        recipe = {'primitives': [obj], 'local_fixture_appearance': True}
+        pixels = np.full((240, 320, 3), 25, dtype='uint8')
+        pixels[:60] = 255
+        images = [Image.fromarray(pixels)]*2
+        mask = np.ones((240, 320), bool)
+        item = {'mask': 'lamp.png', 'label': 'wall lamp', 'score': .8, 'predicted_iou': .9}
+        with tempfile.TemporaryDirectory() as temp:
+            source, baked = Path(temp)/'source.obj', Path(temp)/'baked.obj'
+            generate_mesh(self.room, source, recipe)
+            self.assertIn('usemtl fixture_shade', source.read_text())
+            bake_projected(source, self.room, images, baked,
+                           segments=[[(item, mask)], [(item, mask)]],
+                           group_kinds={'primitive_0': 'lamp'},
+                           interpreted_groups={'primitive_0'},
+                           fixture_observations={'primitive_0': [{'camera': 4, 'mask': 'lamp.png'}]})
+            self.assertIn('usemtl fixture_tint_0_shade', baked.read_text())
+            image, visible, tube_depth = render(baked, self.room['cameras'][0],
+                        return_depth=True, only_materials={'fixture_tint_0_shade'})
+            scene_depth = render(baked, self.room['cameras'][0], return_depth=True)[2]
+            exposed = visible & np.isfinite(scene_depth) & (np.abs(
+                np.where(visible, tube_depth, 0)-np.where(np.isfinite(scene_depth), scene_depth, 0)) < .01)
+            self.assertGreater(exposed.sum(), 100)
+            self.assertGreater(np.asarray(image)[exposed].mean(), 240)
+
+    def test_continuous_fitting_keeps_initialized_tube_count(self):
+        from room3d_shape_fit import variants
+
+        obj = anchor_wall_lamp(generate('lamp', self.params), self.prior)
+        candidates = list(variants(obj))
+        self.assertTrue(candidates)
+        self.assertEqual({c['shape']['parameters']['arms'] for c in candidates}, {2})
 
     def test_invalid_dimensions_and_existing_family(self):
         for changed in ({'arms': 4}, {'radius': 100}, {'thickness': 100}, {'shade': float('nan')}):

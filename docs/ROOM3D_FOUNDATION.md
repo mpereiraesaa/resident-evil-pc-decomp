@@ -553,3 +553,12 @@ and pose fixed. Optional `rung_phase` (-.45..+.45, default 0) shifts the regular
 sequence by a fraction of its pitch while leaving positive end clearances.
 This remains an initialization tool; scene-depth/contact checks and independent
 native-room validation are required before batch replacement integration.
+
+The frozen ROOM502 development replay at source `0114a7f` selects seven rungs
+with phase -0.1 instead of seventeen. One open mask supplies three occupied
+bands with gap multiples 1 and 2; the other training mask is filled and supplies
+no count. Actual strip-raster agreement increases from 0.239 to 0.557. Explicit
+four-view review shows less excessive rung density, and all-camera model-depth
+checks pass. This is not a whole-room visual pass: brackets remain up to 667
+game units from the current finite walls, so wall contact fails. Support and
+independent-room validation still prevent automatic replacement integration.

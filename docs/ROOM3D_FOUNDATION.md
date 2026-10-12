@@ -254,3 +254,28 @@ These modules are opt-in support/safety components, not proof of navigation.
 python -m unittest discover -s tests -p test_room3d_supported_occlusion.py
 python -m unittest discover -s tests -p test_room3d_depth_guard.py
 ```
+
+Creative flights and landing assemblies
+---------------------------------------
+
+`tools/room3d_levels.py` proposes finite floor/ceiling levels from observed views
+and existing topology. `tools/room3d_creative_stairs.py` turns uncertain stair
+evidence into bounded replacement-flight candidates, with regular treads and
+explicit support, dimensions and clearance checks. These are approximate design
+alternatives; the code does not assert that a creative flight is the original one.
+
+`tools/room3d_interpretation.py` evaluates creative replacements separately from
+the rejected literal fit. `tools/room3d_landing_fit.py` fits an attached landing
+and its necessary opening as an assembly. Heldout evidence can veto the selected
+assembly without participating in training selection. Reports retain estimated
+geometry qualifications and the checks used to accept or reject the replacement.
+Native gameplay collision and scripts are retained.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_creative_stairs.py
+python -m unittest discover -s tests -p test_room3d_landing_fit.py
+```
+
+These tests exercise training-only selection, reserved-view rejection, immutable
+inputs and actual rendered contact/depth cases. They establish those invariants,
+not fidelity across the full game's rooms.

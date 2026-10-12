@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es"><meta charset="utf-8"><title>Retoques de habitación</title>
+<style>
+body{background:#171b22;color:#eee;font:16px system-ui;margin:24px;max-width:1250px}h1{font-size:24px}a{color:#8cf}
+main{display:flex;gap:24px;flex-wrap:wrap}aside{width:300px}section{flex:1;min-width:320px}
+canvas{width:100%;max-width:800px;image-rendering:pixelated;background:#080b10;border:1px solid #556}
+select,button,input{background:#27303d;color:white;border:1px solid #657184;padding:7px;border-radius:4px}
+select{max-width:100%;margin:6px 0}button{margin:5px 0;cursor:pointer}fieldset{border:1px solid #455365;margin:12px 0}
+.axis{display:flex;justify-content:space-between;align-items:center;margin:5px 0}.axis input{width:150px}#status{min-height:2em;color:#ffd682}
+small{color:#b7c1d1}pre{white-space:pre-wrap;font-size:13px}input[type=file]{max-width:270px}
+</style>
+<h1 id="title">Retoques de habitación</h1>
+<p>Ajusta la geometría sobre el fondo original. El contorno cian muestra el grupo seleccionado; las líneas no representan oclusión ni texturas finales.</p>
+<main><aside>
+<label for="group">Grupo</label><br><select id="group"></select>
+<div id="fields"></div>
+<label><input id="hide" type="checkbox"> Ocultar grupo</label><br>
+<button id="reset">Restablecer este grupo</button><br>
+<button id="download">Guardar correcciones JSON</button>
+<p><label for="import">Cargar correcciones guardadas</label><br><input id="import" type="file" accept=".json,application/json"></p>
+<p id="status" role="status"></p>
+</aside><section>
+<label for="camera">Cámara</label> <select id="camera"></select><br>
+<canvas id="view" width="640" height="480" aria-label="Fondo original con geometría seleccionada"></canvas>
+<p><small>X/Y/Z son unidades del juego. Y negativo sube. El giro usa grados. El pivote inicial es el centro del grupo; puedes fijar otro.</small></p>
+<details><summary>Cómo generar el resultado con texturas</summary>
+<p>Guarda el JSON y aplica las correcciones con <code>tools/room3d_retouch.py --room CARPETA_ORIGINAL --edits CORRECCIONES.json --out CARPETA_NUEVA</code>.</p>
+<p>Este editor funciona sin conexión. No cambia archivos del juego ni colisiones. Las superficies ausentes requieren geometría adicional.</p></details>
+<details><summary>Correcciones actuales</summary><pre id="json"></pre></details>
+</section></main>
+<script>
+'use strict';
+const DATA = /*ROOM_DATA*/ null;
+function movePoint(point, edit, defaultPivot) {
+  const pivot = edit.pivot || defaultPivot, scale = edit.scale || [1,1,1], t = edit.translate || [0,0,0];
+  const p = point.map((v,i)=>(v-pivot[i])*scale[i]);
+  const angle=(edit.yaw || 0)*Math.PI/180,c=Math.cos(angle),s=Math.sin(angle);
+  return [c*p[0]-s*p[2]+pivot[0]+t[0],p[1]+pivot[1]+t[1],s*p[0]+c*p[2]+pivot[2]+t[2]];
+}
+function projectEdge(a,b,camera) {
+  const toView=p=>camera.basis.map(row=>row.reduce((sum,v,i)=>sum+v*(p[i]-camera.origin[i]),0));
+  let x=toView(a),y=toView(b);const near=2*camera.fov;
+  if(x[2]<near && y[2]<near)return null;
+  if(x[2]<near){const t=(near-x[2])/(y[2]-x[2]);x=x.map((v,i)=>v+t*(y[i]-v));}
+  if(y[2]<near){const t=(near-y[2])/(x[2]-y[2]);y=y.map((v,i)=>v+t*(x[i]-v));}
+  return [x,y].map(p=>[160+camera.fov*p[0]/p[2],120+camera.fov*p[1]/p[2]]);
+}
+function validateEdits(value,groups) {
+  if(!value || Array.isArray(value) || typeof value!=='object')throw Error('Se esperaba un objeto JSON.');
+  for(const [name,edit] of Object.entries(value)){
+    if(!Object.hasOwn(groups,name) || !edit || Array.isArray(edit) || typeof edit!=='object')throw Error('Grupo desconocido: '+name);
+    for(const [key,v] of Object.entries(edit)){
+      if(['translate','scale','pivot'].includes(key)){
+        if(!Array.isArray(v)||v.length!==3||!v.every(Number.isFinite))throw Error('Vector inválido: '+name+'.'+key);
+        if(key==='scale' && v.some(x=>x<=0))throw Error('La escala debe ser positiva.');
+      }else if(key==='yaw'){if(!Number.isFinite(v))throw Error('Giro inválido.');}
+      else if(key==='hide'){if(typeof v!=='boolean')throw Error('hide debe ser booleano.');}
+      else throw Error('Campo desconocido: '+key);
+    }
+  }
+  return value;
+}
+function initEditor(){
+  const $=id=>document.getElementById(id),edits=Object.create(null),inputs={};
+  $('title').textContent='Retoques: '+DATA.room;
+  for(const name of Object.keys(DATA.groups))$('group').add(new Option(name,name));
+  for(const [i,c] of DATA.cameras.entries())$('camera').add(new Option('Cámara '+c.index,String(i)));
+  const backgrounds=DATA.cameras.map(c=>{const image=new Image();image.onload=draw;image.src=c.image;return image;});
+  for(const [key,label] of [['translate','Posición'],['scale','Escala'],['pivot','Pivote'],['yaw','Giro']]){
+    const field=document.createElement('fieldset'),legend=document.createElement('legend');legend.textContent=label;field.append(legend);
+    inputs[key]=[];
+    for(let i=0;i<(key==='yaw'?1:3);i++){
+      const row=document.createElement('label');row.className='axis';row.append(key==='yaw'?'Grados':'XYZ'[i]);
+      const input=document.createElement('input');input.type='number';input.step='any';
+      if(key==='scale')input.min='0.01';input.setAttribute('aria-label',label+' '+(key==='yaw'?'grados':'XYZ'[i]));
+      input.addEventListener('input',update);row.append(input);field.append(row);inputs[key].push(input);
+    }
+    $('fields').append(field);
+  }
+  function selected(){return $('group').value;}
+  function load(){
+    const e=edits[selected()]||{},defaults={translate:[0,0,0],scale:[1,1,1],pivot:DATA.groups[selected()].pivot,yaw:[0]};
+    for(const [key,fields] of Object.entries(inputs))fields.forEach((input,i)=>input.value=key==='yaw'?(e.yaw||0):(e[key]||defaults[key])[i]);
+    $('hide').checked=e.hide||false;$('status').textContent='';draw();
+  }
+  function update(){
+    const e={};for(const [key,fields] of Object.entries(inputs)){
+      if(fields.some(input=>input.value===''||!input.checkValidity())){$('status').textContent='Revisa los valores.';return;}
+      e[key]=key==='yaw'?Number(fields[0].value):fields.map(input=>Number(input.value));
+    }
+    e.hide=$('hide').checked;
+    try{validateEdits({[selected()]:e},DATA.groups);edits[selected()]=e;$('status').textContent='Cambio pendiente de guardar.';draw();}
+    catch(error){$('status').textContent=error.message;}
+  }
+  function draw(){
+    const camera=DATA.cameras[Number($('camera').value)||0],ctx=$('view').getContext('2d'),bg=backgrounds[Number($('camera').value)||0];
+    ctx.clearRect(0,0,640,480);if(bg.complete && bg.naturalWidth)ctx.drawImage(bg,0,0,640,480);
+    const name=selected(),group=DATA.groups[name],edit=edits[name]||{};
+    if(group && !edit.hide){ctx.strokeStyle='#33efff';ctx.lineWidth=1;ctx.beginPath();
+      for(const [a,b] of group.edges){const edge=projectEdge(movePoint(a,edit,group.pivot),movePoint(b,edit,group.pivot),camera);
+        if(edge){ctx.moveTo(edge[0][0]*2,edge[0][1]*2);ctx.lineTo(edge[1][0]*2,edge[1][1]*2);}}
+      ctx.stroke();
+    }
+    $('json').textContent=JSON.stringify(edits,null,2);
+  }
+  $('group').onchange=load;$('camera').onchange=draw;$('hide').onchange=update;
+  $('reset').onclick=()=>{delete edits[selected()];load();};
+  $('download').onclick=()=>{const url=URL.createObjectURL(new Blob([JSON.stringify(edits,null,2)+'\n'],{type:'application/json'}));
+    const a=document.createElement('a');a.href=url;a.download='edits-'+DATA.room+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);$('status').textContent='Correcciones exportadas.';};
+  $('import').onchange=async event=>{try{
+    if(!event.target.files.length)return;
+    const value=validateEdits(JSON.parse(await event.target.files[0].text()),DATA.groups);
+    for(const key of Object.keys(edits))delete edits[key];Object.assign(edits,value);load();$('status').textContent='Correcciones cargadas.';
+  }catch(error){$('status').textContent=error.message;}};
+  load();
+}
+if(typeof document!=='undefined')initEditor();
+</script></html>

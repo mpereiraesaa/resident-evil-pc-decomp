@@ -382,3 +382,46 @@ python -m unittest discover -s tests -p test_room3d_fixture_appearance.py
 
 These checks cover actual rendered edits, source-export immutability, sequential
 reprojection, bounded additions and preservation of fixture support/shade roles.
+
+Offline editor and integrity-checked catalog
+--------------------------------------------
+
+`tools/room3d_editor.py` generates a self-contained HTML wireframe editor using
+the exported OBJ groups and original camera backgrounds. Its template has no
+external script or image dependencies. It exports edits for the retouch CLI;
+the original room export remains unchanged. Generate one with:
+
+```sh
+python tools/room3d_editor.py --room path/to/run/room4050 --out build/editor.html
+```
+
+`tools/room3d_catalog.py` lists completed, pending, failed and empty entries,
+creates per-room editor links, and summarizes rejected details and original model
+scores by category. Before marking an image-assisted room exported it verifies
+the complete checkpoint inventory, including detail reports, textures and
+visibility sidecars. Missing, changed or extra files invalidate completion;
+checking only four main files or caching solely by export key would miss edits.
+Full integrity hashing has a cost and does not establish visual quality.
+
+```sh
+python tools/room3d_catalog.py --help
+python -m unittest discover -s tests -p test_room3d_catalog.py
+node tests/test_room3d_editor.js
+```
+
+Committed-source validation
+---------------------------
+
+The first thirteen dependency steps passed 153 Python tests from an isolated
+checkout. A full cached ROOM405 `creative-v2` replay used only the 150 tools files
+from commit `d00c81d1671cb8dc04edd75c808474542973bbaf`. All 751 generated PNGs,
+including eight final camera views, and actual final mesh measurements match the
+earlier creative integration export. Six mask-score bindings match the original
+image-bound cache. Both complete export inventories remained unchanged.
+
+The prior explicit visual review is carried forward by verified image identity
+and remains `needs_further_geometry_work`. This proves reproduction from versioned
+code on development data, not another unseen-room success or gameplay validation.
+Local verification: `build/room405-versioned-creative-verification/results.json`;
+comparison: `build/room3d-versioned-creative-evaluation/index.html`. Generated
+exports and original game assets are not included in source publication.

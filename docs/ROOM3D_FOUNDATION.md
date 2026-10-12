@@ -138,3 +138,34 @@ models or supplying game assets:
 ```sh
 python -m unittest discover -s tests -p test_room3d_stair_labels.py
 ```
+
+Known-camera matching and projected appearance
+----------------------------------------------
+
+`tools/room3d_reconstruct.py` triangulates image features with the supplied game
+cameras and optionally constrains them by collision bounds. Repeated feature
+orientations do not count as separate evidence. These functions use NumPy and
+OpenCV and are independent of model inference.
+
+After geometry is fixed, `bake_projected` writes a textured OBJ from that mesh and
+the original camera images. Its visibility/depth tests avoid projecting nearer
+objects onto farther surfaces, and projection angle can reject grazing views.
+The `exclude_camera` argument reserves a view for appearance evaluation. Geometry
+is not optimized from that withheld image. `BakeDepthCache` binds cached raster
+depth to the mesh, camera and visibility sidecar so it cannot survive changes to
+those inputs.
+
+`tools/room3d_complete.py` supplies local material continuations and per-object
+fixture colors. `tools/room3d_fixture_appearance.py` preserves separate lamp
+support and shade roles and can build a bounded bright-core patch. Inferred
+textures on unseen parts are estimated appearance, not recovered original art;
+the source images remain unchanged. These helpers require NumPy, Pillow and
+OpenCV, without model weights.
+
+Run the matching, palette-isolation and depth-cache regression checks:
+
+```sh
+python -m unittest discover -s tests -p test_room3d_correspondence.py
+python -m unittest discover -s tests -p test_room3d_fixture_tints.py
+python -m unittest discover -s tests -p test_room3d_bake_cache.py
+```

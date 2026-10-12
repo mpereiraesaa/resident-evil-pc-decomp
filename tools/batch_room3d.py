@@ -741,6 +741,9 @@ def process(
             for i, item in enumerate(fitted["primitives"])
             if item.get("interpretation") and item.get("kind") == "lamp"
         } if recipe.get("local_fixture_appearance", False) else None
+        from room3d_texture_ownership import reconstructed_sources
+
+        reconstructed_observations = reconstructed_sources(fitted)
         bake_depth_cache = BakeDepthCache()
         bake = bake_projected(
             fitted_mesh,
@@ -751,6 +754,7 @@ def process(
             group_kinds=kinds,
             interpreted_groups=interpreted_groups,
             fixture_observations=fixture_observations,
+            reconstructed_observations=reconstructed_observations,
             depth_cache=bake_depth_cache,
             foreground_fixture_guard=recipe.get("foreground_fixture_guard", False),
             fixture_core_appearance=recipe.get("fixture_core_appearance", False),
@@ -839,6 +843,7 @@ def process(
                 group_kinds=kinds,
                 interpreted_groups=interpreted_groups,
                 fixture_observations=fixture_observations,
+                reconstructed_observations=reconstructed_observations,
                 depth_cache=bake_depth_cache,
                 foreground_fixture_guard=recipe.get("foreground_fixture_guard", False),
                 fixture_core_appearance=recipe.get("fixture_core_appearance", False),

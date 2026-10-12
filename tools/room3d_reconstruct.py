@@ -273,6 +273,7 @@ def bake_projected(
     foreground_fixture_guard=False,
     fixture_core_appearance=False,
     preserve_fixture_appearance=False,
+    reconstructed_observations=None,
 ):
     """Bake visible source textures onto subdivided mesh triangles, with depth tests.
 
@@ -292,7 +293,6 @@ def bake_projected(
         group: sources for group, sources in (fixture_observations or {}).items()
         if group in interpreted_groups and (group_kinds or {}).get(group) == 'lamp'
     }, exclude_camera)
-    completion = material_patches(images, segments, output.parent, exclude_camera)
     styled_faces = 0
     completed_vertices = 0
     semantic_rejections = 0
@@ -333,6 +333,15 @@ def bake_projected(
             group = " ".join(words[1:])
         elif words and words[0] == "f":
             groups.extend([group] * (len(words) - 3))
+    from room3d_texture_ownership import ARCHITECTURE, completion_segments, owned_masks
+
+    retained_observations = {group: sources
+                             for group, sources in (reconstructed_observations or {}).items()
+                             if group in set(groups)}
+    ownership, ownership_evidence = owned_masks(
+        room, segments, retained_observations, group_kinds, exclude_camera)
+    completion = material_patches(images, completion_segments(segments, ownership),
+                                  output.parent, exclude_camera)
     arrays = [np.asarray(im, dtype=float) / 255 for im in images]
     preserved_materials = {}
     if preserve_fixture_appearance:
@@ -370,6 +379,8 @@ def bake_projected(
             for k, entries in enumerate(segments):
                 support = texture_support(entries, kind, xy,
                                           foreground_fixture_guard=foreground_fixture_guard).reshape(240, 320)
+                if kind in ARCHITECTURE:
+                    support &= ~ownership[k]
                 filtered = arrays[k].copy()
                 patch = completion.get(kind)
                 fallback = (
@@ -499,6 +510,8 @@ def bake_projected(
                     segments[k], (group_kinds or {}).get(group), xy,
                     foreground_fixture_guard=foreground_fixture_guard,
                 )
+                if (group_kinds or {}).get(group) in ARCHITECTURE:
+                    support &= ~ownership[k][xy[:, 1], xy[:, 0]]
                 semantic_rejections += int((visible & ~support).sum())
                 visible &= support
             rays = np.array(camera["origin"]) - xyz
@@ -609,6 +622,11 @@ def bake_projected(
             "detector_minimum": .3, "mask_minimum": .8,
             "qualification": "Explicit fixture masks veto incompatible texture samples; geometry and material-source eligibility unchanged",
         }} if foreground_fixture_guard else {}),
+        **({"reconstructed_object_appearance": {
+            "sources": ownership_evidence,
+            "excluded_camera": exclude_camera,
+            "qualification": "Retained ladder masks veto architecture projection and completion samples; unseen material remains estimated",
+        }} if reconstructed_observations is not None else {}),
         "completion_patches": completion,
         "inferred_vertices": completed_vertices,
         "semantic_rejections": semantic_rejections,

@@ -874,6 +874,19 @@ were verified without modifying original exports. This development room has
 two object observations, no reserved object view and no independent positive
 validation; the ceiling prior itself used detector boxes in all room cameras.
 
+The separate metadata-selected ROOM715 pair at the same frozen source completes
+without initializing or retaining a ceiling-light candidate. All eight final
+RGBA images and rendered depths remain ON/OFF-identical. Explicit inspection
+of all eight source/OFF/ON views retains `needs_further_geometry_work`: angular
+pale fixtures, missing furniture, stretched walls and gray obstructions persist.
+This is independent negative evidence, not positive ceiling-light generalization.
+Selection preceded first explicit source-image inspection, although cached
+proposals had previously undergone linear-highlight eligibility checks. Four
+camera pairs have identical origin, target, focal length and roll but differently
+lit backgrounds. Their final renders are identical within each pair as well;
+there is no camera-dependent cutaway mismatch. Such lighting variants must not
+be counted as independent geometric viewpoints.
+
 ```sh
 python -m unittest discover -s tests -p test_room3d_ceiling_linear.py
 ```

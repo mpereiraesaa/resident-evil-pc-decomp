@@ -111,3 +111,30 @@ Publication follows dependency order in small changes. This foundation is
 separate from runtime integration and the full batcher; those remain subsequent
 steps until their source and validation are included. Generated room exports,
 original game assets, downloaded model weights and caches are not source files.
+
+Image evidence and structural proposals
+---------------------------------------
+
+`tools/room3d_segment.py` loads image-hash-bound, native-size SAM masks and
+provides semantic texture support. Generating new masks uses CPU-local inference
+and the pinned SAM revision declared in that module; loading cached masks needs
+only NumPy and Pillow. Detector scores and masks remain proposals, not truth.
+
+`tools/room3d_refine.py` loads depth arrays bound to the survey, camera and RGB
+image, then compares candidate geometry on fixed valid-pixel support. Missing
+geometry retains a penalty. `tools/room3d_structure.py` distinguishes shared
+surface support, free space, occlusion and unknown evidence. Collisions are a
+topology prior; they are not automatically visible walls.
+
+`tools/room3d_stair_edges.py` uses internal tread structure to propose and validate
+stair masks. Its masks remain estimated; an overlapping railing label cannot
+become a solid stair flight. Cached refinements are bound to their source images
+and depth, and model confidence is retained rather than raised to force acceptance.
+These three geometry modules also require OpenCV, NumPy and Pillow.
+
+Run the native-scale stair-label and cached-refinement checks without downloading
+models or supplying game assets:
+
+```sh
+python -m unittest discover -s tests -p test_room3d_stair_labels.py
+```

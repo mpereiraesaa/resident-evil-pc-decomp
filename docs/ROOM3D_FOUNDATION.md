@@ -808,3 +808,35 @@ file hashes before and after analysis. It leaves completed exports unchanged
 and supplies no independent positive validation. Cached detector proposals and
 exact-image exclusions do not establish unseen training data or perceptual
 independence; ordinary staircases still require their separate shape generator.
+
+### Estimated elongated ceiling lights
+
+The `ceiling_linear` lamp profile adds a closed mounting plate, two suspension
+links, a housing and one to three separate tubes. Its parameters are `height`
+(ceiling-to-tube-underside drop), `radius` (half housing length), `housing_width`,
+`thickness`, `shade` (tube size prior) and `arms` (tube count). Positive suspension,
+elongated housing and separate tubes are required. Explicit support/shade roles
+work with the existing `local_fixture_appearance` mesh export option.
+
+`tools/room3d_ceiling_linear.py` proposes attachment only to supplied finite
+horizontal ceiling groups. All mounting corners and their center must contact
+the same group; a center-only contact is insufficient. A bounded upward extension
+changes only the mounting plate and suspension, retaining housing/tube vertices,
+pose and source evidence. It does not fabricate missing ceilings. Hidden supports,
+tube count and roof height remain estimated design choices. This is a geometry
+and finite-contact foundation: automatic image fitting, final scene gates,
+native-room comparisons and independent positive validation are still required
+before enabling automatic replacement.
+
+Four actual-geometry tests cover closed exported parts and material roles,
+unchanged rendered depth under role coloring, rotated mounting contact,
+center-only/far/sloped/wrong-group rejection, unchanged visible body under
+extension and invalid dimensions. All 231 room-tool tests pass. ROOM512 was
+explicitly inspected as development data for this category: its current fitted
+recipe contains no ceiling surface, so this attachment foundation alone cannot
+replace its light. Its cached ceiling masks may supply evidence for a future
+separate surface fit; their existence is not a recovered or validated ceiling.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_ceiling_linear.py
+```

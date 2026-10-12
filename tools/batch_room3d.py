@@ -172,8 +172,8 @@ def generate_mesh(room, path, recipe):
                 profile = item.get("shape", {}).get("parameters", {}).get("profile")
                 if (recipe.get("local_fixture_appearance", False)
                         and item["kind"] == "lamp"
-                        and profile in ("wall_sconce", "wall_candelabra", "table_lamp", "ceiling_fan", "wall_linear")):
-                    if profile in ("wall_candelabra", "ceiling_fan", "wall_linear"):
+                        and profile in ("wall_sconce", "wall_candelabra", "table_lamp", "ceiling_fan", "wall_linear", "ceiling_linear")):
+                    if profile in ("wall_candelabra", "ceiling_fan", "wall_linear", "ceiling_linear"):
                         roles = item.get("part_roles", [])
                         if len(roles) != len(item["parts"]) or any(r not in ("shade", "support") for r in roles):
                             raise ValueError("Multilight fixture requires explicit shade/support roles")

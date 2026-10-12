@@ -14,6 +14,7 @@ from collections import Counter
 from pathlib import Path
 from urllib.parse import quote
 
+from room3d_checkpoint import inventory
 from room3d_confidence import failure_confidence, observation_confidence
 
 
@@ -251,14 +252,22 @@ def summarize(root, completed_only=False, audits=None):
     provenance = root / "frozen-config.json"
     frozen = json.loads(provenance.read_text()) if provenance.exists() else None
     if frozen:
-        for name, expected in frozen["source_sha256"].items():
+        sources = frozen.get('source_inventory', frozen.get('source_sha256'))
+        if not isinstance(sources, dict) or not sources:
+            raise ValueError('Frozen source inventory must be a nonempty mapping')
+        if 'source_inventory' in frozen and inventory(root/'sources') != sources:
+            raise ValueError('Frozen source inventory differs from archived files')
+        for name, expected in sources.items():
+            if not isinstance(name, str) or Path(name).is_absolute() or '..' in Path(name).parts:
+                raise ValueError('Frozen source names must be relative snapshot paths')
             snapshot = root / "sources" / name
             if Path(name).name == name and not snapshot.exists():
                 # Some frozen manifests use module filenames rather than tools/ paths.
                 snapshot = root / 'sources' / 'tools' / name
-            path = snapshot if snapshot.exists() else Path(name)
-            if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
-                raise ValueError(f"Frozen source differs: {path}")
+            if not snapshot.is_file():
+                raise ValueError(f'Frozen source snapshot missing: {snapshot}')
+            if hashlib.sha256(snapshot.read_bytes()).hexdigest() != expected:
+                raise ValueError(f"Frozen source differs: {snapshot}")
     variant_groups = {}
     for room in rooms:
         name = room["room"].lower()

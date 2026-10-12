@@ -183,6 +183,50 @@ class EvaluationTests(unittest.TestCase):
                     summarize(root)
                 source.write_text('original snapshot')
 
+    def test_committed_source_inventory_checks_nonpython_missing_and_extra_files(self):
+        from room3d_checkpoint import inventory
+
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            sources = root/'sources'
+            source = sources/'tools/probe.py'
+            source.parent.mkdir(parents=True)
+            source.write_text('original code')
+            support = sources/'tools/template.html'
+            support.write_text('original template')
+            (root/'manifest.json').write_text(json.dumps({'results': []}))
+            (root/'frozen-config.json').write_text(json.dumps({
+                'source_inventory': inventory(sources), 'source_git_commit': 'recorded_separately'}))
+            self.assertEqual(summarize(root)['source_execution_snapshot'], 'frozen_sources_verified')
+            support.write_text('changed template')
+            with self.assertRaisesRegex(ValueError, 'Frozen source inventory differs'):
+                summarize(root)
+            support.write_text('original template')
+            source.unlink()
+            with self.assertRaisesRegex(ValueError, 'Frozen source inventory differs'):
+                summarize(root)
+            source.write_text('original code')
+            extra = sources/'unrecorded.py'
+            extra.write_text('unrecorded')
+            with self.assertRaisesRegex(ValueError, 'Frozen source inventory differs'):
+                summarize(root)
+            extra.unlink()
+            self.assertEqual(summarize(root)['source_execution_snapshot'], 'frozen_sources_verified')
+
+    def test_live_source_file_cannot_substitute_for_a_missing_frozen_snapshot(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            (root/'manifest.json').write_text(json.dumps({'results': []}))
+            live = root/'live.py'
+            live.write_text('current checkout, not an execution snapshot')
+            digest = hashlib.sha256(live.read_bytes()).hexdigest()
+            for config in ({'source_sha256': {str(live): digest}},
+                           {'source_sha256': {'missing.py': digest}},
+                           {'source_inventory': {}}, {'command': ['unknown']}):
+                (root/'frozen-config.json').write_text(json.dumps(config))
+                with self.subTest(config=config), self.assertRaises(ValueError):
+                    summarize(root)
+
     def test_external_visual_review_is_bound_to_complete_export(self):
         from room3d_checkpoint import inventory, save
         from room3d_visual_audit import load_audit, record_audit

@@ -425,3 +425,9 @@ code on development data, not another unseen-room success or gameplay validation
 Local verification: `build/room405-versioned-creative-verification/results.json`;
 comparison: `build/room3d-versioned-creative-evaluation/index.html`. Generated
 exports and original game assets are not included in source publication.
+
+The evaluator accepts both legacy per-module source hashes and a complete
+committed-tree `source_inventory`. Complete inventories verify auxiliary files
+and reject changed, missing or extra files. Legacy hashes require actual archived
+source files; a matching file from the current checkout cannot substitute for a
+missing snapshot. The full ROOM405 report was regenerated with these checks.

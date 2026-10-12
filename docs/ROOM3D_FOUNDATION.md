@@ -739,3 +739,16 @@ reports are separate from the earlier ladder and ordinary detail fit reports.
 The option is disabled by default. Estimated visual wall location, model
 agreement and contact do not establish original fidelity, hidden geometry,
 mechanical support, independent generalization or navigation.
+
+The frozen full-batch ROOM502 ON/OFF replay at source `13dfbae` retains one
+local wall fit and reproduces all four final RGBA views of the earlier
+`d3e2d31` local-retreat diagnostic exactly. All source files match frozen Git
+blobs; input hashes and original exports remain unchanged. OFF output matches
+the prior ownership-on full export. Finite contact is verified on the actual
+final baked mesh; rail floor distance remains zero. Explicit four-view review
+retains `needs_further_geometry_work` because gray ladder/brackets, smeared
+local wall appearance, incomplete upper architecture and stretched cabinet
+projection persist. The separate previously reviewed ROOM303 negative control
+has no eligible ladder: all eight ON/OFF final PNGs remain byte-identical, with
+explicit eight-view review. This is safe abstention, not independent positive
+generalization. All 223 room-tool tests pass; the option stays disabled by default.

@@ -772,3 +772,24 @@ fixture materials. Preserved material cannot be used in heldout appearance
 evaluation. Reports expose sampled visible pixels, confidence and sample-mask
 hashes. Hidden material appearance remains estimated. The option stays disabled
 by default pending real-room and independent validation.
+
+The frozen `9513173` ROOM502 fixed-mesh comparison estimates RGB `[22,24,24]`
+(on the 0–255 scale) from 612 and 1876 own visible source pixels in cameras
+0 and 2. Detector/SAM confidence stays unchanged. All four rendered depths
+and silhouettes are identical ON/OFF, and color changes are confined to visible
+ladder geometry. Excluding either observed camera leaves only the other camera
+as palette evidence. Explicit four-view inspection finds a more recognizable
+dark ladder, but uniform tint does not recover highlights, wear or reflectance;
+coarse brackets, smeared wall continuation, missing upper architecture and
+distorted cabinet projection remain. The previously reviewed ROOM303 negative
+control has no eligible ladder and keeps all eight final images unchanged.
+
+A separate full-batch ROOM502 run from the same frozen source reproduces all
+four reviewed material-ON RGBA images exactly. Its fitted geometry and cameras
+remain byte-identical to the previous object/wall-fitting export. Git tool
+blobs, frozen input hashes and completed original exports were verified.
+All 227 room-tool tests pass, including three successive retouch reprojections
+and excluded-source sampling checks. Both room reviews retain
+`needs_further_geometry_work`; two object observations provide no third
+reserved view, and neither comparison establishes independent positive
+generalization, whole-room fidelity or runtime/navigation approval.

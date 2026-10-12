@@ -431,3 +431,15 @@ committed-tree `source_inventory`. Complete inventories verify auxiliary files
 and reject changed, missing or extra files. Legacy hashes require actual archived
 source files; a matching file from the current checkout cannot substitute for a
 missing snapshot. The full ROOM405 report was regenerated with these checks.
+
+### Experimental linear wall fixtures
+
+A room recipe can opt into `linear_wall_fixtures: true`. The fitter adds
+wall-mounted elongated housing candidates with one or two closed tube parts.
+Training mask rays determine housing extents in a finite wall plane; ordinary
+render agreement, finite plate contact, scene-depth and reserved-view checks
+still determine acceptance. Tube count, cross section and hidden housing are
+estimated design choices. The default remains disabled pending independent-room
+validation. ROOM502 exposed the missing family and is now development data:
+its original run accepted a nine-arm shade profile for a fluorescent assembly.
+A better ROOM502 result alone will not establish generalization.

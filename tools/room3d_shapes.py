@@ -150,8 +150,25 @@ def local_parts(kind, p):
         arms = _count(p, "arms", 1, 12)
         shade = _positive(p, "shade")
         profile = p.get("profile", "shade")
-        if profile not in ("shade", "candle", "candelabra", "wall_sconce", "wall_candelabra", "table_lamp", "ceiling_fan"):
+        if profile not in ("shade", "candle", "candelabra", "wall_sconce", "wall_candelabra", "table_lamp", "ceiling_fan", "wall_linear"):
             raise ValueError("Unknown lamp profile")
+        if profile == "wall_linear":
+            if not 1 <= arms <= 3:
+                raise ValueError("Linear fixture needs one to three tubes")
+            housing_height = height
+            if (radius * 2 < housing_height * 3 or thickness >= shade
+                    or ((arms-1)*1.25+.7)*shade > housing_height):
+                raise ValueError("Linear housing needs elongated proportions and thin supports")
+            anchor = np.array([0, -height, 0])
+            parts.append(beam(anchor, anchor + [0, 0, thickness], thickness / 2))
+            # Back plane at Z=0, using the same corners as wall plate checks.
+            parts.append(prism([-radius, -height-housing_height/2, -thickness],
+                               [radius, -height+housing_height/2, 0]))
+            for tube in range(arms):
+                y = -height + (tube - (arms-1)/2) * shade * 1.25
+                parts.append(beam([-radius+shade, y, shade*.35],
+                                  [radius-shade, y, shade*.35], shade * .35))
+            return parts
         if profile == "ceiling_fan":
             if not 3 <= arms <= 6:
                 raise ValueError("Ceiling fan needs three to six blades")
@@ -314,6 +331,8 @@ def generate(kind, parameters, origin=(0, 0, 0), yaw=0):
         lights = int(parameters["arms"])
         result["part_roles"] = ["support", "support"] + ["shade"] * lights + [
             "support"] * (len(parts) - 2 - lights)
+    if kind == "lamp" and parameters.get("profile") == "wall_linear":
+        result["part_roles"] = ["support", "support"] + ["shade"] * int(parameters["arms"])
     if kind == "lamp" and parameters.get("profile") == "ceiling_fan":
         result["part_roles"] = ["support", "support", "shade"] + ["support"] * int(parameters["arms"])
     return result

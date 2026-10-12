@@ -833,6 +833,15 @@ def fit_group(
                 for index, proposal in enumerate(multilight_wall_proposals(start, triangles, surface_groups)):
                     proposal["initialization"] = f"multilight_{seed}_{index}"
                     starts.append(proposal)
+        if recipe.get("linear_wall_fixtures", False):
+            from room3d_fixtures import linear_wall_proposals, wall_plate_contact
+
+            seeds = [s for s in starts if wall_plate_contact(s, triangles, surface_groups)]
+            seeds.sort(key=lambda s: not s.get("initialization", "").startswith("wall_ray"))
+            for seed, start in enumerate(seeds[:4]):
+                for index, proposal in enumerate(linear_wall_proposals(start, training, triangles, surface_groups)):
+                    proposal["initialization"] = f"linear_wall_{seed}_{index}"
+                    starts.append(proposal)
         from room3d_fixtures import ray_table_lamp_proposals
 
         furniture_groups = {

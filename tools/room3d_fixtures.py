@@ -10,7 +10,7 @@ from room3d_shapes import generate
 def anchor_wall_lamp(candidate, prior):
     """Resize an anchored fixture without translating or rotating it off its wall."""
     params = candidate['shape']['parameters']
-    wall_params = (params if params.get('profile') == 'wall_candelabra'
+    wall_params = (params if params.get('profile') in ('wall_candelabra', 'wall_linear')
                    else {**params, 'profile': 'wall_sconce', 'arms': 1})
     normal = np.asarray(prior['normal'], float)
     point = np.asarray(prior['point'], float)
@@ -23,7 +23,7 @@ def anchor_wall_lamp(candidate, prior):
 def wall_plate_contact(obj, triangles, groups, tolerance=10):
     """Check plate corners and center against its designated finite wall group."""
     prior = obj.get('attachment_prior')
-    if not prior or obj['shape']['parameters'].get('profile') not in ('wall_sconce', 'wall_candelabra'):
+    if not prior or obj['shape']['parameters'].get('profile') not in ('wall_sconce', 'wall_candelabra', 'wall_linear'):
         return False
     surfaces = [triangle for triangle, group in zip(triangles, groups, strict=True)
                 if group == prior['group']]
@@ -75,6 +75,8 @@ def multilight_wall_proposals(reference, triangles, groups):
     if not wall_plate_contact(reference, triangles, groups):
         return
     params = reference['shape']['parameters']
+    if params.get('profile') == 'wall_linear':
+        return
     for arms in (2, 3):
         for shade_scale in (.35, .55):
             shade = params['shade'] * shade_scale
@@ -202,6 +204,67 @@ def ray_wall_lamp_proposals(reference, training, triangles, groups, wall_groups)
                 emitted.append((point, normal))
                 if len(emitted) >= 8:
                     return
+
+
+def linear_wall_proposals(reference, training, triangles, groups):
+    """Infer a long housing in a finite wall plane using training masks only.
+
+    Cropped observations supply partial extents, combined across cameras.
+    Tube count and unseen housing thickness remain explicit design hypotheses.
+    Existing render, attachment and reserved-view gates decide adoption.
+    """
+    from room3d_preview import camera_basis
+
+    prior = reference.get('attachment_prior', {})
+    if prior.get('support') in ('horizontal', 'ceiling') or not wall_plate_contact(reference, triangles, groups):
+        return
+    normal = np.array(prior['normal'], dtype=float, copy=True)
+    normal /= np.linalg.norm(normal)
+    tangent = np.array([normal[2], 0, -normal[0]])
+    point = np.asarray(prior['point'], float)
+    samples = []
+    cameras = []
+    for obs in training:
+        y, x = np.nonzero(obs['mask'])
+        if len(x) < 40:
+            continue
+        # All pixels, evenly subsampled in deterministic raster order.
+        indices = np.linspace(0, len(x)-1, min(256, len(x))).astype(int)
+        pixels = np.column_stack((x[indices]+.5, y[indices]+.5))
+        camera = obs['camera_model']
+        origin = np.asarray(camera['origin'], float)
+        rays = np.column_stack(((pixels-[160, 120])/camera['fov'], np.ones(len(pixels)))) @ camera_basis(camera)
+        denominator = rays @ normal
+        good = np.abs(denominator) > 1e-8
+        depth = np.divide((point-origin) @ normal, denominator,
+                          out=np.zeros(len(rays)), where=good)
+        good &= np.isfinite(depth) & (depth > camera['fov']*2)
+        if good.sum() < 40:
+            continue
+        xyz = origin + rays[good]*depth[good, None]
+        samples.append(np.column_stack((xyz @ tangent, xyz[:, 1])))
+        cameras.append(obs['camera'])
+    if not samples:
+        return
+    points = np.concatenate(samples)
+    lo, hi = np.quantile(points, [.02, .98], axis=0)
+    width, vertical = hi-lo
+    if not (200 <= width <= 10000 and 50 <= vertical <= 1200 and width >= vertical*3):
+        return
+    center = point + tangent*((lo[0]+hi[0])/2-point @ tangent)
+    center[1] = (lo[1]+hi[1])/2
+    for arms in (1, 2):
+        shade = vertical/(arms+.75)
+        thickness = min(40., shade*.2)
+        params = {'profile': 'wall_linear', 'height': float(vertical),
+                  'radius': float(width/2), 'thickness': float(thickness),
+                  'arms': arms, 'shade': float(shade)}
+        anchored = dict(prior)
+        anchored.update(point=center.tolist(), source_cameras=cameras,
+                        qualification='Training-mask wall-plane housing extent; tube count and hidden housing inferred')
+        proposal = anchor_wall_lamp(generate('lamp', params), anchored)
+        if wall_plate_contact(proposal, triangles, groups):
+            yield proposal
 
 
 def anchor_fixture(candidate, prior):

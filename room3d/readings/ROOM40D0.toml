@@ -8,15 +8,15 @@ seed = 4130
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.concrete"
-wall_material = "stone.concrete"
-ceiling_material = "stone.concrete"
+floor_material = "concrete.raw"
+wall_material = "concrete.raw"
+ceiling_material = "concrete.raw"
 skirting = 0
 trim = "concrete"
 cell = 900
 
 [materials]
-"stone.concrete" = { color = [0.46, 0.46, 0.42], tile = [2400, 2400] }
+"concrete.raw" = { color = [0.40, 0.39, 0.36], stains = 0.9, panels = 1 }
 stone = [0.48, 0.48, 0.44]
 "door.metal" = [0.46, 0.52, 0.48]
 double_door = [0.50, 0.56, 0.52]

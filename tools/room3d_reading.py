@@ -341,9 +341,10 @@ def tex_forest(rng, size, color, sky=(0.08, 0.12, 0.14)):
         line = np.full(size, 1.0)
         for i in range(density):
             cx = (i + rng.random() * 0.8) / density
-            w = 0.5 / density + rng.random() * 0.3 / density
+            w = 0.14 + rng.random() * 0.08
             tip = base + rng.random() * 0.12
-            prof = tip + np.abs(xx[0] - cx) / w * height
+            ragged = 0.04 * np.sin(np.arange(size) / size * math.tau * 40 + rng.random() * 6)
+            prof = tip + (np.abs(((xx[0] - cx + 0.5) % 1.0) - 0.5) / w + ragged) * height
             line = np.minimum(line, prof)
         trees = yy > line[None, :]
         leaf = value_noise((size, size), rng, octaves=3, base_freq=24 + layer * 8)
@@ -625,21 +626,24 @@ class Builder:
         self.cameras = self.room["cameras"]
         self._lights_from_kinds()
 
-    def _cameras_behind(self, side, fixed, a, b, margin=2500):
-        """Cameras on the far side of a wall segment, which would see its back."""
+    def _cameras_behind(self, side, fixed, a, b, margin=None):
+        """Cameras on the outside of a wall plane: they would see its back.
+
+        The fixed cameras of the original often sit behind walls, sometimes
+        far away; a single-room mesh never wants a wall seen from outside, so
+        this is per-camera back-face culling done through the .cameras hides.
+        """
         behind = []
         for cam in self.cameras:
             ox, oy, oz = cam["origin"]
-            along, across = (oz, ox) if side in ("west", "east") else (ox, oz)
+            across = ox if side in ("west", "east") else oz
             outside = (across < fixed) if side in ("west", "south") else (across > fixed)
-            if outside and a - margin <= along <= b + margin:
+            if outside:
                 behind.append(cam["index"])
         return behind
 
     def _cameras_above(self, zone, ceiling):
-        x0, z0, x1, z1 = zone["box"]
-        return [cam["index"] for cam in self.cameras
-                if cam["origin"][1] < ceiling and x0 - 2500 <= cam["origin"][0] <= x1 + 2500 and z0 - 2500 <= cam["origin"][2] <= z1 + 2500]
+        return [cam["index"] for cam in self.cameras if cam["origin"][1] < ceiling]
 
     def _raise_ceilings(self):
         """Lift a zone's ceiling above any camera standing over it.

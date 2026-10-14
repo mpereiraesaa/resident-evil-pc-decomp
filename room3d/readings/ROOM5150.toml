@@ -1,4 +1,4 @@
-# Lift to the heliport: a small steel cage (its view did not decode).
+# Lift to the heliport: a small steel cage with steel posts and a grated floor.
 room = "ROOM5150"
 title = "Heliport lift"
 seed = 5210
@@ -6,9 +6,9 @@ seed = 5210
 [shell]
 floor = 0
 ceiling = -4000
-floor_material = "concrete.floor"
+floor_material = "grating"
 wall_material = "concrete"
-ceiling_material = "concrete.ceiling"
+ceiling_material = "grating"
 skirting = 0
 trim = "steel"
 cell = 600
@@ -29,6 +29,31 @@ grating = [0.50, 0.52, 0.52]
 [[zone]]
 box = [2466, 1836, 6984, 7146]
 wall_material = "grating"
+
+[[column]]
+at = [2600, 2000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
+[[column]]
+at = [2600, 7000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
+[[column]]
+at = [6850, 2000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
+[[column]]
+at = [6850, 7000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
 
 [[light]]
 at = [4700, -3600, 4500]

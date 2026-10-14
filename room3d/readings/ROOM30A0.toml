@@ -7,15 +7,15 @@ seed = 3100
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.cave"
-wall_material = "stone.cave"
-ceiling_material = "stone.cave"
+floor_material = "rock.cave"
+wall_material = "rock.cave"
+ceiling_material = "rock.cave"
 skirting = 0
 trim = "stone"
 cell = 800
 
 [materials]
-"stone.cave" = { color = [0.58, 0.609, 0.377], tile = [1400, 1400] }
+"rock.cave" = { color = [0.475, 0.446, 0.288], tile = [2200, 2200] }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
@@ -42,7 +42,7 @@ frame = "stone"
 at = [11268, 8280]
 top = -4200
 radius = 1100
-material = "stone.cave"
+material = "rock.cave"
 square = true
 
 [[sconce]]

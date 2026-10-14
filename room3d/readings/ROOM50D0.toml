@@ -1,5 +1,4 @@
-# Escape elevator cage: a small steel cell (its view did not decode;
-# finishes follow the lab lifts).
+# Escape elevator cage: a small steel cell with steel posts and a grated floor.
 room = "ROOM50D0"
 title = "Escape elevator"
 seed = 5130
@@ -7,9 +6,9 @@ seed = 5130
 [shell]
 floor = 0
 ceiling = -4000
-floor_material = "concrete.floor"
+floor_material = "grating"
 wall_material = "concrete"
-ceiling_material = "concrete.ceiling"
+ceiling_material = "grating"
 skirting = 0
 trim = "steel"
 cell = 600
@@ -30,6 +29,31 @@ grating = [0.50, 0.52, 0.52]
 [[zone]]
 box = [2412, 1890, 7002, 7200]
 wall_material = "grating"
+
+[[column]]
+at = [2600, 2000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
+[[column]]
+at = [2600, 7000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
+[[column]]
+at = [6850, 2000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
+[[column]]
+at = [6850, 7000]
+top = -4000
+radius = 120
+material = "steel"
+square = true
 
 [[light]]
 at = [4700, -3600, 4500]

@@ -7,15 +7,15 @@ seed = 3060
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.mossy"
-wall_material = "stone.mossy"
-ceiling_material = "stone.mossy"
+floor_material = "rock.cave"
+wall_material = "rock.cave"
+ceiling_material = "rock.cave"
 skirting = 0
 trim = "stone"
 cell = 600
 
 [materials]
-"stone.mossy" = { color = [0.348, 0.435, 0.261], tile = [1200, 1200] }
+"rock.cave" = { color = [0.302, 0.36, 0.23], tile = [2200, 2200] }
 stone = [0.435, 0.493, 0.348]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
@@ -34,12 +34,6 @@ top = -3400
 material = "door.red"
 frame = "stone"
 
-[[object]]
-kind = "box"
-box = [7056, 8280, 9198, 10494]
-top = -1400
-material = "stone"
-omit = ["bottom", "north"]
 [[object]]          # plaque on the north wall
 kind = "wall_band"
 wall = "north"

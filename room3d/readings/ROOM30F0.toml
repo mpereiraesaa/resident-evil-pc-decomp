@@ -1,7 +1,7 @@
 # Boulder passage 2: a long cave corridor across the north with the
 # boulder at its east end, a link down to the south corridor, a pocket with
 # the item chamber door, and the east bay with the door to the straight
-# passage. (The original views did not decode; cave finishes.)
+# passage. 
 room = "ROOM30F0"
 title = "Boulder 2 passage"
 seed = 3150
@@ -9,15 +9,15 @@ seed = 3150
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.cave"
-wall_material = "stone.cave"
-ceiling_material = "stone.cave"
+floor_material = "rock.cave"
+wall_material = "rock.cave"
+ceiling_material = "rock.cave"
 skirting = 0
 trim = "stone"
 cell = 900
 
 [materials]
-"stone.cave" = { color = [0.58, 0.609, 0.377], tile = [1400, 1400] }
+"rock.cave" = { color = [0.518, 0.49, 0.302], tile = [2200, 2200] }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
@@ -50,21 +50,6 @@ span = [14000, 17100]
 top = -3300
 material = "door.red"
 frame = "stone"
-
-[[object]]          # boulders
-kind = "cylinder"
-at = [3393, 23967]
-radius = 1900
-top = -3800
-material = "stone"
-segments = 16
-[[object]]
-kind = "cylinder"
-at = [28800, 24246]
-radius = 1800
-top = -3800
-material = "stone"
-segments = 16
 
 [[sconce]]
 wall = "south"

@@ -7,15 +7,15 @@ seed = 3120
 [shell]
 floor = 0
 ceiling = -4800
-floor_material = "stone.cave"
-wall_material = "stone.cave"
+floor_material = "rock.cave"
+wall_material = "rock.cave"
 ceiling_material = "stone.web"
 skirting = 0
 trim = "stone"
 cell = 900
 
 [materials]
-"stone.cave" = { color = [0.435, 0.435, 0.319], tile = [1400, 1400] }
+"rock.cave" = { color = [0.389, 0.374, 0.288], tile = [2200, 2200] }
 "stone.web" = { color = [0.58, 0.58, 0.464], tile = [1400, 1400] }
 stone = [0.522, 0.522, 0.406]
 "door.red" = [0.48, 0.12, 0.08]

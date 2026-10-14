@@ -304,6 +304,31 @@ def tex_grating(rng, size, color):
     return np.where(bars[..., None], np.array(color)[None, None, :] * np.ones((size, size, 1)), dark)
 
 
+def tex_rock(rng, size, color, slabs=34, moss=0.6):
+    """Irregular rock slabs (Voronoi cells) with dark joints and moss tint."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    points = rng.random((slabs, 2))
+    best = np.full((size, size), 9.0)
+    second = np.full((size, size), 9.0)
+    owner = np.zeros((size, size), dtype=int)
+    for i, (px, py) in enumerate(points):
+        for ox in (-1, 0, 1):
+            for oy in (-1, 0, 1):
+                d = np.hypot(xx - px - ox, yy - py - oy)
+                closer = d < best
+                second = np.where(closer, best, np.minimum(second, d))
+                owner = np.where(closer, i, owner)
+                best = np.where(closer, d, best)
+    shade = 0.70 + 0.45 * ((np.sin(owner * 12.9898) * 43758.5453) % 1)
+    grain = value_noise((size, size), rng, octaves=4, base_freq=16, persistence=0.5)
+    level = shade * (0.85 + 0.3 * grain)
+    image = np.array(color)[None, None, :] * level[..., None]
+    joint = np.clip(1 - (second - best) * 40, 0, 1)
+    image = tint(joint * 0.92, image, tuple(c * 0.12 for c in color))
+    green = value_noise((size, size), rng, octaves=3, base_freq=4)
+    return tint(np.clip(green - 0.45, 0, 1) * 2 * moss, image, (0.26, 0.34, 0.08))
+
+
 def tex_checker(rng, size, color, dark=(0.22, 0.17, 0.13)):
     """Two-tone marble tiles, two by two per texture."""
     yy, xx = np.mgrid[0:size, 0:size] / size
@@ -352,6 +377,7 @@ FAMILIES = {
     "wallpaper": (tex_wallpaper, (0.55, 0.52, 0.38), (1200, 1200)),
     "stripes": (tex_stripes, (0.86, 0.80, 0.68), (1600, 1600)),
     "concrete": (tex_concrete, (0.58, 0.58, 0.54), (3000, 3000)),
+    "rock": (tex_rock, (0.62, 0.60, 0.40), (2200, 2200)),
     "grating": (tex_grating, (0.50, 0.52, 0.52), (1200, 1200)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),

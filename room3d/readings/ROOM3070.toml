@@ -1,5 +1,6 @@
-# Underground entry: a rough cave U around a rock mass, yellow-green stone,
-# lanterns, red iron doors south (to the falls and the pump) and east.
+# Underground entry: a rough cave U around a rock mass, yellow-green rock,
+# lanterns, red iron doors south and east, a wooden desk in the east leg
+# (camera 3). Views decode since the 316-pixel row fix.
 room = "ROOM3070"
 title = "Underground entry"
 seed = 3070
@@ -7,18 +8,18 @@ seed = 3070
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.cave"
-wall_material = "stone.cave"
-ceiling_material = "stone.cave"
+floor_material = "rock.cave"
+wall_material = "rock.cave"
+ceiling_material = "rock.cave"
 skirting = 0
 trim = "stone"
 cell = 800
 
 [materials]
-"stone.cave" = { color = [0.58, 0.609, 0.377], tile = [1400, 1400] }
+"rock.cave" = { color = [0.475, 0.446, 0.288], tile = [2200, 2200] }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
-wood = [0.26, 0.14, 0.10]
+wood = [0.46, 0.20, 0.12]
 
 [lighting]
 ambient = [0.147, 0.147, 0.105]
@@ -54,14 +55,27 @@ frame = "stone"
 at = [10017, 17901]
 top = -4200
 radius = 900
-material = "stone.cave"
+material = "rock.cave"
 square = true
 [[column]]
 at = [6012, 18108]
 top = -4200
 radius = 900
-material = "stone.cave"
+material = "rock.cave"
 square = true
+
+[[object]]          # wooden desk with a typewriter (camera 3)
+kind = "box"
+box = [11000, 15500, 12400, 16500]
+top = -1300
+material = "wood"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [11300, 15800, 12000, 16300]
+top = -1520
+bottom = -1300
+material = "enamel"
 
 [[sconce]]
 wall = "west"

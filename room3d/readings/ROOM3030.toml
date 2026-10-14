@@ -8,7 +8,7 @@ seed = 3030
 [shell]
 floor = 0
 ceiling = -14000
-floor_material = "stone.concrete"
+floor_material = "concrete.asphalt"
 wall_material = "forest"
 dado = 4400
 dado_material = "stone.panel"
@@ -18,7 +18,7 @@ trim = "concrete"
 cell = 1500
 
 [materials]
-"stone.concrete" = { color = [0.667, 0.696, 0.696], tile = [4000, 4000] }
+"concrete.asphalt" = { color = [0.30, 0.31, 0.32], stains = 0.8 }
 "stone.panel" = { color = [0.841, 0.87, 0.87], tile = [3000, 3000] }
 stone = [0.754, 0.783, 0.783]
 wood = [0.60, 0.62, 0.62]
@@ -27,10 +27,15 @@ door = [0.64, 0.66, 0.66]
 "night.sky" = [0.06, 0.10, 0.10]
 
 [lighting]
-ambient = [0.286, 0.299, 0.312]
+ambient = [0.20, 0.21, 0.22]
 
 [[zone]]
 box = [2722, 2826, 29574, 30834]
+
+[[object]]          # the helipad marking
+kind = "rug"
+box = [9000, 9500, 21000, 21500]
+material = "helipad"
 
 [[object]]          # lift block on the south wall (gate to the lab)
 kind = "box"

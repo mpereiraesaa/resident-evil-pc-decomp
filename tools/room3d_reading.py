@@ -360,6 +360,18 @@ def tex_leaves(rng, size, color):
     return np.array(color)[None, None, :] * level[..., None]
 
 
+def tex_helipad(rng, size, color, mark=(0.76, 0.46, 0.20)):
+    """Asphalt with the orange circled H of a helipad."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    base = tex_concrete(rng, size, color, stains=0.8, panels=1)
+    r = np.hypot(xx - 0.5, yy - 0.5)
+    ring = np.abs(r - 0.36) < 0.035
+    h = ((np.abs(xx - 0.40) < 0.03) | (np.abs(xx - 0.60) < 0.03)) & (np.abs(yy - 0.5) < 0.22)
+    h |= (np.abs(yy - 0.5) < 0.03) & (np.abs(xx - 0.5) < 0.10)
+    wear = value_noise((size, size), rng, octaves=3, base_freq=12)
+    return tint((ring | h).astype(float) * np.clip(0.4 + wear, 0, 1), base, mark)
+
+
 def tex_checker(rng, size, color, dark=(0.22, 0.17, 0.13)):
     """Two-tone marble tiles, two by two per texture."""
     yy, xx = np.mgrid[0:size, 0:size] / size
@@ -409,8 +421,9 @@ FAMILIES = {
     "stripes": (tex_stripes, (0.86, 0.80, 0.68), (1600, 1600)),
     "concrete": (tex_concrete, (0.58, 0.58, 0.54), (3000, 3000)),
     "rock": (tex_rock, (0.62, 0.60, 0.40), (2200, 2200)),
-    "forest": (tex_forest, (0.16, 0.26, 0.14), (8000, 12000)),
+    "forest": (tex_forest, (0.10, 0.17, 0.10), (8000, 12000)),
     "leaves": (tex_leaves, (0.16, 0.30, 0.12), (1200, 1200)),
+    "helipad": (tex_helipad, (0.34, 0.35, 0.36), None),
     "grating": (tex_grating, (0.50, 0.52, 0.52), (1200, 1200)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),

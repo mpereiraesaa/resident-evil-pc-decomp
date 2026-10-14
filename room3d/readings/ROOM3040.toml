@@ -8,7 +8,7 @@ seed = 3040
 [shell]
 floor = 0
 ceiling = -12000
-floor_material = "stone.paving"
+floor_material = "rock.flag"
 wall_material = "forest"
 dado = 3600
 dado_material = "stone.brick"
@@ -18,7 +18,7 @@ trim = "stone"
 cell = 1200
 
 [materials]
-"stone.paving" = { color = [0.493, 0.522, 0.464], tile = [2000, 2000] }
+"rock.flag" = { color = [0.28, 0.29, 0.27], tile = [2000, 2000] }
 "stone.brick" = { color = [0.667, 0.696, 0.609], tile = [1200, 1200] }
 stone = [0.667, 0.696, 0.638]
 wood = [0.26, 0.14, 0.10]

@@ -8,22 +8,24 @@ seed = 3020
 [shell]
 floor = 0
 ceiling = -9000
-floor_material = "stone.cave"
-wall_material = "stone.cave"
-ceiling_material = "stone.cave"
+floor_material = "rock.cobble"
+wall_material = "stone.brick"
+ceiling_material = "stone.dark"
 skirting = 0
 trim = "stone"
 cell = 1200
 
 [materials]
-"stone.cave" = { color = [0.435, 0.522, 0.551], tile = [1800, 1800] }
+"rock.cobble" = { color = [0.24, 0.28, 0.33], tile = [1600, 1600] }
+"stone.brick" = { color = [0.26, 0.27, 0.24], tile = [1200, 1200] }
+"stone.dark" = { color = [0.12, 0.13, 0.13], tile = [2000, 2000] }
 stone = [0.58, 0.638, 0.638]
 wood = [0.34, 0.18, 0.12]
 door = [0.28, 0.16, 0.10]
 "door.iron" = [0.22, 0.20, 0.22]
 
 [lighting]
-ambient = [0.257, 0.321, 0.385]
+ambient = [0.12, 0.14, 0.17]
 
 [[zone]]            # entry walk from the south door
 box = [9252, 2106, 19278, 15696]

@@ -297,6 +297,18 @@ def tex_checker(rng, size, color, dark=(0.22, 0.17, 0.13)):
     return tint(grout.astype(float) * 0.7, image, (0.30, 0.28, 0.25))
 
 
+def tex_stripes(rng, size, color, stripe=(0.72, 0.40, 0.34), count=10):
+    """Vertical striped wallpaper with a fine floral band on each stripe."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    grain = value_noise((size, size), rng, octaves=3, base_freq=24, persistence=0.5)
+    paper = np.array(color)[None, None, :] * (0.90 + 0.14 * grain)[..., None]
+    u = (xx * count) % 1
+    band = (u > 0.30) & (u < 0.70)
+    paper = tint(band.astype(float) * 0.6, paper, stripe)
+    dots = ((u > 0.44) & (u < 0.56)) & (np.abs(np.sin(yy * math.pi * count * 2)) > 0.85)
+    return tint(dots.astype(float) * 0.7, paper, tuple(c * 0.7 for c in stripe))
+
+
 # family -> (generator, default colour, default tile)
 FAMILIES = {
     "plaster": (tex_plaster, (0.70, 0.60, 0.46), (1400, 1400)),
@@ -318,6 +330,7 @@ FAMILIES = {
     "window_fan": (tex_window_fan, (0.70, 0.60, 0.46), None),
     "chest": (tex_chest, (0.22, 0.14, 0.08), None),
     "wallpaper": (tex_wallpaper, (0.55, 0.52, 0.38), (1200, 1200)),
+    "stripes": (tex_stripes, (0.86, 0.80, 0.68), (1600, 1600)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),
 }

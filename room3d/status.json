@@ -79,10 +79,10 @@
       "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM1060": {
-      "gameplay": "not_validated",
-      "note": "Hand-authored mesh (tools/build_room1060_mesh.py) laid out from collision, mask sprites and ROOM2030; loads and passes the smoke test, but the user rejected its look on 2026-10-14. Batcher version in build/room3d-colorfix is also rough. Work stopped.",
-      "review": "needs_work",
-      "updated": "2026-10-14T18:15:25+00:00"
+      "gameplay": "validated",
+      "note": "Hand-authored mesh (tools/build_room1060_mesh.py). User approved the look and walked cameras 0-6 on 2026-10-14 once the RDT's mask sprites were disabled (sprite-free RDT copy in the play-test mod folder). With sprites on, the original stair/column overlays draw over the mesh and look like floating junk.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T18:36:28+00:00"
     },
     "ROOM1061": {
       "gameplay": "not_validated",

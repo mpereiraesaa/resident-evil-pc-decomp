@@ -27,6 +27,8 @@ wood = [0.24, 0.15, 0.09]
 coffer = [0.18, 0.13, 0.09]
 planks = [0.30, 0.20, 0.12]
 double_door = [0.26, 0.17, 0.10]
+"panel.shield" = [0.16, 0.30, 0.26]
+velvet = [0.42, 0.10, 0.12]
 door = [0.26, 0.17, 0.10]
 
 [lighting]
@@ -128,6 +130,35 @@ span = [6545, 10302]
 depth = 775
 mantel = -1600
 opening = [1500, 1150]
+
+[[object]]          # shield over the fireplace
+kind = "wall_band"
+wall = "west"
+span = [7900, 8900]
+y = [-4300, -2600]
+material = "panel.shield"
+rail = false
+[[object]]          # crossed swords behind it
+kind = "wall_band"
+wall = "west"
+span = [7600, 9200]
+y = [-3500, -3400]
+material = "iron"
+rail = false
+[[object]]          # red tapestries either side
+kind = "wall_band"
+wall = "west"
+span = [5600, 6700]
+y = [-4800, -2400]
+material = "velvet"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [10100, 11200]
+y = [-4800, -2400]
+material = "velvet"
+rail = false
 
 [[object]]
 kind = "table"

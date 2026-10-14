@@ -1056,3 +1056,15 @@ passed in 49 s and the automatic ROOM10B0 export passed in 43 s
 `validated` with the scope in the note: an automated smoke test, not a human
 play-test, with no visual, item or save assertions. No other room has a runtime
 scenario; `propagate` never copies gameplay status.
+
+### Furniture slab corrections, third pass
+
+Five more rooms whose only recorded defect was furniture rendered as 1.5 m
+collision slabs received the slab-scaling correction (beds to 0.4 of the slab
+height, desks and dressers to 0.5 to 0.7, pivot on the floor at the slab
+centre) with reprojection: ROOM4010, ROOM40A0, ROOM4060, ROOM5070 and
+ROOM2090. All replayed through the batch hook; the first four now read as
+furniture with the original texture on the lowered top and were moved to
+`visually_approved` (approximate); ROOM2090's bed tops come out partly gray.
+`propagate` now refreshes inherited entries when their source room changes.
+Catalog: 136 approved, 184 need work, 28 rooms covered by 11 override files.

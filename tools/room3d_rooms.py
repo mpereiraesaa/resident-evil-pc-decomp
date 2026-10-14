@@ -133,7 +133,9 @@ def propagate(assets, status_path):
     records = {r['rdt']: r for r in group_variants(inventory(assets))}
     changed = {}
     for name, record in sorted(records.items()):
-        if record['empty_slot'] or status['rooms'].get(name, {}).get('review', 'unreviewed') != 'unreviewed':
+        current = status['rooms'].get(name, {})
+        if record['empty_slot'] or (current.get('review', 'unreviewed') != 'unreviewed'
+                                    and 'inherited_from' not in current):
             continue
         reviewed = {other: status['rooms'][other] for other in record['shared_layout_with']
                     if status['rooms'].get(other, {}).get('review', 'unreviewed') != 'unreviewed'
@@ -141,6 +143,9 @@ def propagate(assets, status_path):
         if not reviewed or len({entry['review'] for entry in reviewed.values()}) != 1:
             continue
         source, entry = sorted(reviewed.items())[0]
+        if current.get('inherited_from') == source and current.get('review') == entry['review'] \
+                and current.get('note', '').endswith(entry.get('note', '')):
+            continue
         changed[name] = {'review': entry['review'], 'gameplay': 'not_validated', 'inherited_from': source,
                          'note': f"Inherited from {source} (identical layout and background files); not reviewed separately. "
                                  + entry.get('note', ''),

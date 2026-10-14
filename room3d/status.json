@@ -152,9 +152,9 @@
     "ROOM10B1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10B0",
-      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM10C0": {
       "gameplay": "not_validated",
@@ -308,9 +308,9 @@
     "ROOM1181": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1180",
-      "note": "Inherited from ROOM1180 (identical layout and background files); not reviewed separately. Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
+      "note": "Inherited from ROOM1180 (identical layout and background files); not reviewed separately. Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition, chest menu opened and closed); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM11A0": {
       "gameplay": "not_validated",
@@ -457,16 +457,16 @@
     },
     "ROOM2090": {
       "gameplay": "not_validated",
-      "note": "Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "note": "Twin bed room: bed and dresser slabs scaled to furniture height; bed tops come out partly gray after reprojection. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T09:37:06+00:00"
+      "updated": "2026-10-14T10:31:30+00:00"
     },
     "ROOM2091": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2090",
-      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: bed and dresser slabs scaled to furniture height; bed tops come out partly gray after reprojection. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM20A0": {
       "gameplay": "not_validated",
@@ -821,16 +821,16 @@
     },
     "ROOM4010": {
       "gameplay": "not_validated",
-      "note": "Guardhouse bedroom: beds and desk are gray slabs, camera 3 close-up wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T09:51:59+00:00"
+      "note": "Guardhouse bedroom: bed and desk collision slabs scaled to furniture height; bed texture lands on the lowered top. Camera 3 close-up still rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:29+00:00"
     },
     "ROOM4011": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM4010",
-      "note": "Inherited from ROOM4010 (identical layout and background files); not reviewed separately. Guardhouse bedroom: beds and desk are gray slabs, camera 3 close-up wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM4010 (identical layout and background files); not reviewed separately. Guardhouse bedroom: bed and desk collision slabs scaled to furniture height; bed texture lands on the lowered top. Camera 3 close-up still rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM4020": {
       "gameplay": "not_validated",
@@ -886,16 +886,16 @@
     },
     "ROOM4060": {
       "gameplay": "not_validated",
-      "note": "Guardhouse room with bed: bed and desk are gray slabs; cameras 0 and 6 close-ups wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T09:52:00+00:00"
+      "note": "Guardhouse room: bed and desk slabs scaled to furniture height. Cameras 0 and 6 close-ups still rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:29+00:00"
     },
     "ROOM4061": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM4060",
-      "note": "Inherited from ROOM4060 (identical layout and background files); not reviewed separately. Guardhouse room with bed: bed and desk are gray slabs; cameras 0 and 6 close-ups wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM4060 (identical layout and background files); not reviewed separately. Guardhouse room: bed and desk slabs scaled to furniture height. Cameras 0 and 6 close-ups still rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM4070": {
       "gameplay": "not_validated",
@@ -938,16 +938,16 @@
     },
     "ROOM40A0": {
       "gameplay": "not_validated",
-      "note": "Guardhouse bedroom: bed and desk are bare gray slabs in cameras 2, 3, 5 and 6.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:01:24+00:00"
+      "note": "Guardhouse bedroom: bed and desk slabs scaled to furniture height with reprojected tops. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:29+00:00"
     },
     "ROOM40A1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM40A0",
-      "note": "Inherited from ROOM40A0 (identical layout and background files); not reviewed separately. Guardhouse bedroom: bed and desk are bare gray slabs in cameras 2, 3, 5 and 6.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM40A0 (identical layout and background files); not reviewed separately. Guardhouse bedroom: bed and desk slabs scaled to furniture height with reprojected tops. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM40B0": {
       "gameplay": "not_validated",
@@ -1133,16 +1133,16 @@
     },
     "ROOM5070": {
       "gameplay": "not_validated",
-      "note": "Dormitory with beds: beds and desk are bare gray slabs; walls and doors read.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:08:46+00:00"
+      "note": "Dormitory: bed row and desk slabs scaled to furniture height; lockers kept tall. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:30+00:00"
     },
     "ROOM5071": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM5070",
-      "note": "Inherited from ROOM5070 (identical layout and background files); not reviewed separately. Dormitory with beds: beds and desk are bare gray slabs; walls and doors read.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM5070 (identical layout and background files); not reviewed separately. Dormitory: bed row and desk slabs scaled to furniture height; lockers kept tall. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM5080": {
       "gameplay": "not_validated",
@@ -1483,16 +1483,16 @@
     "ROOM60B0": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10B0",
-      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM60B1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10B0",
-      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM60C0": {
       "gameplay": "not_validated",
@@ -1668,9 +1668,9 @@
     "ROOM6181": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1180",
-      "note": "Inherited from ROOM1180 (identical layout and background files); not reviewed separately. Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
+      "note": "Inherited from ROOM1180 (identical layout and background files); not reviewed separately. Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition, chest menu opened and closed); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM6190": {
       "gameplay": "not_validated",
@@ -1854,16 +1854,16 @@
     "ROOM7090": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2090",
-      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: bed and dresser slabs scaled to furniture height; bed tops come out partly gray after reprojection. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM7091": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2090",
-      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: bed and dresser slabs scaled to furniture height; bed tops come out partly gray after reprojection. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:31:31+00:00"
     },
     "ROOM70A0": {
       "gameplay": "not_validated",

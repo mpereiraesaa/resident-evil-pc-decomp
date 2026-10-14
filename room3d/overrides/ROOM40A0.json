@@ -1,0 +1,109 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "e48ae028cc6276304e0c8f1f11b5e15f6c66d97a31b44236a498b5e0e0eea790",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "429f73bc890edbcbc58ec35e9ab902a15c1fefc2cc6a6d9d41709f88707c2f6b"
+  },
+  "created": "2026-10-14T10:26:17+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "e48ae028cc6276304e0c8f1f11b5e15f6c66d97a31b44236a498b5e0e0eea790",
+      "edits": {
+        "boundary_1": {
+          "pivot": [
+            9855.0,
+            0,
+            6507.0
+          ],
+          "scale": [
+            1,
+            0.4,
+            1
+          ]
+        },
+        "boundary_7": {
+          "pivot": [
+            10899.0,
+            0,
+            1683.0
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ]
+        }
+      },
+      "note": "Scale bed slabs to about 0.6 m and desk/dresser slabs to 0.75-1.0 m; textures reprojected onto the lowered tops",
+      "objects": {
+        "boundary_1": {
+          "kind": "wall",
+          "max": [
+            11592.0,
+            0.0,
+            8442.0
+          ],
+          "min": [
+            8118.0,
+            -1500.0,
+            4572.0
+          ]
+        },
+        "boundary_7": {
+          "kind": "wall",
+          "max": [
+            11898.0,
+            0.0,
+            2790.0
+          ],
+          "min": [
+            9900.0,
+            -1437.73925,
+            576.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:26:17+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM40A0",
+    "room": 10,
+    "stage": 4
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "fcf6b15b59434fcc7563b2ab044f82084cbf124da85c5f552921ad9c16f8ef18",
+      "1": "6fd66c1174302202ce5ef091bdfd7e6badfdbd27a91f8c0c411f76be43e5371d",
+      "2": "536d103c4b13be46159629a65929b18751c3ca2351205d87e4900789a32ec435",
+      "3": "2e554a7c5e1e0d2e760f6c075df2404eabd1bc8b5f870bdbe77bd43c7ded4496",
+      "4": "84874769be5e9eab457f82ead17fd263c8c8d60500af767c0b7d8d05d5a492e2",
+      "5": "8f6e99bf46a643a00ca3fedcd78139d787e891668ea48655037b980732623f27",
+      "6": "df31933ca6e91b81db20bca21113d18f5a080bf76a406fc5c06118884cf007a5"
+    },
+    "geometry_sha256": "25aa05d203c25de3aa81f48685f4c5e1f4cfd66e79aaa8d4eca68121e9d28362",
+    "player": 0,
+    "rdt": "ROOM40A0",
+    "rdt_sha256": "548f513c2ddaa67e9634c5052d5099873857dd35d61106188a64e3d739303236",
+    "room": 10,
+    "stage": 4
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:26:17+00:00"
+}

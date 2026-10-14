@@ -1,0 +1,156 @@
+# Art room: a blue-grey marble gallery with the statue on its pedestal,
+# paintings under spotlights and a red-curtained doorway east; beyond it a
+# lower red-walled passage and storeroom reached by short stairs.
+# Gallery from ROOM1070.RDT blocks 8,14,15,17; pedestal from block 18; the
+# lower rooms from blocks 3,4,5,6,16 and the type-4 stair rectangles.
+room = "ROOM1070"
+title = "Art room"
+seed = 1070
+
+[shell]
+floor = 0
+ceiling = -5600
+floor_material = "marble.blue"
+wall_material = "plaster.blue"
+ceiling_material = "plaster.night"
+skirting = 200
+trim = "marble_dark"
+cell = 800
+
+[materials]
+"marble.blue" = { color = [0.46, 0.52, 0.62], tile = [2400, 2400] }
+"plaster.blue" = { color = [0.40, 0.44, 0.56], stains = 0.3 }
+"plaster.night" = [0.10, 0.10, 0.14]
+wallpaper = { color = [0.46, 0.08, 0.08], motif = [0.60, 0.14, 0.12], repeats = 12 }
+planks = [0.44, 0.18, 0.10]
+"plaster.cream" = [0.66, 0.62, 0.52]
+stone = [0.42, 0.52, 0.48]
+wood = [0.30, 0.17, 0.10]
+door = [0.14, 0.14, 0.16]
+velvet = [0.52, 0.08, 0.08]
+marble_dark = [0.18, 0.20, 0.24]
+
+[lighting]
+ambient = [0.10, 0.11, 0.15]
+
+[[zone]]            # gallery
+box = [2029, 1850, 15507, 11400]
+[[zone]]            # red passage, lower level, east of the gallery
+box = [15507, 7448, 23669, 10817]
+floor_along = "x"
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling = -4000
+ceiling_material = "plaster.cream"
+[[zone]]            # red storeroom, north-east
+box = [15469, 12077, 23669, 15836]
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling = -4000
+ceiling_material = "plaster.cream"
+[[zone]]            # link between passage and storeroom
+box = [20732, 10817, 23669, 12077]
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling = -4000
+ceiling_material = "plaster.cream"
+
+[[door]]
+wall = "west"
+span = [4700, 8800]
+top = -3400
+material = "door"
+[[door]]            # east door of the gallery (to the L passage)
+wall = "east"
+span = [2900, 5500]
+top = -3400
+material = "door"
+[[object]]          # red curtain over the passage opening
+kind = "wall_band"
+wall = "east"
+span = [7448, 10817]
+y = [-3600, -3000]
+material = "velvet"
+rail = false
+
+[[object]]          # statue pedestal (the statue is a game object)
+kind = "box"
+box = [8108, 5811, 10081, 7416]
+top = -1500
+material = "stone"
+omit = ["bottom"]
+
+[[painting]]
+wall = "west"
+span = [2200, 4300]
+y = [-4000, -2200]
+[[painting]]
+wall = "north"
+span = [3500, 6000]
+y = [-4000, -2300]
+[[painting]]
+wall = "north"
+span = [7200, 9700]
+y = [-4000, -2300]
+[[painting]]
+wall = "south"
+span = [4000, 7000]
+y = [-4000, -2200]
+[[painting]]
+wall = "south"
+span = [9500, 12500]
+y = [-4000, -2200]
+[[painting]]
+wall = "north"
+span = [12000, 14400]
+y = [-3800, -2500]
+[[painting]]
+wall = "east"
+span = [5700, 7200]
+y = [-3800, -2600]
+
+# Storeroom shelf unit (the two circles) and the passage's high shelf
+[[object]]
+kind = "box"
+box = [16200, 14900, 19100, 15836]
+top = -2600
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [15469, 13000, 15900, 15836]
+top = -2200
+material = "wood"
+omit = ["bottom", "west"]
+
+[[light]]
+at = [5000, -5000, 4000]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 6000
+[[light]]
+at = [12000, -5000, 4000]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 6000
+[[light]]
+at = [6000, -5000, 9500]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 6000
+[[light]]
+at = [12500, -5000, 9500]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 6000
+[[sconce]]
+wall = "south"
+at = [-3200, 19000]
+candles = 1
+strength = 0.4
+reach = 4000
+[[light]]
+at = [19500, -3400, 14000]
+color = [1.0, 0.92, 0.78]
+strength = 0.4
+reach = 5000

@@ -25,7 +25,7 @@ steel = [0.60, 0.62, 0.64]
 wood = [0.70, 0.56, 0.14]
 
 [lighting]
-ambient = [0.15, 0.11, 0.09]
+ambient = [0.195, 0.143, 0.117]
 "hedge" = [0.22, 0.44, 0.40]
 
 [[zone]]            # south corridor

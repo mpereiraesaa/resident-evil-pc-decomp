@@ -56,6 +56,13 @@ rails = []
 [[object]]
 kind = "rail"
 from = [17400, 6900]
+to = [18100, 6900]
+height = 1000
+spacing = 700
+material = "steel"
+[[object]]
+kind = "rail"
+from = [23000, 6900]
 to = [25000, 6900]
 height = 1000
 spacing = 700
@@ -64,6 +71,14 @@ material = "steel"
 kind = "rail"
 from = [17400, 6900]
 to = [17400, 17900]
+height = 1000
+spacing = 700
+material = "steel"
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [25000, 9300]
+to = [25000, 17900]
 height = 1000
 spacing = 700
 material = "steel"

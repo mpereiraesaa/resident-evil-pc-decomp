@@ -28,7 +28,7 @@ door = [0.34, 0.22, 0.12]
 "door.green" = [0.26, 0.34, 0.26]
 
 [lighting]
-ambient = [0.13, 0.11, 0.08]
+ambient = [0.169, 0.143, 0.104]
 
 [[zone]]            # north corridor from the main door
 box = [1968, 10944, 5094, 17928]

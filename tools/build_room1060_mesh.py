@@ -19,7 +19,7 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from room3d_handmade import Mesh, balustrade, compare_sheet, door, preview, tint, to_image, value_noise, write_mtl  # noqa: E402
+from room3d_handmade import Mesh, balustrade, compare_sheet, door, edge_agreement, preview, tint, to_image, value_noise, write_mtl  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -35,16 +35,16 @@ CEIL = -20000                          # hall ceiling (camera 0 sits at -18000)
 COL_X = (3970, 30230)                  # colonnade lines, from type-3 collisions
 COL_Z = (6100, 10570, 15030, 19520)
 COL_R = 520
-UPPER_COL_TOP = -15600                 # gallery columns reach the cornice below the ceiling
-GALLERY_Z = 16100                      # north gallery front edge, just before the stair foot
+GALLERY_Z = 14472                      # north gallery front edge (ROOM2030 collision block 3)
+ARCADE_FRONT_Z = 16000                 # free-standing columns carrying it (type-3 circles)
 FRONT_COLUMNS = ((9297, 16100), (24900, 16100))   # free-standing columns (type-3 circles 16 and 2)
 FRONT_POSTS = ((13986, 17100), (20210, 17100))    # lamp posts flanking the stair foot (circle 19 and mirror)
-GAL_W = 2470                           # gallery depth over the side aisles
+GAL_W = 1922                           # gallery depth: 2F void edge at x=4014 (ROOM2030 collision)
 ARCADE_Z0, ARCADE_Z1 = 22750, 24850    # north pier row
 PIERS = ((X0, 4378), (6879, 9507), (12430, 14766), (19026, 21942), (25092, 27108), (30384, X1))
 STAIR_X0, STAIR_X1 = 15228, 18864      # tread width between the parapets
 PARAPET = 1060                         # parapet thickness (collision strips 18 and 9)
-STAIR_Z0, STAIR_Z1 = 16326, 22248      # foot riser to the top landing edge
+STAIR_Z0, STAIR_Z1 = 16326, 23130      # foot riser to the 2F edge (ROOM2030 approach corridor)
 STEPS = 20
 RISE = -UPPER / STEPS                  # 300
 RUN = (STAIR_Z1 - STAIR_Z0) / STEPS    # 296.1
@@ -69,6 +69,7 @@ MATERIALS = {
     "coffer": {"map": "coffer.png", "tile": (3000, 3000)},
     "rose": {"map": "rose.png", "tile": None, "emissive": True},
     "glass": {"map": "glass.png", "tile": None, "emissive": True},
+    "carpet_edge": {"map": "stone.png", "tile": (1600, 1600)},
     "door_dark": {"map": "door_dark.png", "tile": None},
     "door_blue": {"map": "door_blue.png", "tile": None},
     "entrance": {"map": "entrance.png", "tile": None},
@@ -81,7 +82,7 @@ SCONCES_1F = [(X0, -3600.0, z) for z in (8300, 12800, 17300, 21800)] + \
 SCONCES_2F = [(X0, -8800.0, z) for z in (8300, 17300)] + [(X1, -8800.0, z) for z in (8300, 17300)]
 SOUTH_LAMPS = [(9000.0, -9000.0, Z0), (25200.0, -9000.0, Z0)]
 AISLE_LAMPS = [(x, -3600.0, Z1) for x in (5000.0, 11000.0, 17100.0, 23000.0, 29000.0)]
-WINDOWS = [(X0, z) for z in (8300, 17300)] + [(X1, z) for z in (8300, 17300)]
+NORTH_WINDOW = (CX, UPPER - 1800, 1200, 4200)   # centre x, sill y, half width, height
 
 
 # --------------------------------------------------------------- lighting --
@@ -96,7 +97,7 @@ LIGHTS = (
     + [((x, y, z - 420), (1.0, 0.90, 0.72), 0.34, 5500.0) for x, y, z in AISLE_LAMPS]
     + [((ROSE[0], ROSE[1], Z0 + 400), (0.75, 0.80, 1.0), 0.30, 11000.0)]
     + [((x, -4600.0, z), (1.0, 0.92, 0.75), 0.40, 7000.0) for x, z in FRONT_POSTS]
-    + [((x + 300 * inward(x), -11000.0, z), (0.75, 0.82, 1.0), 0.16, 6000.0) for x, z in WINDOWS]
+    + [((NORTH_WINDOW[0], NORTH_WINDOW[1] - 2000, Z1 - 300), (0.75, 0.82, 1.0), 0.30, 9000.0)]
 )
 AMBIENT = (0.15, 0.125, 0.10)
 
@@ -241,6 +242,26 @@ def rose_window(mesh):
         mesh.poly(depth, "stone", flip=True)
 
 
+def north_window(mesh):
+    """Tall arched stained-glass window centred on the 2F north wall."""
+    cx, sill, half, height = NORTH_WINDOW
+    z = Z1 - 50
+    top = sill - height
+    mesh.rect((cx + half, sill, z), (-1, 0, 0), (0, -1, 0), 2 * half, height - half, "glass")
+    n = 10
+    arch = [(cx + half * math.cos(math.pi * t / n), top + half - half * math.sin(math.pi * t / n), z) for t in range(n + 1)]
+    mesh.poly(list(reversed(arch)), "glass")
+    for xa in (cx - half - 160, cx + half):
+        mesh.box((xa, top + half, z - 140), (xa + 160, sill, Z1), "stone", omit=("north",))
+    mesh.box((cx - half - 260, sill, z - 220), (cx + half + 260, sill + 180, Z1), "stone", omit=("north",))
+    for t in range(n):
+        a0, a1 = math.pi * t / n, math.pi * (t + 1) / n
+        inner = [(cx + half * math.cos(a), top + half - half * math.sin(a)) for a in (a0, a1)]
+        outer = [(cx + (half + 160) * math.cos(a), top + half - (half + 160) * math.sin(a)) for a in (a0, a1)]
+        mesh.poly([(inner[0][0], inner[0][1], z - 140), (inner[1][0], inner[1][1], z - 140),
+                   (outer[1][0], outer[1][1], z - 140), (outer[0][0], outer[0][1], z - 140)], "stone", flip=True)
+
+
 def tall_window(mesh, x, z):
     d = inward(x)
     w, y0, y1 = 800, -8600.0, -13000.0
@@ -289,11 +310,11 @@ def build(name):
     for x, eu in ((X0, (0, 0, 1)), (X1, (0, 0, -1))):
         origin_z = Z0 if x == X0 else Z1
         wall_with_dado(mesh, (x, FLOOR, origin_z), eu, Z1 - Z0, FLOOR, SLAB, False)
-        wall_with_dado(mesh, (x, UPPER, origin_z), eu, Z1 - Z0, UPPER, CEIL, False, dado=1200)
+        wall_with_dado(mesh, (x, UPPER, origin_z), eu, Z1 - Z0, UPPER, CEIL, False)
     wall_with_dado(mesh, (X1, FLOOR, Z0), (-1, 0, 0), X1 - X0, FLOOR, SLAB, False)
-    wall_with_dado(mesh, (X1, UPPER, Z0), (-1, 0, 0), X1 - X0, UPPER, CEIL, False, dado=1200)
+    wall_with_dado(mesh, (X1, UPPER, Z0), (-1, 0, 0), X1 - X0, UPPER, CEIL, False)
     wall_with_dado(mesh, (X0, FLOOR, Z1), (1, 0, 0), X1 - X0, FLOOR, SLAB, False)
-    wall_with_dado(mesh, (X0, UPPER, Z1), (1, 0, 0), X1 - X0, UPPER, CEIL, False, dado=1200)
+    wall_with_dado(mesh, (X0, UPPER, Z1), (1, 0, 0), X1 - X0, UPPER, CEIL, False)
     # Slab edge band on every wall.
     mesh.rect((X0, SLAB, Z0), (0, 0, 1), (0, -1, 0), Z1 - Z0, UPPER - SLAB, "stone")
     mesh.rect((X1, SLAB, Z1), (0, 0, -1), (0, -1, 0), Z1 - Z0, UPPER - SLAB, "stone")
@@ -306,7 +327,6 @@ def build(name):
         d = inward(x)
         for z in COL_Z:
             column(mesh, x, z, SPRING)
-            column(mesh, x, z, UPPER_COL_TOP, base=UPPER)
         bays = [(Z0, COL_Z[0] - COL_R)] + [(a + COL_R, b - COL_R) for a, b in zip(COL_Z, COL_Z[1:])]
         for a, b in bays:
             arcade_bay(mesh, "z", x, a, b, SPRING, SLAB, 300)
@@ -317,7 +337,9 @@ def build(name):
                 mesh.poly(pts if face > 0 else list(reversed(pts)), "stone")
         inner = x + d * GAL_W
         gx0, gx1 = (X0, inner) if d > 0 else (inner, X1)
-        mesh.rect((gx0, UPPER, Z0), (1, 0, 0), (0, 0, 1), gx1 - gx0, GALLERY_Z - Z0, "planks")
+        mesh.rect((gx0, UPPER, Z0), (1, 0, 0), (0, 0, 1), gx1 - gx0, GALLERY_Z - Z0, "carpet")
+        ex0 = inner - 450 if d > 0 else inner
+        mesh.rect((ex0, UPPER - 8, Z0), (1, 0, 0), (0, 0, 1), 450, GALLERY_Z - Z0, "carpet_edge")
         mesh.rect((gx0, SLAB, Z0), (1, 0, 0), (0, 0, 1), gx1 - gx0, GALLERY_Z - Z0, "plaster", flip=True)
         if d > 0:
             mesh.rect((inner, SLAB, Z0), (0, 0, 1), (0, -1, 0), GALLERY_Z - Z0, UPPER - SLAB, "stone")
@@ -325,17 +347,14 @@ def build(name):
             mesh.rect((inner, SLAB, GALLERY_Z), (0, 0, -1), (0, -1, 0), GALLERY_Z - Z0, UPPER - SLAB, "stone")
         rail_x = inner - d * 90
         balustrade(mesh, (rail_x, UPPER, Z0 + 200), (rail_x, UPPER, GALLERY_Z - 90), height=950, spacing=420)
-    # Upper cornice carried by the gallery columns.
-    for lo, hi in (((X0, UPPER_COL_TOP - 1300, Z0), (X0 + GAL_W + 200, UPPER_COL_TOP - 450, Z1)),
-                   ((X1 - GAL_W - 200, UPPER_COL_TOP - 1300, Z0), (X1, UPPER_COL_TOP - 450, Z1))):
-        mesh.box(lo, hi, "stone", omit=("top",))
 
     # North gallery: deep slab from the stair foot to the north wall with the stair well.
     well_x0, well_x1 = STAIR_X0 - PARAPET, STAIR_X1 + PARAPET
     for gx0, gx1 in ((X0, well_x0), (well_x1, X1)):
-        mesh.rect((gx0, UPPER, GALLERY_Z), (1, 0, 0), (0, 0, 1), gx1 - gx0, Z1 - GALLERY_Z, "planks")
+        mesh.rect((gx0, UPPER, GALLERY_Z), (1, 0, 0), (0, 0, 1), gx1 - gx0, Z1 - GALLERY_Z, "carpet")
         mesh.rect((gx0, SLAB, GALLERY_Z), (1, 0, 0), (0, 0, 1), gx1 - gx0, Z1 - GALLERY_Z, "plaster", flip=True)
-    mesh.rect((well_x0, UPPER, STAIR_Z1), (1, 0, 0), (0, 0, 1), well_x1 - well_x0, Z1 - STAIR_Z1, "planks")
+    mesh.rect((X0 + GAL_W - 450, UPPER - 8, GALLERY_Z), (1, 0, 0), (0, 0, 1), X1 - X0 - 2 * GAL_W + 900, 450, "carpet_edge")
+    mesh.rect((well_x0, UPPER, STAIR_Z1), (1, 0, 0), (0, 0, 1), well_x1 - well_x0, Z1 - STAIR_Z1, "carpet")
     mesh.rect((well_x0, SLAB, STAIR_Z1), (1, 0, 0), (0, 0, 1), well_x1 - well_x0, Z1 - STAIR_Z1, "plaster", flip=True)
     # Front edge of the north gallery (slab band) and its balustrade, split at the well.
     for a, b in ((X0 + GAL_W, well_x0), (well_x1, X1 - GAL_W)):
@@ -349,18 +368,18 @@ def build(name):
     # Front arcade carrying the north gallery: free-standing columns from the collision circles.
     front_cols = [c[0] for c in FRONT_COLUMNS]
     for x in front_cols:
-        column(mesh, x, GALLERY_Z, SPRING)
+        column(mesh, x, ARCADE_FRONT_Z, SPRING)
         for face in (-1, 1):
-            off = GALLERY_Z + face * 150
+            off = ARCADE_FRONT_Z + face * 150
             pts = [(x - COL_R, SPRING, off), (x + COL_R, SPRING, off), (x + COL_R, SLAB, off), (x - COL_R, SLAB, off)]
             mesh.poly(pts if face < 0 else list(reversed(pts)), "stone")
     front_bays = [(X0 + GAL_W, front_cols[0] - COL_R), (front_cols[0] + COL_R, well_x0),
                   (well_x1, front_cols[1] - COL_R), (front_cols[1] + COL_R, X1 - GAL_W)]
     for a, b in front_bays:
-        arcade_bay(mesh, "x", GALLERY_Z, a, b, SPRING, SLAB, 300)
-    for x in (X0 + GAL_W, X1 - GAL_W):  # responds where the side galleries meet the front
+        arcade_bay(mesh, "x", ARCADE_FRONT_Z, a, b, SPRING, SLAB, 300)
+    for x in (X0 + GAL_W, X1 - GAL_W):  # responds where the side colonnades meet the front arcade
         for face in (-1, 1):
-            off = GALLERY_Z + face * 150
+            off = ARCADE_FRONT_Z + face * 150
             pts = [(x - 300, SPRING, off), (x + 300, SPRING, off), (x + 300, SLAB, off), (x - 300, SLAB, off)]
             mesh.poly(pts if face < 0 else list(reversed(pts)), "stone")
     # Rear arcade under the gallery (the aisle behind the stair).
@@ -410,8 +429,7 @@ def build(name):
         sconce(mesh, x, y, z, (0, 1))
     for x, y, z in AISLE_LAMPS:
         sconce(mesh, x, y, z, (0, -1))
-    for x, z in WINDOWS:
-        tall_window(mesh, x, z)
+    north_window(mesh)
     return mesh
 
 
@@ -575,6 +593,8 @@ def main():
         preview(args.out, args.name, args.rdt)
         if args.originals:
             print(compare_sheet(args.out, args.name, args.originals, 8))
+            for camera, precision, recall in edge_agreement(args.out, args.name, args.originals, 8):
+                print(f"camera {camera}: edge precision {precision:.2f} recall {recall:.2f}")
 
 
 if __name__ == "__main__":

@@ -304,3 +304,35 @@ def compare_sheet(out, name, originals, count, columns=2):
         sheet.paste(render.resize((320, 240)), (x + 320, y))
     sheet.save(out / "compare.png")
     return out / "compare.png"
+
+
+def edge_agreement(out, name, originals, count, tolerance=3):
+    """Per-camera edge overlap between the preview render and the original view.
+
+    Returns a list of (camera, precision, recall): the fraction of render edges
+    within `tolerance` pixels of an original edge, and vice versa. A coarse,
+    hue-independent sanity check for layout, not a fidelity score.
+    """
+    def edges(image):
+        grey = np.asarray(image.convert("L").resize((320, 240)), dtype=float)
+        gx = np.abs(np.diff(grey, axis=1, prepend=grey[:, :1]))
+        gy = np.abs(np.diff(grey, axis=0, prepend=grey[:1, :]))
+        magnitude = gx + gy
+        threshold = max(12.0, np.percentile(magnitude, 88))
+        return magnitude > threshold
+
+    def dilate(mask, radius):
+        result = mask.copy()
+        for dy in range(-radius, radius + 1):
+            for dx in range(-radius, radius + 1):
+                result |= np.roll(np.roll(mask, dy, axis=0), dx, axis=1)
+        return result
+
+    rows = []
+    for index in range(count):
+        original = edges(Image.open(Path(originals) / f"camera{index}-original.png"))
+        render = edges(Image.open(out / f"preview-camera{index}.png"))
+        precision = (render & dilate(original, tolerance)).sum() / max(1, render.sum())
+        recall = (original & dilate(render, tolerance)).sum() / max(1, original.sum())
+        rows.append((index, float(precision), float(recall)))
+    return rows

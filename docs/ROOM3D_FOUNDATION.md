@@ -1156,3 +1156,12 @@ the entrance and side doors from the door records. Storey heights, arches,
 the gallery, the fanlight and all materials are authored. The mesh is cut at
 1500-unit cells to stay under the loader's 4 MB OBJ limit (3.7 MB, 23971
 triangles). `tools/check_room3d_runtime.py --room 0x06` passes.
+
+Evidence used for the hall after play-testing: the mask sprite tables of
+ROOM1060 (floor-cast through each camera to place columns, the stair foot
+posts and the gallery rail) and the 2F hall ROOM2030 (its collision gives
+the gallery depth, void edge and stair top; its views show no gallery
+columns, carpeted galleries and one arched north window). `room3d_handmade.py`
+now reports a per-camera edge-agreement score between preview and original
+(precision/recall of edge pixels within 3 px) so layout regressions show up
+before a play-test.

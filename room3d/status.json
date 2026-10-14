@@ -80,9 +80,9 @@
     },
     "ROOM1060": {
       "gameplay": "not_validated",
-      "note": "Main hall: ground-floor views acceptable; upper-floor cameras 3, 4 and 7 partial or distorted; stairs rough.",
+      "note": "Hand-authored mesh (tools/build_room1060_mesh.py) laid out from collision, mask sprites and ROOM2030; loads and passes the smoke test, but the user rejected its look on 2026-10-14. Batcher version in build/room3d-colorfix is also rough. Work stopped.",
       "review": "needs_work",
-      "updated": "2026-10-14T09:09:09+00:00"
+      "updated": "2026-10-14T18:15:25+00:00"
     },
     "ROOM1061": {
       "gameplay": "not_validated",
@@ -145,9 +145,9 @@
     },
     "ROOM10B0": {
       "gameplay": "validated",
-      "note": "Stair hall: scattered chandelier primitive hidden; stairs remain a rough striped slab. Accepted as approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition); not a human play-test.",
+      "note": "Hand-authored mesh (tools/build_room10b_mesh.py). User play-tested all 4 cameras and the stair trigger on 2026-10-14; palette corrected after the colour-decode fix.",
       "review": "visually_approved",
-      "updated": "2026-10-14T11:07:37+00:00"
+      "updated": "2026-10-14T18:15:25+00:00"
     },
     "ROOM10B1": {
       "gameplay": "not_validated",
@@ -301,9 +301,9 @@
     },
     "ROOM1180": {
       "gameplay": "validated",
-      "note": "Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition, chest menu opened and closed); not a human play-test.",
+      "note": "Corrected batcher mesh play-tested by the user on 2026-10-14 (both cameras, menu). Colour-corrected regeneration in build/room3d-colorfix replays all but the barrel step.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:24:51+00:00"
+      "updated": "2026-10-14T18:15:25+00:00"
     },
     "ROOM1181": {
       "gameplay": "not_validated",

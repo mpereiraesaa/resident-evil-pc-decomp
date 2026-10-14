@@ -22,12 +22,12 @@ concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.60, 0.62, 0.64]
-
-[lighting]
-ambient = [0.16, 0.16, 0.15]
 chest = [0.42, 0.14, 0.12]
 crate = [0.46, 0.30, 0.16]
 "panel.ladder" = [0.36, 0.36, 0.34]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
 
 [[zone]]
 box = [2436, 2340, 8586, 12438]

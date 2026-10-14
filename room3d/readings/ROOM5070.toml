@@ -23,12 +23,12 @@ concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.60, 0.62, 0.64]
-
-[lighting]
-ambient = [0.16, 0.16, 0.15]
 "concrete.tiles" = { color = [0.56, 0.58, 0.56], stains = 0.2, panels = 8 }
 linen = [0.30, 0.32, 0.40]
 "hedge" = [0.22, 0.42, 0.36]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
 
 [[zone]]            # bunk room
 box = [1914, 1800, 14616, 13050]

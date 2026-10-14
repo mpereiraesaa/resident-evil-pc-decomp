@@ -509,6 +509,9 @@ class Palette:
 class Rig:
     def __init__(self, reading):
         lighting = reading.get("lighting", {})
+        unknown = set(lighting) - {"ambient", "up_boost"}
+        if unknown:
+            raise ValueError(f"unknown [lighting] keys {sorted(unknown)} (materials placed after [lighting]?)")
         self.ambient = tuple(lighting.get("ambient", (0.14, 0.12, 0.10)))
         self.up_boost = lighting.get("up_boost", 0.35)
         self.lights = []

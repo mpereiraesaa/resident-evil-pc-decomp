@@ -23,10 +23,10 @@ concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.60, 0.62, 0.64]
+grating = [0.50, 0.52, 0.52]
 
 [lighting]
 ambient = [0.16, 0.16, 0.15]
-grating = [0.50, 0.52, 0.52]
 
 [[zone]]            # south passage
 box = [2304, 2214, 30618, 4842]

@@ -22,10 +22,10 @@ concrete = { color = [0.34, 0.34, 0.36], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.60, 0.62, 0.64]
+grating = [0.50, 0.52, 0.52]
 
 [lighting]
 ambient = [0.13, 0.13, 0.14]
-grating = [0.50, 0.52, 0.52]
 
 [[zone]]            # south strip with the lift
 box = [1986, 1926, 5238, 7632]

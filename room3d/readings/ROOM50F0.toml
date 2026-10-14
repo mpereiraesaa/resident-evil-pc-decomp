@@ -22,13 +22,12 @@ concrete = { color = [0.46, 0.30, 0.16], stains = 0.5 }
 "door.lab" = [0.50, 0.46, 0.40]
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-
-[lighting]
-ambient = [0.20, 0.13, 0.06]
 grating = [0.56, 0.40, 0.22]
 "grating.cage" = { color = [0.80, 0.52, 0.22], tile = [2000, 2000] }
 wood = [0.70, 0.56, 0.14]
+
+[lighting]
+ambient = [0.20, 0.13, 0.06]
 
 [[zone]]            # south-west
 box = [2124, 2034, 7470, 6408]

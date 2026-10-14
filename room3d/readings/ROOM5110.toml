@@ -23,10 +23,10 @@ concrete = { color = [0.50, 0.30, 0.22], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.70, 0.56, 0.14]
+"hedge" = [0.22, 0.44, 0.40]
 
 [lighting]
 ambient = [0.195, 0.143, 0.117]
-"hedge" = [0.22, 0.44, 0.40]
 
 [[zone]]            # south corridor
 box = [1800, 2718, 23346, 5202]

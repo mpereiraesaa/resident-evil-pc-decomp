@@ -23,10 +23,10 @@ concrete = { color = [0.48, 0.56, 0.50], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.60, 0.62, 0.64]
+"concrete.tiles" = { color = [0.42, 0.46, 0.42], stains = 0.2, panels = 6 }
 
 [lighting]
 ambient = [0.15, 0.17, 0.15]
-"concrete.tiles" = { color = [0.42, 0.46, 0.42], stains = 0.2, panels = 6 }
 
 [[zone]]
 box = [3096, 2736, 17640, 10188]
@@ -40,19 +40,30 @@ top = -3600
 material = "double_door.lab"
 frame = "steel"
 
-[[object]]          # centrifuge drum (circle 7 + block 3)
-kind = "cylinder"
-at = [10746, 6300]
-radius = 1100
-top = -1800
-material = "steel"
-segments = 16
-[[object]]
+[[object]]          # the cryo tube lying on its frame (block 3)
 kind = "box"
 box = [8352, 5166, 13140, 7434]
-top = -800
+top = -700
 material = "iron"
 omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [8500, 5400, 13000, 7200]
+top = -1900
+bottom = -700
+material = "steel"
+[[object]]          # computer on the east bench (cameras 4 and 5)
+kind = "box"
+box = [17000, 8200, 17700, 9000]
+top = -1700
+bottom = -1000
+material = "plastic"
+[[object]]
+kind = "box"
+box = [16500, 8250, 16900, 8950]
+top = -1060
+bottom = -1000
+material = "plastic"
 [[object]]          # bench south
 kind = "box"
 box = [11772, 9234, 21852, 12366]

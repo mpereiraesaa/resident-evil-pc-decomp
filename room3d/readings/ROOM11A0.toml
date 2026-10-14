@@ -23,6 +23,7 @@ stone = [0.78, 0.78, 0.72]
 wood = [0.30, 0.17, 0.10]
 door = [0.40, 0.26, 0.12]
 "panel.bronze" = [0.55, 0.33, 0.14]
+leaves = [0.16, 0.30, 0.12]
 soot = [0.02, 0.03, 0.02]
 
 [lighting]
@@ -30,7 +31,6 @@ ambient = [0.14, 0.15, 0.13]
 
 [[zone]]            # long passage
 box = [1882, 1868, 5340, 22158]
-wall_materials = { west = "soot" }
 [[zone]]            # bay at the north end
 box = [1882, 22158, 8700, 27214]
 
@@ -45,21 +45,69 @@ span = [24500, 26600]
 top = -3400
 material = "door"
 
-# Cloister arches along the west side, dark beyond them
-[[arcade]]
-axis = "z"
-line = 2150
-columns = [4500, 8100, 11700, 15300, 18900]
-radius = 260
-spring = -2900
-top = -4600
-ends = [1868, 22158]
+# Planted beds along both walls, ivy hanging over them, and high arched
+# openings on the west wall (cameras 0, 1 and 2 look along them).
 [[object]]
 kind = "box"
-box = [1882, 1868, 2300, 22158]
-top = -1100
-material = "stone"
-omit = ["bottom"]
+box = [1882, 1868, 2700, 22158]
+top = -1000
+material = "leaves"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [4600, 1868, 5340, 22158]
+top = -1000
+material = "leaves"
+omit = ["bottom", "east"]
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [1868, 22158]
+y = [-2600, -1000]
+material = "leaves"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [1868, 22158]
+y = [-2600, -1000]
+material = "leaves"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2900, 4300]
+y = [-4600, -3000]
+material = "soot"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [6500, 7900]
+y = [-4600, -3000]
+material = "soot"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [10100, 11500]
+y = [-4600, -3000]
+material = "soot"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [13700, 15100]
+y = [-4600, -3000]
+material = "soot"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [17300, 18700]
+y = [-4600, -3000]
+material = "soot"
+rail = false
 
 [[object]]          # bronze relief on the bay's north wall
 kind = "wall_band"

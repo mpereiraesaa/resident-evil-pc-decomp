@@ -73,7 +73,7 @@ rail = false
 
 [[object]]          # tool shelf on the north wall
 kind = "box"
-box = [5500, 9100, 9400, 9486]
+box = [2400, 9100, 5600, 9486]
 top = -2600
 bottom = -2300
 material = "wood"

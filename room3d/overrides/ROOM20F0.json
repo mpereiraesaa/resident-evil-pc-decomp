@@ -1,0 +1,72 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "7eab7fe1cd56fd73689b327d6ab1393bf4a22924c54cae7cf2d91c88a2be0c52",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "575b1256ef16ce2fdbf86ab57342fca26b3977b854a97bbcf6ee5663ed3bfd06"
+  },
+  "created": "2026-10-14T09:37:21+00:00",
+  "history": [
+    {
+      "additions": [
+        {
+          "kind": "block",
+          "name": "dining_table",
+          "origin": [
+            7380.0,
+            0,
+            8505.0
+          ],
+          "parameters": {
+            "depth": 2970,
+            "height": 750,
+            "width": 4500
+          },
+          "yaw": 0
+        }
+      ],
+      "base": "automatic",
+      "base_sha256": "7eab7fe1cd56fd73689b327d6ab1393bf4a22924c54cae7cf2d91c88a2be0c52",
+      "edits": {},
+      "note": "Add a 750-high table block on the skipped collision box (boundary_2)",
+      "objects": {},
+      "recorded": "2026-10-14T09:37:22+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Small dining room; table block on its skipped collision footprint",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM20F0",
+    "room": 15,
+    "stage": 2
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "e3db674212eeaecd5b51cce398c5f2dda1cbfcec22e82da2acd996d6cbcf95f9",
+      "1": "8b33e6a701259fe617fbb1ede16d284ba1364f103797c84335fbad29f574203b",
+      "2": "5aacc1e5f4d478dace7ca779fd5c544cb31d63315201b2d8ed0235361847b9ea",
+      "3": "866d851ed5c5462ade3a0bf56570aeae35ae67786438654786a3e3aafb418c1d",
+      "4": "162c25c46e2146b29476b93ecaecdcc7421591525bc27ed9cca605bc310ae496",
+      "5": "d5e8dad97acff1e37a7acb4f9d72c85c63f28444303b0cf14eb1ef218121629d"
+    },
+    "geometry_sha256": "92377af3583cd82f7c811bd50334c09666fa190f902628240e9fe94ec2a1d6e9",
+    "player": 0,
+    "rdt": "ROOM20F0",
+    "rdt_sha256": "eda3fc2c6de93627ad447167b2408584f74a09ac01f0e463b035fa7d680a5a07",
+    "room": 15,
+    "stage": 2
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T09:37:22+00:00"
+}

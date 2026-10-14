@@ -1,10 +1,225 @@
 {
   "rooms": {
+    "ROOM1000": {
+      "gameplay": "not_validated",
+      "note": "Dormitory: beds, shelf, door and typewriter table present; table slightly offset in camera 5. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:09:07+00:00"
+    },
+    "ROOM1001": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1000",
+      "note": "Inherited from ROOM1000 (identical layout and background files); not reviewed separately. Dormitory: beds, shelf, door and typewriter table present; table slightly offset in camera 5. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1010": {
+      "gameplay": "not_validated",
+      "note": "Dark corridor with stairs: corridor reads; stair region in camera 3 is a flat slab and the camera 5 sconce is a gray block.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:07+00:00"
+    },
+    "ROOM1011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1010",
+      "note": "Inherited from ROOM1010 (identical layout and background files); not reviewed separately. Dark corridor with stairs: corridor reads; stair region in camera 3 is a flat slab and the camera 5 sconce is a gray block.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1020": {
+      "gameplay": "not_validated",
+      "note": "Storage room: cabinets fine; a wall-height slab hides the sink in camera 1; camera 3 close-up distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:08+00:00"
+    },
+    "ROOM1021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1020",
+      "note": "Inherited from ROOM1020 (identical layout and background files); not reviewed separately. Storage room: cabinets fine; a wall-height slab hides the sink in camera 1; camera 3 close-up distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1030": {
+      "gameplay": "not_validated",
+      "note": "Green corridor: all seven views read correctly; door end in camera 2 is a dark block and a painting floats in camera 4. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:09:08+00:00"
+    },
+    "ROOM1031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1030",
+      "note": "Inherited from ROOM1030 (identical layout and background files); not reviewed separately. Green corridor: all seven views read correctly; door end in camera 2 is a dark block and a painting floats in camera 4. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1040": {
+      "gameplay": "not_validated",
+      "note": "White corridor and parlor: cameras 0 and 4 render almost nothing (parlor furniture missing); corridor views fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:08+00:00"
+    },
+    "ROOM1041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1040",
+      "note": "Inherited from ROOM1040 (identical layout and background files); not reviewed separately. White corridor and parlor: cameras 0 and 4 render almost nothing (parlor furniture missing); corridor views fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1050": {
+      "gameplay": "not_validated",
+      "note": "Dining room: table collision slab (boundary_8) scaled to 825 high; reads as a dark table top in cameras 1 and 2. Chairs absent; upper gallery not reconstructed.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:10:17+00:00"
+    },
+    "ROOM1051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1050",
+      "note": "Inherited from ROOM1050 (identical layout and background files); not reviewed separately. Dining room: table collision slab (boundary_8) scaled to 825 high; reads as a dark table top in cameras 1 and 2. Chairs absent; upper gallery not reconstructed.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1060": {
+      "gameplay": "not_validated",
+      "note": "Main hall: ground-floor views acceptable; upper-floor cameras 3, 4 and 7 partial or distorted; stairs rough.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:09+00:00"
+    },
+    "ROOM1061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1060",
+      "note": "Inherited from ROOM1060 (identical layout and background files); not reviewed separately. Main hall: ground-floor views acceptable; upper-floor cameras 3, 4 and 7 partial or distorted; stairs rough.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1070": {
+      "gameplay": "not_validated",
+      "note": "Gallery: statue and paintings present; camera 3 shows a large dark slab and camera 4 is nearly empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:10+00:00"
+    },
+    "ROOM1071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1070",
+      "note": "Inherited from ROOM1070 (identical layout and background files); not reviewed separately. Gallery: statue and paintings present; camera 3 shows a large dark slab and camera 4 is nearly empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1080": {
+      "gameplay": "not_validated",
+      "note": "Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:10+00:00"
+    },
+    "ROOM1081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1080",
+      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1090": {
+      "gameplay": "not_validated",
+      "note": "Corridor with paintings: cameras 0, 2, 4 and 7 fine; gray wedges and misplaced slabs in cameras 1, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:11+00:00"
+    },
+    "ROOM1091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1090",
+      "note": "Inherited from ROOM1090 (identical layout and background files); not reviewed separately. Corridor with paintings: cameras 0, 2, 4 and 7 fine; gray wedges and misplaced slabs in cameras 1, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM10A0": {
+      "gameplay": "not_validated",
+      "note": "Dark corridor: doors, paintings and sconces read correctly. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:09:11+00:00"
+    },
+    "ROOM10A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10A0",
+      "note": "Inherited from ROOM10A0 (identical layout and background files); not reviewed separately. Dark corridor: doors, paintings and sconces read correctly. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM10B0": {
+      "gameplay": "not_validated",
+      "note": "Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:12+00:00"
+    },
+    "ROOM10B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10B0",
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM10C0": {
+      "gameplay": "not_validated",
+      "note": "Plant room: fountain and walls read in cameras 0, 1, 3 and 5; camera 2 is a gray slab and camera 4 is empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:20+00:00"
+    },
+    "ROOM10C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10C0",
+      "note": "Inherited from ROOM10C0 (identical layout and background files); not reviewed separately. Plant room: fountain and walls read in cameras 0, 1, 3 and 5; camera 2 is a gray slab and camera 4 is empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM10D0": {
       "gameplay": "not_validated",
       "note": "Fireplace room: walls distorted and dark, floor missing in camera 0, sconces projected. Needs substantial reconstruction, not retouch.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:36+00:00"
+    },
+    "ROOM10D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10D0",
+      "note": "Inherited from ROOM10D0 (identical layout and background files); not reviewed separately. Fireplace room: walls distorted and dark, floor missing in camera 0, sconces projected. Needs substantial reconstruction, not retouch.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM10E0": {
+      "gameplay": "not_validated",
+      "note": "Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:09:40+00:00"
+    },
+    "ROOM10E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10E0",
+      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM10F0": {
+      "gameplay": "not_validated",
+      "note": "Bar with piano: cameras 0, 4 and 5 acceptable; bar counter and piano become large slabs, cameras 2, 3, 6 and 7 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:20+00:00"
+    },
+    "ROOM10F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10F0",
+      "note": "Inherited from ROOM10F0 (identical layout and background files); not reviewed separately. Bar with piano: cameras 0, 4 and 5 acceptable; bar counter and piano become large slabs, cameras 2, 3, 6 and 7 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1110": {
+      "gameplay": "not_validated",
+      "note": "Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:20+00:00"
+    },
+    "ROOM1111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1110",
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM1120": {
       "gameplay": "not_validated",
@@ -12,11 +227,220 @@
       "review": "needs_work",
       "updated": "2026-10-14T08:52:35+00:00"
     },
+    "ROOM1121": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1120",
+      "note": "Inherited from ROOM1120 (identical layout and background files); not reviewed separately. Bed and canopy are merged into the 3 m thick south collision slab extruded to wall height; dresser block at the west wall is full height. Needs a split slab or blocks; floor and door acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1130": {
+      "gameplay": "not_validated",
+      "note": "Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:21+00:00"
+    },
+    "ROOM1131": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1130",
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1140": {
+      "gameplay": "not_validated",
+      "note": "Courtyard with pump: walls read; gray slab in camera 1 and pump block only partially textured.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:21+00:00"
+    },
+    "ROOM1141": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1140",
+      "note": "Inherited from ROOM1140 (identical layout and background files); not reviewed separately. Courtyard with pump: walls read; gray slab in camera 1 and pump block only partially textured.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1150": {
+      "gameplay": "not_validated",
+      "note": "Study with ceiling opening: all main views read correctly; camera 4 close-up rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:18:22+00:00"
+    },
+    "ROOM1151": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1150",
+      "note": "Inherited from ROOM1150 (identical layout and background files); not reviewed separately. Study with ceiling opening: all main views read correctly; camera 4 close-up rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1160": {
+      "gameplay": "not_validated",
+      "note": "Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:18:22+00:00"
+    },
+    "ROOM1161": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1160",
+      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM1170": {
+      "gameplay": "not_validated",
+      "note": "Aquarium painting room: walls, frames and lamps read; camera 3 frame partial. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:18:23+00:00"
+    },
+    "ROOM1171": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1170",
+      "note": "Inherited from ROOM1170 (identical layout and background files); not reviewed separately. Aquarium painting room: walls, frames and lamps read; camera 3 frame partial. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM1180": {
       "gameplay": "not_validated",
       "note": "Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
       "review": "needs_work",
       "updated": "2026-10-14T08:38:57+00:00"
+    },
+    "ROOM1181": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1180",
+      "note": "Inherited from ROOM1180 (identical layout and background files); not reviewed separately. Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM11A0": {
+      "gameplay": "not_validated",
+      "note": "Ivy arcade: arcade and planters read; camera 0 shows a misplaced slab and camera 4 is pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:23+00:00"
+    },
+    "ROOM11A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11A0",
+      "note": "Inherited from ROOM11A0 (identical layout and background files); not reviewed separately. Ivy arcade: arcade and planters read; camera 0 shows a misplaced slab and camera 4 is pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM11B0": {
+      "gameplay": "not_validated",
+      "note": "Kitchen storage: shelves, barrels and door read correctly in all views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:18:24+00:00"
+    },
+    "ROOM11B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11B0",
+      "note": "Inherited from ROOM11B0 (identical layout and background files); not reviewed separately. Kitchen storage: shelves, barrels and door read correctly in all views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM11C0": {
+      "gameplay": "not_validated",
+      "note": "Wine shelves room: shelves and crates read; camera 2 partially smeared. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:18:24+00:00"
+    },
+    "ROOM11C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11C0",
+      "note": "Inherited from ROOM11C0 (identical layout and background files); not reviewed separately. Wine shelves room: shelves and crates read; camera 2 partially smeared. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2010": {
+      "gameplay": "not_validated",
+      "note": "Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:37:04+00:00"
+    },
+    "ROOM2011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2010",
+      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2020": {
+      "gameplay": "not_validated",
+      "note": "Dining hall balcony: cameras 0 and 2 render almost nothing; cameras 1, 3 and 4 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:18:25+00:00"
+    },
+    "ROOM2021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2020",
+      "note": "Inherited from ROOM2020 (identical layout and background files); not reviewed separately. Dining hall balcony: cameras 0 and 2 render almost nothing; cameras 1, 3 and 4 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2030": {
+      "gameplay": "not_validated",
+      "note": "Dining balcony: balcony railings and benches are gray slabs; floor carpet reads.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:37:05+00:00"
+    },
+    "ROOM2031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2030",
+      "note": "Inherited from ROOM2030 (identical layout and background files); not reviewed separately. Dining balcony: balcony railings and benches are gray slabs; floor carpet reads.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2040": {
+      "gameplay": "not_validated",
+      "note": "Arched dark corridor: doors, sconces and carpet read in all five views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:05+00:00"
+    },
+    "ROOM2041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2040",
+      "note": "Inherited from ROOM2040 (identical layout and background files); not reviewed separately. Arched dark corridor: doors, sconces and carpet read in all five views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2050": {
+      "gameplay": "not_validated",
+      "note": "Armor room: knights projected on the walls, door and trap read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:05+00:00"
+    },
+    "ROOM2051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2050",
+      "note": "Inherited from ROOM2050 (identical layout and background files); not reviewed separately. Armor room: knights projected on the walls, door and trap read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2060": {
+      "gameplay": "not_validated",
+      "note": "Study bedroom: shelves, desk and doors read; camera 1 shows a tall slab at the cabinet. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:06+00:00"
+    },
+    "ROOM2061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2060",
+      "note": "Inherited from ROOM2060 (identical layout and background files); not reviewed separately. Study bedroom: shelves, desk and doors read; camera 1 shows a tall slab at the cabinet. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2070": {
+      "gameplay": "not_validated",
+      "note": "Upper stair hall: camera 0 is black, camera 1 is a bare slab; corridor cameras 2 to 5 fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:37:06+00:00"
+    },
+    "ROOM2071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2070",
+      "note": "Inherited from ROOM2070 (identical layout and background files); not reviewed separately. Upper stair hall: camera 0 is black, camera 1 is a bare slab; corridor cameras 2 to 5 fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM2080": {
       "gameplay": "not_validated",
@@ -24,11 +448,454 @@
       "review": "needs_work",
       "updated": "2026-10-14T08:52:35+00:00"
     },
+    "ROOM2081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2080",
+      "note": "Inherited from ROOM2080 (identical layout and background files); not reviewed separately. Corridor: chandelier texture fragmented in camera 0, deer head unreconstructable, wall seam split. Camera 1 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2090": {
+      "gameplay": "not_validated",
+      "note": "Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:06+00:00"
+    },
+    "ROOM2091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2090",
+      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM20A0": {
+      "gameplay": "not_validated",
+      "note": "Study with large painting: furniture, lamp and paintings read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:07+00:00"
+    },
+    "ROOM20A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20A0",
+      "note": "Inherited from ROOM20A0 (identical layout and background files); not reviewed separately. Study with large painting: furniture, lamp and paintings read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM20B0": {
+      "gameplay": "not_validated",
+      "note": "Fireplace room: fireplace as a block, doors and carpet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:07+00:00"
+    },
+    "ROOM20B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20B0",
+      "note": "Inherited from ROOM20B0 (identical layout and background files); not reviewed separately. Fireplace room: fireplace as a block, doors and carpet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM20D0": {
+      "gameplay": "not_validated",
+      "note": "Stone corridor: pillars and doors read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:07+00:00"
+    },
+    "ROOM20D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20D0",
+      "note": "Inherited from ROOM20D0 (identical layout and background files); not reviewed separately. Stone corridor: pillars and doors read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM20E0": {
+      "gameplay": "not_validated",
+      "note": "Corridor with arches: doors, sconces and floor read; camera 1 has a misplaced slab. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:45:44+00:00"
+    },
+    "ROOM20E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20E0",
+      "note": "Inherited from ROOM20E0 (identical layout and background files); not reviewed separately. Corridor with arches: doors, sconces and floor read; camera 1 has a misplaced slab. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM20F0": {
+      "gameplay": "not_validated",
+      "note": "Small dining room: 750-high table block added on the skipped collision box; reads as a gray table. Chairs absent.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:10:17+00:00"
+    },
+    "ROOM20F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20F0",
+      "note": "Inherited from ROOM20F0 (identical layout and background files); not reviewed separately. Small dining room: 750-high table block added on the skipped collision box; reads as a gray table. Chairs absent.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2100": {
+      "gameplay": "not_validated",
+      "note": "Attic store: crates and barrels as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:37:08+00:00"
+    },
+    "ROOM2101": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2100",
+      "note": "Inherited from ROOM2100 (identical layout and background files); not reviewed separately. Attic store: crates and barrels as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2110": {
+      "gameplay": "not_validated",
+      "note": "Short corridor: camera 0 and 2 read; camera 1 is mostly a bare gray slab.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:45+00:00"
+    },
+    "ROOM2111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2110",
+      "note": "Inherited from ROOM2110 (identical layout and background files); not reviewed separately. Short corridor: camera 0 and 2 read; camera 1 is mostly a bare gray slab.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM2120": {
+      "gameplay": "not_validated",
+      "note": "Terrace: ivy walls stretched, railing and planters distorted in cameras 1 to 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:37:09+00:00"
+    },
+    "ROOM2121": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2120",
+      "note": "Inherited from ROOM2120 (identical layout and background files); not reviewed separately. Terrace: ivy walls stretched, railing and planters distorted in cameras 1 to 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3000": {
+      "gameplay": "not_validated",
+      "note": "Garden path with gate: walls, gate and planters read; planters are slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:45:45+00:00"
+    },
+    "ROOM3001": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3000",
+      "note": "Inherited from ROOM3000 (identical layout and background files); not reviewed separately. Garden path with gate: walls, gate and planters read; planters are slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3010": {
+      "gameplay": "not_validated",
+      "note": "Garden with fountain: hedges stretched and gray slabs in cameras 1, 4, 5 and 7.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:45+00:00"
+    },
+    "ROOM3011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3010",
+      "note": "Inherited from ROOM3010 (identical layout and background files); not reviewed separately. Garden with fountain: hedges stretched and gray slabs in cameras 1, 4, 5 and 7.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3020": {
+      "gameplay": "not_validated",
+      "note": "Stone courtyard: walls and floor read; large gray slabs at the stairs and drain in cameras 0, 2, 3 and 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:45+00:00"
+    },
+    "ROOM3021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3020",
+      "note": "Inherited from ROOM3020 (identical layout and background files); not reviewed separately. Stone courtyard: walls and floor read; large gray slabs at the stairs and drain in cameras 0, 2, 3 and 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3030": {
+      "gameplay": "not_validated",
+      "note": "Heliport: helipad, shed and walls read in all eight views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:45:45+00:00"
+    },
+    "ROOM3031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3030",
+      "note": "Inherited from ROOM3030 (identical layout and background files); not reviewed separately. Heliport: helipad, shed and walls read in all eight views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3040": {
+      "gameplay": "not_validated",
+      "note": "Stone passage: walls, cage and doors read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:45:46+00:00"
+    },
+    "ROOM3041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3040",
+      "note": "Inherited from ROOM3040 (identical layout and background files); not reviewed separately. Stone passage: walls, cage and doors read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3050": {
+      "gameplay": "not_validated",
+      "note": "Fountain garden: fountain rim partial, hedges as gray slabs, camera 5 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:46+00:00"
+    },
+    "ROOM3051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3050",
+      "note": "Inherited from ROOM3050 (identical layout and background files); not reviewed separately. Fountain garden: fountain rim partial, hedges as gray slabs, camera 5 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3060": {
+      "gameplay": "not_validated",
+      "note": "Cave tunnel: cameras 0 and 3 render nothing; cameras 1 and 2 partial.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:46+00:00"
+    },
+    "ROOM3061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3060",
+      "note": "Inherited from ROOM3060 (identical layout and background files); not reviewed separately. Cave tunnel: cameras 0 and 3 render nothing; cameras 1 and 2 partial.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3070": {
+      "gameplay": "not_validated",
+      "note": "Waterfall cave: every view is gray slabs; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:46+00:00"
+    },
+    "ROOM3071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3070",
+      "note": "Inherited from ROOM3070 (identical layout and background files); not reviewed separately. Waterfall cave: every view is gray slabs; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3080": {
+      "gameplay": "not_validated",
+      "note": "Cave corridor: walls, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:45:47+00:00"
+    },
+    "ROOM3081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3080",
+      "note": "Inherited from ROOM3080 (identical layout and background files); not reviewed separately. Cave corridor: walls, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3090": {
+      "gameplay": "not_validated",
+      "note": "Cave with elevator: walls read; large gray slabs in cameras 3 and 5.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:45:47+00:00"
+    },
+    "ROOM3091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3090",
+      "note": "Inherited from ROOM3090 (identical layout and background files); not reviewed separately. Cave with elevator: walls read; large gray slabs in cameras 3 and 5.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM30A0": {
+      "gameplay": "not_validated",
+      "note": "Cave passage: walls, door and lamps read in all eight views; ceiling missing in cameras 1 and 2. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:51:57+00:00"
+    },
+    "ROOM30A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM30A0",
+      "note": "Inherited from ROOM30A0 (identical layout and background files); not reviewed separately. Cave passage: walls, door and lamps read in all eight views; ceiling missing in cameras 1 and 2. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM30B0": {
+      "gameplay": "not_validated",
+      "note": "Underground waterway: every view is near-empty gray; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:51:57+00:00"
+    },
+    "ROOM30B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM30B0",
+      "note": "Inherited from ROOM30B0 (identical layout and background files); not reviewed separately. Underground waterway: every view is near-empty gray; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM30C0": {
+      "gameplay": "not_validated",
+      "note": "Cave junction: walls and doors read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:51:57+00:00"
+    },
+    "ROOM30C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM30C0",
+      "note": "Inherited from ROOM30C0 (identical layout and background files); not reviewed separately. Cave junction: walls and doors read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM30D0": {
+      "gameplay": "not_validated",
+      "note": "Cave with paintings: walls, doors and lamps read; ceiling missing. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:51:58+00:00"
+    },
+    "ROOM30D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM30D0",
+      "note": "Inherited from ROOM30D0 (identical layout and background files); not reviewed separately. Cave with paintings: walls, doors and lamps read; ceiling missing. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM30E0": {
+      "gameplay": "not_validated",
+      "note": "Cave office: desk and typewriter fragment into blocks; camera 3 close-up pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:51:58+00:00"
+    },
+    "ROOM30E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM30E0",
+      "note": "Inherited from ROOM30E0 (identical layout and background files); not reviewed separately. Cave office: desk and typewriter fragment into blocks; camera 3 close-up pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM30F0": {
+      "gameplay": "not_validated",
+      "note": "Waterway walkway: gray slabs and fragments in all views; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:51:58+00:00"
+    },
+    "ROOM30F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM30F0",
+      "note": "Inherited from ROOM30F0 (identical layout and background files); not reviewed separately. Waterway walkway: gray slabs and fragments in all views; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3100": {
+      "gameplay": "not_validated",
+      "note": "Export fails: no cached DA3 depth exists for this room (the original DA3 run also failed here). Needs a depth rerun before any review.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:52:18+00:00"
+    },
+    "ROOM3101": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3100",
+      "note": "Inherited from ROOM3100 (identical layout and background files); not reviewed separately. Export fails: no cached DA3 depth exists for this room (the original DA3 run also failed here). Needs a depth rerun before any review.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM3110": {
+      "gameplay": "not_validated",
+      "note": "Heliport edge (3 cameras): all three views render black; export has no visible geometry.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:51:58+00:00"
+    },
+    "ROOM3111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM3110",
+      "note": "Inherited from ROOM3110 (identical layout and background files); not reviewed separately. Heliport edge (3 cameras): all three views render black; export has no visible geometry.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4000": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse corridor: wooden walls, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:51:59+00:00"
+    },
+    "ROOM4001": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4000",
+      "note": "Inherited from ROOM4000 (identical layout and background files); not reviewed separately. Guardhouse corridor: wooden walls, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4010": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse bedroom: beds and desk are gray slabs, camera 3 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:51:59+00:00"
+    },
+    "ROOM4011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4010",
+      "note": "Inherited from ROOM4010 (identical layout and background files); not reviewed separately. Guardhouse bedroom: beds and desk are gray slabs, camera 3 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM4020": {
       "gameplay": "not_validated",
       "note": "Bathroom: 1.5 m collision slabs stand in for tub, sink and toilet; barrel primitive is the wall cistern. Approximate; no cheap fix yet.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:36+00:00"
+    },
+    "ROOM4021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4020",
+      "note": "Inherited from ROOM4020 (identical layout and background files); not reviewed separately. Bathroom: 1.5 m collision slabs stand in for tub, sink and toilet; barrel primitive is the wall cistern. Approximate; no cheap fix yet.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4030": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse storage: bed, chest, shelves and typewriter table read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:51:59+00:00"
+    },
+    "ROOM4031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4030",
+      "note": "Inherited from ROOM4030 (identical layout and background files); not reviewed separately. Guardhouse storage: bed, chest, shelves and typewriter table read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4040": {
+      "gameplay": "not_validated",
+      "note": "Bar with billiard table: tables and stools read; billiard table is a large bare slab in cameras 4 and 5; camera 6 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:51:59+00:00"
+    },
+    "ROOM4041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4040",
+      "note": "Inherited from ROOM4040 (identical layout and background files); not reviewed separately. Bar with billiard table: tables and stools read; billiard table is a large bare slab in cameras 4 and 5; camera 6 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4050": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse root corridor: walls, doors and lamps read in all eight views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:23+00:00"
+    },
+    "ROOM4051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4050",
+      "note": "Inherited from ROOM4050 (identical layout and background files); not reviewed separately. Guardhouse root corridor: walls, doors and lamps read in all eight views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4060": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse room with bed: bed and desk are gray slabs; cameras 0 and 6 close-ups wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T09:52:00+00:00"
+    },
+    "ROOM4061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4060",
+      "note": "Inherited from ROOM4060 (identical layout and background files); not reviewed separately. Guardhouse room with bed: bed and desk are gray slabs; cameras 0 and 6 close-ups wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM4070": {
       "gameplay": "not_validated",
@@ -36,11 +903,116 @@
       "review": "needs_work",
       "updated": "2026-10-14T08:53:53+00:00"
     },
+    "ROOM4071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4070",
+      "note": "Inherited from ROOM4070 (identical layout and background files); not reviewed separately. Bathroom: tub collision slab scaled to 600 high (ray casts from both cameras place the tub on boundary_4), below-floor barrel hidden. Sink and toilet remain projected on 1.5 m slabs.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4080": {
+      "gameplay": "not_validated",
+      "note": "Overgrown corridor: cameras 0 to 2, 6 and 7 read; cameras 3 and 4 fragment and camera 5 keypad close-up is black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:01:23+00:00"
+    },
+    "ROOM4081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4080",
+      "note": "Inherited from ROOM4080 (identical layout and background files); not reviewed separately. Overgrown corridor: cameras 0 to 2, 6 and 7 read; cameras 3 and 4 fragment and camera 5 keypad close-up is black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4090": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse pantry: shelves and sink read; sink slab stretched in camera 2. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T09:52:00+00:00"
+    },
+    "ROOM4091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4090",
+      "note": "Inherited from ROOM4090 (identical layout and background files); not reviewed separately. Guardhouse pantry: shelves and sink read; sink slab stretched in camera 2. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM40A0": {
+      "gameplay": "not_validated",
+      "note": "Guardhouse bedroom: bed and desk are bare gray slabs in cameras 2, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:01:24+00:00"
+    },
+    "ROOM40A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM40A0",
+      "note": "Inherited from ROOM40A0 (identical layout and background files); not reviewed separately. Guardhouse bedroom: bed and desk are bare gray slabs in cameras 2, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM40B0": {
       "gameplay": "not_validated",
       "note": "Bathroom: tub collision slab (boundary_5) scaled to 600 high; toilet barrel kept. Sink and shelves remain projected.",
       "review": "needs_work",
       "updated": "2026-10-14T08:53:54+00:00"
+    },
+    "ROOM40B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM40B0",
+      "note": "Inherited from ROOM40B0 (identical layout and background files); not reviewed separately. Bathroom: tub collision slab (boundary_5) scaled to 600 high; toilet barrel kept. Sink and shelves remain projected.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM40C0": {
+      "gameplay": "not_validated",
+      "note": "Padded room: walls, fireplace and carpet read; camera 2 is a blur and camera 7 is black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:01:24+00:00"
+    },
+    "ROOM40C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM40C0",
+      "note": "Inherited from ROOM40C0 (identical layout and background files); not reviewed separately. Padded room: walls, fireplace and carpet read; camera 2 is a blur and camera 7 is black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM40D0": {
+      "gameplay": "not_validated",
+      "note": "Lab corridor with ladder: walls read; large gray slabs misplaced in cameras 1, 4 and 5.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:01:24+00:00"
+    },
+    "ROOM40D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM40D0",
+      "note": "Inherited from ROOM40D0 (identical layout and background files); not reviewed separately. Lab corridor with ladder: walls read; large gray slabs misplaced in cameras 1, 4 and 5.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM40E0": {
+      "gameplay": "not_validated",
+      "note": "Lab corridor with railings: walls, doors and lights read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:24+00:00"
+    },
+    "ROOM40E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM40E0",
+      "note": "Inherited from ROOM40E0 (identical layout and background files); not reviewed separately. Lab corridor with railings: walls, doors and lights read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM40F0": {
+      "gameplay": "not_validated",
+      "note": "Lab break room: long tables read as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:25+00:00"
+    },
+    "ROOM40F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM40F0",
+      "note": "Inherited from ROOM40F0 (identical layout and background files); not reviewed separately. Lab break room: long tables read as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM4100": {
       "gameplay": "not_validated",
@@ -48,11 +1020,207 @@
       "review": "visually_approved",
       "updated": "2026-10-14T08:52:36+00:00"
     },
+    "ROOM4101": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4100",
+      "note": "Inherited from ROOM4100 (identical layout and background files); not reviewed separately. Control room: ceiling lamps fitted, consoles projected on walls, door panel present. Right wall of camera 1 is stretched; accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM4110": {
+      "gameplay": "not_validated",
+      "note": "Lab console room: consoles, cases and ceiling light read; camera 2 ceiling rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:25+00:00"
+    },
+    "ROOM4111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM4110",
+      "note": "Inherited from ROOM4110 (identical layout and background files); not reviewed separately. Lab console room: consoles, cases and ceiling light read; camera 2 ceiling rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5000": {
+      "gameplay": "not_validated",
+      "note": "B1 elevator lobby: walls, doors and signs read; camera 3 bench is a slab. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:25+00:00"
+    },
+    "ROOM5001": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5000",
+      "note": "Inherited from ROOM5000 (identical layout and background files); not reviewed separately. B1 elevator lobby: walls, doors and signs read; camera 3 bench is a slab. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5010": {
+      "gameplay": "not_validated",
+      "note": "B1 corridor: walls read; misplaced slabs in cameras 1 to 3 and 5; camera 7 phone close-up pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:01:25+00:00"
+    },
+    "ROOM5011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5010",
+      "note": "Inherited from ROOM5010 (identical layout and background files); not reviewed separately. B1 corridor: walls read; misplaced slabs in cameras 1 to 3 and 5; camera 7 phone close-up pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5020": {
+      "gameplay": "not_validated",
+      "note": "Ladder room: ladder, crates and door read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:25+00:00"
+    },
+    "ROOM5021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5020",
+      "note": "Inherited from ROOM5020 (identical layout and background files); not reviewed separately. Ladder room: ladder, crates and door read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5030": {
+      "gameplay": "not_validated",
+      "note": "Visual data room corridor: walls read; stair railing is a slab, camera 4 sign close-up pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:01:26+00:00"
+    },
+    "ROOM5031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5030",
+      "note": "Inherited from ROOM5030 (identical layout and background files); not reviewed separately. Visual data room corridor: walls read; stair railing is a slab, camera 4 sign close-up pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5040": {
+      "gameplay": "not_validated",
+      "note": "Meeting room: table, screen and shelves read; camera 4 projector screen flat. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:01:26+00:00"
+    },
+    "ROOM5041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5040",
+      "note": "Inherited from ROOM5040 (identical layout and background files); not reviewed separately. Meeting room: table, screen and shelves read; camera 4 projector screen flat. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5050": {
+      "gameplay": "not_validated",
+      "note": "B1 stair corridor: walls and doors read; stairs missing in camera 0 and gray slabs in cameras 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:45+00:00"
+    },
+    "ROOM5051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5050",
+      "note": "Inherited from ROOM5050 (identical layout and background files); not reviewed separately. B1 stair corridor: walls and doors read; stairs missing in camera 0 and gray slabs in cameras 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5060": {
+      "gameplay": "not_validated",
+      "note": "Lab with tank and computer: tank and console become slabs; camera 4 and 5 monitor close-ups are empty frames.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:46+00:00"
+    },
+    "ROOM5061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5060",
+      "note": "Inherited from ROOM5060 (identical layout and background files); not reviewed separately. Lab with tank and computer: tank and console become slabs; camera 4 and 5 monitor close-ups are empty frames.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5070": {
+      "gameplay": "not_validated",
+      "note": "Dormitory with beds: beds and desk are bare gray slabs; walls and doors read.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:46+00:00"
+    },
+    "ROOM5071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5070",
+      "note": "Inherited from ROOM5070 (identical layout and background files); not reviewed separately. Dormitory with beds: beds and desk are bare gray slabs; walls and doors read.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5080": {
+      "gameplay": "not_validated",
+      "note": "Elevator corridor: doors, panels and keypad read; camera 4 keypad partly smeared. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:08:47+00:00"
+    },
+    "ROOM5081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5080",
+      "note": "Inherited from ROOM5080 (identical layout and background files); not reviewed separately. Elevator corridor: doors, panels and keypad read; camera 4 keypad partly smeared. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5090": {
+      "gameplay": "not_validated",
+      "note": "Small lab office: shelves, desk and poster read as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:08:47+00:00"
+    },
+    "ROOM5091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5090",
+      "note": "Inherited from ROOM5090 (identical layout and background files); not reviewed separately. Small lab office: shelves, desk and poster read as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM50A0": {
+      "gameplay": "not_validated",
+      "note": "Dark lab room: paintings read but cameras 1, 2 and 6 are nearly black and the sinks are missing.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:47+00:00"
+    },
+    "ROOM50A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM50A0",
+      "note": "Inherited from ROOM50A0 (identical layout and background files); not reviewed separately. Dark lab room: paintings read but cameras 1, 2 and 6 are nearly black and the sinks are missing.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM50B0": {
+      "gameplay": "not_validated",
+      "note": "Cell corridor: walls, lights and barred door read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:08:48+00:00"
+    },
+    "ROOM50B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM50B0",
+      "note": "Inherited from ROOM50B0 (identical layout and background files); not reviewed separately. Cell corridor: walls, lights and barred door read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM50C0": {
+      "gameplay": "not_validated",
+      "note": "Power house corridor: doors, cages and signs read in all eight views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:08:48+00:00"
+    },
+    "ROOM50C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM50C0",
+      "note": "Inherited from ROOM50C0 (identical layout and background files); not reviewed separately. Power house corridor: doors, cages and signs read in all eight views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM50D0": {
       "gameplay": "not_validated",
       "note": "Single-camera duct/ceiling view; not reconstructable with current tools.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM50D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM50D0",
+      "note": "Inherited from ROOM50D0 (identical layout and background files); not reviewed separately. Single-camera duct/ceiling view; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM50E0": {
       "gameplay": "not_validated",
@@ -60,11 +1228,285 @@
       "review": "visually_approved",
       "updated": "2026-10-14T08:52:37+00:00"
     },
+    "ROOM50E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM50E0",
+      "note": "Inherited from ROOM50E0 (identical layout and background files); not reviewed separately. Lab dormitory: bed slab, table, lamps and lockers read correctly; furniture is projected. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM50F0": {
+      "gameplay": "not_validated",
+      "note": "Blue machinery room: railings and machines are stretched slabs in cameras 4 to 7.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:48+00:00"
+    },
+    "ROOM50F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM50F0",
+      "note": "Inherited from ROOM50F0 (identical layout and background files); not reviewed separately. Blue machinery room: railings and machines are stretched slabs in cameras 4 to 7.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5100": {
+      "gameplay": "not_validated",
+      "note": "Blue tank corridor: cameras 0 and 3 fragmented, tank in camera 4 pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:49+00:00"
+    },
+    "ROOM5101": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5100",
+      "note": "Inherited from ROOM5100 (identical layout and background files); not reviewed separately. Blue tank corridor: cameras 0 and 3 fragmented, tank in camera 4 pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5110": {
+      "gameplay": "not_validated",
+      "note": "Generator room: machines partially read; gray wedges in cameras 1 and 3.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:08:49+00:00"
+    },
+    "ROOM5111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5110",
+      "note": "Inherited from ROOM5110 (identical layout and background files); not reviewed separately. Generator room: machines partially read; gray wedges in cameras 1 and 3.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5120": {
+      "gameplay": "not_validated",
+      "note": "Cell: bed, sink, toilet and door read as slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:08:49+00:00"
+    },
+    "ROOM5121": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5120",
+      "note": "Inherited from ROOM5120 (identical layout and background files); not reviewed separately. Cell: bed, sink, toilet and door read as slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5130": {
+      "gameplay": "not_validated",
+      "note": "Culture lab: tanks and consoles partially read; camera 0 pixelated and camera 6 tank close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:52+00:00"
+    },
+    "ROOM5131": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5130",
+      "note": "Inherited from ROOM5130 (identical layout and background files); not reviewed separately. Culture lab: tanks and consoles partially read; camera 0 pixelated and camera 6 tank close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM5140": {
+      "gameplay": "not_validated",
+      "note": "B4 elevator hall: doors, vents and signs read in all seven views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:08:50+00:00"
+    },
+    "ROOM5141": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5140",
+      "note": "Inherited from ROOM5140 (identical layout and background files); not reviewed separately. B4 elevator hall: doors, vents and signs read in all seven views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM5150": {
       "gameplay": "not_validated",
       "note": "Single-camera grating staircase; staircase primitive fitted but treads are striped texture. Approximate.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM5151": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM5150",
+      "note": "Inherited from ROOM5150 (identical layout and background files); not reviewed separately. Single-camera grating staircase; staircase primitive fitted but treads are striped texture. Approximate.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6000": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1000",
+      "note": "Inherited from ROOM1000 (identical layout and background files); not reviewed separately. Dormitory: beds, shelf, door and typewriter table present; table slightly offset in camera 5. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6001": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1000",
+      "note": "Inherited from ROOM1000 (identical layout and background files); not reviewed separately. Dormitory: beds, shelf, door and typewriter table present; table slightly offset in camera 5. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6010": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1010",
+      "note": "Inherited from ROOM1010 (identical layout and background files); not reviewed separately. Dark corridor with stairs: corridor reads; stair region in camera 3 is a flat slab and the camera 5 sconce is a gray block.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1010",
+      "note": "Inherited from ROOM1010 (identical layout and background files); not reviewed separately. Dark corridor with stairs: corridor reads; stair region in camera 3 is a flat slab and the camera 5 sconce is a gray block.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6020": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1020",
+      "note": "Inherited from ROOM1020 (identical layout and background files); not reviewed separately. Storage room: cabinets fine; a wall-height slab hides the sink in camera 1; camera 3 close-up distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1020",
+      "note": "Inherited from ROOM1020 (identical layout and background files); not reviewed separately. Storage room: cabinets fine; a wall-height slab hides the sink in camera 1; camera 3 close-up distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6030": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1030",
+      "note": "Inherited from ROOM1030 (identical layout and background files); not reviewed separately. Green corridor: all seven views read correctly; door end in camera 2 is a dark block and a painting floats in camera 4. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1030",
+      "note": "Inherited from ROOM1030 (identical layout and background files); not reviewed separately. Green corridor: all seven views read correctly; door end in camera 2 is a dark block and a painting floats in camera 4. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6040": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1040",
+      "note": "Inherited from ROOM1040 (identical layout and background files); not reviewed separately. White corridor and parlor: cameras 0 and 4 render almost nothing (parlor furniture missing); corridor views fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1040",
+      "note": "Inherited from ROOM1040 (identical layout and background files); not reviewed separately. White corridor and parlor: cameras 0 and 4 render almost nothing (parlor furniture missing); corridor views fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6050": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1050",
+      "note": "Inherited from ROOM1050 (identical layout and background files); not reviewed separately. Dining room: table collision slab (boundary_8) scaled to 825 high; reads as a dark table top in cameras 1 and 2. Chairs absent; upper gallery not reconstructed.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1050",
+      "note": "Inherited from ROOM1050 (identical layout and background files); not reviewed separately. Dining room: table collision slab (boundary_8) scaled to 825 high; reads as a dark table top in cameras 1 and 2. Chairs absent; upper gallery not reconstructed.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6060": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1060",
+      "note": "Inherited from ROOM1060 (identical layout and background files); not reviewed separately. Main hall: ground-floor views acceptable; upper-floor cameras 3, 4 and 7 partial or distorted; stairs rough.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1060",
+      "note": "Inherited from ROOM1060 (identical layout and background files); not reviewed separately. Main hall: ground-floor views acceptable; upper-floor cameras 3, 4 and 7 partial or distorted; stairs rough.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6070": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1070",
+      "note": "Inherited from ROOM1070 (identical layout and background files); not reviewed separately. Gallery: statue and paintings present; camera 3 shows a large dark slab and camera 4 is nearly empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1070",
+      "note": "Inherited from ROOM1070 (identical layout and background files); not reviewed separately. Gallery: statue and paintings present; camera 3 shows a large dark slab and camera 4 is nearly empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6080": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1080",
+      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1080",
+      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6090": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1090",
+      "note": "Inherited from ROOM1090 (identical layout and background files); not reviewed separately. Corridor with paintings: cameras 0, 2, 4 and 7 fine; gray wedges and misplaced slabs in cameras 1, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1090",
+      "note": "Inherited from ROOM1090 (identical layout and background files); not reviewed separately. Corridor with paintings: cameras 0, 2, 4 and 7 fine; gray wedges and misplaced slabs in cameras 1, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60A0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10A0",
+      "note": "Inherited from ROOM10A0 (identical layout and background files); not reviewed separately. Dark corridor: doors, paintings and sconces read correctly. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10A0",
+      "note": "Inherited from ROOM10A0 (identical layout and background files); not reviewed separately. Dark corridor: doors, paintings and sconces read correctly. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60B0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10B0",
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10B0",
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60C0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10C0",
+      "note": "Inherited from ROOM10C0 (identical layout and background files); not reviewed separately. Plant room: fountain and walls read in cameras 0, 1, 3 and 5; camera 2 is a gray slab and camera 4 is empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10C0",
+      "note": "Inherited from ROOM10C0 (identical layout and background files); not reviewed separately. Plant room: fountain and walls read in cameras 0, 1, 3 and 5; camera 2 is a gray slab and camera 4 is empty.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM60D0": {
       "gameplay": "not_validated",
@@ -72,11 +1514,150 @@
       "review": "needs_work",
       "updated": "2026-10-14T08:52:36+00:00"
     },
+    "ROOM60D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10D0",
+      "note": "Inherited from ROOM10D0 (identical layout and background files); not reviewed separately. Fireplace room: walls distorted and dark, floor missing in camera 0, sconces projected. Needs substantial reconstruction, not retouch.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60E0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10E0",
+      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10E0",
+      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60F0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10F0",
+      "note": "Inherited from ROOM10F0 (identical layout and background files); not reviewed separately. Bar with piano: cameras 0, 4 and 5 acceptable; bar counter and piano become large slabs, cameras 2, 3, 6 and 7 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM60F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM10F0",
+      "note": "Inherited from ROOM10F0 (identical layout and background files); not reviewed separately. Bar with piano: cameras 0, 4 and 5 acceptable; bar counter and piano become large slabs, cameras 2, 3, 6 and 7 distorted.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6100": {
+      "gameplay": "not_validated",
+      "note": "Stage 6 stairwell: stairs are flat slabs, camera 1 ceiling wrong, camera 3 mostly black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:52+00:00"
+    },
+    "ROOM6101": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM6100",
+      "note": "Inherited from ROOM6100 (identical layout and background files); not reviewed separately. Stage 6 stairwell: stairs are flat slabs, camera 1 ceiling wrong, camera 3 mostly black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6110": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1110",
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1110",
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM6120": {
       "gameplay": "not_validated",
       "note": "Stage 6 revisit of ROOM1120; same layout and images. Same defects.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:35+00:00"
+    },
+    "ROOM6121": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1120",
+      "note": "Inherited from ROOM1120 (identical layout and background files); not reviewed separately. Bed and canopy are merged into the 3 m thick south collision slab extruded to wall height; dresser block at the west wall is full height. Needs a split slab or blocks; floor and door acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6130": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1130",
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6131": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1130",
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6140": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1140",
+      "note": "Inherited from ROOM1140 (identical layout and background files); not reviewed separately. Courtyard with pump: walls read; gray slab in camera 1 and pump block only partially textured.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6141": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1140",
+      "note": "Inherited from ROOM1140 (identical layout and background files); not reviewed separately. Courtyard with pump: walls read; gray slab in camera 1 and pump block only partially textured.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6150": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1150",
+      "note": "Inherited from ROOM1150 (identical layout and background files); not reviewed separately. Study with ceiling opening: all main views read correctly; camera 4 close-up rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6151": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1150",
+      "note": "Inherited from ROOM1150 (identical layout and background files); not reviewed separately. Study with ceiling opening: all main views read correctly; camera 4 close-up rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6160": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1160",
+      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6161": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1160",
+      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6170": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1170",
+      "note": "Inherited from ROOM1170 (identical layout and background files); not reviewed separately. Aquarium painting room: walls, frames and lamps read; camera 3 frame partial. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6171": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1170",
+      "note": "Inherited from ROOM1170 (identical layout and background files); not reviewed separately. Aquarium painting room: walls, frames and lamps read; camera 3 frame partial. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM6180": {
       "gameplay": "not_validated",
@@ -84,11 +1665,178 @@
       "review": "needs_work",
       "updated": "2026-10-14T08:52:37+00:00"
     },
+    "ROOM6181": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM1180",
+      "note": "Inherited from ROOM1180 (identical layout and background files); not reviewed separately. Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM6190": {
+      "gameplay": "not_validated",
+      "note": "Stage 6 study: desk and chair are slabs; cameras 0 and 2 are nearly black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:52+00:00"
+    },
+    "ROOM6191": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM6190",
+      "note": "Inherited from ROOM6190 (identical layout and background files); not reviewed separately. Stage 6 study: desk and chair are slabs; cameras 0 and 2 are nearly black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM61A0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11A0",
+      "note": "Inherited from ROOM11A0 (identical layout and background files); not reviewed separately. Ivy arcade: arcade and planters read; camera 0 shows a misplaced slab and camera 4 is pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM61A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11A0",
+      "note": "Inherited from ROOM11A0 (identical layout and background files); not reviewed separately. Ivy arcade: arcade and planters read; camera 0 shows a misplaced slab and camera 4 is pixelated.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM61B0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11B0",
+      "note": "Inherited from ROOM11B0 (identical layout and background files); not reviewed separately. Kitchen storage: shelves, barrels and door read correctly in all views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM61B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11B0",
+      "note": "Inherited from ROOM11B0 (identical layout and background files); not reviewed separately. Kitchen storage: shelves, barrels and door read correctly in all views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM61C0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11C0",
+      "note": "Inherited from ROOM11C0 (identical layout and background files); not reviewed separately. Wine shelves room: shelves and crates read; camera 2 partially smeared. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM61C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM11C0",
+      "note": "Inherited from ROOM11C0 (identical layout and background files); not reviewed separately. Wine shelves room: shelves and crates read; camera 2 partially smeared. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM7000": {
       "gameplay": "not_validated",
       "note": "Single-camera duct view; not reconstructable with current tools.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM7001": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7000",
+      "note": "Inherited from ROOM7000 (identical layout and background files); not reviewed separately. Single-camera duct view; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7010": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2010",
+      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7011": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2010",
+      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7020": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2020",
+      "note": "Inherited from ROOM2020 (identical layout and background files); not reviewed separately. Dining hall balcony: cameras 0 and 2 render almost nothing; cameras 1, 3 and 4 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7021": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2020",
+      "note": "Inherited from ROOM2020 (identical layout and background files); not reviewed separately. Dining hall balcony: cameras 0 and 2 render almost nothing; cameras 1, 3 and 4 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7030": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2030",
+      "note": "Inherited from ROOM2030 (identical layout and background files); not reviewed separately. Dining balcony: balcony railings and benches are gray slabs; floor carpet reads.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7031": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2030",
+      "note": "Inherited from ROOM2030 (identical layout and background files); not reviewed separately. Dining balcony: balcony railings and benches are gray slabs; floor carpet reads.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7040": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2040",
+      "note": "Inherited from ROOM2040 (identical layout and background files); not reviewed separately. Arched dark corridor: doors, sconces and carpet read in all five views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7041": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2040",
+      "note": "Inherited from ROOM2040 (identical layout and background files); not reviewed separately. Arched dark corridor: doors, sconces and carpet read in all five views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7050": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2050",
+      "note": "Inherited from ROOM2050 (identical layout and background files); not reviewed separately. Armor room: knights projected on the walls, door and trap read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7051": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2050",
+      "note": "Inherited from ROOM2050 (identical layout and background files); not reviewed separately. Armor room: knights projected on the walls, door and trap read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7060": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2060",
+      "note": "Inherited from ROOM2060 (identical layout and background files); not reviewed separately. Study bedroom: shelves, desk and doors read; camera 1 shows a tall slab at the cabinet. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7061": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2060",
+      "note": "Inherited from ROOM2060 (identical layout and background files); not reviewed separately. Study bedroom: shelves, desk and doors read; camera 1 shows a tall slab at the cabinet. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7070": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2070",
+      "note": "Inherited from ROOM2070 (identical layout and background files); not reviewed separately. Upper stair hall: camera 0 is black, camera 1 is a bare slab; corridor cameras 2 to 5 fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7071": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2070",
+      "note": "Inherited from ROOM2070 (identical layout and background files); not reviewed separately. Upper stair hall: camera 0 is black, camera 1 is a bare slab; corridor cameras 2 to 5 fine.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM7080": {
       "gameplay": "not_validated",
@@ -96,11 +1844,281 @@
       "review": "needs_work",
       "updated": "2026-10-14T08:52:35+00:00"
     },
+    "ROOM7081": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2080",
+      "note": "Inherited from ROOM2080 (identical layout and background files); not reviewed separately. Corridor: chandelier texture fragmented in camera 0, deer head unreconstructable, wall seam split. Camera 1 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7090": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2090",
+      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7091": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2090",
+      "note": "Inherited from ROOM2090 (identical layout and background files); not reviewed separately. Twin bed room: beds and dresser as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70A0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20A0",
+      "note": "Inherited from ROOM20A0 (identical layout and background files); not reviewed separately. Study with large painting: furniture, lamp and paintings read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20A0",
+      "note": "Inherited from ROOM20A0 (identical layout and background files); not reviewed separately. Study with large painting: furniture, lamp and paintings read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70B0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20B0",
+      "note": "Inherited from ROOM20B0 (identical layout and background files); not reviewed separately. Fireplace room: fireplace as a block, doors and carpet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20B0",
+      "note": "Inherited from ROOM20B0 (identical layout and background files); not reviewed separately. Fireplace room: fireplace as a block, doors and carpet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70C0": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 piano room over cave: upstairs views read; cave cameras 4 to 7 are gray slabs.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:52+00:00"
+    },
+    "ROOM70C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM70C0",
+      "note": "Inherited from ROOM70C0 (identical layout and background files); not reviewed separately. Stage 7 piano room over cave: upstairs views read; cave cameras 4 to 7 are gray slabs.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70D0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20D0",
+      "note": "Inherited from ROOM20D0 (identical layout and background files); not reviewed separately. Stone corridor: pillars and doors read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70D1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20D0",
+      "note": "Inherited from ROOM20D0 (identical layout and background files); not reviewed separately. Stone corridor: pillars and doors read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70E0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20E0",
+      "note": "Inherited from ROOM20E0 (identical layout and background files); not reviewed separately. Corridor with arches: doors, sconces and floor read; camera 1 has a misplaced slab. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70E1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20E0",
+      "note": "Inherited from ROOM20E0 (identical layout and background files); not reviewed separately. Corridor with arches: doors, sconces and floor read; camera 1 has a misplaced slab. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70F0": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20F0",
+      "note": "Inherited from ROOM20F0 (identical layout and background files); not reviewed separately. Small dining room: 750-high table block added on the skipped collision box; reads as a gray table. Chairs absent.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM70F1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM20F0",
+      "note": "Inherited from ROOM20F0 (identical layout and background files); not reviewed separately. Small dining room: 750-high table block added on the skipped collision box; reads as a gray table. Chairs absent.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7100": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2100",
+      "note": "Inherited from ROOM2100 (identical layout and background files); not reviewed separately. Attic store: crates and barrels as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7101": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2100",
+      "note": "Inherited from ROOM2100 (identical layout and background files); not reviewed separately. Attic store: crates and barrels as textured slabs. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7110": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2110",
+      "note": "Inherited from ROOM2110 (identical layout and background files); not reviewed separately. Short corridor: camera 0 and 2 read; camera 1 is mostly a bare gray slab.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7111": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2110",
+      "note": "Inherited from ROOM2110 (identical layout and background files); not reviewed separately. Short corridor: camera 0 and 2 read; camera 1 is mostly a bare gray slab.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7120": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2120",
+      "note": "Inherited from ROOM2120 (identical layout and background files); not reviewed separately. Terrace: ivy walls stretched, railing and planters distorted in cameras 1 to 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7121": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM2120",
+      "note": "Inherited from ROOM2120 (identical layout and background files); not reviewed separately. Terrace: ivy walls stretched, railing and planters distorted in cameras 1 to 4.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7130": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 white corridor: doors, gates and sconces read; camera 2 ceiling patch. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:17:52+00:00"
+    },
+    "ROOM7131": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7130",
+      "note": "Inherited from ROOM7130 (identical layout and background files); not reviewed separately. Stage 7 white corridor: doors, gates and sconces read; camera 2 ceiling patch. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7140": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 corridor: walls, doors and lamps read in all five views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM7141": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7140",
+      "note": "Inherited from ROOM7140 (identical layout and background files); not reviewed separately. Stage 7 corridor: walls, doors and lamps read in all five views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7150": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 trophy room: cameras 0 and 4 nearly black; deer heads become dark slabs in cameras 2, 3, 6 and 7.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM7151": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7150",
+      "note": "Inherited from ROOM7150 (identical layout and background files); not reviewed separately. Stage 7 trophy room: cameras 0 and 4 nearly black; deer heads become dark slabs in cameras 2, 3, 6 and 7.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7160": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 library: shelves read in cameras 0, 1 and 4; slabs misplaced in cameras 2, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM7161": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7160",
+      "note": "Inherited from ROOM7160 (identical layout and background files); not reviewed separately. Stage 7 library: shelves read in cameras 0, 1 and 4; slabs misplaced in cameras 2, 3, 5 and 6.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7170": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 bookshelf room: shelves, desk and bust read; shelf slabs offset in camera 1. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM7171": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7170",
+      "note": "Inherited from ROOM7170 (identical layout and background files); not reviewed separately. Stage 7 bookshelf room: shelves, desk and bust read; shelf slabs offset in camera 1. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM7180": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 study with window: desk fragments into tall slabs; camera 2 night exterior renders black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM7181": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7180",
+      "note": "Inherited from ROOM7180 (identical layout and background files); not reviewed separately. Stage 7 study with window: desk fragments into tall slabs; camera 2 night exterior renders black.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
     "ROOM7190": {
       "gameplay": "not_validated",
       "note": "Small bedroom: bed is a flat slab on its collision box, desk projected; door and floor acceptable.",
       "review": "needs_work",
       "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM7191": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM7190",
+      "note": "Inherited from ROOM7190 (identical layout and background files); not reviewed separately. Small bedroom: bed is a flat slab on its collision box, desk projected; door and floor acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM71A0": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 ladder corridor: ladder, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM71A1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM71A0",
+      "note": "Inherited from ROOM71A0 (identical layout and background files); not reviewed separately. Stage 7 ladder corridor: ladder, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM71B0": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 corridor: walls, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:17:53+00:00"
+    },
+    "ROOM71B1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM71B0",
+      "note": "Inherited from ROOM71B0 (identical layout and background files); not reviewed separately. Stage 7 corridor: walls, doors and lamps read in all six views. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:19:01+00:00"
+    },
+    "ROOM71C0": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 kitchen: counters and appliances become slabs; camera 3 and 4 close-ups wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:17:54+00:00"
+    },
+    "ROOM71C1": {
+      "gameplay": "not_validated",
+      "inherited_from": "ROOM71C0",
+      "note": "Inherited from ROOM71C0 (identical layout and background files); not reviewed separately. Stage 7 kitchen: counters and appliances become slabs; camera 3 and 4 close-ups wrong.",
+      "review": "needs_work",
+      "updated": "2026-10-14T10:19:01+00:00"
     }
   },
   "schema": 1

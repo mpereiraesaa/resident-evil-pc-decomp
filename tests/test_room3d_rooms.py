@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from room3d_rooms import build, group_variants, inventory, load_status, set_status
+from room3d_rooms import build, group_variants, inventory, load_status, propagate, set_status
 
 
 def rdt_bytes(cameras, boundaries, salt=b''):
@@ -97,6 +97,25 @@ class RoomsTests(unittest.TestCase):
         self.assertIn('Necesita trabajo', page)
         with self.assertRaises(ValueError):
             build(self.root / 'assets', self.root / 'assets' / 'catalog', None, None)
+
+    def test_review_propagates_only_to_identical_layouts(self):
+        status = self.root / 'status.json'
+        set_status(status, 'ROOM1000', review='visually_approved', gameplay='validated', note='fine')
+        changed = propagate(self.root / 'assets', status)
+        self.assertEqual(sorted(changed), ['ROOM1001', 'ROOM6000'])
+        self.assertEqual(changed['ROOM6000']['review'], 'visually_approved')
+        self.assertEqual(changed['ROOM6000']['gameplay'], 'not_validated')
+        self.assertEqual(changed['ROOM6000']['inherited_from'], 'ROOM1000')
+        self.assertIn('not reviewed separately', changed['ROOM6000']['note'])
+        self.assertEqual(propagate(self.root / 'assets', status), {})
+        loaded = load_status(status)['rooms']
+        self.assertEqual(loaded.get('ROOM1010', {}).get('review', 'unreviewed'), 'unreviewed')
+        set_status(status, 'ROOM1000', review='needs_work')
+        self.assertEqual(propagate(self.root / 'assets', status), {})
+        self.assertEqual(load_status(status)['rooms']['ROOM1001']['review'], 'visually_approved')
+        state = build(self.root / 'assets', self.root / 'catalog', None, status)
+        self.assertEqual(state['counts']['inherited_review'], 2)
+        self.assertIn('Estado heredado de ROOM1000', (self.root / 'catalog/index.html').read_text())
 
 
 if __name__ == '__main__':

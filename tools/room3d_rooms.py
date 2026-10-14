@@ -119,6 +119,37 @@ def set_status(path, room, review=None, gameplay=None, note=None):
     return entry
 
 
+def propagate(assets, status_path):
+    """Give unreviewed rooms the review status of their reviewed same-layout siblings.
+
+    Only rooms whose layout and background files are identical to a reviewed
+    room inherit, and only when every reviewed sibling agrees. The note names
+    the source so an inherited status is never mistaken for a separate review;
+    gameplay validation is never inherited.
+    """
+    import datetime
+
+    status = load_status(status_path)
+    records = {r['rdt']: r for r in group_variants(inventory(assets))}
+    changed = {}
+    for name, record in sorted(records.items()):
+        if record['empty_slot'] or status['rooms'].get(name, {}).get('review', 'unreviewed') != 'unreviewed':
+            continue
+        reviewed = {other: status['rooms'][other] for other in record['shared_layout_with']
+                    if status['rooms'].get(other, {}).get('review', 'unreviewed') != 'unreviewed'
+                    and 'inherited_from' not in status['rooms'][other]}
+        if not reviewed or len({entry['review'] for entry in reviewed.values()}) != 1:
+            continue
+        source, entry = sorted(reviewed.items())[0]
+        changed[name] = {'review': entry['review'], 'gameplay': 'not_validated', 'inherited_from': source,
+                         'note': f"Inherited from {source} (identical layout and background files); not reviewed separately. "
+                                 + entry.get('note', ''),
+                         'updated': datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0).isoformat()}
+    status['rooms'].update(changed)
+    Path(status_path).write_text(json.dumps(status, indent=2, sort_keys=True) + '\n')
+    return changed
+
+
 def build(assets, out, overrides=None, status_path=None, batch=None):
     """Write rooms.json and an HTML table; never inside the assets or batch output."""
     out = Path(out)
@@ -134,7 +165,8 @@ def build(assets, out, overrides=None, status_path=None, batch=None):
                   bool(set(r.get('same_geometry', [])) & set(r.get('same_backgrounds', []))) for r in records),
               'unique_layout_and_backgrounds': len({(r['geometry_sha256'], json.dumps(r['backgrounds'], sort_keys=True))
                                                     for r in records if not r['empty_slot']}),
-              'overrides': 0, 'review': dict.fromkeys(REVIEW_STATES, 0), 'gameplay': dict.fromkeys(GAMEPLAY_STATES, 0)}
+              'overrides': 0, 'review': dict.fromkeys(REVIEW_STATES, 0), 'gameplay': dict.fromkeys(GAMEPLAY_STATES, 0),
+              'inherited_review': 0}
     rows = []
     for record in records:
         name = record['rdt']
@@ -145,6 +177,9 @@ def build(assets, out, overrides=None, status_path=None, batch=None):
         if not record['empty_slot']:
             counts['review'][record['review']] += 1
             counts['gameplay'][record['gameplay']] += 1
+            counts['inherited_review'] += 'inherited_from' in entry
+            if 'inherited_from' in entry:
+                record['inherited_from'] = entry['inherited_from']
         override_path = Path(overrides) / (name + '.json') if overrides else None
         if override_path and not override_path.exists() and not record['empty_slot']:
             shared = [other for other in record['shared_layout_with'] if (Path(overrides) / (other + '.json')).exists()]
@@ -190,6 +225,8 @@ def build(assets, out, overrides=None, status_path=None, batch=None):
                 notes.append('Exportación: ' + record['export'])
             if record.get('corrections'):
                 notes.append('Réplica: ' + record['corrections'])
+            if entry.get('inherited_from'):
+                notes.append('Estado heredado de ' + entry['inherited_from'])
             if record['note']:
                 notes.append(record['note'])
         rows.append(f"<tr><td>{html.escape(name)}</td><td>{record['variant_group']}</td>"
@@ -231,11 +268,17 @@ def main():
     status.add_argument('--review', choices=REVIEW_STATES)
     status.add_argument('--gameplay', choices=GAMEPLAY_STATES)
     status.add_argument('--note')
+    inherit = commands.add_parser('propagate', help='Copy review status to unreviewed same-layout siblings')
+    inherit.add_argument('--assets', type=Path, required=True)
+    inherit.add_argument('--status', type=Path, required=True)
     args = parser.parse_args()
     if args.command == 'catalog':
         state = build(args.assets, args.out, args.overrides, args.status, args.batch)
         print(json.dumps(state['counts'], indent=2))
         print(args.out / 'index.html')
+    elif args.command == 'propagate':
+        changed = propagate(args.assets, args.status)
+        print(json.dumps({name: entry['inherited_from'] for name, entry in changed.items()}, indent=2))
     else:
         print(json.dumps(set_status(args.status, args.room, args.review, args.gameplay, args.note), indent=2))
 

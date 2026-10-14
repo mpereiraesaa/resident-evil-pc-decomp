@@ -1014,3 +1014,31 @@ The reusable correction found so far is scaling a furniture collision slab to
 its real height about the floor, which ray casts from the cameras can locate:
 ROOM4070 and ROOM40B0 record it, and the reprojected texture lands on the slab.
 No gameplay validation was performed for any room.
+
+### Second pass: every unique layout reviewed
+
+On 2026-10-14 one representative RDT per unique layout-and-image combination
+was regenerated with cached evidence (`build/room3d-rooms-pass2/`, 103 rooms,
+four workers, 80 minutes; ROOM3100 fails because no cached DA3 depth exists for
+it, as in the original batch). Each room's original and automatic views were
+inspected side by side and the result recorded with `room3d_rooms.py status`.
+Together with the first pass that covers all 116 unique layouts: 47 rooms are
+accepted as approximate reconstructions and 73 need work, with the defect named
+in the note. `room3d_rooms.py propagate` then gives each unreviewed room the
+status of its reviewed sibling with identical layout and background files,
+marked `inherited_from` and "not reviewed separately"; gameplay validation is
+never inherited. The automatic exports of such siblings are close but not
+byte-identical (ROOM1180 versus ROOM6180 differ by 0.22 and 0.09 mean
+intensity per view, because cached model outputs and script anchors are per
+RDT), so an inherited status is a presumption to confirm when that room is
+replayed. Corrections recorded in this pass: ROOM1050 (dining table slab
+scaled to table height) and ROOM20F0 (table block on the skipped collision box).
+
+Recurring defects across the 73 rooms, in order of frequency: furniture
+rendered as bare 1.5 m collision slabs or merged into wall-height slabs;
+misplaced gray slabs from collision boxes that are not visible walls; cameras
+that render nothing or black (close-ups, exteriors, duct views); caves and
+waterways (ROOM3070, ROOM30B0, ROOM30F0) that produce no usable geometry; and
+chandeliers or lamps scattering into fragments. The reusable manual fix remains
+scaling or adding a slab or block at the furniture's collision footprint; the
+other defects need geometry work beyond the retouch tools.

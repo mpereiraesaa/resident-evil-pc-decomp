@@ -1,0 +1,84 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "36ad31cc796d978ef3a7264e0f0ae78fb80da7166668983353593d217a3ed98a",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "575b1256ef16ce2fdbf86ab57342fca26b3977b854a97bbcf6ee5663ed3bfd06"
+  },
+  "created": "2026-10-14T09:09:27+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "36ad31cc796d978ef3a7264e0f0ae78fb80da7166668983353593d217a3ed98a",
+      "edits": {
+        "boundary_8": {
+          "pivot": [
+            17096,
+            0,
+            8351
+          ],
+          "scale": [
+            1,
+            0.55,
+            1
+          ]
+        }
+      },
+      "note": "Scale the dining table collision slab (boundary_8) to about 825 high about the floor",
+      "objects": {
+        "boundary_8": {
+          "kind": "wall",
+          "max": [
+            26204.0,
+            0.0,
+            10471.0
+          ],
+          "min": [
+            7988.0,
+            -1500.0,
+            6232.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T09:09:27+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Dining room; the long table is its 1.5 m collision slab scaled to table height",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM1050",
+    "room": 5,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "0c4492b2e4cd0f39a973023a5342c5814bf72c4762da96f3435a8a9b864cc099",
+      "1": "921a95f4506e8c77a0cf7a5e8fda806e902db98f9f761b68430adaef69c1177e",
+      "2": "a573346544567e27e74705fe427fdd0974d533328c93a3f66b85bcb50c50ceb6",
+      "3": "f714e56c9832eb3b210b9593a52fc93a20615b1ec192baf386d5cb38b838835e",
+      "4": "add6b081904577e453834153ea241e30d8f14993fbdd71226c55ba82cbc9f01f",
+      "5": "996e2be72d011796f6f0812684b9d4cc1d5bac65741fbeff1f23b0816d1210e7",
+      "6": "a9c43d6e52d05bcc73b60be69aa3e3f0ad3d6998aa13b687a1dc2415cbcbf006"
+    },
+    "geometry_sha256": "f91a46894d5ef30f938e000a56a412d262f92f5e8f7552330d5921ead6931cb3",
+    "player": 0,
+    "rdt": "ROOM1050",
+    "rdt_sha256": "bc5245fbb3146a914b28e493f8446b41328402b2bcb22546ad411fe96b7f45b8",
+    "room": 5,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T09:09:27+00:00"
+}

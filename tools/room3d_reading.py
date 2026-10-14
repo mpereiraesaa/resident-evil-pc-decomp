@@ -492,7 +492,25 @@ class Builder:
         )
         self.mesh = Mesh(reading["room"].lower(), self.palette.spec, self.rig, header=header, cell=reading.get("shell", {}).get("cell", 900.0))
         self.hides = []
+        self.auto_hides = []   # (camera, group) pairs derived from camera positions
+        self.cameras = self.room["cameras"]
         self._lights_from_kinds()
+
+    def _cameras_behind(self, side, fixed, a, b, margin=2500):
+        """Cameras on the far side of a wall segment, which would see its back."""
+        behind = []
+        for cam in self.cameras:
+            ox, oy, oz = cam["origin"]
+            along, across = (oz, ox) if side in ("west", "east") else (ox, oz)
+            outside = (across < fixed) if side in ("west", "south") else (across > fixed)
+            if outside and a - margin <= along <= b + margin:
+                behind.append(cam["index"])
+        return behind
+
+    def _cameras_above(self, zone, ceiling):
+        x0, z0, x1, z1 = zone["box"]
+        return [cam["index"] for cam in self.cameras
+                if cam["origin"][1] < ceiling and x0 - 2500 <= cam["origin"][0] <= x1 + 2500 and z0 - 2500 <= cam["origin"][2] <= z1 + 2500]
 
     # Lights that fixtures imply are added before any geometry is lit.
     def _lights_from_kinds(self):
@@ -567,15 +585,24 @@ class Builder:
                 mesh.rect((x0, floor, z0), (1, 0, 0), (0, 0, 1), x1 - x0, z1 - z0, fm)
             ceiling = zone.get("ceiling", shell.get("ceiling", -6000))
             if ceiling is not None:
-                mesh.set_group(zone.get("ceiling_group", "ceiling"))
+                group = zone.get("ceiling_group", "ceiling")
+                above = self._cameras_above(zone, ceiling)
+                if above and "ceiling_group" not in zone:
+                    group = f"ceiling_{self.zones.index(zone)}"
+                    self.auto_hides += [(c, group) for c in above]
+                mesh.set_group(group)
                 cm = self.use(zone.get("ceiling_material", shell.get("ceiling_material", "plaster")))
                 mesh.rect((x0, ceiling, z0), (1, 0, 0), (0, 0, 1), x1 - x0, z1 - z0, cm, flip=True)
         mesh.set_group("walls")
         wm_default = shell.get("wall_material", "plaster")
-        for side, fixed, a, b, zone in exposed_edges(self.zones):
+        for index, (side, fixed, a, b, zone) in enumerate(exposed_edges(self.zones)):
             ceiling = zone.get("ceiling", shell.get("ceiling", -6000))
-            wm = self.use(zone.get("wall_material", wm_default))
+            wm = self.use(zone.get("wall_materials", {}).get(side, zone.get("wall_material", wm_default)))
             group = zone.get("wall_groups", {}).get(side, zone.get("wall_group"))
+            behind = self._cameras_behind(side, fixed, a, b)
+            if behind and not group:
+                group = f"wall_{index}"
+                self.auto_hides += [(c, group) for c in behind]
             if group:
                 mesh.set_group(group)
             base = floor
@@ -616,14 +643,19 @@ class Builder:
 
     # Kinds -----------------------------------------------------------------
     def doors(self):
-        for d in self.reading.get("door", []):
+        for index, d in enumerate(self.reading.get("door", [])):
             side = d["wall"]
             a, b = d["span"]
             line = d.get("line", self._wall_line(side, (a + b) / 2))
             material = self.use(d.get("material", "door"))
             frame = self.use(d.get("frame", "wood"))
             top = d.get("top", -3300)
-            self.mesh.set_group(d.get("group"))
+            group = d.get("group")
+            behind = self._cameras_behind(side, line, a, b)
+            if behind and not group:
+                group = f"door_{index}"
+                self.auto_hides += [(c, group) for c in behind]
+            self.mesh.set_group(group)
             if side in ("south", "north"):
                 door(self.mesh, a, b, line, top, material, +1 if side == "south" else -1, frame_depth=d.get("frame_depth", 110), floor=self.floor, frame=frame)
             else:
@@ -1049,6 +1081,24 @@ class Builder:
                 mesh.cylinder(x, z, r * 0.55, ped_top - 120, ped_top, mat, segments=10)
                 mesh.cylinder(x, z, r, top + (ped_top - top) * 0.35, ped_top - 120, mat, segments=12)
                 mesh.cylinder(x, z, r * 0.6, top, top + (ped_top - top) * 0.35, mat, segments=12)
+            elif kind == "sofa":
+                x0, z0, x1, z1 = o["box"]
+                back = o.get("back", "north")
+                seat_y, back_top = o.get("seat_y", -480), o.get("back_top", -1000)
+                fabric, wood = self.use(o.get("material", "velvet")), self.use("wood")
+                mesh.box((x0, seat_y, z0), (x1, floor, z1), fabric, omit=("bottom",))
+                t = 160
+                if back == "north":
+                    mesh.box((x0, back_top, z1 - t), (x1, seat_y, z1), fabric)
+                elif back == "south":
+                    mesh.box((x0, back_top, z0), (x1, seat_y, z0 + t), fabric)
+                elif back == "west":
+                    mesh.box((x0, back_top, z0), (x0 + t, seat_y, z1), fabric)
+                else:
+                    mesh.box((x1 - t, back_top, z0), (x1, seat_y, z1), fabric)
+                for ax0, ax1 in ((x0, x0 + t), (x1 - t, x1)):
+                    if back in ("north", "south"):
+                        mesh.box((ax0, seat_y - 250, z0), (ax1, seat_y, z1), wood)
             elif kind == "newel":
                 x, z = o["at"]
                 wood = self.use("wood")
@@ -1121,7 +1171,7 @@ class Builder:
             self.mesh.set_group(None)
 
     def hides_text(self):
-        lines = []
+        lines = [f"hide {c} {g}" for c, g in self.auto_hides]
         for h in self.reading.get("hide", []):
             for g in h["groups"]:
                 lines.append(f"hide {h['camera']} {g}")

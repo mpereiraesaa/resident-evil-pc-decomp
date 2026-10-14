@@ -1,0 +1,127 @@
+# Tea-room corridor and lounge. Corridor from ROOM1040.RDT blocks 0,1,2,8;
+# lounge opening north of its west end (block 0 starts at x=7133), sofa from
+# block 3, side table from circle 6. Doors from the door records.
+room = "ROOM1040"
+title = "Tea room passage"
+seed = 1040
+
+[shell]
+floor = 0
+ceiling = -6000
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+skirting = 220
+cell = 700
+
+[materials]
+plaster = [0.64, 0.64, 0.60]
+"plaster.dark" = [0.26, 0.24, 0.20]
+planks = [0.42, 0.19, 0.10]
+wood = [0.22, 0.14, 0.09]
+door = [0.46, 0.28, 0.14]
+carpet = { color = [0.70, 0.58, 0.46], motif = [0.55, 0.30, 0.20] }
+velvet = [0.40, 0.32, 0.24]
+
+[lighting]
+ambient = [0.10, 0.10, 0.09]
+
+[[zone]]            # corridor
+box = [1843, 1817, 31998, 4642]
+floor_along = "x"
+[[zone]]            # lounge
+box = [1843, 4642, 7133, 8694]
+
+[[beam]]
+box = [1843, 3180, 31998, 3300]
+top = -6000
+[[beam]]
+box = [7133, 1817, 7253, 4642]
+top = -6000
+[[beam]]
+box = [15800, 1817, 15920, 4642]
+top = -6000
+[[beam]]
+box = [24400, 1817, 24520, 4642]
+top = -6000
+
+[[door]]            # to the dining room
+wall = "south"
+span = [10600, 13400]
+top = -3500
+material = "door"
+[[door]]
+wall = "north"
+span = [14800, 17800]
+top = -3500
+material = "door"
+[[door]]
+wall = "north"
+span = [29800, 31500]
+top = -3400
+material = "door"
+[[door]]
+wall = "east"
+span = [1900, 3700]
+top = -3400
+material = "door"
+
+[[object]]
+kind = "sofa"
+box = [3000, 7900, 6600, 8694]
+back = "north"
+[[object]]
+kind = "rug"
+box = [2400, 5200, 6300, 7700]
+[[object]]
+kind = "cylinder"
+at = [6912, 5526]
+radius = 320
+top = -700
+material = "wood"
+segments = 10
+[[painting]]
+wall = "north"
+span = [3400, 6200]
+y = [-4300, -2300]
+[[window]]
+wall = "west"
+kind = "arch"
+at = 6400
+half = 600
+sill = -1400
+height = 2800
+color = [0.60, 0.65, 0.75]
+strength = 0.22
+reach = 4000
+
+[[sconce]]
+wall = "south"
+at = [-3400, 9600]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "north"
+at = [-3400, 12400]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "south"
+at = [-3400, 20000]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "north"
+at = [-3400, 24000]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "south"
+at = [-3400, 28200]
+candles = 1
+strength = 0.42
+reach = 3400

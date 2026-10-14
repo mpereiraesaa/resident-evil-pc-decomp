@@ -1081,7 +1081,7 @@ Fifth pass, same correction: ROOM4040 (billiard table, bar, barrel), ROOM1130
 (tub, stool, stand), ROOM71C0 (kitchen table, counters), ROOM6190 (desk,
 chair), ROOM30E0 (trunk, desk) and ROOM5060 (counters, desk, cabinet). The
 first four moved to approved (approximate); ROOM30E0 and ROOM5060 keep a
-fragmenting typewriter and a room-splitting wall slab. After this pass 152
-rooms are approved and 168 need work; 23 override files cover 58 rooms. The
+fragmenting typewriter and a room-splitting wall slab. After this pass 154
+rooms are approved and 166 need work; 23 override files cover 60 rooms. The
 remaining needs-work rooms have no furniture slab left to scale: their
 defects are black or empty cameras, caves, stairs and scattered fixtures.

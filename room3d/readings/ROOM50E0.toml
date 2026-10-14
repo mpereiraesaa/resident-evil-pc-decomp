@@ -49,13 +49,10 @@ thickness = 100
 with = "typewriter"
 typewriter_at = [4000, 10200]
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [2900, 10200]
-radius = 180
-top = -2000
-bottom = -1400
-material = "glow"
-segments = 8
+base = -1400
+height = 650
 [[object]]
 kind = "chair"
 at = [4000, 8200]

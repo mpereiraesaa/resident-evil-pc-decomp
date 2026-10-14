@@ -62,13 +62,10 @@ top = -1100
 material = "wood"
 omit = ["bottom", "south", "east"]
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [8800, 2300]
-radius = 240
-top = -1900
-bottom = -1100
-material = "glow"
-segments = 8
+base = -1100
+height = 650
 [[object]]          # desk on the east wall
 kind = "table"
 box = [7110, 5166, 9954, 7128]

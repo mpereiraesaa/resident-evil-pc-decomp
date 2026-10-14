@@ -61,13 +61,10 @@ kind = "chair"
 at = [9400, 8600]
 facing = "north"
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [10200, 10400]
-radius = 180
-top = -2000
-bottom = -1400
-material = "glow"
-segments = 8
+base = -1400
+height = 650
 [[object]]          # cardboard boxes
 kind = "box"
 box = [6192, 144, 7452, 1500]

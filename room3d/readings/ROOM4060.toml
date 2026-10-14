@@ -70,7 +70,7 @@ kind = "wall_band"
 wall = "east"
 span = [6200, 8400]
 y = [-3600, -1600]
-material = "glass"
+material = "mirror"
 rail = false
 
 [[light]]

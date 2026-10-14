@@ -48,7 +48,7 @@ kind = "wall_band"
 wall = "east"
 span = [4600, 6200]
 y = [-3300, -300]
-material = "glass"
+material = "mirror"
 rail = false
 
 [[object]]          # pond

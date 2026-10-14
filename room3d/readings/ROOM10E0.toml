@@ -64,13 +64,10 @@ box = [3348, 2032, 5200, 3300]
 top = -1400
 thickness = 100
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [4200, 2500]
-radius = 150
-top = -1950
-bottom = -1400
-material = "glow"
-segments = 8
+base = -1400
+height = 650
 [[object]]          # bookshelf on the west wall
 kind = "box"
 box = [3924, 9200, 4500, 12500]

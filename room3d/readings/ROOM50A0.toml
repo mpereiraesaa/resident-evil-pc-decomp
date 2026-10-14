@@ -50,7 +50,7 @@ kind = "wall_band"
 wall = "west"
 span = [5800, 7400]
 y = [-2800, -1600]
-material = "glass"
+material = "mirror"
 rail = false
 [[object]]          # desk and chair
 kind = "table"

@@ -78,13 +78,10 @@ top = -1300
 material = "stone"
 segments = 10
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [10100, 2500]
-radius = 180
-top = -1700
-bottom = -1300
-material = "glow"
-segments = 8
+base = -1300
+height = 550
 [[object]]          # plant by the fireplace
 kind = "cylinder"
 at = [3900, 9900]

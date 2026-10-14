@@ -399,6 +399,9 @@ SOLIDS = {
     "glass_dark": {"kd": (0.18, 0.24, 0.24)},
     "rust": {"kd": (0.52, 0.28, 0.14)},
     "tank": {"kd": (0.72, 1.0, 0.80), "emissive": True},
+    "mirror": {"kd": (0.34, 0.38, 0.42)},
+    "shade": {"kd": (0.86, 0.80, 0.62), "emissive": True},
+    "armor": {"kd": (0.46, 0.48, 0.50)},
     "plastic": {"kd": (0.78, 0.78, 0.72)},
     "copper": {"kd": (0.48, 0.26, 0.16)},
     "lacquer": {"kd": (0.05, 0.05, 0.06)},
@@ -629,6 +632,11 @@ class Builder:
         for ch in self.reading.get("chandelier", []):
             for gx, gy, gz in self._globes(ch):
                 self.rig.add((gx, gy, gz), ch.get("color", (1.0, 0.92, 0.74)), ch.get("strength", 0.19), ch.get("reach", 6000))
+        for o in self.reading.get("object", []):
+            if o.get("kind") == "lamp":
+                x, z = o["at"]
+                self.rig.add((x, o.get("base", self.floor) - o.get("height", 650) + 100, z), (1.0, 0.92, 0.75),
+                             o.get("strength", 0.35), o.get("reach", 3500))
         for post in self.reading.get("lamp_post", []):
             self.rig.add((post["at"][0], post.get("top", -4600), post["at"][1]), (1.0, 0.92, 0.75), post.get("strength", 0.4), post.get("reach", 7000))
         for win in self.reading.get("window", []):
@@ -1227,6 +1235,27 @@ class Builder:
                 for ax0, ax1 in ((x0, x0 + t), (x1 - t, x1)):
                     if back in ("north", "south"):
                         mesh.box((ax0, seat_y - 250, z0), (ax1, seat_y, z1), wood)
+            elif kind == "lamp":
+                x, z = o["at"]
+                base = o.get("base", floor)
+                h = o.get("height", 650)
+                brass, shade = self.use("brass"), self.use("shade")
+                mesh.cylinder(x, z, 90, base - 40, base, brass, segments=8)
+                mesh.cylinder(x, z, 18, base - h + 180, base - 40, brass, segments=6, caps=False)
+                mesh.cylinder(x, z, o.get("shade_radius", 150), base - h, base - h + 200, shade, segments=10)
+            elif kind == "armor":
+                x, z = o["at"]
+                base = o.get("base", floor)
+                steel, iron = self.use("armor"), self.use("iron")
+                for dx in (-110, 110):
+                    mesh.box((x + dx - 70, base - 900, z - 70), (x + dx + 70, base, z + 70), steel, omit=("bottom",))
+                mesh.box((x - 230, base - 1550, z - 140), (x + 230, base - 900, z + 140), steel)
+                mesh.box((x - 330, base - 1500, z - 110), (x - 230, base - 1000, z + 110), steel)
+                mesh.box((x + 230, base - 1500, z - 110), (x + 330, base - 1000, z + 110), steel)
+                mesh.sphere((x, base - 1720, z), 150, steel, rings=4, segments=8)
+                if o.get("spear", True):
+                    mesh.box((x + 360, base - 2600, z - 20), (x + 400, base, z + 20), iron)
+                    mesh.box((x + 345, base - 2850, z - 40), (x + 415, base - 2600, z + 40), steel)
             elif kind == "rail":
                 (ax, az), (bx, bz) = o["from"], o["to"]
                 y = o.get("y", floor)

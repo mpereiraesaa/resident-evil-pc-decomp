@@ -55,6 +55,87 @@ box = [2236, 5868, 3222, 8766]
 top = -1200
 back = "south"
 
+[[object]]
+kind = "armor"
+at = [4200, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [4200, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [5500, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [5500, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [6800, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [6800, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [8100, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [8100, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [9400, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [9400, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [10700, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [10700, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [12000, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [12000, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [13300, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [13300, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [14600, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [14600, 9350]
+base = -400
+[[object]]
+kind = "armor"
+at = [15900, 5300]
+base = -400
+[[object]]
+kind = "armor"
+at = [15900, 9350]
+base = -400
+
 [[chandelier]]
 at = [9500, 7300]
 y = -3600

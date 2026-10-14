@@ -41,13 +41,10 @@ box = [4914, 2106, 7704, 3114]
 top = -1400
 thickness = 100
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [5600, 2600]
-radius = 220
-top = -2000
-bottom = -1400
-material = "glow"
-segments = 8
+base = -1400
+height = 650
 [[object]]
 kind = "chair"
 at = [6100, 3600]
@@ -77,7 +74,7 @@ kind = "wall_band"
 wall = "east"
 span = [3600, 6400]
 y = [-3400, -1900]
-material = "glass"
+material = "mirror"
 rail = false
 
 [[painting]]

@@ -70,7 +70,7 @@ kind = "wall_band"
 wall = "north"
 span = [5000, 7400]
 y = [-2900, -1500]
-material = "glass"
+material = "mirror"
 rail = false
 # Toilet and the closet block in the north-east corner
 [[object]]

@@ -47,13 +47,10 @@ thickness = 100
 with = "typewriter"
 typewriter_at = [9000, 1600]
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [7600, 1600]
-radius = 220
-top = -2100
-bottom = -1500
-material = "glow"
-segments = 8
+base = -1500
+height = 650
 [[object]]          # bookshelf
 kind = "box"
 box = [3636, 540, 5454, 3186]

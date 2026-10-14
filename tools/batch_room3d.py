@@ -306,6 +306,19 @@ def generate_mesh(room, path, recipe):
     }
 
 
+def inset_stride(payload):
+    """True when 16-bit rows are coherent at a 316-pixel stride, not 320."""
+    values = struct.unpack_from(f"<{316 * 236}H", payload)
+    def roughness(width):
+        total = 0
+        for row in range(1, 200, 3):
+            a = row * width
+            b = (row - 1) * width
+            total += sum(abs(((values[a + x] >> 5) & 31) - ((values[b + x] >> 5) & 31)) for x in range(0, 300, 3))
+        return total
+    return roughness(316) * 1.25 < roughness(320)
+
+
 def background(path):
     data = PakDecoder(path.read_bytes()).run()
     # PC background TIMs store payload bytes (not payload+12) at +8.
@@ -315,7 +328,13 @@ def background(path):
     w, h = struct.unpack_from("<HH", data, 16)
     if len(data) != 20 + w * h * 2:
         raise ValueError("Unexpected background payload size")
-    pixels = [rgb555(v[0])[:3] for v in struct.iter_unpack("<H", data[20:])]
+    if (w, h) == (320, 240) and inset_stride(data[20:]):
+        # Some PC backgrounds declare 320x240 but carry 316-pixel rows (the
+        # usual inset size) followed by padding; reading them at 320 shears
+        # the picture into diagonal streaks. The game is unaffected because it
+        # uploads the raw texture; detect the true stride by row coherence.
+        w, h = 316, 236
+    pixels = [rgb555(v[0])[:3] for v in struct.iter_unpack("<H", data[20:20 + w * h * 2])]
     image = Image.new("RGB", (w, h))
     image.putdata(pixels)
     if image.size == (316, 236):

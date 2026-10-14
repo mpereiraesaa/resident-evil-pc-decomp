@@ -343,6 +343,9 @@ SOLIDS = {
     "drum": {"kd": (0.62, 0.55, 0.22)},
     "velvet": {"kd": (0.45, 0.10, 0.12)},
     "soot": {"kd": (0.06, 0.05, 0.05)},
+    "water": {"kd": (0.18, 0.32, 0.28)},
+    "linen": {"kd": (0.62, 0.62, 0.56)},
+    "marble_dark": {"kd": (0.16, 0.15, 0.14)},
 }
 
 
@@ -354,6 +357,9 @@ class Palette:
         self.tints = {}
         self.extra = {}
         for name, value in reading.get("materials", {}).items():
+            if name in self.spec and "kd" in self.spec[name] and not isinstance(value, dict):
+                self.spec[name] = dict(self.spec[name], kd=tuple(value))
+                continue
             if isinstance(value, dict):
                 value = dict(value)
                 if "color" in value:

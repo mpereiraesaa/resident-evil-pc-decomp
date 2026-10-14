@@ -1,0 +1,84 @@
+# Mansion 1F save room: pale plaster over a wooden chair rail, dark planks,
+# cot against the north wall, desk with the typewriter, bookshelf on the east
+# wall and the item box by the south wall. From ROOM1000.RDT blocks.
+room = "ROOM1000"
+title = "1F save room"
+seed = 1000
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+dado = 1100
+dado_material = "plaster.low"
+chair_rail = true
+skirting = 160
+cell = 600
+
+[materials]
+plaster = [0.72, 0.70, 0.62]
+"plaster.low" = [0.58, 0.56, 0.48]
+"plaster.ceiling" = [0.40, 0.40, 0.36]
+planks = [0.26, 0.20, 0.13]
+wood = [0.40, 0.27, 0.15]
+door = [0.42, 0.28, 0.15]
+chest = [0.46, 0.16, 0.12]
+
+[lighting]
+ambient = [0.16, 0.16, 0.14]
+
+[[zone]]
+box = [1934, 1940, 8490, 10078]
+
+[[door]]
+wall = "south"
+span = [2700, 4400]
+top = -3300
+material = "door"
+
+[[object]]          # cot
+kind = "box"
+box = [4582, 8338, 8490, 10078]
+top = -620
+material = "linen"
+omit = ["bottom", "north"]
+[[object]]          # cot frame rail
+kind = "box"
+box = [4582, 8338, 8490, 8400]
+top = -1000
+bottom = -620
+material = "iron"
+[[object]]          # desk
+kind = "table"
+box = [1934, 8676, 3654, 10078]
+top = -1500
+thickness = 100
+[[object]]
+kind = "box"
+box = [2200, 9200, 3300, 9900]
+top = -1800
+bottom = -1500
+material = "enamel"
+[[object]]
+kind = "chair"
+at = [2900, 8100]
+facing = "south"
+[[object]]          # bookshelf on the east wall
+kind = "box"
+box = [7686, 2808, 8490, 7416]
+top = -2700
+material = "wood"
+omit = ["bottom", "east"]
+[[object]]          # item box
+kind = "chest"
+box = [6156, 1940, 8490, 3438]
+top = -1300
+back = "south"
+
+[[light]]
+at = [5200, -3200, 6000]
+color = [1.0, 0.98, 0.92]
+strength = 0.45
+reach = 5000

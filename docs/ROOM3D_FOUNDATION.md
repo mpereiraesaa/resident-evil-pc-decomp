@@ -1191,3 +1191,18 @@ write a reading (cameras, collision, floor-cast mask sprites) and writes the
 corrected originals with a pixel grid. The three hand-authored rooms are now
 readings (ROOM1180, ROOM10B0, ROOM1060) and reproduce the approved meshes;
 the per-room build scripts remain as reference.
+
+### Readings for every room
+
+`room3d/readings/` holds a reading for all 144 non-empty RDTs: stages 1 to 5
+read from their evidence (survey dump, gridded corrected views, collision,
+door records), and stages 6 and 7 cloned from 1 and 2 because their
+collision and cameras are identical. `tools/room3d_readings_batch.py` builds
+them all, scores each camera, installs the meshes into a mod tree with
+room-prefixed textures and, with `--runtime-exe`, loads every room in the
+Wine build through the generalised smoke test; it writes `report.md`.
+Caveats recorded while reading: ROOM30B0, ROOM30F0, ROOM50D0 and ROOM5150's
+backgrounds do not decode with the current PAK reader (their readings use the
+neighbouring rooms' finishes); single-view and lift rooms are shells only;
+the courtyard, falls and water gate are stone walks with water slabs rather
+than the original terrain.

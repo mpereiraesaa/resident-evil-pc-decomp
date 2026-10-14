@@ -144,10 +144,10 @@
       "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM10B0": {
-      "gameplay": "not_validated",
-      "note": "Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2.",
+      "gameplay": "validated",
+      "note": "Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T09:09:12+00:00"
+      "updated": "2026-10-14T10:24:51+00:00"
     },
     "ROOM10B1": {
       "gameplay": "not_validated",
@@ -300,10 +300,10 @@
       "updated": "2026-10-14T10:19:01+00:00"
     },
     "ROOM1180": {
-      "gameplay": "not_validated",
-      "note": "Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
+      "gameplay": "validated",
+      "note": "Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition, chest menu opened and closed); not a human play-test.",
       "review": "needs_work",
-      "updated": "2026-10-14T08:38:57+00:00"
+      "updated": "2026-10-14T10:24:51+00:00"
     },
     "ROOM1181": {
       "gameplay": "not_validated",

@@ -1042,3 +1042,17 @@ waterways (ROOM3070, ROOM30B0, ROOM30F0) that produce no usable geometry; and
 chandeliers or lamps scattering into fragments. The reusable manual fix remains
 scaling or adding a slab or block at the furniture's collision footprint; the
 other defects need geometry work beyond the retouch tools.
+
+### Runtime smoke tests on corrected meshes
+
+The root checkout's `tools/check_room3d_runtime.py` drives the Wine build with
+scripted input and only passes when the room mesh loads, a camera transition
+happens and, for ROOM1180, the chest menu opens and closes. On 2026-10-14 the
+replayed ROOM1180 correction (`build/room3d-overrides-proof/auto-b/corrected/`)
+passed in 49 s and the automatic ROOM10B0 export passed in 43 s
+(`build/room3d-runtime-corrected-1180/result.json`,
+`build/room3d-runtime-auto-10b0/result.json`, executable
+`build/windows-cross/residentevil.exe`). Both rooms are recorded as
+`validated` with the scope in the note: an automated smoke test, not a human
+play-test, with no visual, item or save assertions. No other room has a runtime
+scenario; `propagate` never copies gameplay status.

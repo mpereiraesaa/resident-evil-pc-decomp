@@ -25,27 +25,27 @@ wood = [0.60, 0.62, 0.64]
 
 [lighting]
 ambient = [0.20, 0.13, 0.06]
-"panel.mesh" = [0.50, 0.32, 0.14]
+"grating.cage" = { color = [0.80, 0.52, 0.22], tile = [900, 900] }
 wood = [0.70, 0.56, 0.14]
 "drum" = [0.80, 0.62, 0.14]
 
 [[zone]]            # south corridor west
 box = [1890, 2034, 14742, 4500]
 floor_along = "x"
-wall_material = "panel.mesh"
+wall_material = "grating.cage"
 [[zone]]            # west leg
 box = [4680, 4500, 7380, 11214]
-wall_material = "panel.mesh"
+wall_material = "grating.cage"
 [[zone]]            # north corridor
 box = [4680, 9306, 20736, 11214]
 floor_along = "x"
-wall_material = "panel.mesh"
+wall_material = "grating.cage"
 [[zone]]            # east leg
 box = [20736, 2880, 23274, 17172]
-wall_material = "panel.mesh"
+wall_material = "grating.cage"
 [[zone]]            # south corridor east
 box = [18864, 2034, 20736, 4500]
-wall_material = "panel.mesh"
+wall_material = "grating.cage"
 
 [[door]]
 wall = "south"

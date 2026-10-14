@@ -26,7 +26,6 @@ wood = [0.60, 0.62, 0.64]
 
 [lighting]
 ambient = [0.14, 0.16, 0.16]
-"glass.tank" = [0.70, 1.0, 0.80]
 
 [[zone]]            # south-west strip
 box = [2808, 6174, 6822, 11322]
@@ -65,7 +64,7 @@ at = [10800, 8800]
 radius = 700
 top = -3200
 bottom = -600
-material = "glass.tank"
+material = "tank"
 segments = 14
 [[object]]
 kind = "cylinder"
@@ -80,7 +79,7 @@ at = [4800, 20000]
 radius = 700
 top = -3200
 bottom = -600
-material = "glass.tank"
+material = "tank"
 segments = 14
 [[object]]
 kind = "cylinder"
@@ -95,7 +94,7 @@ at = [17000, 20000]
 radius = 700
 top = -3200
 bottom = -600
-material = "glass.tank"
+material = "tank"
 segments = 14
 # Machinery racks along the outer walls
 [[object]]

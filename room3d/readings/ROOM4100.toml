@@ -1,0 +1,85 @@
+# Arms storehouse: green plaster, strip lights, wooden crates and ammo boxes
+# on racks along the walls, the danger poster, the door on the east wall.
+room = "ROOM4100"
+title = "Arms storehouse"
+seed = 4160
+
+[shell]
+floor = 0
+ceiling = -4000
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+skirting = 120
+cell = 600
+
+[materials]
+plaster = { color = [0.64, 0.68, 0.52], stains = 0.4 }
+"plaster.dark" = [0.40, 0.42, 0.34]
+"stone.floor" = { color = [0.40, 0.42, 0.36], tile = [2000, 2000] }
+wood = [0.42, 0.26, 0.12]
+door = [0.56, 0.58, 0.54]
+crate = [0.44, 0.30, 0.16]
+"panel.yellow" = [0.70, 0.60, 0.14]
+
+[lighting]
+ambient = [0.16, 0.17, 0.13]
+
+[[zone]]
+box = [2556, 2358, 10008, 6716]
+
+[[door]]
+wall = "east"
+span = [1900, 4000]
+top = -3200
+material = "door"
+
+[[object]]          # rack along the north wall
+kind = "box"
+box = [2556, 5832, 10008, 6716]
+top = -1200
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [2700, 5900, 4200, 6700]
+top = -1900
+bottom = -1200
+material = "crate"
+[[object]]
+kind = "box"
+box = [5652, 5832, 6696, 8010]
+top = -1800
+material = "crate"
+omit = ["bottom"]
+[[object]]          # rack along the west wall
+kind = "box"
+box = [2556, 2358, 3300, 5832]
+top = -1200
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [2556, 2500, 3300, 4200]
+top = -1800
+bottom = -1200
+material = "crate"
+[[object]]          # rack along the south wall
+kind = "box"
+box = [6408, 1062, 10872, 1854]
+top = -1200
+material = "wood"
+omit = ["bottom", "south"]
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [4300, 5500]
+y = [-3100, -2200]
+material = "panel.yellow"
+rail = false
+
+[[light]]
+at = [6300, -3600, 4500]
+color = [0.95, 1.0, 0.95]
+strength = 0.5
+reach = 6000

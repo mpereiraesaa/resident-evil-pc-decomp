@@ -1,0 +1,79 @@
+# Security room: green-painted plaster over a darker lower band, a long
+# wooden table with chairs, a crate, a hanging lamp; the door on the west wall.
+room = "ROOM40F0"
+title = "Security room"
+seed = 4150
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1400
+dado_material = "plaster.low"
+chair_rail = false
+skirting = 120
+cell = 700
+
+[materials]
+plaster = { color = [0.66, 0.70, 0.54], stains = 0.4 }
+"plaster.low" = [0.40, 0.46, 0.36]
+"plaster.dark" = [0.40, 0.42, 0.34]
+"stone.floor" = { color = [0.40, 0.42, 0.36], tile = [2000, 2000] }
+wood = [0.42, 0.26, 0.12]
+door = [0.56, 0.58, 0.54]
+crate = [0.44, 0.30, 0.16]
+
+[lighting]
+ambient = [0.15, 0.16, 0.12]
+
+[[zone]]
+box = [2004, 2052, 10170, 14022]
+
+[[door]]
+wall = "west"
+span = [11300, 13600]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "table"
+box = [6390, 5796, 8604, 12726]
+top = -1500
+thickness = 120
+[[object]]
+kind = "chair"
+at = [6408, 6894]
+facing = "east"
+[[object]]
+kind = "chair"
+at = [6534, 11736]
+facing = "east"
+[[object]]
+kind = "chair"
+at = [8433, 9387]
+facing = "west"
+[[object]]
+kind = "box"
+box = [8964, 1098, 11178, 3204]
+top = -900
+material = "crate"
+omit = ["bottom", "south", "east"]
+[[object]]          # shelf on the east wall
+kind = "wall_band"
+wall = "east"
+span = [6000, 8500]
+y = [-2900, -2600]
+material = "wood"
+rail = false
+
+[[chandelier]]
+at = [6000, 8000]
+y = -3300
+radius = 200
+globes = 1
+globe_radius = 180
+ceiling = -4200
+strength = 0.45
+reach = 6000

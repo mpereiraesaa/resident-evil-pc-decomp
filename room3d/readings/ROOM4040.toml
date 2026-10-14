@@ -1,0 +1,196 @@
+# Guardhouse bar: a large L-shaped games room in plank walls; the bar with
+# its bottle shelf on the west, round tables with white cloths, stools, a
+# pool table in the east leg, the pinball machine, hanging lamps; red door.
+room = "ROOM4040"
+title = "Guardhouse bar"
+seed = 4040
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+skirting = 160
+cell = 900
+
+[materials]
+"planks.floor" = { color = [0.40, 0.26, 0.14], count = 8 }
+"planks.wall" = { color = [0.28, 0.18, 0.12], count = 14 }
+"planks.ceiling" = { color = [0.30, 0.19, 0.11], count = 10 }
+wood = [0.32, 0.20, 0.11]
+"door.red" = [0.46, 0.10, 0.10]
+linen = [0.86, 0.86, 0.82]
+velvet = [0.46, 0.16, 0.22]
+
+[lighting]
+ambient = [0.12, 0.10, 0.07]
+
+[[zone]]            # west hall
+box = [1995, 2167, 20124, 10252]
+floor_along = "x"
+[[zone]]            # middle
+box = [10658, 10252, 20124, 20718]
+[[zone]]            # east leg with the pool table
+box = [12816, 20718, 21970, 30751]
+
+[[door]]
+wall = "west"
+span = [10900, 15100]
+top = -3400
+material = "door.red"
+
+# Bar counter and bottle shelf on the west wall
+[[object]]
+kind = "box"
+box = [1995, 2167, 6397, 9180]
+top = -1100
+material = "wood"
+omit = ["bottom", "west", "south"]
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2400, 9000]
+y = [-3400, -1400]
+material = "wood"
+rail = false
+# Round tables
+[[object]]
+kind = "cylinder"
+at = [10703, 5568]
+radius = 1000
+top = -820
+bottom = -740
+material = "linen"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [10703, 5568]
+radius = 120
+top = -740
+material = "wood"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [17352, 10098]
+radius = 1400
+top = -820
+bottom = -740
+material = "linen"
+segments = 16
+[[object]]
+kind = "cylinder"
+at = [17352, 10098]
+radius = 140
+top = -740
+material = "wood"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [6147, 1863]
+radius = 1200
+top = -820
+bottom = -740
+material = "linen"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [6147, 1863]
+radius = 120
+top = -740
+material = "wood"
+segments = 8
+# Stools
+[[object]]
+kind = "cylinder"
+at = [8600, 7600]
+radius = 300
+top = -500
+material = "velvet"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [12800, 7600]
+radius = 300
+top = -500
+material = "velvet"
+segments = 8
+# Barrel and plant by the south wall
+[[object]]
+kind = "cylinder"
+at = [4100, 9700]
+radius = 480
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+[[object]]
+kind = "cylinder"
+at = [9000, 9800]
+radius = 320
+top = -900
+material = "wood"
+segments = 10
+# Pool table
+[[object]]
+kind = "box"
+box = [14814, 22698, 17843, 27147]
+top = -900
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [14614, 22498, 18043, 27347]
+top = -820
+bottom = -700
+material = "wood"
+# Pinball machine
+[[object]]
+kind = "box"
+box = [3987, 18710, 7264, 20888]
+top = -1300
+material = "iron"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [3987, 20400, 7264, 20888]
+top = -2600
+bottom = -1300
+material = "iron"
+
+[[chandelier]]
+at = [6000, 5500]
+y = -3600
+radius = 200
+globes = 1
+globe_radius = 200
+ceiling = -4800
+strength = 0.35
+reach = 6000
+[[chandelier]]
+at = [15000, 5500]
+y = -3600
+radius = 200
+globes = 1
+globe_radius = 200
+ceiling = -4800
+strength = 0.35
+reach = 6000
+[[chandelier]]
+at = [16000, 16000]
+y = -3600
+radius = 200
+globes = 1
+globe_radius = 200
+ceiling = -4800
+strength = 0.35
+reach = 6000
+[[chandelier]]
+at = [17000, 25000]
+y = -3600
+radius = 200
+globes = 1
+globe_radius = 200
+ceiling = -4800
+strength = 0.35
+reach = 6000

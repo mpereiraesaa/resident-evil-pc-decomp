@@ -1,0 +1,96 @@
+# Beehive passage: plank corridors overgrown with vines; an L of the main
+# corridor west-east along the south, a leg north on the east, the small
+# west pocket, with the keypad, the wasp nest and several doors.
+room = "ROOM4080"
+title = "Beehive passage"
+seed = 4080
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks.floor"
+wall_material = "planks.vine"
+ceiling_material = "planks.ceiling"
+chair_rail = true
+dado = 1300
+dado_material = "planks.dado"
+skirting = 160
+cell = 800
+
+[materials]
+"planks.floor" = { color = [0.36, 0.24, 0.13], count = 8 }
+"planks.vine" = { color = [0.22, 0.20, 0.12], count = 14 }
+"planks.dado" = { color = [0.22, 0.14, 0.10], count = 14 }
+"planks.ceiling" = { color = [0.22, 0.14, 0.09], count = 10 }
+wood = [0.40, 0.26, 0.13]
+door = [0.36, 0.24, 0.12]
+"door.red" = [0.42, 0.10, 0.10]
+
+[lighting]
+ambient = [0.09, 0.09, 0.06]
+
+[[zone]]            # south corridor
+box = [2538, 2016, 28386, 6030]
+floor_along = "x"
+[[zone]]            # west leg north
+box = [2538, 6030, 6156, 14022]
+[[zone]]            # east leg north
+box = [14688, 6030, 18594, 22536]
+
+[[door]]
+wall = "west"
+span = [2200, 4300]
+top = -3300
+material = "door"
+[[door]]
+wall = "west"
+span = [9400, 11200]
+top = -3300
+material = "door"
+[[door]]
+wall = "west"
+span = [6500, 8500]
+top = -3300
+material = "door.red"
+[[door]]
+wall = "east"
+span = [2100, 6030]
+top = -3600
+material = "door"
+
+[[sconce]]
+wall = "south"
+at = [-3300, 8000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3300, 20000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3300, 10000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3300, 10000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3300, 18000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3300, 11000]
+candles = 1
+strength = 0.42
+reach = 3600

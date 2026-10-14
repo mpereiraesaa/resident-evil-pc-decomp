@@ -1,0 +1,65 @@
+# Drug storehouse: a small plank room with a shelf unit of bottles along the
+# west wall, a double sink on a steel frame south, a cabinet north-east and
+# the door on the east wall.
+room = "ROOM4090"
+title = "Drug storehouse"
+seed = 4090
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+skirting = 120
+cell = 600
+
+[materials]
+"planks.floor" = { color = [0.36, 0.24, 0.13], count = 8 }
+"planks.wall" = { color = [0.26, 0.17, 0.11], count = 14 }
+"planks.ceiling" = { color = [0.22, 0.14, 0.09], count = 10 }
+wood = [0.44, 0.30, 0.15]
+door = [0.36, 0.24, 0.12]
+
+[lighting]
+ambient = [0.13, 0.11, 0.08]
+
+[[zone]]
+box = [2736, 1944, 10044, 6786]
+
+[[door]]
+wall = "east"
+span = [2300, 4000]
+top = -3200
+material = "door"
+
+[[object]]          # shelves of bottles on the west wall
+kind = "box"
+box = [1098, 1098, 3024, 7308]
+top = -2600
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]          # double sink
+kind = "box"
+box = [4302, 1188, 7542, 2862]
+top = -1000
+material = "steel"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [4400, 1300, 7440, 2760]
+top = -1150
+bottom = -1000
+material = "paper"
+[[object]]          # cabinet north-east
+kind = "box"
+box = [4554, 6264, 10548, 8082]
+top = -1300
+material = "wood"
+omit = ["bottom", "north"]
+
+[[light]]
+at = [6000, -3200, 4200]
+color = [1.0, 0.95, 0.80]
+strength = 0.45
+reach = 4500

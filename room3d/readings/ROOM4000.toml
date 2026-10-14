@@ -1,0 +1,98 @@
+# Guardhouse entry: vertical plank walls with a chair rail, orange planks
+# underfoot, an L of corridor from the main doors (west) past the lift
+# cabinet, with the red double doors at the east end and doors north.
+room = "ROOM4000"
+title = "Guardhouse entry"
+seed = 4000
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+chair_rail = true
+dado = 1400
+dado_material = "planks.dado"
+skirting = 160
+cell = 800
+
+[materials]
+"planks.floor" = { color = [0.56, 0.34, 0.16], count = 8 }
+"planks.wall" = { color = [0.30, 0.20, 0.13], count = 14 }
+"planks.dado" = { color = [0.26, 0.17, 0.11], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
+wood = [0.50, 0.32, 0.16]
+door = [0.34, 0.22, 0.12]
+"double_door.red" = [0.46, 0.08, 0.08]
+"door.green" = [0.26, 0.34, 0.26]
+
+[lighting]
+ambient = [0.13, 0.11, 0.08]
+
+[[zone]]            # north corridor from the main door
+box = [1968, 10944, 5094, 17928]
+[[zone]]            # east-west corridor
+box = [5094, 10926, 21366, 14328]
+floor_along = "x"
+[[zone]]            # leg down to the lift cabinet
+box = [14724, 2034, 17604, 10926]
+
+[[door]]
+wall = "west"
+span = [14400, 17600]
+top = -3400
+material = "door"
+[[door]]
+wall = "north"
+span = [11300, 14800]
+top = -3600
+material = "double_door.red"
+frame_depth = 160
+[[door]]
+wall = "north"
+span = [1968, 5094]
+top = -3400
+material = "door.green"
+[[door]]
+wall = "east"
+span = [11100, 14300]
+top = -3400
+material = "door"
+[[door]]
+wall = "south"
+span = [14724, 17604]
+top = -3600
+material = "door"
+
+[[object]]          # bench in the north corridor
+kind = "box"
+box = [972, 15642, 3042, 18828]
+top = -500
+material = "wood"
+omit = ["bottom", "west", "north"]
+
+[[sconce]]
+wall = "west"
+at = [-3400, 13000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3400, 8000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3400, 17000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3400, 6000]
+candles = 1
+strength = 0.42
+reach = 3600

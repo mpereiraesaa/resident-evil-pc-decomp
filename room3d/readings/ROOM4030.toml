@@ -1,0 +1,88 @@
+# Guardhouse save room: plank walls, a cot against the east wall, a desk
+# with the typewriter and lamp by the north wall, a bookshelf in the north-
+# east, a chest by the west wall, a dresser south-west; door on the south.
+room = "ROOM4030"
+title = "Guardhouse save room"
+seed = 4030
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+skirting = 160
+cell = 600
+
+[materials]
+"planks.floor" = { color = [0.46, 0.28, 0.14], count = 8 }
+"planks.wall" = { color = [0.28, 0.18, 0.12], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
+wood = [0.36, 0.24, 0.12]
+door = [0.36, 0.24, 0.12]
+linen = [0.46, 0.52, 0.52]
+chest = [0.22, 0.14, 0.09]
+
+[lighting]
+ambient = [0.13, 0.11, 0.08]
+
+[[zone]]
+box = [1494, 1836, 10512, 9648]
+
+[[door]]
+wall = "south"
+span = [7400, 9800]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "bed"
+box = [9054, 4932, 12834, 7218]
+head = "east"
+[[object]]
+kind = "table"
+box = [6912, 756, 10512, 2400]
+top = -1500
+thickness = 100
+with = "typewriter"
+typewriter_at = [9000, 1600]
+[[object]]
+kind = "cylinder"
+at = [7600, 1600]
+radius = 220
+top = -2100
+bottom = -1500
+material = "glow"
+segments = 8
+[[object]]          # bookshelf
+kind = "box"
+box = [3636, 540, 5454, 3186]
+top = -2600
+material = "wood"
+omit = ["bottom", "south"]
+[[object]]          # chest
+kind = "chest"
+box = [1494, 5382, 2718, 8208]
+top = -1200
+back = "west"
+[[object]]          # dresser
+kind = "box"
+box = [1494, 1836, 2718, 4600]
+top = -1100
+material = "wood"
+omit = ["bottom", "west", "south"]
+
+[[chandelier]]
+at = [5000, 4000]
+y = -3400
+radius = 260
+globes = 3
+globe_radius = 80
+ceiling = -4400
+strength = 0.35
+reach = 5000
+[[light]]
+at = [7600, -2100, 1600]
+color = [1.0, 0.95, 0.80]
+strength = 0.45
+reach = 4500

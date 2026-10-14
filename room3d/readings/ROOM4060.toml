@@ -1,0 +1,80 @@
+# Room 002: plank bedroom with a bed in the south-west, a desk by the west
+# wall, a dresser north, a wardrobe in the north-east, the bathroom door
+# west and the room door on the north-west; a curtained window east.
+room = "ROOM4060"
+title = "Room 002"
+seed = 4060
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+skirting = 160
+cell = 700
+
+[materials]
+"planks.floor" = { color = [0.46, 0.28, 0.14], count = 8 }
+"planks.wall" = { color = [0.28, 0.18, 0.12], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
+wood = [0.38, 0.24, 0.12]
+door = [0.36, 0.24, 0.12]
+linen = [0.50, 0.42, 0.30]
+carpet = { color = [0.56, 0.40, 0.26], motif = [0.66, 0.52, 0.34] }
+glass = [0.62, 0.62, 0.56]
+
+[lighting]
+ambient = [0.12, 0.10, 0.07]
+
+[[zone]]
+box = [2034, 1908, 14832, 10458]
+[[zone]]
+box = [9594, 4050, 14832, 10458]
+
+[[door]]
+wall = "west"
+span = [2000, 3800]
+top = -3300
+material = "door"
+[[door]]
+wall = "south"
+span = [2500, 4100]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "bed"
+box = [11574, 8928, 15984, 11556]
+head = "east"
+[[object]]
+kind = "table"
+box = [10152, 1908, 11916, 2898]
+top = -1400
+thickness = 100
+[[object]]
+kind = "chair"
+at = [11000, 3600]
+facing = "south"
+[[object]]          # wardrobe
+kind = "box"
+box = [12726, 864, 16002, 5742]
+top = -2800
+material = "wood"
+omit = ["bottom", "east", "south"]
+[[object]]
+kind = "rug"
+box = [3000, 4600, 9000, 9600]
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [6200, 8400]
+y = [-3600, -1600]
+material = "glass"
+rail = false
+
+[[light]]
+at = [8000, -3200, 6500]
+color = [1.0, 0.92, 0.72]
+strength = 0.45
+reach = 5500

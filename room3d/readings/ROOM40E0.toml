@@ -1,0 +1,122 @@
+# Water tank: a concrete hall with the sunken tank in the centre, railed
+# walkways around it, strip lights on the walls, doors on the east and west.
+room = "ROOM40E0"
+title = "Water tank"
+seed = 4140
+
+[shell]
+floor = 0
+ceiling = -5400
+floor_material = "stone.concrete"
+wall_material = "stone.concrete"
+ceiling_material = "stone.dark"
+skirting = 0
+trim = "concrete"
+cell = 1200
+
+[materials]
+"stone.concrete" = { color = [0.56, 0.58, 0.54], tile = [2400, 2400] }
+"stone.dark" = { color = [0.20, 0.20, 0.20], tile = [2400, 2400] }
+stone = [0.52, 0.54, 0.50]
+"door.metal" = [0.46, 0.52, 0.48]
+wood = [0.62, 0.64, 0.64]
+
+[lighting]
+ambient = [0.18, 0.18, 0.17]
+
+[[zone]]            # south walk
+box = [2052, 2124, 30330, 8172]
+floor_along = "x"
+[[zone]]            # west walk
+box = [2052, 8172, 6228, 24714]
+[[zone]]            # east walk
+box = [21690, 8172, 30330, 24714]
+[[zone]]            # north walk
+box = [2052, 24714, 30330, 30708]
+floor_along = "x"
+[[zone]]            # the tank
+box = [6228, 8172, 21690, 24714]
+open_floor = true
+
+[[slab]]            # water surface far below
+box = [6228, 8172, 21690, 24714]
+top = 6000
+thickness = 200
+top_material = "water"
+bottom_material = "water"
+[[object]]
+kind = "rail"
+from = [6300, 8300]
+to = [21600, 8300]
+height = 1000
+spacing = 1200
+material = "steel"
+[[object]]
+kind = "rail"
+from = [6300, 24600]
+to = [21600, 24600]
+height = 1000
+spacing = 1200
+material = "steel"
+[[object]]
+kind = "rail"
+from = [6300, 8300]
+to = [6300, 24600]
+height = 1000
+spacing = 1200
+material = "steel"
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [21600, 8300]
+to = [21600, 24600]
+height = 1000
+spacing = 1200
+material = "steel"
+newels = [false, false]
+
+[[door]]
+wall = "east"
+span = [15100, 19900]
+top = -3800
+material = "door.metal"
+frame = "concrete"
+[[door]]
+wall = "east"
+span = [27200, 30400]
+top = -3800
+material = "door.metal"
+frame = "concrete"
+[[door]]
+wall = "west"
+span = [25400, 28400]
+top = -3600
+material = "door.metal"
+frame = "concrete"
+[[door]]
+wall = "west"
+span = [22400, 24900]
+top = -3600
+material = "door.metal"
+frame = "concrete"
+
+[[light]]
+at = [16000, -4800, 5000]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 10000
+[[light]]
+at = [16000, -4800, 27500]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 10000
+[[light]]
+at = [4000, -4800, 16000]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 8000
+[[light]]
+at = [26000, -4800, 16000]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 8000

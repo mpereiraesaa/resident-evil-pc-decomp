@@ -1,0 +1,87 @@
+# Water tank entry: raw concrete corridors; a long passage along the south
+# with the ladder up at the west end, then north along the east to the
+# railed stair that drops to the tank doors.
+room = "ROOM40D0"
+title = "Water tank entry"
+seed = 4130
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.concrete"
+wall_material = "stone.concrete"
+ceiling_material = "stone.concrete"
+skirting = 0
+trim = "concrete"
+cell = 900
+
+[materials]
+"stone.concrete" = { color = [0.46, 0.46, 0.42], tile = [2400, 2400] }
+stone = [0.48, 0.48, 0.44]
+"door.metal" = [0.46, 0.52, 0.48]
+double_door = [0.50, 0.56, 0.52]
+wood = [0.60, 0.60, 0.58]
+
+[lighting]
+ambient = [0.14, 0.14, 0.13]
+
+[[zone]]            # south passage
+box = [2124, 1926, 28458, 5024]
+floor_along = "x"
+[[zone]]            # east leg north
+box = [25476, 5024, 28458, 22032]
+[[zone]]            # north passage west
+box = [972, 18952, 25476, 22032]
+floor_along = "x"
+[[zone]]            # pocket at the west end
+box = [972, 22032, 5040, 29232]
+
+[[door]]
+wall = "north"
+span = [1400, 5000]
+top = -3600
+material = "double_door"
+frame = "concrete"
+frame_depth = 160
+[[door]]
+wall = "south"
+span = [15200, 17100]
+top = -3400
+material = "door.metal"
+frame = "concrete"
+
+[[object]]          # stair from the north passage down to the pocket (railed)
+kind = "rail"
+from = [1200, 22100]
+to = [4800, 22100]
+y = 0
+height = 900
+spacing = 600
+material = "steel"
+[[object]]          # cabinet in the east leg
+kind = "box"
+box = [20682, 8964, 27072, 14652]
+top = -1400
+material = "concrete"
+omit = ["bottom", "east"]
+
+[[light]]
+at = [14000, -3800, 3500]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 8000
+[[light]]
+at = [27000, -3800, 13000]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 8000
+[[light]]
+at = [12000, -3800, 20500]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 8000
+[[light]]
+at = [3000, -3800, 25500]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 6000

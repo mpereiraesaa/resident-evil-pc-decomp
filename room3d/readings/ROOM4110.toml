@@ -1,0 +1,77 @@
+# Control room: green plaster, the control console with its red valve wheel
+# along the east wall, a glass specimen case in the north-east, a cabinet
+# west, the door on the south-east wall.
+room = "ROOM4110"
+title = "Control room"
+seed = 4170
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1300
+dado_material = "plaster.low"
+chair_rail = false
+skirting = 120
+cell = 600
+
+[materials]
+plaster = { color = [0.66, 0.70, 0.54], stains = 0.4 }
+"plaster.low" = [0.42, 0.48, 0.38]
+"plaster.dark" = [0.40, 0.42, 0.34]
+"stone.floor" = { color = [0.42, 0.44, 0.36], tile = [2000, 2000] }
+wood = [0.30, 0.22, 0.16]
+door = [0.56, 0.58, 0.54]
+
+[lighting]
+ambient = [0.15, 0.16, 0.12]
+
+[[zone]]
+box = [2040, 2178, 8838, 12168]
+[[zone]]
+box = [8838, 7434, 10404, 12168]
+
+[[door]]
+wall = "east"
+span = [8900, 12168]
+top = -3300
+material = "door"
+
+[[object]]          # console
+kind = "box"
+box = [8568, 846, 10422, 7434]
+top = -1300
+material = "iron"
+omit = ["bottom", "east", "south"]
+[[object]]
+kind = "box"
+box = [9800, 846, 10422, 7434]
+top = -2400
+bottom = -1300
+material = "iron"
+[[object]]          # specimen case
+kind = "box"
+box = [936, 9738, 2700, 12906]
+top = -1200
+material = "iron"
+omit = ["bottom", "west", "north"]
+[[object]]
+kind = "box"
+box = [1000, 9800, 2640, 12840]
+top = -2000
+bottom = -1200
+material = "glass_dark"
+[[object]]          # cabinet west
+kind = "box"
+box = [864, 882, 3582, 7416]
+top = -1300
+material = "steel"
+omit = ["bottom", "west", "south"]
+
+[[light]]
+at = [6000, -3600, 7000]
+color = [0.95, 1.0, 0.95]
+strength = 0.5
+reach = 6000

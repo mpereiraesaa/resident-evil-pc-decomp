@@ -1,0 +1,90 @@
+# Guardhouse centre passage: plank corridor with roots breaking through,
+# an L from the entry (south) along the west, then east along the north with
+# doors 002 and others.
+room = "ROOM4050"
+title = "GH centre passage"
+seed = 4050
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+chair_rail = true
+dado = 1300
+dado_material = "planks.dado"
+skirting = 160
+cell = 800
+
+[materials]
+"planks.floor" = { color = [0.50, 0.30, 0.15], count = 8 }
+"planks.wall" = { color = [0.30, 0.20, 0.13], count = 14 }
+"planks.dado" = { color = [0.26, 0.17, 0.11], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
+wood = [0.46, 0.30, 0.15]
+door = [0.36, 0.24, 0.12]
+"door.green" = [0.40, 0.42, 0.30]
+
+[lighting]
+ambient = [0.12, 0.10, 0.07]
+
+[[zone]]            # west leg
+box = [1926, 2178, 23742, 4968]
+floor_along = "x"
+[[zone]]            # east leg north
+box = [20772, 4968, 23742, 24174]
+[[zone]]            # pocket at the north end
+box = [22608, 24174, 25164, 28854]
+
+[[door]]
+wall = "west"
+span = [2300, 4600]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [7300, 10400]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [19800, 22300]
+top = -3300
+material = "door.green"
+[[door]]
+wall = "north"
+span = [22800, 24900]
+top = -3300
+material = "door"
+
+[[sconce]]
+wall = "north"
+at = [-3300, 6000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3300, 14000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3300, 9000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3300, 17000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3300, 26000]
+candles = 1
+strength = 0.42
+reach = 3600

@@ -1,0 +1,79 @@
+# Plant 42 room: a panelled hall with square relief tiles on every wall, a
+# fireplace on the north wall, a big patterned rug on dark planks, roots
+# across the ceiling, doors south-west and north-east; the 003 corridor
+# camera looks in from the east.
+room = "ROOM40C0"
+title = "Plant 42 room"
+seed = 4120
+
+[shell]
+floor = 0
+ceiling = -5200
+floor_material = "planks.floor"
+wall_material = "coffer.wall"
+ceiling_material = "plaster.dark"
+skirting = 200
+cell = 800
+
+[materials]
+"planks.floor" = { color = [0.30, 0.19, 0.11], count = 8 }
+"coffer.wall" = { color = [0.56, 0.54, 0.46], tile = [1200, 1200] }
+"plaster.dark" = [0.18, 0.14, 0.11]
+wood = [0.30, 0.19, 0.10]
+door = [0.34, 0.22, 0.12]
+stone = [0.40, 0.36, 0.30]
+carpet = { color = [0.36, 0.12, 0.12], motif = [0.60, 0.42, 0.36] }
+
+[lighting]
+ambient = [0.12, 0.11, 0.09]
+
+[[zone]]
+box = [1998, 1998, 19584, 19314]
+
+[[door]]
+wall = "west"
+span = [8000, 11900]
+top = -3600
+material = "door"
+frame_depth = 160
+[[door]]
+wall = "north"
+span = [9162, 12474]
+top = -3600
+material = "door"
+frame_depth = 160
+
+[[object]]
+kind = "fireplace"
+wall = "north"
+span = [5000, 7200]
+depth = 700
+mantel = -2200
+opening = [1000, 1200]
+[[object]]
+kind = "rug"
+box = [4000, 5000, 17500, 16500]
+
+[[sconce]]
+wall = "east"
+at = [-3400, 6000]
+candles = 1
+strength = 0.4
+reach = 4000
+[[sconce]]
+wall = "east"
+at = [-3400, 14000]
+candles = 1
+strength = 0.4
+reach = 4000
+[[sconce]]
+wall = "west"
+at = [-3400, 15000]
+candles = 1
+strength = 0.4
+reach = 4000
+[[light]]
+at = [10000, -4200, 10000]
+color = [0.95, 0.95, 0.85]
+strength = 0.3
+reach = 9000

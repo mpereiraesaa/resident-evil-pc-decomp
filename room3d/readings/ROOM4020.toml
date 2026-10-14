@@ -1,0 +1,79 @@
+# 001 bathroom: plank walls, a green tub along the east wall with a towel
+# rail, a toilet in the south-west corner, a shelf, a small rug; door north.
+room = "ROOM4020"
+title = "001 bathroom"
+seed = 4020
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+dado = 1100
+dado_material = "plaster.stain"
+chair_rail = true
+skirting = 120
+cell = 600
+
+[materials]
+"planks.floor" = { color = [0.40, 0.26, 0.14], count = 8 }
+"planks.wall" = { color = [0.30, 0.20, 0.13], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
+"plaster.stain" = { color = [0.44, 0.40, 0.22], stains = 0.6 }
+wood = [0.32, 0.20, 0.11]
+door = [0.36, 0.24, 0.12]
+carpet = { color = [0.44, 0.30, 0.20], motif = [0.56, 0.46, 0.30] }
+
+[lighting]
+ambient = [0.12, 0.11, 0.08]
+
+[[zone]]
+box = [1764, 2250, 7074, 8136]
+
+[[door]]
+wall = "north"
+span = [3600, 5000]
+top = -3200
+material = "door"
+
+[[object]]          # tub
+kind = "box"
+box = [5868, 7128, 8838, 9198]
+top = -700
+material = "porcelain"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [5868, 7128, 8838, 9198]
+top = -720
+bottom = -680
+material = "water"
+[[object]]          # tub against the east wall
+kind = "box"
+box = [1026, 6750, 3582, 8676]
+top = -600
+material = "porcelain"
+omit = ["bottom"]
+[[object]]          # toilet
+kind = "box"
+box = [1764, 1242, 3420, 5004]
+top = -500
+material = "porcelain"
+omit = ["bottom", "west", "south"]
+[[object]]
+kind = "rug"
+box = [3800, 3400, 5600, 6200]
+[[object]]          # shelf
+kind = "wall_band"
+wall = "east"
+span = [3200, 5800]
+y = [-2400, -2200]
+material = "wood"
+rail = false
+
+[[light]]
+at = [4400, -3100, 5000]
+color = [1.0, 0.95, 0.80]
+strength = 0.45
+reach = 4500

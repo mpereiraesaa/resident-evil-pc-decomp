@@ -1,0 +1,66 @@
+# 003 bathroom: tub on the north side, toilet and basin in the north-east,
+# a rug; door on the west wall.
+room = "ROOM40B0"
+title = "003 bathroom"
+seed = 4110
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "planks.floor"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+dado = 1100
+dado_material = "plaster.stain"
+chair_rail = true
+skirting = 120
+cell = 600
+
+[materials]
+"planks.floor" = { color = [0.40, 0.26, 0.14], count = 8 }
+"planks.wall" = { color = [0.30, 0.20, 0.13], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
+"plaster.stain" = { color = [0.44, 0.40, 0.22], stains = 0.6 }
+wood = [0.32, 0.20, 0.11]
+door = [0.36, 0.24, 0.12]
+carpet = { color = [0.44, 0.30, 0.20], motif = [0.56, 0.46, 0.30] }
+
+[lighting]
+ambient = [0.12, 0.11, 0.08]
+
+[[zone]]
+box = [2178, 5742, 8028, 10476]
+
+[[door]]
+wall = "west"
+span = [5742, 7400]
+top = -3200
+material = "door"
+
+[[object]]          # tub
+kind = "box"
+box = [666, 9036, 4662, 11610]
+top = -600
+material = "porcelain"
+omit = ["bottom", "north", "west"]
+[[object]]          # toilet
+kind = "box"
+box = [6750, 9072, 9234, 11466]
+top = -500
+material = "porcelain"
+omit = ["bottom", "north", "east"]
+[[object]]          # basin
+kind = "box"
+box = [7272, 4860, 9486, 7236]
+top = -900
+material = "porcelain"
+omit = ["bottom", "east"]
+[[object]]
+kind = "rug"
+box = [3200, 6600, 6200, 8800]
+
+[[light]]
+at = [5000, -3100, 8000]
+color = [1.0, 0.95, 0.80]
+strength = 0.45
+reach = 4500

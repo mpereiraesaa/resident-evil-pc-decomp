@@ -346,6 +346,9 @@ SOLIDS = {
     "water": {"kd": (0.18, 0.32, 0.28)},
     "night": {"kd": (0.05, 0.08, 0.06), "emissive": True},
     "hedge": {"kd": (0.16, 0.26, 0.12)},
+    "porcelain": {"kd": (0.52, 0.58, 0.46)},
+    "steel": {"kd": (0.60, 0.62, 0.64)},
+    "glass_dark": {"kd": (0.18, 0.24, 0.24)},
     "concrete": {"kd": (0.46, 0.47, 0.46)},
     "copper": {"kd": (0.48, 0.26, 0.16)},
     "lacquer": {"kd": (0.05, 0.05, 0.06)},
@@ -1150,6 +1153,21 @@ class Builder:
                 y = o.get("y", floor)
                 balustrade(mesh, (ax, y, az), (bx, y, bz), height=o.get("height", 950), spacing=o.get("spacing", 420),
                            newels=tuple(o.get("newels", (True, True))), material=self.use(o.get("material", "wood")))
+            elif kind == "bed":
+                x0, z0, x1, z1 = o["box"]
+                top = o.get("top", -620)
+                head = o.get("head", "north")
+                linen, frame = self.use(o.get("material", "linen")), self.use(o.get("frame", "iron"))
+                mesh.box((x0, top, z0), (x1, floor, z1), linen, omit=("bottom", head))
+                hb = o.get("headboard", -1100)
+                if head == "north":
+                    mesh.box((x0, hb, z1 - 60), (x1, top, z1), frame)
+                elif head == "south":
+                    mesh.box((x0, hb, z0), (x1, top, z0 + 60), frame)
+                elif head == "west":
+                    mesh.box((x0, hb, z0), (x0 + 60, top, z1), frame)
+                else:
+                    mesh.box((x1 - 60, hb, z0), (x1, top, z1), frame)
             elif kind == "canopy_bed":
                 x0, z0, x1, z1 = o["box"]
                 top = o.get("top", -700)

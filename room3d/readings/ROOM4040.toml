@@ -35,6 +35,10 @@ box = [1995, 10252, 8341, 27468]
 box = [10798, 10252, 20124, 20718]
 [[zone]]            # east leg with the pool table
 box = [12816, 20718, 21970, 30751]
+[[zone]]            # opening between the west room and the pool table (camera 3)
+box = [8341, 20718, 12816, 27468]
+[[zone]]            # niche with the pinball machine (camera 6)
+box = [10600, 27468, 12816, 30751]
 
 [[door]]
 wall = "west"
@@ -146,19 +150,24 @@ box = [14614, 22498, 18043, 27347]
 top = -820
 bottom = -700
 material = "wood"
-# Pinball machine
+# Pinball machine in its niche, and a couch in the west room
 [[object]]
 kind = "box"
-box = [3987, 18710, 7264, 20888]
-top = -1300
+box = [11000, 28200, 12400, 30751]
+top = -1100
 material = "iron"
 omit = ["bottom"]
 [[object]]
 kind = "box"
-box = [3987, 20400, 7264, 20888]
-top = -2600
-bottom = -1300
+box = [11000, 30300, 12400, 30751]
+top = -2300
+bottom = -1100
 material = "iron"
+[[object]]
+kind = "sofa"
+box = [3987, 18710, 7264, 20888]
+back = "west"
+material = "velvet"
 
 [[chandelier]]
 at = [6000, 5500]

@@ -93,30 +93,53 @@ def transforms(edits, groups):
     return result
 
 
-def write_mesh(mesh, edits, target):
+def apply_edits(mesh, edits):
+    """Return a new mesh with transforms applied and hidden groups removed.
+
+    Every face receives its own vertices, as the batcher's bake does, so a
+    transform on one group can never move a vertex that another group shares.
+    The input mesh is left untouched.
+    """
     vertices, uvs, faces, libraries = mesh
     operations = transforms(edits, catalog(mesh))
-    lines = ["# Manual retouch; original projected textures retained."]
-    lines.extend("mtllib " + name for name in libraries)
-    lines.extend("vt " + " ".join(uv) for uv in uvs)
-    count = 0
+    new_vertices, new_faces = [], []
     for group, material, refs in faces:
         operation = operations.get(group)
         if operation is not None and operation["hide"]:
             continue
-        lines.extend(["g " + group, "usemtl " + material])
         mapped = []
         for vi, ti in refs:
             vertex = vertices[vi]
-            point = np.array(vertex[:3])
+            point = np.array(vertex[:3], dtype=float)
             if operation is not None:
                 point = (operation["rotation"] @ ((point - operation["pivot"]) * operation["scale"])
                          + operation["pivot"] + operation["translate"])
-            lines.append("v " + " ".join(format(float(v), ".12g") for v in [*point, *vertex[3:]]))
+            new_vertices.append([float(v) for v in point] + list(vertex[3:]))
+            mapped.append((len(new_vertices) - 1, ti))
+        new_faces.append((group, material, mapped))
+    return new_vertices, list(uvs), new_faces, list(libraries)
+
+
+def serialize(mesh, comment="Manual retouch; original projected textures retained."):
+    """OBJ text in the batcher's one-group-per-face layout."""
+    vertices, uvs, faces, libraries = mesh
+    lines = ["# " + comment]
+    lines.extend("mtllib " + name for name in libraries)
+    lines.extend("vt " + " ".join(uv) for uv in uvs)
+    count = 0
+    for group, material, refs in faces:
+        lines.extend(["g " + group, "usemtl " + material])
+        mapped = []
+        for vi, ti in refs:
+            lines.append("v " + " ".join(format(float(v), ".12g") for v in vertices[vi]))
             count += 1
             mapped.append(str(count) + (f"/{ti + 1}" if ti is not None else ""))
         lines.append("f " + " ".join(mapped))
-    target.write_text("\n".join(lines) + "\n")
+    return "\n".join(lines) + "\n"
+
+
+def write_mesh(mesh, edits, target):
+    target.write_text(serialize(apply_edits(mesh, edits)))
 
 
 def local_file(root, name):
@@ -194,9 +217,8 @@ def reproject_appearance(room, out, survey, segmentation=None, depth=None):
     (out / 'reprojection.json').write_text(json.dumps(report, indent=2) + '\n')
 
 
-def run(room, edits, out, reproject=False, segmentation=None, depth=None, additions=None):
-    from room3d_additions import LIBRARY, append_objects, material_library_text
-
+def prepare(room, out):
+    """Validate the output location and gather the source export, dependencies and context."""
     if out.exists():
         raise ValueError("Choose a new output directory to preserve previous variants")
     if out.resolve().is_relative_to(room.resolve()):
@@ -213,11 +235,17 @@ def run(room, edits, out, reproject=False, segmentation=None, depth=None, additi
             if words and words[0] == "map_Kd":
                 dependencies.add(local_file(room, " ".join(words[1:])))
     survey = json.loads((room / "survey.json").read_text())
-    context = appearance_context(room)
+    return mesh, dependencies, survey, appearance_context(room)
+
+
+def materialize(room, out, mesh, generated, dependencies, context, survey, record,
+                reproject=False, segmentation=None, depth=None):
+    """Write an edited mesh state as a complete, independently editable room variant."""
+    from room3d_additions import LIBRARY, material_library_text
+
     if reproject and context is None:
         raise ValueError('Reprojection needs original or inherited appearance semantics')
-    mesh, generated = append_objects(mesh, [] if additions is None else additions)
-    transforms(edits, catalog(mesh))
+    source = room / "assisted.obj"
     if generated:
         for path in dependencies:
             if (path.relative_to(room.resolve()).as_posix() == LIBRARY
@@ -231,20 +259,21 @@ def run(room, edits, out, reproject=False, segmentation=None, depth=None, additi
     if generated:
         (out / LIBRARY).write_text(material_library_text())
     target = out / "assisted.obj"
-    write_mesh(mesh, edits, target)
+    target.write_text(serialize(mesh))
     sidecar = source.with_suffix(".cameras")
     if sidecar.exists():
         shutil.copy2(sidecar, target.with_suffix(".cameras"))
     shutil.copy2(room / "survey.json", out / "survey.json")
     if context is not None:
+        context = json.loads(json.dumps(context))
         context['added_groups'].extend({'group': item['group'], 'kind': item['kind']}
                                        for item in generated)
         (out / 'retouch-appearance.json').write_text(json.dumps(context, indent=2) + '\n')
     if reproject:
         reproject_appearance(room, out, survey, segmentation, depth)
-    record = {"source": str(source.resolve()),
+    record = {**record,
               "source_sha256": hashlib.sha256(source.read_bytes()).hexdigest(),
-              "edits": edits, "groups": catalog(mesh),
+              "groups": catalog(mesh),
               "additions": generated,
               "appearance": "reprojected" if reproject else "original_uvs_preserved",
               "status": "manual_visual_retouch_gameplay_unchanged"}
@@ -273,6 +302,19 @@ def run(room, edits, out, reproject=False, segmentation=None, depth=None, additi
                                     "<style>body{background:#171b22;color:white;font:16px system-ui}"
                                     "img{max-width:100%}a{color:#8cf}</style>" + "".join(rows))
     return record
+
+
+def run(room, edits, out, reproject=False, segmentation=None, depth=None, additions=None):
+    from room3d_additions import append_objects
+
+    mesh, dependencies, survey, context = prepare(room, out)
+    if reproject and context is None:
+        raise ValueError('Reprojection needs original or inherited appearance semantics')
+    mesh, generated = append_objects(mesh, [] if additions is None else additions)
+    edited = apply_edits(mesh, edits)
+    record = {"source": str((room / "assisted.obj").resolve()), "edits": edits}
+    return materialize(room, out, edited, generated, dependencies, context, survey, record,
+                       reproject, segmentation, depth)
 
 
 def main():

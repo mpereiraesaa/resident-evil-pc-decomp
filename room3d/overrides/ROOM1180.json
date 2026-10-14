@@ -1,0 +1,98 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "857f7b36b173ec24e3b1585b65afe0c2a0129997731e027e5f24f7dccb70736a",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "b69a132432c66e8eac756932aa11006c92a094a76f0a5355e6771322c4c216ff"
+  },
+  "created": "2026-10-14T08:37:46+00:00",
+  "history": [
+    {
+      "additions": [
+        {
+          "kind": "lamp",
+          "name": "wall_lamp",
+          "origin": [
+            4995,
+            -3950,
+            1944
+          ],
+          "parameters": {
+            "arms": 1,
+            "height": 300,
+            "profile": "wall_sconce",
+            "radius": 260,
+            "shade": 220,
+            "thickness": 36
+          },
+          "yaw": 0
+        }
+      ],
+      "base": "automatic",
+      "base_sha256": "857f7b36b173ec24e3b1585b65afe0c2a0129997731e027e5f24f7dccb70736a",
+      "edits": {
+        "primitive_4": {
+          "pivot": [
+            2602.755,
+            0,
+            2968.325
+          ],
+          "scale": [
+            1,
+            1.5,
+            1
+          ]
+        }
+      },
+      "note": "Add the wall sconce visible in camera 1; raise the small barrel to roughly the original can height",
+      "objects": {
+        "primitive_4": {
+          "kind": "barrel",
+          "max": [
+            2907.87393,
+            0.0,
+            3273.44322
+          ],
+          "min": [
+            2297.63666,
+            -578.91,
+            2663.20595
+          ]
+        }
+      },
+      "recorded": "2026-10-14T08:37:46+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Typewriter save room; wall sconce and small barrel height",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM1180",
+    "room": 24,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "807b8e267bd8543ab2bbf395a265e7f6ce60b9e41382b13957edc96da2d02522",
+      "1": "4153c9969839a572914425fa8d30a229156da368510f40b1081268f0ddf37124"
+    },
+    "geometry_sha256": "4f1a4e385710670b1c5b099dddf112e790a86a449cd87fabec328da989ac689a",
+    "player": 0,
+    "rdt": "ROOM1180",
+    "rdt_sha256": "d2635a5aebf5b9eb97cc68a1966b0838c442f799841ca64fd83cf1bc82d7c52c",
+    "room": 24,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T08:37:46+00:00"
+}

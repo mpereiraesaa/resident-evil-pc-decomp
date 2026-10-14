@@ -890,3 +890,96 @@ be counted as independent geometric viewpoints.
 ```sh
 python -m unittest discover -s tests -p test_room3d_ceiling_linear.py
 ```
+
+Portable overrides and replay
+-----------------------------
+
+`tools/room3d_overrides.py` stores manual corrections as a portable, versioned
+override file instead of a one-off retouch directory. The file names the room
+by RDT stem, stage, room number and scenario player; fingerprints its inputs
+(RDT SHA-256, measured camera/collision layout, background image hashes); and
+freezes the generator identity (tools digest, boolean recipe settings, baseline
+mesh hash). Each corrected object is recorded by kind, script `source_offset`
+when the batcher anchored it to the room script, and bounds, never by the bare
+`primitive_N` index alone. The history is an ordered list of steps, each with
+the editor's transforms, explicit parametric additions and the identities those
+transforms referred to. Files contain no machine-local paths; validation rejects
+them. The tracked copies live in `room3d/overrides/` with `room3d/status.json`.
+
+```sh
+python tools/room3d_overrides.py init --room out/room1180 --out room3d/overrides/ROOM1180.json
+python tools/room3d_overrides.py add --overrides room3d/overrides/ROOM1180.json \
+    --room out/room1180 --edits edits-room1180.json --additions additions.json --reproject
+python tools/room3d_overrides.py replay --overrides room3d/overrides/ROOM1180.json \
+    --room out/room1180 --out corrected/room1180 --segmentation seg/room1180 --depth depth/room1180
+python tools/room3d_overrides.py check --overrides room3d/overrides/ROOM1180.json --room other/room1180
+python tools/room3d_overrides.py compare corrected-a corrected-b
+python tools/batch_room3d.py ... --reconstruct --overrides room3d/overrides
+```
+
+Replay always starts from a fresh automatic export and writes a separate
+directory, so transforms cannot accumulate twice. A step is recorded against
+the automatic export only while the history is empty; later steps must be
+recorded against the replay of the current history (`replay.json` carries the
+history hash), and recording refuses an object that another object of the same
+kind within the tolerance could be confused with. During replay, script-anchored
+objects resolve by offset, structural groups (`floor`, `boundary_N`, `added_*`)
+by stable name with unchanged bounds, and other objects by kind and bounds
+within 50 room units. Zero or several candidates, a changed structural group or
+an export of a different room layout are reported as conflicts and the replay
+fails without output unless `--allow-partial` is given, in which case resolvable
+steps are applied and the rest listed. A scenario variant with the same layout
+is accepted and reported as `scenario_variant`; differing backgrounds are noted.
+An explicit pivot moves with the object when its bounds relocated.
+
+The batcher's `--overrides DIR` replays `DIR/<ROOM>.json` into
+`<out>/corrected/<room>/` after the automatic export or its resumed checkpoint,
+using the batch segmentation and depth roots for reprojection when the file
+asks for it. The automatic directory and its checkpoint are unchanged; the
+override directory is excluded from the batch key, so editing a correction does
+not invalidate generation. Conflicts appear in the manifest and index page.
+
+ROOM1180 proof on 2026-10-14 (local, `build/room3d-overrides-proof/`): the
+room was regenerated twice from the original game files with cached detector,
+mask and depth evidence (22 s and 16 s); both `assisted.obj` exports are
+byte-identical. One recorded step adds a wall sconce where camera 1 shows the
+lamp and raises the small barrel by a factor of 1.5; replays onto both exports,
+with reprojection, are byte-identical to each other (20,532 vertices) and
+differ from the automatic export only in `primitive_4` (bounds delta 289.5) and
+`added_wall_lamp`. The batch hook on the resumed export produced the same bytes.
+The corrected render is an approximation: the gray sconce is small and the
+rest of the room keeps its automatic defects, so the room is tracked as
+`needs_work`, not approved, and gameplay is `not_validated`.
+
+```sh
+python -m unittest discover -s tests -p test_room3d_overrides.py
+```
+
+Nine actual-mesh tests cover portability (no local paths, room identity),
+replay equal to a direct retouch and repeatable byte for byte, UV preservation
+without reprojection and deterministic reprojection, re-indexed and nudged
+objects resolved by identity, missing/ambiguous/changed/source conflicts with
+no output written, partial replay, scenario-variant acceptance, sequential
+steps composing from the replayed state only (refusing stale bases), record-time
+ambiguity refusal, and the batch hook keeping automatic and corrected outputs
+distinct. They do not establish visual fidelity or gameplay.
+
+### Room catalog and review status
+
+`tools/room3d_rooms.py catalog` reads every RDT directly, fingerprints its
+layout and background files, and groups scenario pairs. Over the USA assets:
+348 RDT files, 28 empty slots, 116 unique layouts, and every one of the 320
+non-empty rooms has a scenario variant with the same layout and backgrounds,
+so one override file can serve a pair (replay still checks the fingerprints).
+`room3d/status.json` tracks `review` (`unreviewed`, `needs_work`,
+`visually_approved`) separately from `gameplay` (`not_validated`, `validated`,
+`broken`); `tools/room3d_rooms.py status ROOM1180 --review needs_work` updates
+it and unknown states are rejected. The catalog page lists links to automatic
+and corrected pages when a batch root is given. Shared layout is a measured
+identity, not a fidelity or playability claim.
+
+```sh
+python tools/room3d_rooms.py catalog --assets assets/USA --out build/room3d-rooms \
+    --overrides room3d/overrides --status room3d/status.json --batch build/room3d-all-generated
+python -m unittest discover -s tests -p test_room3d_rooms.py
+```

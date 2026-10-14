@@ -30,7 +30,7 @@ def run_signature(args):
     options = {
         key: str(value) if isinstance(value, Path) else value
         for key, value in vars(args).items()
-        if key not in {"resume", "rooms", "recipes", "out", "jobs"}
+        if key not in {"resume", "rooms", "recipes", "out", "jobs", "overrides"}
     }
     inputs = {}
     for key in ("assets", "authored", "detections", "segmentation", "depth"):

@@ -1,0 +1,11 @@
+{
+  "rooms": {
+    "ROOM1180": {
+      "gameplay": "not_validated",
+      "note": "Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:38:57+00:00"
+    }
+  },
+  "schema": 1
+}

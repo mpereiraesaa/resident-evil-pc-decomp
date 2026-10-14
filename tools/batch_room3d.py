@@ -1009,7 +1009,7 @@ def process_one(path, args, recipes, batch_key):
     cached = restore(checkpoint, key, room_dir) if args.resume else None
     if cached is not None:
         print(f"{path.stem}: resumed ({cached['status']})", flush=True)
-        return cached
+        return apply_overrides(args, room_name, cached)
     checkpoint.unlink(missing_ok=True)
     try:
         result = process(
@@ -1042,6 +1042,23 @@ def process_one(path, args, recipes, batch_key):
         result = {"room": path.stem, "status": "error", "error": str(error)}
     save(checkpoint, key, result, room_dir)
     print(f"{path.stem}: {result['status']}", flush=True)
+    return apply_overrides(args, room_name, result)
+
+
+def apply_overrides(args, room_name, result):
+    """Replay portable corrections into a distinct corrected output after the automatic export.
+
+    Corrections never touch the automatic room directory or its checkpoint, and
+    an unresolved object or source mismatch is reported instead of guessed.
+    """
+    if not getattr(args, "overrides", None) or result.get("status") != "image_assisted":
+        return result
+    from room3d_overrides import replay_for_batch
+
+    result = dict(result)
+    result["corrections"] = replay_for_batch(args.overrides, args.out, room_name,
+                                             args.segmentation, args.depth)
+    print(f"{room_name.upper()}: corrections {result['corrections']['status']}", flush=True)
     return result
 
 
@@ -1135,7 +1152,17 @@ def main():
         action="store_true",
         help="Run DINO, SAM, DA3 and Qwen locally using --vision-python",
     )
+    parser.add_argument(
+        "--overrides",
+        type=Path,
+        help="Directory of portable override files (ROOM1180.json); each is replayed "
+             "into <out>/corrected/<room> after the automatic export",
+    )
     args = parser.parse_args()
+    if args.overrides and not args.reconstruct:
+        parser.error("--overrides requires --reconstruct")
+    if args.overrides and not args.overrides.is_dir():
+        parser.error("--overrides must be an existing directory")
     if args.jobs < 1:
         parser.error("--jobs must be positive")
     if args.jobs > 1 and args.runtime_exe:
@@ -1243,11 +1270,20 @@ def main():
         if result["status"] == "empty_slot":
             links.append(f"<li>{room}: empty RDT slot (four zero bytes)</li>")
             continue
+        corrections = result.get("corrections", {})
+        corrected = ""
+        if corrections.get("status") in ("applied", "partial"):
+            corrected = (f' · <a href="{html.escape(corrections["page"], quote=True)}">corrected</a>'
+                         f' ({corrections["status"]}, {corrections["steps"]} steps)')
+        elif corrections.get("status") in ("conflict", "error"):
+            corrected = f' · corrections {corrections["status"]}: ' + html.escape(
+                corrections.get("error") or "; ".join(c.get("message", "") for c in corrections.get("conflicts", [])))
         links.append(
             f"<li>{room}: {html.escape(result['error'])}</li>"
             if result["status"] == "error"
             else f'<li><a href="{room.lower()}/index.html">{room}</a> — {len(result["cameras"])} cameras'
             + (" (incomplete)" if failed else "")
+            + corrected
             + "</li>"
         )
     (args.out / "index.html").write_text(

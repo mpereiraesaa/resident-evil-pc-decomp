@@ -1099,3 +1099,47 @@ and an unreconstructable deer head. The corrected ROOM10B0 mesh passes the
 Wine smoke test (`build/room3d-runtime-corrected-10b0/result.json`), so its
 gameplay record now refers to the corrected mesh. Catalog after this pass: 166
 rooms approved, 154 need work, 80 rooms covered by 30 override files.
+
+### 15-bit colour decode fix
+
+Play-testing ROOM10B0 against the game showed tan walls and orange parquet
+where every extracted background and reprojected texture was blue. The PC
+background TIMs, like PSX TIMs, keep red in the low five bits and blue at bits
+10-14 (see `src/game/TextureLoader.cpp`). `tools/pak_view.py` and
+`tools/dump_tim.py` read them the other way round, so until this fix every
+`camera*-original.png`, every reprojected texture, and every detector,
+segmentation and depth run in `build/room3d-all-generated` saw red and blue
+exchanged. `tools/bss_to_pak.py`, `tools/dump_ivm.py` and
+`tools/dump_item_pix.py` already used the correct order.
+
+Consequences: geometry fitting is largely hue-independent, but the cached
+vision outputs are pinned to the pixel hash of the swapped images, so a room
+regenerated with the fixed decoder must rerun the local models
+(`--local-models --vision-python build/room3d-vision-venv/bin/python`) or the
+batcher refuses the stale cache. Visual approvals in `room3d/status.json` were
+made against the swapped colours; they judged layout, not hue, and stand until
+a room is regenerated and looked at again. The handmade ROOM10B0 palette below
+was set from the corrected colours.
+
+### Hand-authored ROOM10B0
+
+`tools/build_room10b_mesh.py` writes the 1F right-stairs room from code, with
+no batcher involvement: the walkable outline comes from the RDT blocking
+rectangles, and the stair, hall height, furniture, materials and lighting are
+an authored interpretation inspired by the four views. Textures are procedural
+(numpy/PIL) and written beside the mesh; lighting is baked into vertex colours
+because the Room3D loader has no lighting, and every large surface is cut into
+tile-aligned cells so UVs stay inside 0..1 under the loader's clamped sampler.
+The chandelier ring was fitted to the four globe sprites the game overlays in
+camera 2 (1.5 px rms), since the engine draws the original foreground masks
+over the mesh. `--rdt` renders `preview-camera*.png` through
+`room3d_preview.py` for comparison against channel-corrected originals.
+
+```
+build/room3d-tools-venv/bin/python tools/build_room10b_mesh.py \
+    --out build/room3d-handmade/room10b0 --rdt assets/USA/Stage1/ROOM10B0.RDT
+```
+
+The result passes `tools/check_room3d_runtime.py --room 0x0B` and was
+play-tested in the Wine build on 2026-10-14: all four cameras, the stair
+trigger into ROOM2070 and the return.

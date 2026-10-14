@@ -101,7 +101,9 @@ class PakDecoder:
 # TIM parsing (same layout as dump_tim.py, plus 24bpp and multi-TIM streams)
 # ---------------------------------------------------------------------------
 def rgb555(v):
-    r = (v >> 10) & 0x1F; g = (v >> 5) & 0x1F; b = v & 0x1F
+    # PSX/PC 15-bit pixels keep red in the low bits and blue at bits 10-14,
+    # matching TextureLoader.cpp; the previous decode swapped the two.
+    b = (v >> 10) & 0x1F; g = (v >> 5) & 0x1F; r = v & 0x1F
     stp = bool(v & 0x8000)
     return (r * 255 // 31, g * 255 // 31, b * 255 // 31, stp)
 

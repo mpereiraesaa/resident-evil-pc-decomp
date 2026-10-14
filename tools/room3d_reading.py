@@ -606,7 +606,9 @@ class Builder:
                 self.auto_hides += [(c, group) for c in below]
             mesh.set_group(group)
             fm = self.use(zone.get("floor_material", shell.get("floor_material", "planks")))
-            if zone.get("floor_along") == "z":
+            if zone.get("open_floor"):
+                pass  # a void or stairwell: walls still stop at its edges, a slab or stair fills it
+            elif zone.get("floor_along") == "z":
                 mesh.rect((x0, floor, z0), (0, 0, 1), (1, 0, 0), z1 - z0, x1 - x0, fm, flip=True)
             else:
                 mesh.rect((x0, floor, z0), (1, 0, 0), (0, 0, 1), x1 - x0, z1 - z0, fm)

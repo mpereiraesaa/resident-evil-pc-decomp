@@ -1,0 +1,124 @@
+# Attic: a large dark loft of bare boards, square posts, barrels and crates,
+# a stair at the north end. Zones from ROOM2100.RDT walls and masses.
+room = "ROOM2100"
+title = "Attic"
+seed = 2160
+
+[shell]
+floor = 0
+ceiling = -5200
+floor_material = "planks"
+wall_material = "planks.wall"
+ceiling_material = "planks.ceiling"
+skirting = 0
+trim = "wood"
+cell = 900
+
+[materials]
+planks = [0.30, 0.19, 0.12]
+"planks.wall" = { color = [0.34, 0.22, 0.14], count = 14 }
+"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 12 }
+wood = [0.28, 0.16, 0.10]
+crate = [0.50, 0.36, 0.20]
+door = [0.30, 0.18, 0.10]
+
+[lighting]
+ambient = [0.08, 0.06, 0.05]
+
+[[zone]]            # south part
+box = [2412, 2178, 13698, 14670]
+[[zone]]            # north part
+box = [5202, 14670, 13698, 25758]
+
+[[door]]
+wall = "west"
+span = [5000, 7000]
+top = -3300
+material = "door"
+
+[[column]]
+at = [9594, 9666]
+top = -4750
+radius = 300
+[[column]]
+at = [5031, 9621]
+top = -4750
+radius = 300
+[[column]]
+at = [9630, 18378]
+top = -4750
+radius = 300
+
+[[object]]
+kind = "box"
+box = [12114, 2178, 13698, 3546]
+top = -1100
+material = "crate"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [12798, 3546, 13698, 4644]
+top = -900
+material = "crate"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [2412, 3456, 4446, 5652]
+top = -1000
+material = "crate"
+omit = ["bottom"]
+[[object]]
+kind = "cylinder"
+at = [10500, 10800]
+radius = 500
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+[[object]]
+kind = "cylinder"
+at = [2900, 14800]
+radius = 500
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+[[object]]
+kind = "box"
+box = [12474, 16290, 13698, 20340]
+top = -1000
+material = "crate"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [12816, 23436, 13698, 25758]
+top = -2400
+material = "wood"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [8280, 18900, 9378, 21078]
+top = -900
+material = "crate"
+omit = ["bottom"]
+
+[[stair]]
+x = [4734, 9198]
+z = [19116, 25758]
+direction = "north"
+top = -2400
+steps = 8
+tread_material = "wood"
+under = false
+rails = []
+
+[[light]]
+at = [7000, -3800, 6000]
+color = [1.0, 0.90, 0.70]
+strength = 0.4
+reach = 6000
+[[light]]
+at = [9000, -3800, 20000]
+color = [1.0, 0.90, 0.70]
+strength = 0.35
+reach = 6000

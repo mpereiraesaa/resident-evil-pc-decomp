@@ -38,6 +38,9 @@ floor_along = "x"
 [[zone]]            # landing north strip
 box = [5976, 13302, 14454, 15156]
 floor_along = "x"
+[[zone]]            # the well itself
+box = [5976, 8964, 14454, 13302]
+open_floor = true
 
 [[door]]
 wall = "east"

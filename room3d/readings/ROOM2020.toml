@@ -40,6 +40,9 @@ box = [29178, 4050, 31986, 13068]
 [[zone]]            # north strip
 box = [1732, 13068, 31986, 15174]
 floor_along = "x"
+[[zone]]            # the void over the dining room
+box = [4914, 4050, 29178, 13068]
+open_floor = true
 
 [[slab]]            # the dining room floor seen through the void
 box = [4914, 4050, 29178, 13068]

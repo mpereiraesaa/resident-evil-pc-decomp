@@ -562,6 +562,7 @@ class Builder:
         self.palette = Palette(reading)
         self.rig = Rig(reading)
         self.zones = reading["zone"]
+        self._raise_ceilings()
         self.floor = reading.get("shell", {}).get("floor", 0)
         header = (
             f"# Built by tools/room3d_reading.py from a room reading; RE1 room units, -Y up.",
@@ -588,6 +589,30 @@ class Builder:
         x0, z0, x1, z1 = zone["box"]
         return [cam["index"] for cam in self.cameras
                 if cam["origin"][1] < ceiling and x0 - 2500 <= cam["origin"][0] <= x1 + 2500 and z0 - 2500 <= cam["origin"][2] <= z1 + 2500]
+
+    def _raise_ceilings(self):
+        """Lift a zone's ceiling above any camera standing over it.
+
+        The original views from such cameras show walls rising toward the
+        lens; a ceiling below the camera would be hidden and leave the upper
+        frame black. A reading opts out per zone with fixed_ceiling = true.
+        """
+        shell = self.reading.get("shell", {})
+        if shell.get("auto_ceiling", True) is False:
+            return
+        default = shell.get("ceiling", -6000)
+        for zone in self.zones:
+            if zone.get("fixed_ceiling") or zone.get("open_floor"):
+                continue
+            ceiling = zone.get("ceiling", default)
+            if ceiling is None:
+                continue
+            x0, z0, x1, z1 = zone["box"]
+            highest = min((cam["origin"][1] for cam in self.room["cameras"]
+                           if x0 - 1500 <= cam["origin"][0] <= x1 + 1500
+                           and z0 - 1500 <= cam["origin"][2] <= z1 + 1500), default=0)
+            if highest < ceiling + 400:
+                zone["ceiling"] = int(highest - 900)
 
     # Lights that fixtures imply are added before any geometry is lit.
     def _lights_from_kinds(self):

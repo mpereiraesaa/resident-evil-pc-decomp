@@ -17,14 +17,14 @@ cell = 900
 
 [materials]
 planks = [0.30, 0.19, 0.12]
-"planks.wall" = { color = [0.34, 0.22, 0.14], count = 14 }
+"planks.wall" = { color = [0.40, 0.30, 0.24], count = 10 }
 "planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 12 }
 wood = [0.28, 0.16, 0.10]
 crate = [0.50, 0.36, 0.20]
 door = [0.30, 0.18, 0.10]
 
 [lighting]
-ambient = [0.195, 0.15, 0.12]
+ambient = [0.26, 0.20, 0.16]
 
 [[zone]]            # south part
 box = [2412, 2178, 13698, 14670]

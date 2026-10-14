@@ -25,7 +25,7 @@ panel = [0.26, 0.12, 0.08]
 planks = [0.26, 0.14, 0.09]
 wood = [0.22, 0.11, 0.07]
 door = [0.26, 0.14, 0.08]
-carpet = { color = [0.46, 0.22, 0.14], motif = [0.70, 0.60, 0.46] }
+carpet = { color = [0.52, 0.30, 0.22], motif = [0.84, 0.78, 0.66] }
 
 [lighting]
 ambient = [0.26, 0.18, 0.15]
@@ -69,7 +69,7 @@ base = -1100
 height = 650
 [[object]]          # desk on the east wall
 kind = "table"
-box = [7110, 5166, 9954, 7128]
+box = [8400, 5166, 9954, 7128]
 top = -1400
 thickness = 100
 [[object]]

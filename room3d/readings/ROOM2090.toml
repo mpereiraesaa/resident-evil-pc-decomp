@@ -20,9 +20,10 @@ planks = [0.28, 0.16, 0.10]
 wood = [0.26, 0.14, 0.08]
 door = [0.22, 0.13, 0.08]
 linen = [0.66, 0.60, 0.58]
+"carpet.spread" = { color = [0.70, 0.66, 0.62], motif = [0.70, 0.36, 0.30], tile = [1600, 1600] }
 
 [lighting]
-ambient = [0.10, 0.10, 0.09]
+ambient = [0.15, 0.15, 0.14]
 
 [[zone]]
 box = [2344, 1998, 9648, 10278]
@@ -37,7 +38,7 @@ material = "door"
 kind = "box"
 box = [3474, 1998, 5094, 6048]
 top = -600
-material = "linen"
+material = "carpet.spread"
 omit = ["bottom", "south"]
 [[object]]
 kind = "box"
@@ -49,7 +50,7 @@ material = "wood"
 kind = "box"
 box = [6390, 1998, 8154, 6066]
 top = -600
-material = "linen"
+material = "carpet.spread"
 omit = ["bottom", "south"]
 [[object]]
 kind = "box"

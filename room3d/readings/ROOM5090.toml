@@ -33,8 +33,8 @@ wood = [0.40, 0.26, 0.12]
 box = [1968, 2016, 12474, 10782]
 
 [[door]]
-wall = "west"
-span = [1300, 2500]
+wall = "south"
+span = [3000, 4200]
 top = -3400
 material = "door.lab"
 frame = "steel"

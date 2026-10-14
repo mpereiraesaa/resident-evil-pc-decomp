@@ -23,7 +23,7 @@ crate = [0.50, 0.36, 0.20]
 door = [0.30, 0.18, 0.10]
 
 [lighting]
-ambient = [0.08, 0.06, 0.05]
+ambient = [0.13, 0.10, 0.08]
 
 [[zone]]            # south part
 box = [2412, 2178, 13698, 14670]
@@ -38,16 +38,22 @@ material = "door"
 
 [[column]]
 at = [9594, 9666]
-top = -4750
-radius = 300
+top = -5200
+radius = 220
+material = "wood"
+square = true
 [[column]]
 at = [5031, 9621]
-top = -4750
-radius = 300
+top = -5200
+radius = 220
+material = "wood"
+square = true
 [[column]]
 at = [9630, 18378]
-top = -4750
-radius = 300
+top = -5200
+radius = 220
+material = "wood"
+square = true
 
 [[object]]
 kind = "box"

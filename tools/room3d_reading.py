@@ -838,8 +838,12 @@ class Builder:
                 mesh.cylinder(gx, gz, 70, gy + 180, gy + 300, brass, segments=8)
                 mesh.sphere((gx, gy, gz), ch.get("globe_radius", 230), glow, rings=6, segments=10)
 
-    def column(self, x, z, top, base=None, radius=520):
-        stone = self.use("stone")
+    def column(self, x, z, top, base=None, radius=520, material="stone", square=False):
+        stone = self.use(material)
+        if square:
+            base = self.floor if base is None else base
+            self.mesh.box((x - radius, top, z - radius), (x + radius, base, z + radius), stone, omit=("bottom", "top"))
+            return
         base = self.floor if base is None else base
         self.mesh.box((x - radius - 180, base - 300, z - radius - 180), (x + radius + 180, base, z + radius + 180), stone, omit=("bottom",))
         self.mesh.cylinder(x, z, radius, top + 450, base - 300, stone, segments=14, caps=False)
@@ -895,7 +899,8 @@ class Builder:
             mesh.set_group(None)
         for col in self.reading.get("column", []):
             mesh.set_group(col.get("group"))
-            self.column(col["at"][0], col["at"][1], col.get("top", -3500), col.get("base"), col.get("radius", 520))
+            self.column(col["at"][0], col["at"][1], col.get("top", -3500), col.get("base"), col.get("radius", 520),
+                        col.get("material", "stone"), col.get("square", False))
             mesh.set_group(None)
 
     def slabs(self):

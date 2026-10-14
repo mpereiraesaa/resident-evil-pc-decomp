@@ -1,0 +1,166 @@
+# Return-visit copy of ROOM10F0.toml: stage 6 shares its collision and cameras exactly.
+# Mansion bar: tan plaster over a dark red dado, red planks, the bar counter
+# along the west wall with its curved end, stools, a round table, the grand
+# piano and a plant, red door on the south wall; a passage leads north.
+room = "ROOM60F0"
+title = "Mansion bar (return)"
+seed = 1500
+
+[shell]
+floor = 0
+ceiling = -5000
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1500
+dado_material = "panel.red"
+chair_rail = true
+skirting = 180
+cell = 800
+
+[materials]
+plaster = [0.56, 0.48, 0.34]
+"plaster.dark" = [0.20, 0.18, 0.14]
+"panel.red" = [0.36, 0.12, 0.10]
+planks = [0.44, 0.18, 0.11]
+wood = [0.30, 0.17, 0.10]
+"door.red" = [0.60, 0.12, 0.10]
+door = [0.28, 0.17, 0.10]
+stone = [0.46, 0.46, 0.42]
+
+[lighting]
+ambient = [0.09, 0.08, 0.06]
+
+[[zone]]            # bar room
+box = [3502, 2210, 14630, 12348]
+floor_along = "x"
+[[zone]]            # south-east pocket by the red door
+box = [14630, 2210, 17161, 5466]
+[[zone]]            # north-east pocket
+box = [14630, 8742, 16002, 12348]
+[[zone]]
+box = [16002, 8742, 20325, 11538]
+[[zone]]            # opening into the passage
+box = [8356, 12348, 9720, 12810]
+[[zone]]            # passage north to the terrace door
+box = [7704, 12810, 10818, 19170]
+
+[[door]]
+wall = "south"
+span = [13700, 15400]
+top = -3400
+material = "door.red"
+[[door]]
+wall = "north"
+span = [8400, 10100]
+top = -3400
+material = "door"
+
+# Bar counter with its curved end and the bottle shelf behind it
+[[object]]
+kind = "box"
+box = [3502, 2210, 5161, 9512]
+top = -1100
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]
+kind = "cylinder"
+at = [4122, 9828]
+radius = 1200
+top = -1100
+material = "wood"
+segments = 16
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2400, 9400]
+y = [-3600, -1400]
+material = "panel.red"
+rail = false
+[[object]]
+kind = "cylinder"
+at = [5500, 8150]
+radius = 200
+top = -760
+material = "wood"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [5600, 4500]
+radius = 200
+top = -760
+material = "wood"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [5400, 2700]
+radius = 200
+top = -760
+material = "wood"
+segments = 8
+# Round table, piano, plant
+[[object]]
+kind = "cylinder"
+at = [8346, 4768]
+radius = 760
+top = -800
+bottom = -720
+material = "wood"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [8346, 4768]
+radius = 120
+top = -720
+material = "wood"
+segments = 8
+[[object]]
+kind = "box"
+box = [10584, 6552, 15101, 9432]
+top = -950
+material = "lacquer"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [10800, 6700, 14900, 9300]
+top = -1300
+bottom = -950
+material = "wood"
+[[object]]
+kind = "cylinder"
+at = [8600, 3000]
+radius = 330
+top = -900
+material = "stone"
+segments = 10
+
+[[sconce]]
+wall = "west"
+at = [-3400, 11000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3400, 9500]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3400, 12200]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3400, 10500]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3400, 16000]
+candles = 1
+strength = 0.36
+reach = 3200

@@ -1,0 +1,151 @@
+# Return-visit copy of ROOM10B0.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F right stairs. Zones from ROOM10B0.RDT blocks; stair is a
+# switchback inferred from the 2F arrival; chandelier fitted to the camera-2
+# globe sprites. See docs/ROOM3D_FOUNDATION.md "Hand-authored ROOM10B0".
+room = "ROOM60B0"
+title = "1F right stairs (return)"
+seed = 10
+
+[shell]
+floor = 0
+floor_material = "parquet"
+wall_material = "plaster"
+ceiling_material = "plaster"
+skirting = 260
+chair_rail = true
+cell = 600
+
+[materials]
+plaster = [0.72, 0.59, 0.44]
+parquet = [0.62, 0.37, 0.17]
+wood = [0.30, 0.20, 0.13]
+panel = [0.26, 0.17, 0.10]
+"door.white" = { color = [0.70, 0.73, 0.78], rows = 3 }
+door = [0.28, 0.19, 0.11]
+
+[lighting]
+ambient = [0.13, 0.105, 0.08]
+
+[[zone]]            # corridor
+box = [1926, 6102, 4410, 13644]
+ceiling = -5300
+[[zone]]            # junction under the tall hall
+box = [1926, 13644, 4410, 17100]
+ceiling = -11400
+ceiling_group = "hall_ceiling"
+[[zone]]            # east branch to the storeroom door
+box = [4410, 13644, 10566, 17100]
+ceiling = -11400
+ceiling_group = "hall_ceiling"
+[[zone]]            # north stub under the 2F landing
+box = [1926, 17100, 3222, 20232]
+ceiling = -5700
+[[zone]]            # stair block
+box = [3222, 17100, 10566, 20232]
+ceiling = -11400
+ceiling_group = "hall_ceiling"
+
+[[door]]
+wall = "south"
+span = [2300, 4000]
+top = -3300
+material = "door.white"
+[[door]]
+wall = "south"
+span = [8600, 10400]
+top = -3300
+material = "door"
+[[door]]            # 2F doorway off the upper landing
+wall = "west"
+span = [18100, 19500]
+bottom = -6000
+top = -9300
+material = "door"
+
+[[painting]]
+wall = "east"
+span = [10400, 12600]
+y = [-4100, -2400]
+
+[[sconce]]
+wall = "west"
+at = [-3900, 6600]
+candles = 1
+strength = 0.26
+reach = 1900
+[[sconce]]
+wall = "west"
+at = [-3300, 14800]
+candles = 1
+strength = 0.26
+reach = 1900
+
+[[window]]
+wall = "north"
+kind = "fan"
+at = 5400
+radius = 1400
+sill = -9200
+strength = 0.22
+reach = 6500
+
+[[chandelier]]
+at = [4700, 15600]
+y = -6360
+radius = 950
+phase = 1.249
+globes = 4
+ceiling = -11400
+
+[[stair]]           # lower flight, open to the junction
+x = [3222, 7422]
+z = [17100, 18546]
+direction = "east"
+top = -3000
+steps = 10
+tread_material = "wood"
+string = true
+rails = [{ side = "south" }]
+[[stair]]           # upper flight against the north wall
+x = [3222, 7422]
+z = [18786, 20232]
+direction = "west"
+base = -3000
+top = -6000
+steps = 10
+tread_material = "wood"
+
+[[object]]          # spine wall between the flights
+kind = "box"
+box = [3222, 18546, 7422, 18786]
+top = -3600
+material = "plaster"
+omit = ["bottom"]
+[[object]]          # cupboard wall under the upper flight at the stub
+kind = "box"
+box = [3222, 18786, 3300, 20232]
+top = -3350
+material = "panel"
+omit = ["bottom"]
+
+[[slab]]            # intermediate landing on its panelled block
+box = [7422, 17100, 10566, 20232]
+top = -3000
+thickness = 3000
+top_material = "wood"
+bottom_material = "panel"
+edge_material = "panel"
+edges = ["south", "west"]
+[[slab]]            # 2F landing over the stub
+box = [1926, 17100, 3222, 20232]
+top = -6000
+thickness = 300
+top_material = "wood"
+bottom_material = "plaster"
+edge_material = "wood"
+edges = ["south", "east"]
+rails = [{ side = "south" }, { side = "east", span = [17100, 18546], newels = [false, true] }]
+
+[[hide]]
+camera = 2
+groups = ["hall_ceiling"]

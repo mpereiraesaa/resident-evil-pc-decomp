@@ -1,0 +1,104 @@
+# Return-visit copy of ROOM10E0.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F keeper's bedroom: fine wallpaper over a dark panelled dado,
+# planks and a rug, bed by the west wall, wardrobe and desk at the south end,
+# bookshelf and dresser at the north. From ROOM10E0.RDT blocks.
+room = "ROOM60E0"
+title = "Keeper's bedroom (return)"
+seed = 1400
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling_material = "planks.ceiling"
+dado = 1100
+dado_material = "panel"
+chair_rail = true
+skirting = 160
+cell = 600
+
+[materials]
+wallpaper = { color = [0.62, 0.62, 0.52], motif = [0.50, 0.50, 0.42], repeats = 14 }
+panel = [0.24, 0.14, 0.08]
+planks = [0.30, 0.19, 0.11]
+"planks.ceiling" = { color = [0.30, 0.18, 0.11], count = 10 }
+wood = [0.28, 0.16, 0.09]
+door = [0.26, 0.15, 0.09]
+carpet = { color = [0.24, 0.22, 0.34], motif = [0.70, 0.40, 0.30] }
+
+[lighting]
+ambient = [0.15, 0.15, 0.12]
+
+[[zone]]
+box = [3348, 2032, 8190, 5850]
+[[zone]]
+box = [3924, 5850, 8190, 13212]
+
+[[door]]
+wall = "east"
+span = [9800, 11600]
+top = -3300
+material = "door"
+
+[[object]]          # bed
+kind = "box"
+box = [3924, 6300, 7128, 8874]
+top = -700
+material = "linen"
+omit = ["bottom", "west"]
+[[object]]          # headboard
+kind = "box"
+box = [3924, 6300, 4000, 8874]
+top = -1500
+bottom = -700
+material = "wood"
+[[object]]          # wardrobe
+kind = "box"
+box = [7020, 2032, 8190, 4284]
+top = -2500
+material = "wood"
+omit = ["bottom", "east", "south"]
+[[object]]          # desk with lamp
+kind = "table"
+box = [3348, 2032, 5200, 3300]
+top = -1400
+thickness = 100
+[[object]]
+kind = "cylinder"
+at = [4200, 2500]
+radius = 150
+top = -1950
+bottom = -1400
+material = "glow"
+segments = 8
+[[object]]          # bookshelf on the west wall
+kind = "box"
+box = [3924, 9200, 4500, 12500]
+top = -2600
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]          # dresser on the north wall
+kind = "box"
+box = [4230, 12654, 7146, 13212]
+top = -1100
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "rug"
+box = [4600, 3400, 7800, 5800]
+
+[[painting]]
+wall = "north"
+span = [5000, 5700]
+y = [-2600, -1900]
+[[painting]]
+wall = "north"
+span = [6100, 6700]
+y = [-2500, -2000]
+
+[[light]]
+at = [4200, -2000, 2500]
+color = [1.0, 0.92, 0.75]
+strength = 0.55
+reach = 4500

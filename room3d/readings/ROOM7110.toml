@@ -1,0 +1,76 @@
+# Return-visit copy of ROOM2110.toml: stage 7 shares its collision and cameras exactly.
+# Terrace passage: a narrow corridor, white plaster over a black dado, pale
+# tiles, a cabinet with a vase at the north end, sconces. From ROOM2110.RDT.
+room = "ROOM7110"
+title = "Terrace passage (return)"
+seed = 2170
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "marble.pale"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1200
+dado_material = "panel.black"
+chair_rail = true
+skirting = 100
+cell = 600
+
+[materials]
+plaster = [0.70, 0.68, 0.62]
+"plaster.dark" = [0.20, 0.18, 0.16]
+"marble.pale" = { color = [0.70, 0.72, 0.76], tile = [1400, 1400] }
+"panel.black" = [0.12, 0.10, 0.09]
+wood = [0.30, 0.18, 0.10]
+door = [0.28, 0.16, 0.10]
+
+[lighting]
+ambient = [0.12, 0.12, 0.11]
+
+[[zone]]
+box = [2016, 1906, 3852, 13410]
+
+[[door]]
+wall = "south"
+span = [2016, 3852]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [11500, 13410]
+top = -3300
+material = "door"
+
+[[object]]          # cabinet at the north end
+kind = "box"
+box = [2200, 12600, 3700, 13410]
+top = -1300
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [2300, 3600]
+y = [-3200, -1500]
+material = "panel.black"
+rail = false
+
+[[sconce]]
+wall = "west"
+at = [-3300, 4500]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "east"
+at = [-3300, 8500]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "west"
+at = [-3300, 12000]
+candles = 1
+strength = 0.42
+reach = 3400

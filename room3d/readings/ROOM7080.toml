@@ -1,0 +1,66 @@
+# Return-visit copy of ROOM2080.toml: stage 7 shares its collision and cameras exactly.
+# Deer room: blue wallpaper, a patterned ceiling, rug on planks, a cabinet
+# by the west door, chandelier; the mounted deer head is a game sprite.
+room = "ROOM7080"
+title = "Deer room (return)"
+seed = 2080
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling_material = "carpet.ceiling"
+skirting = 240
+cell = 600
+
+[materials]
+wallpaper = { color = [0.34, 0.44, 0.56], motif = [0.26, 0.34, 0.46], repeats = 14 }
+"carpet.ceiling" = { color = [0.40, 0.20, 0.14], motif = [0.60, 0.46, 0.30], tile = [3000, 3000] }
+planks = [0.26, 0.16, 0.10]
+wood = [0.24, 0.13, 0.08]
+door = [0.14, 0.12, 0.12]
+carpet = { color = [0.24, 0.20, 0.30], motif = [0.56, 0.46, 0.32] }
+
+[lighting]
+ambient = [0.11, 0.12, 0.15]
+
+[[zone]]
+box = [2110, 2034, 10728, 6822]
+floor_along = "x"
+
+[[door]]
+wall = "west"
+span = [3400, 5300]
+top = -3300
+material = "door"
+[[door]]
+wall = "north"
+span = [5700, 7100]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [4000, 5100]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "box"
+box = [2110, 5400, 2900, 6822]
+top = -1500
+material = "wood"
+omit = ["bottom", "west", "north"]
+[[object]]
+kind = "rug"
+box = [3200, 2600, 9800, 6300]
+
+[[chandelier]]
+at = [6400, 4400]
+y = -3200
+radius = 420
+globes = 4
+globe_radius = 130
+ceiling = -4400
+strength = 0.40
+reach = 5500

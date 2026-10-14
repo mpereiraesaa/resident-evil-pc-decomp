@@ -1,0 +1,102 @@
+# Return-visit copy of ROOM20F0.toml: stage 7 shares its collision and cameras exactly.
+# Small dining room: grey-blue painted plank walls over a brown dado, dark
+# planks with a patterned rug, a long table with chairs, plates and a clock
+# on the north wall, a red glazed cabinet in the south alcove.
+room = "ROOM70F0"
+title = "Small dining room (return)"
+seed = 2150
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "planks.wall"
+ceiling_material = "plaster.dark"
+dado = 1100
+dado_material = "panel"
+chair_rail = true
+skirting = 120
+cell = 700
+
+[materials]
+"planks.wall" = { color = [0.52, 0.58, 0.60], count = 12 }
+"plaster.dark" = [0.24, 0.24, 0.22]
+panel = [0.40, 0.26, 0.12]
+planks = [0.26, 0.16, 0.10]
+wood = [0.26, 0.14, 0.08]
+door = [0.22, 0.13, 0.08]
+carpet = { color = [0.56, 0.30, 0.22], motif = [0.80, 0.64, 0.42] }
+"wood.red" = [0.46, 0.10, 0.08]
+velvet = [0.30, 0.18, 0.10]
+
+[lighting]
+ambient = [0.12, 0.13, 0.13]
+
+[[zone]]            # main room
+box = [3478, 5130, 11736, 12168]
+[[zone]]            # south alcove
+box = [4446, 1926, 8676, 5130]
+
+[[door]]
+wall = "north"
+span = [4000, 5300]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [8000, 9600]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "rug"
+box = [4200, 6200, 10800, 11200]
+[[object]]
+kind = "table"
+box = [5130, 7020, 9630, 9990]
+top = -1500
+thickness = 120
+[[object]]
+kind = "chair"
+at = [6000, 6500]
+facing = "south"
+[[object]]
+kind = "chair"
+at = [8700, 6500]
+facing = "south"
+[[object]]
+kind = "chair"
+at = [6000, 10500]
+facing = "north"
+[[object]]
+kind = "chair"
+at = [8700, 10500]
+facing = "north"
+[[object]]          # red glazed cabinet in the alcove
+kind = "box"
+box = [4600, 1926, 8500, 2700]
+top = -2600
+material = "wood.red"
+omit = ["bottom", "south"]
+[[object]]          # wall shelf, north wall
+kind = "wall_band"
+wall = "north"
+span = [9000, 11500]
+y = [-3400, -3000]
+material = "panel"
+rail = false
+
+[[painting]]
+wall = "north"
+span = [6000, 6600]
+y = [-3000, -2400]
+[[painting]]
+wall = "north"
+span = [7200, 7800]
+y = [-3100, -2500]
+
+[[light]]
+at = [7400, -3400, 8500]
+color = [0.95, 1.0, 1.0]
+strength = 0.4
+reach = 6000

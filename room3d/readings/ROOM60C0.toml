@@ -1,0 +1,105 @@
+# Return-visit copy of ROOM10C0.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F greenhouse: ivy-stained plaster, stone tiles, a square pond with
+# a fountain, a planter bed, benches and a glass case on the west wall. From
+# ROOM10C0.RDT blocks 3,4,5,8 and the door record.
+room = "ROOM60C0"
+title = "Greenhouse (return)"
+seed = 1200
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "stone.tiles"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+skirting = 0
+trim = "stone"
+cell = 700
+
+[materials]
+plaster = { color = [0.52, 0.48, 0.34], stains = 0.5 }
+"plaster.dark" = [0.22, 0.24, 0.18]
+"stone.tiles" = { color = [0.56, 0.56, 0.48], tile = [1600, 1600] }
+stone = [0.50, 0.50, 0.42]
+wood = [0.34, 0.22, 0.12]
+door = [0.56, 0.60, 0.62]
+glass = [0.35, 0.45, 0.45]
+
+[lighting]
+ambient = [0.12, 0.13, 0.09]
+
+[[zone]]            # main floor
+box = [5634, 1978, 14670, 8766]
+floor_along = "x"
+[[zone]]            # east bay up to the north block
+box = [14670, 1978, 17496, 6534]
+
+[[door]]
+wall = "north"
+span = [14700, 16000]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [2600, 4200]
+top = -3300
+material = "door"
+[[object]]          # glazed door beside it
+kind = "wall_band"
+wall = "east"
+span = [4600, 6200]
+y = [-3300, -300]
+material = "glass"
+rail = false
+
+[[object]]          # pond
+kind = "box"
+box = [6912, 3960, 8964, 6912]
+top = -500
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [7100, 4150, 8780, 6720]
+top = -420
+bottom = -400
+material = "water"
+[[object]]          # fountain
+kind = "urn"
+at = [7938, 5436]
+radius = 620
+top = -1900
+pedestal = 500
+pedestal_top = -1100
+material = "iron"
+[[object]]          # planter bed
+kind = "box"
+box = [10782, 3168, 12222, 6966]
+top = -520
+material = "stone"
+omit = ["bottom"]
+[[object]]          # bench along the south wall
+kind = "box"
+box = [4806, 1978, 9792, 2682]
+top = -520
+material = "wood"
+omit = ["bottom", "south"]
+[[object]]          # glass case in the east bay
+kind = "box"
+box = [14958, 5364, 17496, 6534]
+top = -2400
+material = "wood"
+omit = ["bottom", "east", "north"]
+
+[[sconce]]
+wall = "north"
+at = [-3300, 8000]
+candles = 1
+strength = 0.42
+reach = 4200
+[[sconce]]
+wall = "south"
+at = [-3300, 12500]
+candles = 1
+strength = 0.36
+reach = 4000

@@ -1,0 +1,68 @@
+# Return-visit copy of ROOM10D0.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F tiger statue room: small brown-marble cell with a framed alcove
+# on the west wall (the statue is a game object) and candle sconces.
+room = "ROOM60D0"
+title = "Tiger statue room (return)"
+seed = 1300
+
+[shell]
+floor = 0
+ceiling = -5000
+floor_material = "marble.floor"
+wall_material = "marble"
+ceiling_material = "marble"
+skirting = 240
+trim = "stone"
+cell = 600
+
+[materials]
+marble = [0.50, 0.38, 0.26]
+"marble.floor" = { color = [0.40, 0.30, 0.20], tile = [1800, 1800] }
+stone = [0.72, 0.70, 0.64]
+door = [0.36, 0.14, 0.10]
+
+[lighting]
+ambient = [0.12, 0.10, 0.07]
+
+[[zone]]
+box = [3562, 2214, 6447, 6217]
+
+[[door]]
+wall = "south"
+span = [4600, 6400]
+top = -3300
+material = "door"
+
+# Alcove frame on the west wall
+[[object]]
+kind = "box"
+box = [3562, 3000, 3700, 3160]
+top = -3400
+material = "stone"
+omit = ["west"]
+[[object]]
+kind = "box"
+box = [3562, 5260, 3700, 5420]
+top = -3400
+material = "stone"
+omit = ["west"]
+[[object]]
+kind = "box"
+box = [3562, 3000, 3700, 5420]
+top = -3560
+bottom = -3400
+material = "stone"
+omit = ["west"]
+
+[[sconce]]
+wall = "south"
+at = [-4200, 4000]
+candles = 3
+strength = 0.40
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-4200, 5200]
+candles = 3
+strength = 0.40
+reach = 3600

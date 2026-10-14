@@ -1,0 +1,114 @@
+# Return-visit copy of ROOM2060.toml: stage 7 shares its collision and cameras exactly.
+# Small library: dark red damask over a brown dado, patterned rug on dark
+# planks, bookcases west and north, a desk with a lamp on the east wall, a
+# round table. From ROOM2060.RDT blocks and the circle.
+room = "ROOM7060"
+title = "Small library (return)"
+seed = 2060
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling_material = "plaster.dark"
+dado = 900
+dado_material = "panel"
+chair_rail = true
+skirting = 160
+cell = 700
+
+[materials]
+wallpaper = { color = [0.46, 0.10, 0.14], motif = [0.62, 0.30, 0.26], repeats = 12 }
+"plaster.dark" = [0.20, 0.12, 0.10]
+panel = [0.26, 0.12, 0.08]
+planks = [0.26, 0.14, 0.09]
+wood = [0.22, 0.11, 0.07]
+door = [0.26, 0.14, 0.08]
+carpet = { color = [0.46, 0.22, 0.14], motif = [0.70, 0.60, 0.46] }
+
+[lighting]
+ambient = [0.10, 0.07, 0.06]
+
+[[zone]]
+box = [2052, 1890, 9954, 12780]
+
+[[door]]
+wall = "south"
+span = [2500, 3800]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [10700, 12300]
+top = -3300
+material = "door"
+
+[[object]]          # west bookcase
+kind = "box"
+box = [2052, 7398, 2718, 11988]
+top = -3000
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]          # north cabinet
+kind = "box"
+box = [2052, 11988, 6390, 12780]
+top = -3000
+material = "wood"
+omit = ["bottom", "north", "west"]
+[[object]]          # south-east cabinet with the lamp
+kind = "box"
+box = [7146, 1890, 9954, 2718]
+top = -1100
+material = "wood"
+omit = ["bottom", "south", "east"]
+[[object]]
+kind = "cylinder"
+at = [8800, 2300]
+radius = 240
+top = -1900
+bottom = -1100
+material = "glow"
+segments = 8
+[[object]]          # desk on the east wall
+kind = "table"
+box = [7110, 5166, 9954, 7128]
+top = -1400
+thickness = 100
+[[object]]
+kind = "chair"
+at = [6500, 6100]
+facing = "east"
+[[object]]          # round table
+kind = "cylinder"
+at = [5130, 10026]
+radius = 810
+top = -800
+bottom = -720
+material = "wood"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [5130, 10026]
+radius = 100
+top = -720
+material = "wood"
+segments = 8
+[[object]]
+kind = "rug"
+box = [3000, 3200, 8800, 11500]
+
+[[painting]]
+wall = "north"
+span = [7000, 7700]
+y = [-2900, -2300]
+[[painting]]
+wall = "north"
+span = [8200, 8900]
+y = [-2900, -2300]
+
+[[light]]
+at = [8800, -1900, 2300]
+color = [1.0, 0.92, 0.72]
+strength = 0.6
+reach = 5000

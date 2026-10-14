@@ -1,0 +1,107 @@
+# Return-visit copy of ROOM1010.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F left stairs: panelled dado under pale plaster with a painted
+# border, dark red planks, a round column at the corner of the west leg and a
+# wooden stair climbing west along the south wall. From ROOM1010.RDT blocks.
+room = "ROOM6010"
+title = "1F left stairs (return)"
+seed = 1010
+
+[shell]
+floor = 0
+ceiling = -5400
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "coffer"
+dado = 1300
+dado_material = "panel"
+chair_rail = true
+skirting = 200
+cell = 800
+
+[materials]
+plaster = [0.66, 0.66, 0.60]
+panel = [0.30, 0.15, 0.09]
+planks = [0.36, 0.14, 0.09]
+wood = [0.26, 0.13, 0.08]
+coffer = [0.34, 0.22, 0.16]
+stone = [0.46, 0.44, 0.40]
+door = [0.24, 0.14, 0.09]
+
+[lighting]
+ambient = [0.10, 0.10, 0.09]
+
+[[zone]]            # west leg
+box = [2232, 2448, 6354, 21672]
+[[zone]]            # south passage with the stair
+box = [6354, 2448, 13536, 8424]
+floor_along = "x"
+[[zone]]            # north passage
+box = [6354, 17928, 19800, 21672]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [7600, 10000]
+top = -3400
+material = "door"
+[[door]]
+wall = "south"
+span = [14000, 16000]
+top = -3400
+material = "door"
+[[door]]
+wall = "east"
+span = [19000, 21672]
+top = -3400
+material = "door"
+
+[[column]]
+at = [4239, 13329]
+top = -4950
+radius = 520
+
+[[stair]]
+x = [4700, 11160]
+z = [2448, 5000]
+direction = "west"
+top = -3600
+steps = 12
+tread_material = "wood"
+string = true
+rails = [{ side = "north" }]
+
+[[painting]]
+wall = "west"
+span = [8600, 9800]
+y = [-3600, -2700]
+
+[[sconce]]
+wall = "west"
+at = [-3600, 5600]
+candles = 1
+strength = 0.40
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3600, 16000]
+candles = 1
+strength = 0.40
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3600, 9000]
+candles = 1
+strength = 0.40
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3600, 16500]
+candles = 1
+strength = 0.40
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3600, 12500]
+candles = 1
+strength = 0.40
+reach = 3600

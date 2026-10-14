@@ -1,0 +1,87 @@
+# Return-visit copy of ROOM20D0.toml: stage 7 shares its collision and cameras exactly.
+# Pillar passage: white marble plaster with blind arches, a carved wainscot
+# with a chair rail, dark red tiles, square pillars at the corner. An L of
+# west leg and south passage from ROOM20D0.RDT blocks.
+room = "ROOM70D0"
+title = "Pillar passage (return)"
+seed = 2130
+
+[shell]
+floor = 0
+ceiling = -5000
+floor_material = "marble.red"
+wall_material = "marble"
+ceiling_material = "plaster.dark"
+dado = 1200
+dado_material = "panel.carved"
+chair_rail = true
+skirting = 120
+trim = "wood"
+cell = 800
+
+[materials]
+marble = [0.72, 0.70, 0.62]
+"marble.red" = { color = [0.30, 0.14, 0.14], tile = [1600, 1600] }
+"plaster.dark" = [0.16, 0.14, 0.12]
+"panel.carved" = [0.40, 0.26, 0.12]
+wood = [0.46, 0.30, 0.14]
+stone = [0.72, 0.70, 0.62]
+door = [0.20, 0.12, 0.08]
+
+[lighting]
+ambient = [0.11, 0.10, 0.09]
+
+[[zone]]            # west leg
+box = [1998, 1996, 3924, 13050]
+[[zone]]            # south passage
+box = [3924, 1996, 12150, 4104]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [2000, 3900]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [2000, 4100]
+top = -3300
+material = "door"
+
+[[object]]          # corner pillar
+kind = "box"
+box = [3924, 4104, 5544, 5634]
+top = -5000
+material = "marble"
+omit = ["bottom", "top"]
+[[object]]
+kind = "box"
+box = [1998, 7500, 2300, 8300]
+top = -5000
+material = "marble"
+omit = ["bottom", "top", "west"]
+
+[[sconce]]
+wall = "west"
+at = [-3400, 5000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3400, 11000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3400, 8000]
+candles = 1
+strength = 0.42
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3400, 10500]
+candles = 1
+strength = 0.42
+reach = 3600

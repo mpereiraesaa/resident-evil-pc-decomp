@@ -1,0 +1,79 @@
+# Return-visit copy of ROOM11C0.toml: stage 6 shares its collision and cameras exactly.
+# Wardrobe closet: grimy plaster, a long cabinet of drawers and two clothes
+# racks in a narrow room; door at the west end of the north wall.
+room = "ROOM61C0"
+title = "Wardrobe closet (return)"
+seed = 2800
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+skirting = 160
+cell = 600
+
+[materials]
+plaster = { color = [0.58, 0.58, 0.50], stains = 0.5 }
+"plaster.dark" = [0.26, 0.24, 0.20]
+planks = [0.26, 0.20, 0.14]
+wood = [0.26, 0.14, 0.08]
+door = [0.30, 0.18, 0.10]
+linen = [0.52, 0.48, 0.52]
+
+[lighting]
+ambient = [0.13, 0.13, 0.11]
+
+[[zone]]
+box = [1924, 3110, 4224, 5472]
+[[zone]]
+box = [4224, 3110, 12657, 4240]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [1924, 4100]
+top = -3200
+material = "door"
+
+[[object]]          # cabinet along the south wall
+kind = "box"
+box = [4600, 3110, 12657, 3650]
+top = -1700
+material = "wood"
+omit = ["bottom", "south"]
+[[object]]          # clothes racks
+kind = "box"
+box = [5000, 3900, 8000, 4240]
+top = -1200
+material = "linen"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [5000, 4000, 8000, 4040]
+top = -1700
+bottom = -1200
+material = "iron"
+[[object]]
+kind = "box"
+box = [9000, 3900, 12400, 4240]
+top = -1200
+material = "linen"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [9000, 4000, 12400, 4040]
+top = -1700
+bottom = -1200
+material = "iron"
+
+[[chandelier]]
+at = [7000, 3700]
+y = -3400
+radius = 260
+globes = 3
+globe_radius = 80
+ceiling = -4200
+strength = 0.35
+reach = 5000

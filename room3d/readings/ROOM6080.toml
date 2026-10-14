@@ -1,0 +1,152 @@
+# Return-visit copy of ROOM1080.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F "L passage": striped wallpaper, stone floor, display cabinets
+# along the walls, arched windows on the east side. Corridors from
+# ROOM1080.RDT blocks 1,2,7,13,0; cabinets from the flags-512 blocks.
+room = "ROOM6080"
+title = "L passage (return)"
+seed = 1080
+
+[shell]
+floor = 0
+ceiling = -5200
+floor_material = "stone.floor"
+wall_material = "stripes"
+ceiling_material = "planks.ceiling"
+dado = 1200
+dado_material = "panel.iron"
+chair_rail = true
+skirting = 200
+cell = 800
+
+[materials]
+stripes = { color = [0.84, 0.78, 0.66], stripe = [0.70, 0.42, 0.36], count = 12 }
+"stone.floor" = { color = [0.62, 0.58, 0.48], tile = [2000, 2000] }
+"planks.ceiling" = { color = [0.46, 0.30, 0.18], count = 12 }
+"panel.iron" = [0.10, 0.09, 0.08]
+wood = [0.22, 0.14, 0.09]
+stone = [0.74, 0.70, 0.60]
+door = [0.26, 0.17, 0.10]
+glass = [0.70, 0.75, 0.80]
+
+[lighting]
+ambient = [0.13, 0.11, 0.08]
+
+[[zone]]            # south corridor
+box = [2545, 1645, 25678, 6577]
+floor_along = "x"
+[[zone]]            # east corridor
+box = [20967, 6577, 25678, 26305]
+
+[[door]]
+wall = "west"
+span = [2900, 5500]
+top = -3400
+material = "door"
+[[door]]
+wall = "north"
+span = [23300, 26300]
+top = -3400
+material = "door"
+group = "north_door"
+
+[[window]]
+wall = "east"
+kind = "arch"
+at = 11000
+half = 900
+sill = -1500
+height = 3200
+color = [0.75, 0.80, 0.90]
+strength = 0.22
+reach = 5000
+[[window]]
+wall = "east"
+kind = "arch"
+at = 16500
+half = 900
+sill = -1500
+height = 3200
+color = [0.75, 0.80, 0.90]
+strength = 0.22
+reach = 5000
+[[window]]
+wall = "east"
+kind = "arch"
+at = 22000
+half = 900
+sill = -1500
+height = 3200
+color = [0.75, 0.80, 0.90]
+strength = 0.22
+reach = 5000
+
+[[column]]
+at = [21250, 6850]
+top = -4750
+radius = 320
+
+# Display cabinets: dark wood cases with a lamp on top
+[[object]]
+kind = "box"
+box = [4501, 5183, 7173, 6577]
+top = -1000
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [8410, 5129, 11611, 6577]
+top = -1000
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [16910, 5116, 19532, 6577]
+top = -1000
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [20967, 8380, 22394, 10875]
+top = -1000
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [20967, 17581, 22390, 19790]
+top = -1000
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [20967, 21428, 22492, 24511]
+top = -1000
+material = "wood"
+omit = ["bottom", "west"]
+
+[[chandelier]]
+at = [9000, 4100]
+y = -3700
+radius = 260
+globes = 3
+globe_radius = 80
+ceiling = -5200
+strength = 0.30
+reach = 5000
+[[chandelier]]
+at = [18500, 4100]
+y = -3700
+radius = 260
+globes = 3
+globe_radius = 80
+ceiling = -5200
+strength = 0.30
+reach = 5000
+[[chandelier]]
+at = [23300, 15000]
+y = -3700
+radius = 260
+globes = 3
+globe_radius = 80
+ceiling = -5200
+strength = 0.30
+reach = 5000

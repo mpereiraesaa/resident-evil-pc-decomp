@@ -1,0 +1,71 @@
+# Return-visit copy of ROOM1020.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F vacant room: grey plaster over a black marble dado, patterned
+# brown carpet, bookshelf by the door, desk with a lamp. From ROOM1020.RDT.
+room = "ROOM6020"
+title = "Vacant room (return)"
+seed = 1020
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "carpet.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+dado = 1200
+dado_material = "marble.black"
+chair_rail = true
+skirting = 0
+trim = "marble_dark"
+cell = 600
+
+[materials]
+plaster = [0.70, 0.70, 0.66]
+"plaster.ceiling" = [0.42, 0.42, 0.40]
+"carpet.floor" = { color = [0.30, 0.22, 0.16], motif = [0.48, 0.38, 0.26], tile = [2600, 2600] }
+"marble.black" = [0.18, 0.18, 0.16]
+wood = [0.26, 0.15, 0.09]
+door = [0.30, 0.18, 0.10]
+
+[lighting]
+ambient = [0.19, 0.19, 0.18]
+
+[[zone]]
+box = [2142, 1764, 7092, 9234]
+[[zone]]
+box = [2142, 9234, 4518, 9864]
+
+[[door]]
+wall = "north"
+span = [2500, 4200]
+top = -3300
+material = "door"
+
+[[object]]          # bookshelf beside the door
+kind = "box"
+box = [4600, 8700, 6500, 9234]
+top = -2800
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]          # desk with a lamp
+kind = "table"
+box = [2142, 1764, 4032, 3078]
+top = -1500
+thickness = 100
+[[object]]
+kind = "cylinder"
+at = [3300, 2300]
+radius = 160
+top = -2100
+bottom = -1500
+material = "glow"
+segments = 8
+[[object]]
+kind = "chair"
+at = [3100, 3700]
+facing = "south"
+
+[[light]]
+at = [3300, -2100, 2300]
+color = [1.0, 0.95, 0.80]
+strength = 0.55
+reach = 4200

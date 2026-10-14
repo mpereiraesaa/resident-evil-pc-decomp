@@ -1,0 +1,121 @@
+# Return-visit copy of ROOM1140.toml: stage 6 shares its collision and cameras exactly.
+# Boiler terrace behind the mansion: stone paving with a parapet and iron
+# railing on the open side, ivy-covered brick walls, the copper still and
+# barrels at the east end, a door at the north end of the walkway.
+room = "ROOM6140"
+title = "Boiler terrace (return)"
+seed = 2000
+
+[shell]
+floor = 0
+ceiling = -20000
+floor_material = "stone.paving"
+wall_material = "stone.brick"
+ceiling_material = "night"
+skirting = 0
+trim = "stone"
+cell = 1200
+
+[materials]
+"stone.paving" = { color = [0.40, 0.42, 0.34], tile = [1800, 1800] }
+"stone.brick" = { color = [0.42, 0.38, 0.26], tile = [1400, 1400] }
+stone = [0.62, 0.62, 0.58]
+wood = [0.26, 0.10, 0.08]
+door = [0.30, 0.20, 0.12]
+
+[lighting]
+ambient = [0.12, 0.14, 0.13]
+
+[[zone]]            # walkway north to the door
+box = [7578, 12886, 10764, 24570]
+wall_materials = { west = "night" }
+[[zone]]            # east terrace
+box = [10764, 12886, 19710, 14472]
+floor_along = "x"
+wall_materials = { south = "night" }
+[[zone]]
+box = [10764, 14472, 13842, 15678]
+
+[[door]]
+wall = "north"
+span = [10500, 11478]
+top = -3000
+material = "door"
+
+# Parapet and railing along the open sides
+[[object]]
+kind = "box"
+box = [7578, 12700, 19710, 12900]
+top = -700
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "rail"
+from = [7700, 12800]
+to = [19600, 12800]
+y = -700
+height = 1100
+spacing = 900
+material = "wood"
+[[object]]
+kind = "box"
+box = [7400, 12700, 7600, 24570]
+top = -700
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "rail"
+from = [7500, 12900]
+to = [7500, 24400]
+y = -700
+height = 1100
+spacing = 900
+material = "wood"
+
+# Still and barrels
+[[object]]
+kind = "box"
+box = [13842, 14472, 20898, 16380]
+top = -1100
+material = "stone.brick"
+omit = ["bottom"]
+[[object]]
+kind = "cylinder"
+at = [15600, 15300]
+radius = 700
+top = -2900
+bottom = -1100
+material = "copper"
+segments = 12
+[[object]]
+kind = "cylinder"
+at = [15600, 15300]
+radius = 220
+top = -3500
+bottom = -2900
+material = "copper"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [18600, 15300]
+radius = 450
+top = -2100
+bottom = -1100
+material = "wood"
+segments = 12
+hoops = [-1900, -1300]
+[[object]]
+kind = "cylinder"
+at = [19700, 15200]
+radius = 450
+top = -2100
+bottom = -1100
+material = "wood"
+segments = 12
+hoops = [-1900, -1300]
+
+[[light]]
+at = [12000, -5000, 13600]
+color = [0.70, 0.80, 0.75]
+strength = 0.35
+reach = 9000

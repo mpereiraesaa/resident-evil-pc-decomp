@@ -1,0 +1,133 @@
+# Return-visit copy of ROOM2040.toml: stage 7 shares its collision and cameras exactly.
+# C passage (2F): a dark U-shaped corridor around a central block, brown
+# plaster with arched niches and sconces, dark dado, red runner.
+room = "ROOM7040"
+title = "C passage (return)"
+seed = 2040
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1100
+dado_material = "panel"
+chair_rail = true
+skirting = 160
+cell = 800
+
+[materials]
+plaster = [0.48, 0.36, 0.26]
+"plaster.dark" = [0.18, 0.14, 0.10]
+panel = [0.20, 0.10, 0.06]
+planks = [0.22, 0.12, 0.08]
+runner = [0.44, 0.08, 0.08]
+wood = [0.24, 0.13, 0.08]
+door = [0.28, 0.16, 0.09]
+
+[lighting]
+ambient = [0.07, 0.06, 0.05]
+
+[[zone]]            # south corridor
+box = [2560, 1998, 18126, 4770]
+floor_along = "x"
+[[zone]]            # east corridor
+box = [18126, 1998, 20538, 19962]
+[[zone]]            # north corridor
+box = [2142, 17118, 18126, 19962]
+floor_along = "x"
+
+[[object]]
+kind = "rug"
+box = [2700, 2900, 18126, 3900]
+material = "runner"
+[[object]]
+kind = "rug"
+box = [18800, 2900, 19900, 19100]
+material = "runner"
+[[object]]
+kind = "rug"
+box = [2300, 18000, 18126, 19100]
+material = "runner"
+
+[[door]]
+wall = "west"
+span = [2900, 4500]
+top = -3300
+material = "door"
+[[door]]
+wall = "west"
+span = [11000, 13200]
+top = -3300
+material = "door"
+[[door]]
+wall = "north"
+span = [2300, 4300]
+top = -3300
+material = "door"
+[[door]]
+wall = "north"
+span = [12300, 14700]
+top = -3300
+material = "door"
+[[door]]
+wall = "south"
+span = [11400, 13500]
+top = -3300
+material = "door"
+
+[[sconce]]
+wall = "south"
+at = [-3300, 5500]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "north"
+at = [-3300, 8500]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "south"
+at = [-3300, 15500]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "east"
+at = [-3300, 7000]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "west"
+at = [-3300, 9000]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "east"
+at = [-3300, 15000]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "north"
+at = [-3300, 7500]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "south"
+at = [-3300, 9000]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "north"
+at = [-3300, 16000]
+candles = 1
+strength = 0.42
+reach = 3200

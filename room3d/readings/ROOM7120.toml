@@ -1,0 +1,106 @@
+# Return-visit copy of ROOM2120.toml: stage 7 shares its collision and cameras exactly.
+# Terrace: whitewashed walls with ivy, a wooden deck, a balustrade around
+# the open side with the dark forest beyond, a chair and a round table, a
+# small arched window, the door on the west wall. From ROOM2120.RDT.
+room = "ROOM7120"
+title = "Terrace (return)"
+seed = 2180
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "planks.ceiling"
+skirting = 0
+trim = "wood"
+cell = 800
+
+[materials]
+plaster = { color = [0.72, 0.72, 0.66], stains = 0.3 }
+planks = [0.42, 0.26, 0.14]
+"planks.ceiling" = { color = [0.24, 0.16, 0.10], count = 10 }
+wood = [0.60, 0.58, 0.54]
+door = [0.46, 0.30, 0.14]
+glass = [0.60, 0.65, 0.70]
+"stone.garden" = { color = [0.30, 0.38, 0.26], tile = [2400, 2400] }
+
+[lighting]
+ambient = [0.13, 0.14, 0.12]
+
+[[zone]]            # deck
+box = [18486, 23022, 24894, 29234]
+[[zone]]            # strip along the east side of the open bay
+box = [22284, 17298, 24894, 23022]
+wall_materials = { south = "night" }
+[[zone]]            # open bay (the garden below)
+box = [18486, 12906, 22284, 23022]
+open_floor = true
+wall_materials = { south = "night", west = "night" }
+ceiling = -4800
+
+[[slab]]            # garden floor far below the bay
+box = [18486, 12906, 22284, 23022]
+top = 5000
+thickness = 200
+top_material = "stone.garden"
+bottom_material = "stone.garden"
+[[object]]
+kind = "rail"
+from = [18600, 22900]
+to = [22200, 22900]
+height = 1000
+spacing = 300
+[[object]]
+kind = "rail"
+from = [22200, 13000]
+to = [22200, 22900]
+height = 1000
+spacing = 300
+newels = [true, false]
+
+[[door]]
+wall = "west"
+span = [26400, 28600]
+top = -3300
+material = "door"
+[[window]]
+wall = "west"
+kind = "arch"
+at = 24500
+half = 500
+sill = -1600
+height = 2200
+color = [0.70, 0.75, 0.85]
+strength = 0.2
+reach = 4000
+
+[[object]]
+kind = "chair"
+at = [21000, 27500]
+facing = "south"
+[[object]]
+kind = "cylinder"
+at = [19600, 24500]
+radius = 700
+top = -800
+bottom = -720
+material = "wood"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [19600, 24500]
+radius = 100
+top = -720
+material = "wood"
+segments = 8
+[[column]]
+at = [22284, 23022]
+top = -4350
+radius = 220
+
+[[light]]
+at = [21500, -3600, 26000]
+color = [0.90, 0.95, 1.0]
+strength = 0.35
+reach = 6000

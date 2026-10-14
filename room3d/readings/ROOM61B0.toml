@@ -1,0 +1,115 @@
+# Return-visit copy of ROOM11B0.toml: stage 6 shares its collision and cameras exactly.
+# Mansion storeroom (to the courtyard): whitewashed stone under a timber
+# frame, green flagstones, barrels, a tool shelf and the big double door east.
+room = "ROOM61B0"
+title = "Mansion storeroom (return)"
+seed = 2700
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "stone.flag"
+wall_material = "plaster"
+ceiling_material = "planks.ceiling"
+skirting = 200
+cell = 700
+
+[materials]
+plaster = { color = [0.70, 0.70, 0.66], stains = 0.3 }
+"stone.flag" = { color = [0.30, 0.40, 0.30], tile = [1600, 1600] }
+"planks.ceiling" = { color = [0.26, 0.18, 0.12], count = 10 }
+wood = [0.26, 0.16, 0.10]
+door = [0.34, 0.22, 0.12]
+double_door = [0.50, 0.26, 0.12]
+panel = [0.22, 0.14, 0.08]
+
+[lighting]
+ambient = [0.14, 0.15, 0.14]
+
+[[zone]]
+box = [2178, 2484, 9594, 9486]
+
+[[door]]
+wall = "west"
+span = [5200, 7600]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [4300, 7500]
+top = -3600
+material = "double_door"
+frame_depth = 160
+
+# Timber frame band under the ceiling on every wall
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [2178, 9594]
+y = [-4600, -3700]
+material = "panel"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [2178, 9594]
+y = [-4600, -3700]
+material = "panel"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2484, 9486]
+y = [-4600, -3700]
+material = "panel"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [2484, 9486]
+y = [-4600, -3700]
+material = "panel"
+rail = false
+
+[[object]]          # tool shelf on the north wall
+kind = "box"
+box = [5500, 9100, 9400, 9486]
+top = -2600
+bottom = -2300
+material = "wood"
+[[object]]
+kind = "box"
+box = [2178, 8946, 4410, 9486]
+top = -900
+material = "wood"
+omit = ["bottom", "north", "west"]
+[[object]]
+kind = "cylinder"
+at = [9180, 9306]
+radius = 520
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+[[object]]
+kind = "cylinder"
+at = [9180, 2484]
+radius = 520
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+[[object]]
+kind = "cylinder"
+at = [7992, 2466]
+radius = 520
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+
+[[light]]
+at = [6000, -3400, 6000]
+color = [0.95, 1.0, 1.0]
+strength = 0.4
+reach = 6000

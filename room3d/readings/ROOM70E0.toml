@@ -1,0 +1,89 @@
+# Return-visit copy of ROOM20E0.toml: stage 7 shares its collision and cameras exactly.
+# Front of attic: pale plaster with arched panels over a dark dado, dark
+# tiles, a short stair up to the wooden attic door on the east, a narrow leg
+# north to another door. From ROOM20E0.RDT blocks and the stair rectangle.
+room = "ROOM70E0"
+title = "Front of attic (return)"
+seed = 2140
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "marble.dark"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1000
+dado_material = "panel"
+chair_rail = true
+skirting = 120
+cell = 700
+
+[materials]
+plaster = { color = [0.66, 0.64, 0.58], stains = 0.3 }
+"plaster.dark" = [0.18, 0.17, 0.15]
+"marble.dark" = { color = [0.24, 0.14, 0.14], tile = [1400, 1400] }
+panel = [0.26, 0.15, 0.09]
+wood = [0.30, 0.18, 0.10]
+door = [0.46, 0.28, 0.14]
+"door.dark" = [0.24, 0.14, 0.09]
+
+[lighting]
+ambient = [0.12, 0.11, 0.09]
+
+[[zone]]            # south area
+box = [1932, 1944, 9990, 3978]
+floor_along = "x"
+[[zone]]            # narrow leg north
+box = [4428, 3978, 5724, 14526]
+
+[[door]]
+wall = "west"
+span = [2500, 3900]
+top = -3300
+material = "door.dark"
+[[door]]
+wall = "west"
+span = [11400, 13000]
+top = -3300
+material = "door.dark"
+[[door]]
+wall = "east"
+span = [2500, 3800]
+top = -4300
+bottom = -1200
+material = "door"
+
+[[stair]]
+x = [7500, 9990]
+z = [1944, 3978]
+direction = "east"
+top = -1200
+steps = 4
+tread_material = "wood"
+string = true
+rails = [{ side = "north" }, { side = "south" }]
+
+[[sconce]]
+wall = "north"
+at = [-3300, 3000]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "south"
+at = [-3300, 6500]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "east"
+at = [-3300, 9000]
+candles = 1
+strength = 0.42
+reach = 3400
+[[sconce]]
+wall = "west"
+at = [-3300, 7000]
+candles = 1
+strength = 0.42
+reach = 3400

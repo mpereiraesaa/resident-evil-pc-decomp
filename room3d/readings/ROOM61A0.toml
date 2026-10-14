@@ -1,0 +1,82 @@
+# Return-visit copy of ROOM11A0.toml: stage 6 shares its collision and cameras exactly.
+# Roofed garden passage west of the corridor's north leg: stone walls with
+# arched openings on the west side, green paving, wooden ceiling. Shell from
+# ROOM11A0.RDT blocks 1,6,8,9,0; the east bay at the north end from blocks 0,5,7.
+room = "ROOM61A0"
+title = "Roofed passage (return)"
+seed = 110
+
+[shell]
+floor = 0
+ceiling = -4600
+floor_material = "stone.paving"
+wall_material = "stone.white"
+ceiling_material = "planks.ceiling"
+skirting = 0
+trim = "stone"
+cell = 800
+
+[materials]
+"stone.white" = [0.80, 0.80, 0.75]
+"stone.paving" = { color = [0.30, 0.40, 0.26], tile = [1600, 1600] }
+stone = [0.78, 0.78, 0.72]
+"planks.ceiling" = { color = [0.42, 0.24, 0.14], count = 10 }
+wood = [0.30, 0.17, 0.10]
+door = [0.40, 0.26, 0.12]
+"panel.bronze" = [0.55, 0.33, 0.14]
+soot = [0.02, 0.03, 0.02]
+
+[lighting]
+ambient = [0.14, 0.15, 0.13]
+
+[[zone]]            # long passage
+box = [1882, 1868, 5340, 22158]
+wall_materials = { west = "soot" }
+[[zone]]            # bay at the north end
+box = [1882, 22158, 8700, 27214]
+
+[[door]]
+wall = "east"
+span = [2700, 5000]
+top = -3400
+material = "door"
+[[door]]
+wall = "east"
+span = [24500, 26600]
+top = -3400
+material = "door"
+
+# Cloister arches along the west side, dark beyond them
+[[arcade]]
+axis = "z"
+line = 2150
+columns = [4500, 8100, 11700, 15300, 18900]
+radius = 260
+spring = -2900
+top = -4600
+ends = [1868, 22158]
+[[object]]
+kind = "box"
+box = [1882, 1868, 2300, 22158]
+top = -1100
+material = "stone"
+omit = ["bottom"]
+
+[[object]]          # bronze relief on the bay's north wall
+kind = "wall_band"
+wall = "north"
+span = [3200, 7200]
+y = [-3400, -1200]
+material = "panel.bronze"
+rail = false
+
+[[light]]
+at = [3500, -2600, 12000]
+color = [0.85, 0.95, 0.85]
+strength = 0.3
+reach = 9000
+[[light]]
+at = [4500, -2600, 24500]
+color = [0.95, 0.85, 0.70]
+strength = 0.35
+reach = 5000

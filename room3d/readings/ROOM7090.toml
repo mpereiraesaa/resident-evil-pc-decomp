@@ -1,0 +1,91 @@
+# Return-visit copy of ROOM2090.toml: stage 7 shares its collision and cameras exactly.
+# 2F bedroom: grey stained plaster, dark planks, two beds against the south
+# wall with a nightstand between, a dresser on the north wall, one sconce.
+room = "ROOM7090"
+title = "2F bedroom (return)"
+seed = 2090
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+skirting = 200
+cell = 600
+
+[materials]
+plaster = { color = [0.46, 0.44, 0.40], stains = 0.4 }
+"plaster.dark" = [0.22, 0.21, 0.19]
+planks = [0.28, 0.16, 0.10]
+wood = [0.26, 0.14, 0.08]
+door = [0.22, 0.13, 0.08]
+linen = [0.66, 0.60, 0.58]
+
+[lighting]
+ambient = [0.10, 0.10, 0.09]
+
+[[zone]]
+box = [2344, 1998, 9648, 10278]
+
+[[door]]
+wall = "east"
+span = [7200, 8200]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "box"
+box = [3474, 1998, 5094, 6048]
+top = -600
+material = "linen"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [3474, 1998, 5094, 2100]
+top = -1100
+bottom = -600
+material = "wood"
+[[object]]
+kind = "box"
+box = [6390, 1998, 8154, 6066]
+top = -600
+material = "linen"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [6390, 1998, 8154, 2100]
+top = -1100
+bottom = -600
+material = "wood"
+[[object]]
+kind = "box"
+box = [5200, 1998, 6300, 2394]
+top = -800
+material = "wood"
+omit = ["bottom", "south"]
+[[object]]          # dresser on the north wall
+kind = "box"
+box = [2344, 9432, 4410, 10278]
+top = -1600
+material = "wood"
+omit = ["bottom", "north", "west"]
+[[object]]
+kind = "rug"
+box = [6500, 7200, 8500, 8600]
+
+[[painting]]
+wall = "east"
+span = [3600, 4400]
+y = [-3000, -2200]
+[[painting]]
+wall = "east"
+span = [4800, 6000]
+y = [-3200, -2000]
+
+[[sconce]]
+wall = "north"
+at = [-3300, 6500]
+candles = 1
+strength = 0.5
+reach = 4000

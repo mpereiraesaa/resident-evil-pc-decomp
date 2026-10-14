@@ -1,0 +1,72 @@
+# Return-visit copy of ROOM20B0.toml: stage 7 shares its collision and cameras exactly.
+# Front lesson room: yellowed stained plaster, dark planks with a rug, a
+# fireplace with a mirror over it on the south wall, a red door west and a
+# teal door north, patterned ceiling.
+room = "ROOM70B0"
+title = "Front lesson room (return)"
+seed = 2110
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "carpet.ceiling"
+skirting = 200
+cell = 600
+
+[materials]
+plaster = { color = [0.70, 0.62, 0.40], stains = 0.5 }
+"carpet.ceiling" = { color = [0.36, 0.22, 0.16], motif = [0.56, 0.44, 0.30], tile = [3000, 3000] }
+planks = [0.30, 0.17, 0.10]
+wood = [0.26, 0.14, 0.08]
+"door.red" = [0.50, 0.12, 0.08]
+"door.teal" = [0.12, 0.40, 0.42]
+stone = [0.46, 0.34, 0.22]
+carpet = { color = [0.40, 0.14, 0.14], motif = [0.66, 0.52, 0.34] }
+glass = [0.70, 0.74, 0.76]
+
+[lighting]
+ambient = [0.13, 0.12, 0.08]
+
+[[zone]]
+box = [2056, 1998, 8910, 8748]
+
+[[door]]
+wall = "west"
+span = [6400, 8300]
+top = -3300
+material = "door.red"
+[[door]]
+wall = "north"
+span = [7200, 8500]
+top = -3300
+material = "door.teal"
+
+[[object]]
+kind = "fireplace"
+wall = "south"
+span = [4392, 6390]
+depth = 900
+mantel = -1500
+opening = [900, 900]
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [4700, 6100]
+y = [-2900, -1700]
+material = "glass"
+rail = false
+[[object]]
+kind = "rug"
+box = [3000, 3200, 8000, 7800]
+
+[[chandelier]]
+at = [5500, 5400]
+y = -3400
+radius = 300
+globes = 3
+globe_radius = 100
+ceiling = -4400
+strength = 0.40
+reach = 5000

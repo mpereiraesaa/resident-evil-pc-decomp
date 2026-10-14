@@ -1,0 +1,221 @@
+# Return-visit copy of ROOM1050.toml: stage 6 shares its collision and cameras exactly.
+# Mansion dining room. Shell from ROOM1050.RDT blocks 0,3,4,7; table from
+# block 8; chairs from circles 9,11,13,14,19-22; columns from circles 1,6,10,18;
+# fireplace from block 16; urn from circle 15. Gallery and heights from the
+# views (cameras 0-2 show the upper balustrade and the east arches).
+room = "ROOM6050"
+title = "Dining room (return)"
+seed = 1050
+
+[shell]
+floor = 0
+ceiling = -11000
+floor_material = "checker"
+wall_material = "marble"
+ceiling_material = "coffer"
+dado = 1900
+dado_material = "panel"
+chair_rail = true
+skirting = 240
+cell = 1500
+
+[materials]
+marble = [0.72, 0.66, 0.54]
+checker = { color = [0.76, 0.70, 0.60], dark = [0.24, 0.18, 0.14] }
+panel = [0.42, 0.11, 0.10]
+stone = [0.66, 0.62, 0.54]
+wood = [0.24, 0.15, 0.09]
+coffer = [0.18, 0.13, 0.09]
+planks = [0.30, 0.20, 0.12]
+double_door = [0.26, 0.17, 0.10]
+door = [0.26, 0.17, 0.10]
+
+[lighting]
+ambient = [0.13, 0.115, 0.09]
+
+[[zone]]
+box = [2581, 2303, 32016, 14454]
+
+# Doors: tea room (north), main hall (east, double)
+[[door]]
+wall = "north"
+span = [5300, 8100]
+top = -3700
+material = "door"
+[[door]]
+wall = "east"
+span = [6300, 10300]
+top = -4400
+material = "double_door"
+frame = "stone"
+frame_depth = 160
+
+# Windows: two arched on the south wall, stained glass over the east door
+[[window]]
+wall = "south"
+kind = "arch"
+at = 13000
+half = 1100
+sill = -2000
+height = 3600
+color = [0.70, 0.75, 0.85]
+strength = 0.26
+reach = 6000
+[[window]]
+wall = "south"
+kind = "arch"
+at = 21000
+half = 1100
+sill = -2000
+height = 3600
+color = [0.70, 0.75, 0.85]
+strength = 0.26
+reach = 6000
+[[window]]
+wall = "east"
+kind = "arch"
+at = 8300
+half = 1000
+sill = -7300
+height = 3400
+strength = 0.30
+reach = 9000
+
+# Upper gallery around three sides, open to the fireplace end
+[[slab]]
+box = [2581, 2303, 32016, 4600]
+top = -6500
+thickness = 400
+top_material = "planks"
+bottom_material = "plaster"
+edges = ["north"]
+rails = [{ side = "north", span = [4800, 29300] }]
+[[slab]]
+box = [2581, 12150, 32016, 14454]
+top = -6500
+thickness = 400
+top_material = "planks"
+bottom_material = "plaster"
+edges = ["south"]
+rails = [{ side = "south", span = [4800, 29300] }]
+[[slab]]
+box = [29700, 4600, 32016, 12150]
+top = -6500
+thickness = 400
+top_material = "planks"
+bottom_material = "plaster"
+edges = ["west"]
+rails = [{ side = "west" }]
+
+# East arches under the gallery, columns at the circles
+[[arcade]]
+axis = "z"
+line = 29320
+columns = [4765, 12000]
+spring = -4300
+top = -6100
+ends = [2303, 14454]
+[[column]]
+at = [4709, 4814]
+top = -5650
+[[column]]
+at = [4633, 12018]
+top = -5650
+
+[[object]]
+kind = "fireplace"
+wall = "west"
+span = [6545, 10302]
+depth = 775
+mantel = -1600
+opening = [1500, 1150]
+
+[[object]]
+kind = "table"
+box = [7988, 6232, 26204, 10471]
+top = -1500
+thickness = 140
+
+[[object]]
+kind = "chair"
+at = [10615, 6371]
+facing = "north"
+[[object]]
+kind = "chair"
+at = [14538, 6423]
+facing = "north"
+[[object]]
+kind = "chair"
+at = [19222, 6201]
+facing = "north"
+[[object]]
+kind = "chair"
+at = [23813, 6289]
+facing = "north"
+[[object]]
+kind = "chair"
+at = [10836, 10566]
+facing = "south"
+[[object]]
+kind = "chair"
+at = [14310, 10422]
+facing = "south"
+[[object]]
+kind = "chair"
+at = [18909, 10485]
+facing = "south"
+[[object]]
+kind = "chair"
+at = [23184, 10584]
+facing = "south"
+
+[[object]]
+kind = "urn"
+at = [12415, 2742]
+radius = 520
+top = -1900
+pedestal = 700
+pedestal_top = -950
+material = "iron"
+
+[[painting]]
+wall = "south"
+span = [4200, 7000]
+y = [-4600, -2800]
+[[painting]]
+wall = "north"
+span = [24800, 27400]
+y = [-4500, -2900]
+[[painting]]
+wall = "north"
+span = [17400, 19000]
+y = [-4300, -3000]
+[[painting]]
+wall = "north"
+span = [15200, 16200]
+y = [-3900, -3200]
+
+[[sconce]]
+wall = "south"
+at = [-3500, 9000]
+[[sconce]]
+wall = "south"
+at = [-3500, 17000]
+[[sconce]]
+wall = "south"
+at = [-3500, 25000]
+[[sconce]]
+wall = "north"
+at = [-3500, 9000]
+[[sconce]]
+wall = "north"
+at = [-3500, 17000]
+[[sconce]]
+wall = "north"
+at = [-3500, 25000]
+[[sconce]]
+wall = "east"
+at = [-3500, 4000]
+[[sconce]]
+wall = "east"
+at = [-3500, 12800]

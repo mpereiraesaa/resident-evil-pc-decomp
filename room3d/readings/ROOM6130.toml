@@ -1,0 +1,114 @@
+# Return-visit copy of ROOM1130.toml: stage 6 shares its collision and cameras exactly.
+# Mansion 1F bathroom: tan plaster over a dark red dado, planked floor with
+# a rug, clawfoot tub with a curtain rail, vanity, toilet. Shell and fixtures
+# from ROOM1130.RDT blocks.
+room = "ROOM6130"
+title = "Bathroom (return)"
+seed = 1130
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+dado = 1000
+dado_material = "panel"
+chair_rail = true
+skirting = 160
+cell = 600
+
+[materials]
+plaster = [0.74, 0.54, 0.32]
+"plaster.ceiling" = [0.60, 0.46, 0.30]
+panel = [0.34, 0.12, 0.10]
+planks = [0.42, 0.26, 0.15]
+wood = [0.30, 0.17, 0.10]
+door = [0.26, 0.16, 0.10]
+carpet = { color = [0.36, 0.26, 0.30], motif = [0.75, 0.45, 0.30] }
+glass = [0.55, 0.60, 0.62]
+
+[lighting]
+ambient = [0.14, 0.11, 0.07]
+
+[[zone]]
+box = [1697, 1867, 10417, 7782]
+
+[[door]]
+wall = "south"
+span = [1700, 3700]
+top = -3300
+material = "door"
+
+# Tub, curtain rail and the half-height partition beside it
+[[object]]
+kind = "box"
+box = [4471, 1101, 9025, 3052]
+top = -700
+material = "paper"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [4471, 1867, 9025, 1900]
+top = -2900
+bottom = -2850
+material = "iron"
+[[object]]
+kind = "box"
+box = [7578, 1867, 8538, 4449]
+top = -2200
+material = "panel"
+omit = ["bottom"]
+# Vanity against the north wall, with a mirror above
+[[object]]
+kind = "box"
+box = [4260, 6547, 8085, 7782]
+top = -900
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [5000, 7400]
+y = [-2900, -1500]
+material = "glass"
+rail = false
+# Toilet and the closet block in the north-east corner
+[[object]]
+kind = "cylinder"
+at = [3600, 7400]
+radius = 320
+top = -520
+material = "paper"
+segments = 10
+[[object]]
+kind = "box"
+box = [7773, 6303, 10417, 7782]
+top = -4400
+material = "plaster"
+omit = ["bottom", "top", "north", "east"]
+[[object]]
+kind = "rug"
+box = [3000, 3600, 8300, 6200]
+
+[[painting]]
+wall = "west"
+span = [3200, 4000]
+y = [-3400, -2600]
+[[painting]]
+wall = "west"
+span = [4400, 5200]
+y = [-3300, -2700]
+
+[[sconce]]
+wall = "west"
+at = [-3400, 5600]
+candles = 1
+strength = 0.50
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3400, 3200]
+candles = 1
+strength = 0.42
+reach = 3400

@@ -1,0 +1,86 @@
+# Mansion 1F corridor south of the right stairs: an L of wallpapered passage.
+# Shell from ROOM10A0.RDT blocks 0,1,2,3,5; doors from its door records.
+room = "ROOM10A0"
+title = "1F east corridor"
+seed = 100
+
+[shell]
+floor = 0
+ceiling = -5300
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling_material = "plaster"
+skirting = 240
+chair_rail = false
+cell = 700
+
+[materials]
+wallpaper = { color = [0.52, 0.49, 0.36], motif = [0.33, 0.31, 0.21], repeats = 8 }
+planks = [0.30, 0.20, 0.12]
+plaster = [0.40, 0.36, 0.28]
+wood = [0.28, 0.18, 0.11]
+door = [0.26, 0.17, 0.10]
+"door.pale" = { color = [0.62, 0.66, 0.70], rows = 3 }
+
+[lighting]
+ambient = [0.095, 0.085, 0.064]
+
+[[zone]]            # east-west passage
+box = [1836, 1998, 16002, 5258]
+floor_along = "x"
+[[zone]]            # north leg
+box = [1836, 5258, 3591, 13248]
+
+[[door]]            # pale door, north wall, west of the stairs door
+wall = "north"
+span = [7800, 9300]
+top = -3300
+material = "door.pale"
+[[door]]            # to the right stairs
+wall = "north"
+span = [10600, 12600]
+top = -3300
+material = "door"
+[[door]]            # east end
+wall = "east"
+span = [2400, 5000]
+top = -3400
+material = "door"
+[[door]]            # south wall near the west end
+wall = "south"
+span = [1800, 4200]
+top = -3300
+material = "door"
+[[door]]            # west wall of the north leg
+wall = "west"
+span = [10700, 13000]
+top = -3300
+material = "door"
+
+[[painting]]
+wall = "north"
+span = [4400, 6600]
+y = [-3900, -2300]
+[[painting]]
+wall = "west"
+span = [8600, 10400]
+y = [-3800, -2300]
+
+[[sconce]]
+wall = "south"
+at = [-3600, 9600]
+candles = 1
+strength = 0.42
+reach = 3200
+[[sconce]]
+wall = "north"
+at = [-3600, 9900]
+candles = 1
+strength = 0.32
+reach = 3000
+[[sconce]]
+wall = "east"
+at = [-3600, 11000]
+candles = 1
+strength = 0.36
+reach = 3000

@@ -271,6 +271,32 @@ def tex_crate(rng, size, color):
     return tint(frame.astype(float) * 0.8, crate, tuple(min(1, c * 1.5) for c in color))
 
 
+def tex_wallpaper(rng, size, color, motif=(0.30, 0.28, 0.20), repeats=8):
+    """Damask-style wallpaper: a lattice of lobed motifs on a toned ground."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    grain = value_noise((size, size), rng, octaves=3, base_freq=24, persistence=0.5)
+    paper = np.array(color)[None, None, :] * (0.88 + 0.18 * grain)[..., None]
+    u, v = (xx * repeats) % 1, (yy * repeats) % 1
+    lobes = (np.abs(np.sin(u * math.pi * 2) * np.sin(v * math.pi * 2)) > 0.72)
+    u2, v2 = ((xx * repeats) + 0.5) % 1, ((yy * repeats) + 0.5) % 1
+    diamonds = (np.abs(u2 - 0.5) + np.abs(v2 - 0.5)) < 0.08
+    pattern = lobes | diamonds
+    return tint(pattern.astype(float) * 0.55, paper, motif)
+
+
+def tex_checker(rng, size, color, dark=(0.22, 0.17, 0.13)):
+    """Two-tone marble tiles, two by two per texture."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    veins = value_noise((size, size), rng, octaves=5, base_freq=3)
+    level = 0.92 + 0.10 * veins
+    light = np.array(color)[None, None, :] * level[..., None]
+    shade = np.array(dark)[None, None, :] * level[..., None]
+    check = ((np.floor(xx * 2) + np.floor(yy * 2)) % 2) == 0
+    image = np.where(check[..., None], light, shade)
+    grout = ((xx * 2) % 1 < 0.01) | ((yy * 2) % 1 < 0.01)
+    return tint(grout.astype(float) * 0.7, image, (0.30, 0.28, 0.25))
+
+
 # family -> (generator, default colour, default tile)
 FAMILIES = {
     "plaster": (tex_plaster, (0.70, 0.60, 0.46), (1400, 1400)),
@@ -291,6 +317,8 @@ FAMILIES = {
     "glass": (tex_glass, (1, 1, 1), None),
     "window_fan": (tex_window_fan, (0.70, 0.60, 0.46), None),
     "chest": (tex_chest, (0.22, 0.14, 0.08), None),
+    "wallpaper": (tex_wallpaper, (0.55, 0.52, 0.38), (1200, 1200)),
+    "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),
 }
 SOLIDS = {
@@ -300,6 +328,8 @@ SOLIDS = {
     "paper": {"kd": (0.92, 0.90, 0.82)},
     "enamel": {"kd": (0.12, 0.12, 0.13)},
     "drum": {"kd": (0.62, 0.55, 0.22)},
+    "velvet": {"kd": (0.45, 0.10, 0.12)},
+    "soot": {"kd": (0.06, 0.05, 0.05)},
 }
 
 
@@ -962,6 +992,63 @@ class Builder:
                 wall_rect(mesh, side, line + (d[0] + d[2]) * inset, a, b, bottom, top, self.use(o.get("material", "panel")))
                 if o.get("rail", True):
                     skirting_box(mesh, side, line, a, b, 90, 60, self.use("wood"), floor=top + 90)
+            elif kind == "table":
+                x0, z0, x1, z1 = o["box"]
+                top, thick = o["top"], o.get("thickness", 120)
+                mat = self.use(o.get("material", "wood"))
+                mesh.box((x0, top, z0), (x1, top + thick, z1), mat)
+                leg = o.get("leg", 160)
+                for lx, lz in ((x0 + 200, z0 + 200), (x1 - 200 - leg, z0 + 200), (x0 + 200, z1 - 200 - leg), (x1 - 200 - leg, z1 - 200 - leg)):
+                    mesh.box((lx, top + thick, lz), (lx + leg, floor, lz + leg), mat, omit=("bottom", "top"))
+            elif kind == "chair":
+                x, z = o["at"]
+                facing = o.get("facing", "north")
+                wood, seat = self.use(o.get("material", "wood")), self.use(o.get("seat", "velvet"))
+                half, seat_y = o.get("half", 240), o.get("seat_y", -480)
+                mesh.box((x - half, seat_y, z - half), (x + half, seat_y + 60, z + half), seat)
+                for lx, lz in ((x - half + 20, z - half + 20), (x + half - 60, z - half + 20), (x - half + 20, z + half - 60), (x + half - 60, z + half - 60)):
+                    mesh.box((lx, seat_y + 60, lz), (lx + 40, floor, lz + 40), wood, omit=("bottom", "top"))
+                back_top = o.get("back", -1050)
+                if facing == "north":
+                    mesh.box((x - half, back_top, z - half), (x + half, seat_y, z - half + 50), wood)
+                elif facing == "south":
+                    mesh.box((x - half, back_top, z + half - 50), (x + half, seat_y, z + half), wood)
+                elif facing == "east":
+                    mesh.box((x - half, back_top, z - half), (x - half + 50, seat_y, z + half), wood)
+                else:
+                    mesh.box((x + half - 50, back_top, z - half), (x + half, seat_y, z + half), wood)
+            elif kind == "fireplace":
+                side = o["wall"]
+                a, b = o["span"]
+                depth, mantel = o.get("depth", 700), o.get("mantel", -1500)
+                line = self._wall_line(side, (a + b) / 2)
+                d = SIDES[side]
+                stone, soot = self.use(o.get("material", "stone")), self.use("soot")
+                ow, oh = o.get("opening", (1400, 1100))
+                if side in ("west", "east"):
+                    x0, x1 = (line, line + depth) if d[0] > 0 else (line - depth, line)
+                    mesh.box((x0, mantel, a), (x1, floor, b), stone, omit=("bottom", side))
+                    mesh.box((x0 - 60 * (d[0] < 0), mantel - 150, a - 120), (x1 + 60 * (d[0] > 0), mantel, b + 120), stone)
+                    cz = (a + b) / 2
+                    fx = x1 if d[0] > 0 else x0
+                    mesh.box((min(fx, fx - d[0] * 300) , -oh, cz - ow / 2), (max(fx, fx - d[0] * 300) + 1, floor, cz + ow / 2), soot)
+                else:
+                    z0, z1 = (line, line + depth) if d[2] > 0 else (line - depth, line)
+                    mesh.box((a, mantel, z0), (b, floor, z1), stone, omit=("bottom", side))
+                    mesh.box((a - 120, mantel - 150, z0 - 60 * (d[2] < 0)), (b + 120, mantel, z1 + 60 * (d[2] > 0)), stone)
+                    cx = (a + b) / 2
+                    fz = z1 if d[2] > 0 else z0
+                    mesh.box((cx - ow / 2, -oh, min(fz, fz - d[2] * 300)), (cx + ow / 2, floor, max(fz, fz - d[2] * 300) + 1), soot)
+            elif kind == "urn":
+                x, z = o["at"]
+                r, top = o.get("radius", 500), o.get("top", -1600)
+                ped = o.get("pedestal", 600)
+                stone, mat = self.use("stone"), self.use(o.get("material", "iron"))
+                ped_top = o.get("pedestal_top", -900)
+                mesh.box((x - ped / 2, ped_top, z - ped / 2), (x + ped / 2, floor, z + ped / 2), stone, omit=("bottom",))
+                mesh.cylinder(x, z, r * 0.55, ped_top - 120, ped_top, mat, segments=10)
+                mesh.cylinder(x, z, r, top + (ped_top - top) * 0.35, ped_top - 120, mat, segments=12)
+                mesh.cylinder(x, z, r * 0.6, top, top + (ped_top - top) * 0.35, mat, segments=12)
             elif kind == "newel":
                 x, z = o["at"]
                 wood = self.use("wood")

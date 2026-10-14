@@ -21,7 +21,7 @@ cell = 800
 "marble.blue" = { color = [0.46, 0.52, 0.62], tile = [2400, 2400] }
 "plaster.blue" = { color = [0.40, 0.44, 0.56], stains = 0.3 }
 "plaster.night" = [0.10, 0.10, 0.14]
-wallpaper = { color = [0.46, 0.08, 0.08], motif = [0.60, 0.14, 0.12], repeats = 12 }
+wallpaper = { color = [0.46, 0.08, 0.08], motif = [0.60, 0.14, 0.12], repeats = 6 }
 planks = [0.44, 0.18, 0.10]
 "plaster.cream" = [0.66, 0.62, 0.52]
 stone = [0.42, 0.52, 0.48]

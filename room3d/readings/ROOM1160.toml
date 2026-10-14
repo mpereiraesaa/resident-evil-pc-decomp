@@ -19,7 +19,7 @@ trim = "marble_dark"
 cell = 700
 
 [materials]
-wallpaper = { color = [0.58, 0.62, 0.50], motif = [0.44, 0.50, 0.38], repeats = 10 }
+wallpaper = { color = [0.58, 0.62, 0.50], motif = [0.44, 0.50, 0.38], repeats = 5 }
 "marble.green" = [0.30, 0.42, 0.30]
 "carpet.floor" = { color = [0.34, 0.20, 0.12], motif = [0.56, 0.40, 0.22], tile = [3200, 3200] }
 "plaster.dark" = [0.30, 0.28, 0.24]

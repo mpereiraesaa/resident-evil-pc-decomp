@@ -723,6 +723,10 @@ class Builder:
             wall_rect(mesh, side, fixed, a, b, base, ceiling, wm)
             if skirt:
                 skirting_box(mesh, side, fixed, a, b, skirt, 55, trim, floor)
+            # Cornice where the wall meets the ceiling (interiors: skirting set).
+            cornice = zone.get("cornice", shell.get("cornice", 200 if skirt else 0))
+            if cornice and ceiling is not None:
+                skirting_box(mesh, side, fixed, a, b, cornice, 70, trim, floor=ceiling + cornice)
             if group:
                 mesh.set_group("walls")
         # Soffits between zones with different ceilings.

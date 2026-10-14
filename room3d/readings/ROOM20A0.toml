@@ -15,7 +15,7 @@ skirting = 200
 cell = 600
 
 [materials]
-wallpaper = { color = [0.30, 0.46, 0.56], motif = [0.20, 0.34, 0.44], repeats = 14 }
+wallpaper = { color = [0.30, 0.46, 0.56], motif = [0.20, 0.34, 0.44], repeats = 7 }
 "plaster.dark" = [0.24, 0.18, 0.12]
 planks = [0.24, 0.12, 0.08]
 wood = [0.42, 0.26, 0.12]

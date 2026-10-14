@@ -18,7 +18,7 @@ skirting = 160
 cell = 600
 
 [materials]
-wallpaper = { color = [0.62, 0.62, 0.52], motif = [0.50, 0.50, 0.42], repeats = 14 }
+wallpaper = { color = [0.62, 0.62, 0.52], motif = [0.50, 0.50, 0.42], repeats = 7 }
 panel = [0.24, 0.14, 0.08]
 planks = [0.30, 0.19, 0.11]
 "planks.ceiling" = { color = [0.30, 0.18, 0.11], count = 10 }

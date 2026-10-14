@@ -55,7 +55,7 @@ kind = "wall_band"
 wall = "south"
 span = [4700, 6100]
 y = [-2900, -1700]
-material = "glass"
+material = "mirror"
 rail = false
 [[object]]
 kind = "rug"

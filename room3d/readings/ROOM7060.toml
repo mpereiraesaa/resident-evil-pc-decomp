@@ -19,7 +19,7 @@ skirting = 160
 cell = 700
 
 [materials]
-wallpaper = { color = [0.46, 0.10, 0.14], motif = [0.62, 0.30, 0.26], repeats = 12 }
+wallpaper = { color = [0.46, 0.10, 0.14], motif = [0.62, 0.30, 0.26], repeats = 6 }
 "plaster.dark" = [0.20, 0.12, 0.10]
 panel = [0.26, 0.12, 0.08]
 planks = [0.26, 0.14, 0.09]
@@ -28,7 +28,7 @@ door = [0.26, 0.14, 0.08]
 carpet = { color = [0.46, 0.22, 0.14], motif = [0.70, 0.60, 0.46] }
 
 [lighting]
-ambient = [0.10, 0.07, 0.06]
+ambient = [0.26, 0.18, 0.15]
 
 [[zone]]
 box = [2052, 1890, 9954, 12780]
@@ -63,13 +63,10 @@ top = -1100
 material = "wood"
 omit = ["bottom", "south", "east"]
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [8800, 2300]
-radius = 240
-top = -1900
-bottom = -1100
-material = "glow"
-segments = 8
+base = -1100
+height = 650
 [[object]]          # desk on the east wall
 kind = "table"
 box = [7110, 5166, 9954, 7128]

@@ -45,9 +45,11 @@ floor_along = "x"
 [[zone]]            # the void over the hall
 box = [4014, 2502, 30510, 14472]
 open_floor = true
+depth = 6000
 [[zone]]            # the stair well
 box = [14166, 14472, 19924, 23130]
 open_floor = true
+depth = 6000
 
 [[slab]]            # hall floor seen through the void
 box = [4014, 2502, 30510, 14472]

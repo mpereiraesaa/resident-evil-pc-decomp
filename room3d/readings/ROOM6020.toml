@@ -52,13 +52,10 @@ box = [2142, 1764, 4032, 3078]
 top = -1500
 thickness = 100
 [[object]]
-kind = "cylinder"
+kind = "lamp"
 at = [3300, 2300]
-radius = 160
-top = -2100
-bottom = -1500
-material = "glow"
-segments = 8
+base = -1500
+height = 650
 [[object]]
 kind = "chair"
 at = [3100, 3700]

@@ -46,6 +46,17 @@ floor_along = "x"
 [[zone]]            # landing strip south of the well
 box = [5472, 12582, 10332, 13608]
 floor_along = "x"
+[[zone]]            # the well down to the 1F stairs room
+box = [5472, 13608, 10332, 16920]
+open_floor = true
+depth = 3600
+
+[[slab]]            # 1F floor seen down the well
+box = [5472, 13608, 10332, 16920]
+top = 3600
+thickness = 200
+top_material = "planks"
+bottom_material = "planks"
 
 [[object]]
 kind = "rug"

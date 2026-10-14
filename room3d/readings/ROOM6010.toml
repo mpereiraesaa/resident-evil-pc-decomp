@@ -10,7 +10,7 @@ seed = 1010
 floor = 0
 ceiling = -5400
 floor_material = "planks"
-wall_material = "plaster"
+wall_material = "wallpaper"
 ceiling_material = "coffer"
 dado = 1300
 dado_material = "panel"
@@ -19,7 +19,7 @@ skirting = 200
 cell = 800
 
 [materials]
-plaster = [0.66, 0.66, 0.60]
+wallpaper = { color = [0.56, 0.60, 0.54], motif = [0.46, 0.50, 0.44], repeats = 4 }
 panel = [0.30, 0.15, 0.09]
 planks = [0.36, 0.14, 0.09]
 wood = [0.26, 0.13, 0.08]

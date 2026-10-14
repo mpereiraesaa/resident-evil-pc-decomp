@@ -32,11 +32,12 @@ ambient = [0.13, 0.14, 0.12]
 box = [18486, 23022, 24894, 29234]
 [[zone]]            # strip along the east side of the open bay
 box = [22284, 17298, 24894, 23022]
-wall_materials = { south = "night" }
+wall_materials = { south = "forest" }
 [[zone]]            # open bay (the garden below)
 box = [18486, 12906, 22284, 23022]
 open_floor = true
-wall_materials = { south = "night", west = "night" }
+depth = 5000
+wall_materials = { south = "forest", west = "forest" }
 ceiling = -4800
 
 [[slab]]            # garden floor far below the bay

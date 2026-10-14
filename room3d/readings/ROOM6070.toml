@@ -22,14 +22,15 @@ cell = 800
 "marble.blue" = { color = [0.46, 0.52, 0.62], tile = [2400, 2400] }
 "plaster.blue" = { color = [0.40, 0.44, 0.56], stains = 0.3 }
 "plaster.night" = [0.10, 0.10, 0.14]
-wallpaper = { color = [0.46, 0.08, 0.08], motif = [0.60, 0.14, 0.12], repeats = 12 }
+wallpaper = { color = [0.46, 0.08, 0.08], motif = [0.60, 0.14, 0.12], repeats = 6 }
 planks = [0.44, 0.18, 0.10]
 "plaster.cream" = [0.66, 0.62, 0.52]
-stone = [0.42, 0.52, 0.48]
+stone = [0.26, 0.40, 0.34]
 wood = [0.30, 0.17, 0.10]
 door = [0.14, 0.14, 0.16]
 velvet = [0.52, 0.08, 0.08]
 marble_dark = [0.18, 0.20, 0.24]
+statue = [0.30, 0.52, 0.44]
 
 [lighting]
 ambient = [0.10, 0.11, 0.15]
@@ -74,12 +75,14 @@ y = [-3600, -3000]
 material = "velvet"
 rail = false
 
-[[object]]          # statue pedestal (the statue is a game object)
-kind = "box"
-box = [8108, 5811, 10081, 7416]
-top = -1500
-material = "stone"
-omit = ["bottom"]
+[[object]]          # statue on its pedestal (painted into the backdrop)
+kind = "urn"
+at = [9094, 6613]
+radius = 620
+top = -3600
+pedestal = 1700
+pedestal_top = -1500
+material = "statue"
 
 [[painting]]
 wall = "west"

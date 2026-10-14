@@ -75,7 +75,7 @@ kind = "wall_band"
 wall = "south"
 span = [6600, 9500]
 y = [-2900, -1200]
-material = "glass"
+material = "mirror"
 rail = false
 [[object]]          # long display cabinet
 kind = "box"

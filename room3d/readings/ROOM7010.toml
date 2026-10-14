@@ -17,7 +17,7 @@ chair_rail = true
 cell = 700
 
 [materials]
-wallpaper = { color = [0.58, 0.54, 0.30], motif = [0.40, 0.36, 0.18], repeats = 8 }
+wallpaper = { color = [0.58, 0.54, 0.30], motif = [0.40, 0.36, 0.18], repeats = 4 }
 "plaster.dark" = [0.26, 0.22, 0.14]
 planks = [0.36, 0.20, 0.11]
 wood = [0.42, 0.14, 0.08]
@@ -42,6 +42,7 @@ floor_along = "x"
 [[zone]]            # the well itself
 box = [5976, 8964, 14454, 13302]
 open_floor = true
+depth = 3000
 
 [[door]]
 wall = "east"

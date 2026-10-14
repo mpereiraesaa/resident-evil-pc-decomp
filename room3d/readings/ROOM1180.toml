@@ -1,0 +1,124 @@
+# Mansion 1F storeroom. Shell from ROOM1180.RDT blocks 0,1,3,5; chest from
+# block 2 and camera 1; drum from circle 7; table from camera 0; lamp from
+# camera 1 on the south wall. The chest lid is a game-owned object model.
+room = "ROOM1180"
+title = "1F storeroom"
+seed = 1180
+
+[shell]
+floor = 0
+ceiling = -6000
+floor_material = "planks"
+ceiling_material = "planks.ceiling"
+wall_material = "plaster"
+skirting = 160
+cell = 700
+
+[materials]
+plaster = [0.68, 0.55, 0.40]
+planks = [0.44, 0.31, 0.19]
+"planks.ceiling" = { count = 8, color = [0.56, 0.43, 0.28] }
+chest = [0.22, 0.14, 0.08]
+crate = [0.40, 0.28, 0.16]
+door = [0.28, 0.19, 0.11]
+
+[lighting]
+ambient = [0.11, 0.085, 0.06]
+
+[[zone]]
+box = [1854, 1944, 7344, 8948]
+floor_along = "z"
+wall_groups = { north = "north_wall" }
+
+[[beam]]
+box = [1854, 2380, 7344, 2520]
+top = -6000
+[[beam]]
+box = [1854, 4380, 7344, 4520]
+top = -6000
+[[beam]]
+box = [1854, 6380, 7344, 6520]
+top = -6000
+[[beam]]
+box = [1854, 8380, 7344, 8520]
+top = -6000
+[[beam]]
+box = [4560, 1944, 4720, 8948]
+top = -6000
+
+[[door]]
+wall = "north"
+span = [5600, 6800]
+top = -3350
+material = "door"
+group = "north_wall"
+
+[[object]]
+kind = "chest"
+box = [4750, 1944, 7344, 3438]
+top = -1410
+back = "south"
+
+[[object]]
+kind = "cylinder"
+at = [2400, 2500]
+radius = 480
+top = -1430
+material = "drum"
+hoops = [-1250, -730, -300]
+hoop_material = "drum"
+group = "drum"
+
+[[object]]
+kind = "box"
+box = [3550, 1944, 4150, 2464]
+top = -520
+material = "crate"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [3650, 2004, 4050, 2404]
+top = -880
+bottom = -520
+material = "crate"
+[[object]]
+kind = "cylinder"
+at = [3250, 2350]
+radius = 120
+top = -620
+material = "iron"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [3350, 2700]
+radius = 90
+top = -360
+material = "iron"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [4350, 2450]
+radius = 110
+top = -300
+material = "iron"
+segments = 8
+
+[[object]]
+kind = "table_round"
+at = [2556, 8212]
+radius = 540
+top = -1550
+with = "typewriter"
+group = "table"
+
+[[wall_lamp]]
+wall = "south"
+at = [-4284, 4995]
+
+# Camera 1 sits behind the north wall; camera 0 has the drum in its lap.
+[[hide]]
+camera = 1
+groups = ["north_wall", "table"]
+[[hide]]
+camera = 0
+groups = ["drum"]

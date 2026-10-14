@@ -216,7 +216,6 @@ def balustrade(mesh, start, end, side=None, newels=(True, True), height=950, mat
 def door(mesh, x0, x1, z, top, material, face, frame_depth=110, floor=0, frame="wood"):
     """Door panel recessed into a wall running along X; `face` is the room side."""
     inner = z + face * 70
-    mesh.set_group(None)
     if face > 0:
         mesh.rect((x1, floor, inner), (-1, 0, 0), (0, -1, 0), x1 - x0, -top, material)
     else:

@@ -1,0 +1,283 @@
+# Mansion main hall. Shell from ROOM1060.RDT blocks 0,1,11,20; colonnades
+# from the type-3 circles; north gallery depth, void edge and stair top from
+# ROOM2030 (2F hall) collision; lamp posts and chest-of-stair details from
+# floor-cast mask sprites. See docs/ROOM3D_FOUNDATION.md.
+room = "ROOM1060"
+title = "Main hall"
+seed = 1060
+
+[shell]
+floor = 0
+ceiling = -20000
+floor_material = "marble"
+wall_material = "plaster"
+ceiling_material = "coffer"
+dado = 2400
+dado_material = "panel"
+chair_rail = true
+skirting = 240
+cell = 1800
+
+[materials]
+plaster = [0.70, 0.60, 0.46]
+marble = [0.80, 0.78, 0.75]
+stone = [0.70, 0.66, 0.58]
+panel = [0.26, 0.17, 0.10]
+wood = [0.30, 0.20, 0.13]
+carpet = [0.50, 0.12, 0.10]
+runner = [0.48, 0.11, 0.09]
+border = [0.32, 0.08, 0.07]
+coffer = [0.22, 0.16, 0.10]
+double_door = [0.24, 0.16, 0.09]
+door = [0.28, 0.19, 0.11]
+"door.blue" = [0.20, 0.28, 0.46]
+
+[lighting]
+ambient = [0.15, 0.125, 0.10]
+
+[[zone]]
+box = [2092, 2087, 32105, 26827]
+
+# Floor coverings
+[[object]]
+kind = "rug"
+box = [10600, 2900, 23600, 16326]
+border = 600
+[[object]]
+kind = "rug"
+box = [15850, 16326, 18250, 16327]
+material = "runner"
+
+# Entrance and side doors
+[[door]]
+wall = "south"
+span = [15100, 19100]
+top = -4600
+material = "double_door"
+frame = "stone"
+frame_depth = 200
+[[door]]
+wall = "west"
+span = [16000, 17800]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [10700, 12300]
+top = -3300
+material = "door.blue"
+[[door]]
+wall = "east"
+span = [18600, 19800]
+top = -3300
+material = "door"
+
+[[window]]
+wall = "south"
+kind = "fanlight"
+at = 17098
+radius = 2800
+sill = -9000
+strength = 0.30
+reach = 11000
+[[window]]
+wall = "north"
+kind = "arch"
+at = 17098
+half = 1200
+sill = -7800
+height = 4200
+strength = 0.30
+reach = 9000
+
+# Gallery-level wainscot on every wall
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2087, 26827]
+y = [-8400, -6000]
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [2087, 26827]
+y = [-8400, -6000]
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [2092, 32105]
+y = [-8400, -6000]
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [2092, 32105]
+y = [-8400, -6000]
+
+# Side colonnades carrying the galleries
+[[arcade]]
+axis = "z"
+line = 3970
+columns = [6100, 10570, 15030, 19520]
+spring = -3500
+top = -5600
+ends = [2087, 14472]
+[[arcade]]
+axis = "z"
+line = 30230
+columns = [6100, 10570, 15030, 19520]
+spring = -3500
+top = -5600
+ends = [2087, 14472]
+# Front arcade under the north gallery (free-standing columns from circles 16 and 2)
+[[arcade]]
+axis = "x"
+line = 16000
+columns = [9297, 24900]
+spring = -3500
+top = -5600
+bays = [[4014, 8777], [9817, 14166], [19924, 24380], [25420, 30183]]   # the stair well breaks the middle bay
+pilasters = [4014, 30183]
+# Rear arcade in the aisle behind the stair
+[[arcade]]
+axis = "x"
+line = 23800
+columns = [8193, 13598, 20484, 26100]
+spring = -3500
+top = -5600
+bays = [[4378, 7673], [8713, 13078], [21004, 25580], [26620, 30384]]   # closed behind the stair
+
+# Galleries: west, east, north with the stair well
+[[slab]]
+box = [2092, 2087, 4014, 14472]
+top = -6000
+thickness = 400
+top_material = "carpet"
+bottom_material = "plaster"
+edges = ["east"]
+edge_band = [{ side = "east", width = 450, material = "stone" }]
+rails = [{ side = "east" }]
+[[slab]]
+box = [30183, 2087, 32105, 14472]
+top = -6000
+thickness = 400
+top_material = "carpet"
+bottom_material = "plaster"
+edges = ["west"]
+edge_band = [{ side = "west", width = 450, material = "stone" }]
+rails = [{ side = "west" }]
+[[slab]]
+box = [2092, 14472, 14166, 26827]
+top = -6000
+thickness = 400
+top_material = "carpet"
+bottom_material = "plaster"
+edges = ["south", "east"]
+edge_band = [{ side = "south", width = 450, material = "stone" }]
+rails = [{ side = "south", span = [4014, 14166] }, { side = "east", span = [14472, 23130], newels = [true, false] }]
+[[slab]]
+box = [19924, 14472, 32105, 26827]
+top = -6000
+thickness = 400
+top_material = "carpet"
+bottom_material = "plaster"
+edges = ["south", "west"]
+edge_band = [{ side = "south", width = 450, material = "stone" }]
+rails = [{ side = "south", span = [19924, 30183] }, { side = "west", span = [14472, 23130], newels = [true, false] }]
+[[slab]]
+box = [14166, 23130, 19924, 26827]
+top = -6000
+thickness = 400
+top_material = "carpet"
+bottom_material = "plaster"
+
+[[stair]]
+x = [15228, 18864]
+z = [16326, 23130]
+direction = "north"
+top = -6000
+steps = 20
+parapet = 1060
+runner = [15850, 18250]
+tread_material = "stone"
+
+[[lamp_post]]
+at = [14050, 16050]
+top = -4600
+[[lamp_post]]
+at = [20150, 16050]
+top = -4600
+
+# Three-candle sconces, aisle level and gallery level, plus the south wall pair
+[[sconce]]
+wall = "west"
+at = [-3600, 8300]
+[[sconce]]
+wall = "west"
+at = [-3600, 12800]
+[[sconce]]
+wall = "west"
+at = [-3600, 17300]
+[[sconce]]
+wall = "west"
+at = [-3600, 21800]
+[[sconce]]
+wall = "east"
+at = [-3600, 8300]
+[[sconce]]
+wall = "east"
+at = [-3600, 12800]
+[[sconce]]
+wall = "east"
+at = [-3600, 17300]
+[[sconce]]
+wall = "east"
+at = [-3600, 21800]
+[[sconce]]
+wall = "west"
+at = [-8800, 8300]
+strength = 0.30
+reach = 8000
+[[sconce]]
+wall = "west"
+at = [-8800, 17300]
+strength = 0.30
+reach = 8000
+[[sconce]]
+wall = "east"
+at = [-8800, 8300]
+strength = 0.30
+reach = 8000
+[[sconce]]
+wall = "east"
+at = [-8800, 17300]
+strength = 0.30
+reach = 8000
+[[sconce]]
+wall = "south"
+at = [-9000, 9000]
+strength = 0.30
+reach = 8000
+[[sconce]]
+wall = "south"
+at = [-9000, 25200]
+strength = 0.30
+reach = 8000
+[[sconce]]
+wall = "north"
+at = [-3600, 5000]
+strength = 0.34
+reach = 5500
+[[sconce]]
+wall = "north"
+at = [-3600, 11000]
+strength = 0.34
+reach = 5500
+[[sconce]]
+wall = "north"
+at = [-3600, 23000]
+strength = 0.34
+reach = 5500
+[[sconce]]
+wall = "north"
+at = [-3600, 29000]
+strength = 0.34
+reach = 5500

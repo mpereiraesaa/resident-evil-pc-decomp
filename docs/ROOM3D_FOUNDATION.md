@@ -1176,3 +1176,18 @@ Object positions were cast from the original views onto the wall planes
 Camera 1 sits behind the north wall, so that wall, the door and the table are
 hidden for it; the drum is hidden for camera 0. Both cameras score above 0.95
 edge precision. Passes the smoke test including the item-box menu.
+
+### Room readings
+
+`room3d/readings/ROOMxxxx.toml` records what a person read from a room's
+evidence: walkable zones with floor and ceiling heights and finishes, doors,
+windows, paintings, arcades, slabs (galleries, landings), stairs, objects,
+sconces, chandeliers, lamp posts and per-camera hides. `tools/room3d_reading.py`
+builds any reading into a mesh through `room3d_handmade.py` with procedural
+textures (families with per-reading tints) and a light rig derived from the
+fixtures; it checks the loader limits and prints per-camera edge scores.
+`room3d_reading.py survey ROOM.RDT --originals DIR` prints the evidence used to
+write a reading (cameras, collision, floor-cast mask sprites) and writes the
+corrected originals with a pixel grid. The three hand-authored rooms are now
+readings (ROOM1180, ROOM10B0, ROOM1060) and reproduce the approved meshes;
+the per-room build scripts remain as reference.

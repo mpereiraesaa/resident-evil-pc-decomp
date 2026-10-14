@@ -28,7 +28,7 @@ door = [0.28, 0.17, 0.10]
 stone = [0.46, 0.46, 0.42]
 
 [lighting]
-ambient = [0.09, 0.08, 0.06]
+ambient = [0.15, 0.12, 0.09]
 
 [[zone]]            # bar room
 box = [3502, 2210, 14630, 12348]
@@ -124,7 +124,7 @@ kind = "box"
 box = [10800, 6700, 14900, 9300]
 top = -1300
 bottom = -950
-material = "wood"
+material = "lacquer"
 [[object]]
 kind = "cylinder"
 at = [8600, 3000]
@@ -132,6 +132,14 @@ radius = 330
 top = -900
 material = "stone"
 segments = 10
+[[object]]          # bust in the niche at the end of the passage
+kind = "urn"
+at = [9300, 18600]
+radius = 380
+top = -2600
+pedestal = 700
+pedestal_top = -1200
+material = "iron"
 
 [[sconce]]
 wall = "west"

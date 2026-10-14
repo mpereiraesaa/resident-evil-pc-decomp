@@ -1,0 +1,71 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "8622106da4893c39cbc930ef40db92a0c339d9e198124973071ef89660dd7ce0",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:53:01+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "8622106da4893c39cbc930ef40db92a0c339d9e198124973071ef89660dd7ce0",
+      "edits": {
+        "primitive_3": {
+          "hide": true
+        }
+      },
+      "note": "Hide the fragmented chandelier primitive",
+      "objects": {
+        "primitive_3": {
+          "kind": "lamp",
+          "max": [
+            5160.87587,
+            -4453.83578,
+            9376.7784
+          ],
+          "min": [
+            3253.41618,
+            -5431.65486,
+            7655.538
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:53:01+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Scattered fixture primitives hidden",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM1160",
+    "room": 22,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "e925dde94b2961cda67faf320954ef2158bf8c6d7fe97533e090a606f26080a8",
+      "1": "1090a7d6d8450532d47be4647b453d8b4acce3d861d61c0e743c2fac2345139c",
+      "2": "39c5262a854a42aeeb0ee8c22e28ece2c887dff970a2b0414b42fa29175d2856"
+    },
+    "geometry_sha256": "d67b301ab0ef58ed7ca0d50a57b9387df5096935d7a2039dda7cc1c6b77781ec",
+    "player": 0,
+    "rdt": "ROOM1160",
+    "rdt_sha256": "d52d4055c30ccb8613bf3e9a04df8729378aa36068e0bce37ad6a69f5a921a5b",
+    "room": 22,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:53:01+00:00"
+}

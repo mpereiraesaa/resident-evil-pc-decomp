@@ -76,6 +76,34 @@
       },
       "recorded": "2026-10-14T10:35:31+00:00",
       "step": 1
+    },
+    {
+      "additions": [],
+      "base": "replayed",
+      "base_sha256": "fb95c3cc2d7662ed80d2e913982c119ee8d8373996b8f004a420466127f1f336",
+      "edits": {
+        "primitive_2": {
+          "hide": true
+        }
+      },
+      "note": "Hide the globe primitive that fragments into blocks (creative removal)",
+      "objects": {
+        "primitive_2": {
+          "kind": "lamp",
+          "max": [
+            8008.75889,
+            74.61756,
+            6263.13524
+          ],
+          "min": [
+            5236.6031,
+            -3229.45881,
+            4534.65844
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:53:19+00:00",
+      "step": 2
     }
   ],
   "note": "Furniture collision slabs scaled to furniture height about the floor",
@@ -103,5 +131,5 @@
     "stage": 1
   },
   "tool": "room3d_overrides",
-  "updated": "2026-10-14T10:35:31+00:00"
+  "updated": "2026-10-14T10:53:19+00:00"
 }

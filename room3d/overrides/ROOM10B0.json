@@ -1,0 +1,72 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "124ccefecbb6e90132b8238f2ac9a31464426af43076bcee73da5c17d0c0f9a7",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:52:59+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "124ccefecbb6e90132b8238f2ac9a31464426af43076bcee73da5c17d0c0f9a7",
+      "edits": {
+        "primitive_3": {
+          "hide": true
+        }
+      },
+      "note": "Hide the chandelier primitive that scatters into white fragments",
+      "objects": {
+        "primitive_3": {
+          "kind": "lamp",
+          "max": [
+            6161.67381,
+            -5881.88831,
+            16884.22849
+          ],
+          "min": [
+            3499.01457,
+            -7127.44782,
+            14221.56925
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:53:00+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Scattered fixture primitives hidden",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM10B0",
+    "room": 11,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "9267088cd7b17b8004c402f550d57ac2389b49a631ea22470cdc04cf41d105d7",
+      "1": "25c81447a1d8a4b092152fb234b966f0ee6d7d3d85fa0ce76aee4b0489248d37",
+      "2": "976a6b369c62902e671422b9552f55efb1e6ac575b6d67d8a0515c625029c702",
+      "3": "885d7ba19c08bc87145925b04bae891f097af340e267e9216a72460163ef48ae"
+    },
+    "geometry_sha256": "1861990512c72efb2fc5522c91852e9a451f84ae2aed52a14b5edb959e288c88",
+    "player": 0,
+    "rdt": "ROOM10B0",
+    "rdt_sha256": "d1ebc8924e9c6acfef95034ae1e32535deda5e16e65b4ecb87df7fe8fbf8e7bb",
+    "room": 11,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:53:00+00:00"
+}

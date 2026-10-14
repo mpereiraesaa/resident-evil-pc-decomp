@@ -145,16 +145,16 @@
     },
     "ROOM10B0": {
       "gameplay": "validated",
-      "note": "Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:24:51+00:00"
+      "note": "Stair hall: scattered chandelier primitive hidden; stairs remain a rough striped slab. Accepted as approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition); not a human play-test.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:37+00:00"
     },
     "ROOM10B1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10B0",
-      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:31:31+00:00"
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: scattered chandelier primitive hidden; stairs remain a rough striped slab. Accepted as approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition); not a human play-test.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM10C0": {
       "gameplay": "not_validated",
@@ -184,16 +184,16 @@
     },
     "ROOM10E0": {
       "gameplay": "not_validated",
-      "note": "Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
-      "review": "needs_work",
-      "updated": "2026-10-14T09:09:40+00:00"
+      "note": "Bedroom with closet: the three lamp primitives that fragmented the table lamp are hidden; bed, shelves and closet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:03:38+00:00"
     },
     "ROOM10E1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10E0",
-      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: the three lamp primitives that fragmented the table lamp are hidden; bed, shelves and closet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM10F0": {
       "gameplay": "not_validated",
@@ -210,16 +210,16 @@
     },
     "ROOM1110": {
       "gameplay": "not_validated",
-      "note": "Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:43:20+00:00"
+      "note": "Globe room: sofa and side table slabs scaled; the globe primitive that fragmented into blocks is hidden (creative removal, the globe is absent). Camera 4 close-up still wrong. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:03:39+00:00"
     },
     "ROOM1111": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1110",
-      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:43:22+00:00"
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled; the globe primitive that fragmented into blocks is hidden (creative removal, the globe is absent). Camera 4 close-up still wrong. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM1120": {
       "gameplay": "not_validated",
@@ -236,16 +236,16 @@
     },
     "ROOM1130": {
       "gameplay": "not_validated",
-      "note": "Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "note": "Bathroom with shower: tub, stool and stand slabs scaled, scattered fan primitive hidden so the fan shows as ceiling texture; shower stall kept tall. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:49:20+00:00"
+      "updated": "2026-10-14T11:03:39+00:00"
     },
     "ROOM1131": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1130",
-      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled, scattered fan primitive hidden so the fan shows as ceiling texture; shower stall kept tall. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:49:21+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM1140": {
       "gameplay": "not_validated",
@@ -275,16 +275,16 @@
     },
     "ROOM1160": {
       "gameplay": "not_validated",
-      "note": "Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "note": "Sitting room: fragmented chandelier primitive hidden; sofa, table and fireplace as textured slabs. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T09:18:22+00:00"
+      "updated": "2026-10-14T11:03:39+00:00"
     },
     "ROOM1161": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1160",
-      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: fragmented chandelier primitive hidden; sofa, table and fireplace as textured slabs. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM1170": {
       "gameplay": "not_validated",
@@ -353,16 +353,16 @@
     },
     "ROOM2010": {
       "gameplay": "not_validated",
-      "note": "Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "note": "Stairwell corridor: fragmented chandelier primitive hidden; corridor views read but the stairs remain a flat slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T09:37:04+00:00"
+      "updated": "2026-10-14T11:07:37+00:00"
     },
     "ROOM2011": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2010",
-      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: fragmented chandelier primitive hidden; corridor views read but the stairs remain a flat slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM2020": {
       "gameplay": "not_validated",
@@ -444,16 +444,16 @@
     },
     "ROOM2080": {
       "gameplay": "not_validated",
-      "note": "Corridor: chandelier texture fragmented in camera 0, deer head unreconstructable, wall seam split. Camera 1 acceptable.",
+      "note": "Corridor: fragmented chandelier primitive hidden; the deer head cannot be reconstructed and a wall seam is split in camera 0. Camera 1 acceptable.",
       "review": "needs_work",
-      "updated": "2026-10-14T08:52:35+00:00"
+      "updated": "2026-10-14T11:07:37+00:00"
     },
     "ROOM2081": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2080",
-      "note": "Inherited from ROOM2080 (identical layout and background files); not reviewed separately. Corridor: chandelier texture fragmented in camera 0, deer head unreconstructable, wall seam split. Camera 1 acceptable.",
+      "note": "Inherited from ROOM2080 (identical layout and background files); not reviewed separately. Corridor: fragmented chandelier primitive hidden; the deer head cannot be reconstructed and a wall seam is split in camera 0. Camera 1 acceptable.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM2090": {
       "gameplay": "not_validated",
@@ -1483,16 +1483,16 @@
     "ROOM60B0": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10B0",
-      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:31:31+00:00"
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: scattered chandelier primitive hidden; stairs remain a rough striped slab. Accepted as approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition); not a human play-test.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM60B1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10B0",
-      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: stairs rough, chandelier scattered as white fragments in cameras 1 and 2. Gameplay: automated Wine smoke test on the automatic mesh passed (mesh loaded, camera transition); not a human play-test.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:31:31+00:00"
+      "note": "Inherited from ROOM10B0 (identical layout and background files); not reviewed separately. Stair hall: scattered chandelier primitive hidden; stairs remain a rough striped slab. Accepted as approximate. Gameplay: automated Wine smoke test on the corrected mesh passed (mesh loaded, camera transition); not a human play-test.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM60C0": {
       "gameplay": "not_validated",
@@ -1524,16 +1524,16 @@
     "ROOM60E0": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10E0",
-      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: the three lamp primitives that fragmented the table lamp are hidden; bed, shelves and closet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM60E1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM10E0",
-      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: bed slab, shelves and closet read correctly; the table lamp breaks into white fragments in cameras 2 and 3.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM10E0 (identical layout and background files); not reviewed separately. Bedroom with closet: the three lamp primitives that fragmented the table lamp are hidden; bed, shelves and closet read. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM60F0": {
       "gameplay": "not_validated",
@@ -1565,16 +1565,16 @@
     "ROOM6110": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1110",
-      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:43:22+00:00"
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled; the globe primitive that fragmented into blocks is hidden (creative removal, the globe is absent). Camera 4 close-up still wrong. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM6111": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1110",
-      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:43:22+00:00"
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled; the globe primitive that fragmented into blocks is hidden (creative removal, the globe is absent). Camera 4 close-up still wrong. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM6120": {
       "gameplay": "not_validated",
@@ -1592,16 +1592,16 @@
     "ROOM6130": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1130",
-      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled, scattered fan primitive hidden so the fan shows as ceiling texture; shower stall kept tall. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:49:21+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM6131": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1130",
-      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled, scattered fan primitive hidden so the fan shows as ceiling texture; shower stall kept tall. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:49:21+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM6140": {
       "gameplay": "not_validated",
@@ -1634,16 +1634,16 @@
     "ROOM6160": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1160",
-      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: fragmented chandelier primitive hidden; sofa, table and fireplace as textured slabs. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM6161": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1160",
-      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: sofa, table and fireplace as dark slabs with texture; chandelier fragments. Accepted as approximate.",
+      "note": "Inherited from ROOM1160 (identical layout and background files); not reviewed separately. Sitting room: fragmented chandelier primitive hidden; sofa, table and fireplace as textured slabs. Accepted as approximate.",
       "review": "visually_approved",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM6170": {
       "gameplay": "not_validated",
@@ -1743,16 +1743,16 @@
     "ROOM7010": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2010",
-      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: fragmented chandelier primitive hidden; corridor views read but the stairs remain a flat slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM7011": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2010",
-      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: corridor views read; stairs are a flat slab and chandelier breaks into fragments in cameras 3 and 4.",
+      "note": "Inherited from ROOM2010 (identical layout and background files); not reviewed separately. Stairwell corridor: fragmented chandelier primitive hidden; corridor views read but the stairs remain a flat slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM7020": {
       "gameplay": "not_validated",
@@ -1847,9 +1847,9 @@
     "ROOM7081": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM2080",
-      "note": "Inherited from ROOM2080 (identical layout and background files); not reviewed separately. Corridor: chandelier texture fragmented in camera 0, deer head unreconstructable, wall seam split. Camera 1 acceptable.",
+      "note": "Inherited from ROOM2080 (identical layout and background files); not reviewed separately. Corridor: fragmented chandelier primitive hidden; the deer head cannot be reconstructed and a wall seam is split in camera 0. Camera 1 acceptable.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T11:07:38+00:00"
     },
     "ROOM7090": {
       "gameplay": "not_validated",

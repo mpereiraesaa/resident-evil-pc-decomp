@@ -101,6 +101,34 @@
       },
       "recorded": "2026-10-14T10:44:31+00:00",
       "step": 1
+    },
+    {
+      "additions": [],
+      "base": "replayed",
+      "base_sha256": "0153f91ef6dbceb1f748c3865a501cf5983bf957a1b79917b6c2cf62a04f2d51",
+      "edits": {
+        "primitive_2": {
+          "hide": true
+        }
+      },
+      "note": "Hide the ceiling fan primitive that scatters into fragments",
+      "objects": {
+        "primitive_2": {
+          "kind": "lamp",
+          "max": [
+            6488.8056,
+            -3822.51748,
+            6629.00393
+          ],
+          "min": [
+            3556.61626,
+            -4787.70897,
+            4013.14087
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:53:28+00:00",
+      "step": 2
     }
   ],
   "note": "Furniture collision slabs scaled to furniture height about the floor",
@@ -127,5 +155,5 @@
     "stage": 1
   },
   "tool": "room3d_overrides",
-  "updated": "2026-10-14T10:44:31+00:00"
+  "updated": "2026-10-14T10:53:28+00:00"
 }

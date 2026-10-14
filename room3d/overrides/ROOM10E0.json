@@ -1,0 +1,104 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "32547057074aa08976be03ec039cc232128d42ac5e3fc86320de22ba41b8a866",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:52:59+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "32547057074aa08976be03ec039cc232128d42ac5e3fc86320de22ba41b8a866",
+      "edits": {
+        "primitive_0": {
+          "hide": true
+        },
+        "primitive_1": {
+          "hide": true
+        },
+        "primitive_2": {
+          "hide": true
+        }
+      },
+      "note": "Hide the three lamp primitives that fragment the table lamp into white blocks",
+      "objects": {
+        "primitive_0": {
+          "kind": "lamp",
+          "max": [
+            7973.01224,
+            -1121.57704,
+            3712.14257
+          ],
+          "min": [
+            7174.12457,
+            -2011.03637,
+            3345.34017
+          ]
+        },
+        "primitive_1": {
+          "kind": "lamp",
+          "max": [
+            8141.37718,
+            -1462.79823,
+            3168.27423
+          ],
+          "min": [
+            7683.38256,
+            -1918.25249,
+            2964.90815
+          ]
+        },
+        "primitive_2": {
+          "kind": "lamp",
+          "max": [
+            8294.37701,
+            -630.13773,
+            3647.9719
+          ],
+          "min": [
+            7727.01731,
+            -1658.86506,
+            2867.2302
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:52:59+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Scattered fixture primitives hidden",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM10E0",
+    "room": 14,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "7ddd84f9e17e857d91f9b1b8edf86836574427b53b46119eab5ddc64ceaf9d05",
+      "1": "65f26aba09947e9fe498cfa1e3e579c37e8c6ff9d7ac407656754780d9436a2c",
+      "2": "cfe140c36fb98d1ddccb203e3b0517497385a8ade280fc944c8259db572170d0",
+      "3": "7522911d5d2e66156b4033647a261cdb1f4fbe2e83632626396c5fab888528f0"
+    },
+    "geometry_sha256": "8e8ebd3f21d836537de990938b466e557a629d1749b8611213ed7377a1e002f5",
+    "player": 0,
+    "rdt": "ROOM10E0",
+    "rdt_sha256": "f18650e4018207054aeb43dacbc49b9ec2827bf947d3956583a68af8c3873df7",
+    "room": 14,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:52:59+00:00"
+}

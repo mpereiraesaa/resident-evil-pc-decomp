@@ -1085,3 +1085,17 @@ fragmenting typewriter and a room-splitting wall slab. After this pass 154
 rooms are approved and 166 need work; 23 override files cover 60 rooms. The
 remaining needs-work rooms have no furniture slab left to scale: their
 defects are black or empty cameras, caves, stairs and scattered fixtures.
+
+### Hiding scattered fixture primitives
+
+A lamp or chandelier primitive that scatters into white fragments reads worse
+than no fixture, so the `hide` edit is the right correction when the original
+fixture cannot be rebuilt. Applied on 2026-10-14 to ROOM10E0 (three table-lamp
+primitives), ROOM10B0, ROOM2010, ROOM2080 and ROOM1160 (chandeliers), ROOM1130
+(ceiling fan, as a second override step recorded against the replayed state)
+and ROOM1110 (the globe, a creative removal). ROOM10E0, ROOM1110, ROOM10B0 and
+ROOM1160 are approved as approximate; ROOM2010 and ROOM2080 keep flat stairs
+and an unreconstructable deer head. The corrected ROOM10B0 mesh passes the
+Wine smoke test (`build/room3d-runtime-corrected-10b0/result.json`), so its
+gameplay record now refers to the corrected mesh. Catalog after this pass: 164
+rooms approved, 156 need work, 74 rooms covered by 30 override files.

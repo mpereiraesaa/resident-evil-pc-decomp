@@ -1,0 +1,76 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "e00878b6856e3cad99ab4cb8e48c7678af6a80a1081bacd17ab7d46fe92206c0",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:53:00+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "e00878b6856e3cad99ab4cb8e48c7678af6a80a1081bacd17ab7d46fe92206c0",
+      "edits": {
+        "primitive_4": {
+          "hide": true
+        }
+      },
+      "note": "Hide the chandelier primitive that breaks into fragments",
+      "objects": {
+        "primitive_4": {
+          "kind": "lamp",
+          "max": [
+            17474.04018,
+            -3779.2161,
+            3453.37775
+          ],
+          "min": [
+            16490.8075,
+            -4593.66214,
+            2470.14507
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:53:00+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Scattered fixture primitives hidden",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM2010",
+    "room": 1,
+    "stage": 2
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "989d8fed9ddab2ad9ced87b4e06b63ca9c9f9f7af061b3f4e0371a6fd0970ae5",
+      "1": "4df293b165dbc9a935e5eed21e4c1f332df4e84b3c194caf4ecfced925b51062",
+      "2": "055bcb633249c740c5dfd032a56bf47e3623ca674f972eca2938ef848d75bd27",
+      "3": "99dade7f2b5cbe78c9e9c2c51d4e164259e4223ee70ca7ffb4fc4de302350c3c",
+      "4": "19d0250a76510c5d45ef5624ac69e54388d6532c01afb29cb7b509c363e6dbaf",
+      "5": "b7fb2dd2319be92b02b77302a604924eccccafceddb21aad74e95b13fe435d43",
+      "6": "d7289cf2bb703634b06332cdd46b385184f663ef143a626b1dd7d243ac01c83d",
+      "7": "388d136de58024cd0d6199cf3d2c328cd3f3177422d64a6f06f03a56319a660b"
+    },
+    "geometry_sha256": "62a15ad41f48c3d0f80aee88487454d420397e67566469dbdce286a526df3bbb",
+    "player": 0,
+    "rdt": "ROOM2010",
+    "rdt_sha256": "099c83a1f475c727fba28069cbdfb2036b47b355cecbc04cc37813ad00d49a3a",
+    "room": 1,
+    "stage": 2
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:53:00+00:00"
+}

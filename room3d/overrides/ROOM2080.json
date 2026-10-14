@@ -1,0 +1,70 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "9ae12fa45a7c2f7542efec41530abde11a051390103f409aca91c98d4d374364",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:53:01+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "9ae12fa45a7c2f7542efec41530abde11a051390103f409aca91c98d4d374364",
+      "edits": {
+        "primitive_2": {
+          "hide": true
+        }
+      },
+      "note": "Hide the fragmented chandelier primitive; keep the small wall lamp",
+      "objects": {
+        "primitive_2": {
+          "kind": "lamp",
+          "max": [
+            7369.34299,
+            -4937.61575,
+            5086.31883
+          ],
+          "min": [
+            5977.60082,
+            -5817.85146,
+            4214.61119
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:53:01+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Scattered fixture primitives hidden",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM2080",
+    "room": 8,
+    "stage": 2
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "fc61cc5b2eb7967347e029362e4107b1bdcf9324a9ee78b8d48b9cbfd7b38d5a",
+      "1": "7e6ecd4942ba72486d2a5242ecc4c612e243c1bfec1920fed519988cf1b0fbc2"
+    },
+    "geometry_sha256": "ca47f881e7f831e70079f95866f3b5409ea0c4347e57975440a16fd631319b9d",
+    "player": 0,
+    "rdt": "ROOM2080",
+    "rdt_sha256": "f5c8d5f5a1667c9b00bf31ace499d74af5e610eb6b0da75b245973ee512d9e03",
+    "room": 8,
+    "stage": 2
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:53:01+00:00"
+}

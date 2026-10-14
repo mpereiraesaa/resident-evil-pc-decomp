@@ -60,3 +60,10 @@ at = [5400, -3700, 6400]
 color = [0.85, 0.92, 1.0]
 strength = 0.45
 reach = 6000
+
+[[object]]          # strip light
+kind = "box"
+box = [4700, 6340, 6100, 6460]
+top = -4000
+bottom = -3940
+material = "glow"

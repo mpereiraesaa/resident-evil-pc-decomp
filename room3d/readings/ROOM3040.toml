@@ -1,0 +1,79 @@
+# Guardhouse gate: a U of grey brick passages between high walls, planted
+# beds against the walls, open to the sky; the courtyard door at the east
+# end and the guardhouse door at the north end of the west leg.
+room = "ROOM3040"
+title = "Guardhouse gate"
+seed = 3040
+
+[shell]
+floor = 0
+ceiling = -12000
+floor_material = "stone.paving"
+wall_material = "stone.brick"
+ceiling_material = "night"
+skirting = 0
+trim = "stone"
+cell = 1200
+
+[materials]
+"stone.paving" = { color = [0.34, 0.36, 0.32], tile = [2000, 2000] }
+"stone.brick" = { color = [0.46, 0.48, 0.42], tile = [1200, 1200] }
+stone = [0.46, 0.48, 0.44]
+wood = [0.26, 0.14, 0.10]
+door = [0.34, 0.20, 0.12]
+
+[lighting]
+ambient = [0.152, 0.19, 0.171]
+
+[[zone]]            # east entry strip
+box = [23904, 2286, 29574, 5616]
+floor_along = "x"
+[[zone]]            # east leg
+box = [23904, 5616, 27324, 14886]
+[[zone]]            # middle passage
+box = [2376, 14886, 27324, 18090]
+floor_along = "x"
+[[zone]]            # west leg north to the guardhouse
+box = [2376, 18090, 5634, 30744]
+
+[[door]]
+wall = "east"
+span = [2600, 5200]
+top = -3600
+material = "door"
+frame = "stone"
+[[door]]
+wall = "north"
+span = [3500, 5000]
+top = -3400
+material = "door"
+frame = "stone"
+
+[[object]]          # hedge bed along the middle passage's south wall
+kind = "box"
+box = [2376, 14886, 23904, 15500]
+top = -800
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [23904, 2286, 24400, 14886]
+top = -800
+material = "hedge"
+omit = ["bottom"]
+
+[[light]]
+at = [26000, -3500, 4000]
+color = [0.80, 0.90, 1.0]
+strength = 0.3
+reach = 9000
+[[light]]
+at = [14000, -3500, 16500]
+color = [0.80, 0.90, 1.0]
+strength = 0.3
+reach = 10000
+[[light]]
+at = [4000, -3500, 25000]
+color = [0.80, 0.90, 1.0]
+strength = 0.3
+reach = 9000

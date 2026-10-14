@@ -1,0 +1,66 @@
+# Underground save room: grey stone walls, a desk with the typewriter and
+# a chair, a chest against the west wall, a cabinet in the north-west, the
+# door at the south end of the west wall.
+room = "ROOM30E0"
+title = "Underground save room"
+seed = 3140
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.floor"
+wall_material = "stone.grey"
+ceiling_material = "stone.grey"
+skirting = 0
+trim = "stone"
+cell = 600
+
+[materials]
+"stone.grey" = { color = [0.56, 0.56, 0.54], tile = [1400, 1400] }
+"stone.floor" = { color = [0.34, 0.34, 0.32], tile = [1400, 1400] }
+stone = [0.50, 0.50, 0.48]
+wood = [0.30, 0.16, 0.10]
+door = [0.30, 0.17, 0.10]
+chest = [0.30, 0.14, 0.09]
+
+[lighting]
+ambient = [0.13, 0.13, 0.13]
+
+[[zone]]
+box = [1962, 2070, 8874, 10728]
+
+[[door]]
+wall = "south"
+span = [3700, 5300]
+top = -3300
+material = "door"
+frame = "stone"
+
+[[object]]
+kind = "table"
+box = [4338, 4428, 6354, 8244]
+top = -1500
+thickness = 120
+with = "typewriter"
+typewriter_at = [5346, 6900]
+[[object]]
+kind = "chair"
+at = [7000, 6400]
+facing = "west"
+[[object]]
+kind = "chest"
+box = [1962, 9180, 4302, 10728]
+top = -1300
+back = "north"
+[[object]]
+kind = "box"
+box = [7200, 9500, 8874, 10728]
+top = -1200
+material = "wood"
+omit = ["bottom", "north", "east"]
+
+[[light]]
+at = [5400, -3200, 6400]
+color = [1.0, 0.98, 0.92]
+strength = 0.45
+reach = 5000

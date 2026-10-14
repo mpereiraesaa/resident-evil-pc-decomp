@@ -1,0 +1,114 @@
+# Fountain court: a round stone basin in a paved court between hedges and
+# trees, a sunken spiral stair in the west, the courtyard door west and
+# the elevator shed north. Open to the sky.
+room = "ROOM3050"
+title = "Fountain"
+seed = 3050
+
+[shell]
+floor = 0
+ceiling = -14000
+floor_material = "stone.paving"
+wall_material = "stone.hedge"
+ceiling_material = "night"
+skirting = 0
+trim = "stone"
+cell = 1500
+
+[materials]
+"stone.paving" = { color = [0.36, 0.34, 0.34], tile = [2200, 2200] }
+"stone.hedge" = { color = [0.16, 0.26, 0.12], tile = [1600, 1600] }
+stone = [0.52, 0.52, 0.50]
+wood = [0.26, 0.14, 0.10]
+door = [0.34, 0.20, 0.12]
+
+[lighting]
+ambient = [0.152, 0.171, 0.171]
+
+[[zone]]            # east court around the fountain
+box = [10440, 2070, 30420, 23220]
+[[zone]]            # west court
+box = [2412, 14598, 10440, 23220]
+[[zone]]            # west strip north of the beds
+box = [2592, 12132, 10440, 14598]
+floor_along = "x"
+
+[[door]]
+wall = "west"
+span = [15200, 19000]
+top = -3600
+material = "door"
+frame = "stone"
+
+# Fountain basin
+[[object]]
+kind = "cylinder"
+at = [21618, 11088]
+radius = 5724
+top = -700
+material = "stone"
+segments = 24
+[[object]]
+kind = "cylinder"
+at = [21618, 11088]
+radius = 5100
+top = -500
+bottom = -690
+material = "water"
+segments = 24
+[[object]]
+kind = "cylinder"
+at = [21618, 11088]
+radius = 1400
+top = -1400
+bottom = -500
+material = "stone"
+segments = 12
+
+# Hedge beds and tree pits
+[[object]]
+kind = "box"
+box = [6390, 2070, 12672, 14562]
+top = -1600
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [17496, 19548, 30420, 23220]
+top = -1200
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [2592, 10062, 4320, 12132]
+top = -1200
+material = "hedge"
+omit = ["bottom"]
+
+# Sunken spiral stair in the west court
+[[object]]
+kind = "cylinder"
+at = [7731, 14481]
+radius = 900
+top = -600
+material = "stone"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [7731, 14481]
+radius = 700
+top = -590
+bottom = 3000
+material = "soot"
+segments = 14
+
+[[light]]
+at = [21618, -4000, 11088]
+color = [0.75, 0.85, 1.0]
+strength = 0.35
+reach = 12000
+[[light]]
+at = [6000, -3500, 18500]
+color = [0.75, 0.85, 1.0]
+strength = 0.3
+reach = 8000

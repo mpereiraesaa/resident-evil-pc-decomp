@@ -1,0 +1,55 @@
+# Item chamber: a small cell of dark green mossy stone with a red iron door
+# on the east wall and the plaque; the pedestal block in the north-east.
+room = "ROOM3060"
+title = "Item chamber"
+seed = 3060
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.mossy"
+wall_material = "stone.mossy"
+ceiling_material = "stone.mossy"
+skirting = 0
+trim = "stone"
+cell = 600
+
+[materials]
+"stone.mossy" = { color = [0.24, 0.30, 0.18], tile = [1200, 1200] }
+stone = [0.30, 0.34, 0.24]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.26, 0.14, 0.10]
+"panel.red" = [0.42, 0.14, 0.10]
+
+[lighting]
+ambient = [0.12, 0.14, 0.10]
+
+[[zone]]
+box = [2238, 2286, 10368, 10494]
+
+[[door]]
+wall = "east"
+span = [5200, 7400]
+top = -3400
+material = "door.red"
+frame = "stone"
+
+[[object]]
+kind = "box"
+box = [7056, 8280, 9198, 10494]
+top = -1400
+material = "stone"
+omit = ["bottom", "north"]
+[[object]]          # plaque on the north wall
+kind = "wall_band"
+wall = "north"
+span = [4200, 5400]
+y = [-2800, -2000]
+material = "panel.red"
+rail = false
+
+[[light]]
+at = [6000, -3200, 6000]
+color = [0.85, 0.95, 0.80]
+strength = 0.45
+reach = 5000

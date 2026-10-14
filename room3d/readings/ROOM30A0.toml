@@ -1,0 +1,71 @@
+# Enrico's room: a cave corridor west with a lantern, a rock in the way, and
+# the wider hall east; the red door on the north wall.
+room = "ROOM30A0"
+title = "Enrico room"
+seed = 3100
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 800
+
+[materials]
+"stone.cave" = { color = [0.40, 0.42, 0.26], tile = [1400, 1400] }
+stone = [0.44, 0.46, 0.30]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.26, 0.14, 0.10]
+
+[lighting]
+ambient = [0.133, 0.133, 0.095]
+
+[[zone]]            # west corridor
+box = [2542, 2700, 6462, 20664]
+[[zone]]            # south link
+box = [6462, 2700, 9036, 7218]
+floor_along = "x"
+[[zone]]            # east hall
+box = [9036, 2700, 16164, 17046]
+
+[[door]]
+wall = "north"
+span = [3400, 4900]
+top = -3300
+material = "door.red"
+frame = "stone"
+
+[[column]]          # rock in the east hall
+at = [11268, 8280]
+top = -4200
+radius = 1100
+material = "stone.cave"
+square = true
+
+[[sconce]]
+wall = "west"
+at = [-3200, 6000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3200, 17000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3200, 12000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3200, 14000]
+candles = 1
+strength = 0.5
+reach = 3600

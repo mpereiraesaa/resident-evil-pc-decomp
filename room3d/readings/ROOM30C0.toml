@@ -1,0 +1,78 @@
+# Black tiger room: a cobwebbed cave hall with red doors at the north and
+# south ends, barrels against the east wall, a crate by the west.
+room = "ROOM30C0"
+title = "Black tiger room"
+seed = 3120
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.web"
+skirting = 0
+trim = "stone"
+cell = 900
+
+[materials]
+"stone.cave" = { color = [0.30, 0.30, 0.22], tile = [1400, 1400] }
+"stone.web" = { color = [0.40, 0.40, 0.32], tile = [1400, 1400] }
+stone = [0.36, 0.36, 0.28]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.30, 0.16, 0.10]
+crate = [0.40, 0.28, 0.16]
+
+[lighting]
+ambient = [0.152, 0.152, 0.114]
+
+[[zone]]
+box = [3029, 2281, 20065, 13758]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [9500, 12200]
+top = -3400
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "south"
+span = [10300, 12900]
+top = -3400
+material = "door.red"
+frame = "stone"
+
+[[object]]
+kind = "cylinder"
+at = [19500, 2500]
+radius = 500
+top = -1200
+material = "wood"
+segments = 12
+hoops = [-1050, -400]
+[[object]]
+kind = "cylinder"
+at = [19300, 3600]
+radius = 450
+top = -1100
+material = "wood"
+segments = 12
+hoops = [-950, -400]
+[[object]]
+kind = "box"
+box = [3029, 13014, 5472, 13758]
+top = -900
+material = "crate"
+omit = ["bottom", "west", "north"]
+[[object]]
+kind = "box"
+box = [18936, 11646, 20065, 13758]
+top = -1000
+material = "crate"
+omit = ["bottom", "east", "north"]
+
+[[light]]
+at = [11500, -3400, 8000]
+color = [0.95, 0.95, 0.80]
+strength = 0.35
+reach = 8000

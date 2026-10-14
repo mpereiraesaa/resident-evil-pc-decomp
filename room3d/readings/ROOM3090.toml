@@ -1,0 +1,98 @@
+# Underground generator: a cave complex of dark green stone; a south strip,
+# a riser north, the big generator hall with the machine, and the east room
+# with the cabinet and workbench. Doors west (two) and south.
+room = "ROOM3090"
+title = "Underground generator"
+seed = 3090
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 900
+
+[materials]
+"stone.cave" = { color = [0.22, 0.30, 0.18], tile = [1400, 1400] }
+stone = [0.28, 0.34, 0.22]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.42, 0.26, 0.12]
+
+[lighting]
+ambient = [0.133, 0.171, 0.114]
+
+[[zone]]            # south strip
+box = [2124, 2196, 16326, 6894]
+floor_along = "x"
+[[zone]]            # riser
+box = [13266, 6894, 16326, 16038]
+[[zone]]            # generator hall
+box = [3420, 16038, 16326, 29268]
+[[zone]]            # link east
+box = [16326, 18972, 19494, 23202]
+floor_along = "x"
+[[zone]]            # east room
+box = [19494, 18018, 25506, 25362]
+
+[[door]]
+wall = "west"
+span = [25800, 27700]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "west"
+span = [3500, 5400]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "south"
+span = [13900, 16000]
+top = -3300
+material = "door.red"
+frame = "stone"
+
+[[object]]          # generator
+kind = "box"
+box = [7560, 19620, 12996, 25398]
+top = -2800
+material = "iron"
+omit = ["bottom"]
+[[object]]          # cabinet and bench in the east room
+kind = "box"
+box = [19494, 24200, 20900, 25362]
+top = -2000
+material = "concrete"
+omit = ["bottom", "north", "west"]
+[[object]]
+kind = "table"
+box = [21200, 24000, 25000, 25362]
+top = -1300
+thickness = 100
+
+[[sconce]]
+wall = "west"
+at = [-3200, 20000]
+candles = 1
+strength = 0.45
+reach = 4000
+[[sconce]]
+wall = "east"
+at = [-3200, 10000]
+candles = 1
+strength = 0.45
+reach = 4000
+[[light]]
+at = [22500, -3000, 21500]
+color = [1.0, 0.95, 0.85]
+strength = 0.45
+reach = 5000
+[[light]]
+at = [9000, -3200, 4500]
+color = [0.85, 0.95, 0.80]
+strength = 0.35
+reach = 6000

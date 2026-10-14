@@ -1,0 +1,89 @@
+# Underground entry: a rough cave U around a rock mass, yellow-green stone,
+# lanterns, red iron doors south (to the falls and the pump) and east.
+room = "ROOM3070"
+title = "Underground entry"
+seed = 3070
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 800
+
+[materials]
+"stone.cave" = { color = [0.40, 0.42, 0.26], tile = [1400, 1400] }
+stone = [0.44, 0.46, 0.30]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.26, 0.14, 0.10]
+
+[lighting]
+ambient = [0.133, 0.133, 0.095]
+
+[[zone]]            # west leg
+box = [2052, 2826, 5692, 22734]
+[[zone]]            # east leg
+box = [10500, 2826, 14364, 22734]
+[[zone]]            # north connection
+box = [5692, 18936, 10500, 22734]
+floor_along = "x"
+
+[[door]]
+wall = "south"
+span = [2400, 5200]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "south"
+span = [10500, 12100]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "east"
+span = [2826, 4900]
+top = -3300
+material = "door.red"
+frame = "stone"
+
+[[column]]          # rock pillars at the north end
+at = [10017, 17901]
+top = -4200
+radius = 900
+material = "stone.cave"
+square = true
+[[column]]
+at = [6012, 18108]
+top = -4200
+radius = 900
+material = "stone.cave"
+square = true
+
+[[sconce]]
+wall = "west"
+at = [-3200, 8000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3200, 14000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "north"
+at = [-3200, 8000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3200, 20000]
+candles = 1
+strength = 0.5
+reach = 3600

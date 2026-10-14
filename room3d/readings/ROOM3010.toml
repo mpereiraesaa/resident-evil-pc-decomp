@@ -1,0 +1,103 @@
+# Water gate: a dark garden of stone paths and low walls over a channel of
+# water, iron gates, the pump control at the north-east. Approximated as the
+# main walkable paths with water slabs beside them, under the night sky.
+room = "ROOM3010"
+title = "Water gate"
+seed = 3010
+
+[shell]
+floor = 0
+ceiling = -14000
+floor_material = "stone.paving"
+wall_material = "stone.brick"
+ceiling_material = "night"
+skirting = 0
+trim = "stone"
+cell = 1200
+
+[materials]
+"stone.paving" = { color = [0.34, 0.38, 0.34], tile = [2000, 2000] }
+"stone.brick" = { color = [0.34, 0.36, 0.30], tile = [1200, 1200] }
+stone = [0.44, 0.46, 0.42]
+wood = [0.26, 0.14, 0.10]
+door = [0.34, 0.20, 0.12]
+
+[lighting]
+ambient = [0.133, 0.171, 0.171]
+
+[[zone]]            # entrance path from the courtyard gate (south)
+box = [9414, 2880, 17190, 6642]
+[[zone]]            # middle path east-west
+box = [1980, 22464, 24300, 25956]
+floor_along = "x"
+[[zone]]            # north-south path between the ponds
+box = [10656, 6642, 13176, 22464]
+[[zone]]            # east path by the pump
+box = [21150, 2880, 24300, 22464]
+[[zone]]            # west pocket
+box = [1980, 13554, 5400, 22464]
+
+[[door]]
+wall = "south"
+span = [9414, 12700]
+top = -3600
+material = "door"
+frame = "stone"
+[[door]]
+wall = "west"
+span = [19000, 22464]
+top = -3600
+material = "door"
+frame = "stone"
+
+# Water on either side of the paths
+[[slab]]
+box = [13176, 6642, 21150, 22464]
+top = 600
+thickness = 100
+top_material = "water"
+bottom_material = "water"
+[[slab]]
+box = [1980, 6642, 10656, 13554]
+top = 600
+thickness = 100
+top_material = "water"
+bottom_material = "water"
+
+# Low stone walls along the paths
+[[object]]
+kind = "box"
+box = [13176, 6642, 13500, 22464]
+top = -500
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [10300, 6642, 10656, 22464]
+top = -500
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "rail"
+from = [13400, 22464]
+to = [21150, 22464]
+height = 900
+spacing = 500
+material = "iron"
+[[object]]          # pump control box
+kind = "box"
+box = [23616, 23850, 25470, 25146]
+top = -1800
+material = "iron"
+omit = ["bottom"]
+
+[[light]]
+at = [12000, -2500, 15000]
+color = [0.70, 0.85, 0.95]
+strength = 0.3
+reach = 10000
+[[light]]
+at = [22000, -2500, 10000]
+color = [0.70, 0.85, 0.95]
+strength = 0.25
+reach = 8000

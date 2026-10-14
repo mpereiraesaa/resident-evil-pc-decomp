@@ -1,0 +1,108 @@
+# Courtyard garden behind the mansion: stone paving between brick garden
+# walls and hedge beds, the white timber-framed back of the mansion on the
+# west side of the east walk, the iron gate north. Open to the night sky.
+room = "ROOM3000"
+title = "Courtyard garden"
+seed = 3000
+
+[shell]
+floor = 0
+ceiling = -14000
+floor_material = "stone.paving"
+wall_material = "stone.brick"
+ceiling_material = "night"
+skirting = 0
+trim = "stone"
+cell = 1200
+
+[materials]
+"stone.paving" = { color = [0.32, 0.36, 0.34], tile = [2000, 2000] }
+"stone.brick" = { color = [0.40, 0.42, 0.36], tile = [1200, 1200] }
+"plaster.house" = [0.62, 0.64, 0.62]
+stone = [0.46, 0.48, 0.44]
+wood = [0.26, 0.14, 0.10]
+door = [0.34, 0.20, 0.12]
+double_door = [0.30, 0.18, 0.10]
+panel = [0.22, 0.14, 0.09]
+
+[lighting]
+ambient = [0.171, 0.209, 0.19]
+
+[[zone]]            # east walk along the mansion wall
+box = [26478, 2232, 30474, 28188]
+wall_materials = { west = "plaster.house" }
+[[zone]]            # north walk to the gate
+box = [18180, 21276, 26478, 28188]
+floor_along = "x"
+[[zone]]            # west strip between the beds
+box = [2088, 9396, 26478, 13212]
+floor_along = "x"
+[[zone]]            # west pocket
+box = [2088, 13212, 18180, 18090]
+floor_along = "x"
+
+[[door]]            # mansion back door
+wall = "west"
+span = [3200, 7300]
+top = -3800
+material = "double_door"
+frame = "stone"
+frame_depth = 200
+[[door]]            # gate to the water gate path
+wall = "north"
+span = [23100, 24800]
+top = -3600
+material = "door"
+frame = "stone"
+frame_depth = 300
+
+# Hedge beds (flags-512 blocks) as low planters
+[[object]]
+kind = "box"
+box = [28044, 12546, 30474, 21546]
+top = -900
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [20160, 23724, 26478, 26478]
+top = -900
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [2088, 13212, 18180, 14200]
+top = -800
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [2088, 9396, 2600, 13212]
+top = -800
+material = "hedge"
+omit = ["bottom"]
+
+# Timber band on the house wall
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2232, 9396]
+y = [-5200, -4400]
+material = "panel"
+rail = false
+
+[[light]]
+at = [28000, -3000, 5000]
+color = [0.80, 0.90, 1.0]
+strength = 0.3
+reach = 9000
+[[light]]
+at = [24000, -3000, 25000]
+color = [0.80, 0.90, 1.0]
+strength = 0.3
+reach = 9000
+[[light]]
+at = [10000, -3000, 11500]
+color = [0.80, 0.90, 1.0]
+strength = 0.25
+reach = 9000

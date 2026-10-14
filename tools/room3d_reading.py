@@ -345,6 +345,8 @@ SOLIDS = {
     "soot": {"kd": (0.06, 0.05, 0.05)},
     "water": {"kd": (0.18, 0.32, 0.28)},
     "night": {"kd": (0.05, 0.08, 0.06), "emissive": True},
+    "hedge": {"kd": (0.16, 0.26, 0.12)},
+    "concrete": {"kd": (0.46, 0.47, 0.46)},
     "copper": {"kd": (0.48, 0.26, 0.16)},
     "lacquer": {"kd": (0.05, 0.05, 0.06)},
     "linen": {"kd": (0.62, 0.62, 0.56)},
@@ -1066,6 +1068,16 @@ class Builder:
                 leg = o.get("leg", 160)
                 for lx, lz in ((x0 + 200, z0 + 200), (x1 - 200 - leg, z0 + 200), (x0 + 200, z1 - 200 - leg), (x1 - 200 - leg, z1 - 200 - leg)):
                     mesh.box((lx, top + thick, lz), (lx + leg, floor, lz + leg), mat, omit=("bottom", "top"))
+                if o.get("with") == "typewriter":
+                    tx, tz = o.get("typewriter_at", ((x0 + x1) / 2, (z0 + z1) / 2))
+                    enamel, paper, iron = self.use("enamel"), self.use("paper"), self.use("iron")
+                    mesh.box((tx - 300, top - 90, tz - 260), (tx + 290, top, tz + 200), enamel)
+                    mesh.box((tx - 280, top - 220, tz + 10), (tx + 270, top - 90, tz + 190), enamel)
+                    for row in range(3):
+                        for column in range(9):
+                            mesh.cylinder(tx - 230 + column * 55 + (row % 2) * 14, tz - 230 + row * 70, 18, top - 115 - row * 12, top - 90, paper, segments=6)
+                    mesh.box((tx - 300, top - 250, tz + 90), (tx + 300, top - 195, tz + 160), self.use("wood"))
+                    mesh.poly([(tx - 190, top - 180, tz + 40), (tx - 190, top - 560, tz + 80), (tx + 160, top - 560, tz + 80), (tx + 160, top - 180, tz + 40)], paper)
             elif kind == "chair":
                 x, z = o["at"]
                 facing = o.get("facing", "north")

@@ -1,0 +1,107 @@
+# Falls: a cavern with a pool, stone walks with rope-and-wood edges, a
+# wooden water wheel and gate at the north, an iron door south. Approximated
+# as the main stone walks with water between them.
+room = "ROOM3020"
+title = "Falls"
+seed = 3020
+
+[shell]
+floor = 0
+ceiling = -9000
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 1200
+
+[materials]
+"stone.cave" = { color = [0.30, 0.36, 0.38], tile = [1800, 1800] }
+stone = [0.40, 0.44, 0.44]
+wood = [0.34, 0.18, 0.12]
+door = [0.28, 0.16, 0.10]
+"door.iron" = [0.22, 0.20, 0.22]
+
+[lighting]
+ambient = [0.152, 0.19, 0.228]
+
+[[zone]]            # entry walk from the south door
+box = [9252, 2106, 19278, 15696]
+[[zone]]            # central walk between the pools
+box = [13590, 15696, 15246, 27540]
+[[zone]]            # north walk along the gate
+box = [3024, 21042, 7470, 27540]
+[[zone]]            # east walk
+box = [21888, 15822, 26370, 27468]
+[[zone]]            # link east
+box = [15246, 15696, 21888, 21042]
+floor_along = "x"
+[[zone]]            # link west
+box = [3024, 15696, 13590, 21042]
+floor_along = "x"
+
+[[door]]
+wall = "south"
+span = [19500, 21800]
+top = -3400
+material = "door.iron"
+frame = "stone"
+[[door]]
+wall = "west"
+span = [21100, 24600]
+top = -3400
+material = "door"
+frame = "stone"
+[[door]]
+wall = "north"
+span = [20200, 22800]
+top = -3800
+material = "wood"
+frame = "stone"
+
+[[slab]]            # west pool
+box = [7470, 21042, 13590, 27540]
+top = 700
+thickness = 100
+top_material = "water"
+bottom_material = "water"
+[[slab]]            # east pool
+box = [15246, 21042, 21888, 27540]
+top = 700
+thickness = 100
+top_material = "water"
+bottom_material = "water"
+
+[[object]]          # water wheel (approximate drum)
+kind = "cylinder"
+at = [10500, 27300]
+radius = 2200
+top = -4600
+bottom = -200
+material = "wood"
+segments = 16
+[[object]]
+kind = "rail"
+from = [13590, 21100]
+to = [13590, 27400]
+height = 800
+spacing = 700
+material = "wood"
+[[object]]
+kind = "rail"
+from = [15246, 21100]
+to = [15246, 27400]
+height = 800
+spacing = 700
+material = "wood"
+
+[[light]]
+at = [14400, -5000, 20000]
+color = [0.75, 0.88, 1.0]
+strength = 0.35
+reach = 10000
+[[light]]
+at = [14000, -5000, 8000]
+color = [0.75, 0.88, 1.0]
+strength = 0.3
+reach = 9000

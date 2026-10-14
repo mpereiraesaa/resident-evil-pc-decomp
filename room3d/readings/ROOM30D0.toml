@@ -1,0 +1,84 @@
+# Straight passage: a long cave corridor with lanterns, the red double
+# door with the Umbrella plaque on the north wall, a red door at the east
+# end of the north wall and a door at the west end.
+room = "ROOM30D0"
+title = "Straight passage"
+seed = 3130
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 900
+
+[materials]
+"stone.cave" = { color = [0.40, 0.42, 0.26], tile = [1400, 1400] }
+stone = [0.44, 0.46, 0.30]
+"door.red" = [0.48, 0.12, 0.08]
+"double_door.red" = [0.46, 0.12, 0.08]
+wood = [0.26, 0.14, 0.10]
+"panel.red" = [0.44, 0.14, 0.10]
+
+[lighting]
+ambient = [0.133, 0.133, 0.095]
+
+[[zone]]
+box = [1840, 1872, 30402, 7074]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [12800, 16000]
+top = -3600
+material = "double_door.red"
+frame = "stone"
+frame_depth = 160
+[[door]]
+wall = "north"
+span = [27400, 29400]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "west"
+span = [3600, 5500]
+top = -3300
+material = "door.red"
+frame = "stone"
+
+[[object]]          # Umbrella plaque beside the double door
+kind = "wall_band"
+wall = "north"
+span = [17000, 19400]
+y = [-2800, -1800]
+material = "panel.red"
+rail = false
+
+[[sconce]]
+wall = "north"
+at = [-3300, 8000]
+candles = 1
+strength = 0.5
+reach = 4000
+[[sconce]]
+wall = "south"
+at = [-3300, 14000]
+candles = 1
+strength = 0.5
+reach = 4000
+[[sconce]]
+wall = "north"
+at = [-3300, 22000]
+candles = 1
+strength = 0.5
+reach = 4000
+[[sconce]]
+wall = "south"
+at = [-3300, 27000]
+candles = 1
+strength = 0.5
+reach = 4000

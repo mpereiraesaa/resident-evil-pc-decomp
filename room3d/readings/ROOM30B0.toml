@@ -1,0 +1,85 @@
+# Boulder passage 1: two separate cave corridors, the boulder's one west
+# with a door at its north pocket, and the east one from the south door up to
+# the boulder; yellow-green rock. (The original views did not decode; finishes
+# follow the neighbouring caves.)
+room = "ROOM30B0"
+title = "Boulder 1 passage"
+seed = 3110
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 900
+
+[materials]
+"stone.cave" = { color = [0.40, 0.42, 0.26], tile = [1400, 1400] }
+stone = [0.44, 0.46, 0.30]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.26, 0.14, 0.10]
+
+[lighting]
+ambient = [0.152, 0.152, 0.114]
+
+[[zone]]            # main corridor
+box = [3924, 11772, 25074, 16326]
+floor_along = "x"
+[[zone]]            # west pocket
+box = [2196, 10026, 3924, 16326]
+[[zone]]            # north pocket with the door
+box = [21186, 16326, 25074, 19386]
+[[zone]]            # east corridor, south part
+box = [25758, 2556, 29916, 9360]
+[[zone]]            # east corridor, north part up to the boulder
+box = [27414, 9360, 29916, 15876]
+
+[[door]]
+wall = "north"
+span = [21800, 24000]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "south"
+span = [25800, 29900]
+top = -3600
+material = "door.red"
+frame = "stone"
+
+[[object]]          # the boulders
+kind = "cylinder"
+at = [3537, 14049]
+radius = 2000
+top = -3800
+material = "stone"
+segments = 16
+[[object]]
+kind = "cylinder"
+at = [29300, 14040]
+radius = 1800
+top = -3600
+material = "stone"
+segments = 16
+
+[[sconce]]
+wall = "south"
+at = [-3200, 10000]
+candles = 1
+strength = 0.5
+reach = 4000
+[[sconce]]
+wall = "south"
+at = [-3200, 20000]
+candles = 1
+strength = 0.5
+reach = 4000
+[[sconce]]
+wall = "east"
+at = [-3200, 6000]
+candles = 1
+strength = 0.5
+reach = 4000

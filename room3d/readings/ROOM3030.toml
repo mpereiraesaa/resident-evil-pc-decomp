@@ -1,0 +1,97 @@
+# Heliport: a concrete pad with the H marking, grey panel walls with a
+# railing on top, the forest beyond, the lift block and two cabinets on the
+# south side, the gate with its WARNING sign east.
+room = "ROOM3030"
+title = "Heliport"
+seed = 3030
+
+[shell]
+floor = 0
+ceiling = -14000
+floor_material = "stone.concrete"
+wall_material = "stone.panel"
+ceiling_material = "night"
+skirting = 0
+trim = "concrete"
+cell = 1500
+
+[materials]
+"stone.concrete" = { color = [0.46, 0.48, 0.48], tile = [4000, 4000] }
+"stone.panel" = { color = [0.58, 0.60, 0.60], tile = [3000, 3000] }
+stone = [0.52, 0.54, 0.54]
+wood = [0.60, 0.62, 0.62]
+door = [0.64, 0.66, 0.66]
+"double_door.lift" = [0.70, 0.72, 0.74]
+"night.sky" = [0.06, 0.10, 0.10]
+
+[lighting]
+ambient = [0.22, 0.23, 0.24]
+
+[[zone]]
+box = [2722, 2826, 29574, 30834]
+
+[[object]]          # lift block on the south wall (gate to the lab)
+kind = "box"
+box = [15660, 2826, 25272, 4662]
+top = -4400
+material = "stone.panel"
+omit = ["bottom", "south"]
+[[door]]
+wall = "south"
+span = [18500, 22400]
+top = -3800
+material = "double_door.lift"
+frame = "concrete"
+line = 4662
+[[object]]          # cabinets by the lift
+kind = "box"
+box = [1134, 12078, 7686, 22212]
+top = -1600
+material = "concrete"
+omit = ["bottom", "west"]
+[[object]]          # fuel tanks (the round things)
+kind = "cylinder"
+at = [6000, 26000]
+radius = 900
+top = -1800
+material = "iron"
+segments = 12
+[[object]]
+kind = "cylinder"
+at = [8200, 27500]
+radius = 700
+top = -1500
+material = "iron"
+segments = 12
+
+# Railing on top of the walls
+[[object]]
+kind = "rail"
+from = [2800, 30700]
+to = [29500, 30700]
+y = -4400
+height = 1000
+spacing = 1200
+material = "wood"
+[[object]]
+kind = "rail"
+from = [29500, 2900]
+to = [29500, 30700]
+y = -4400
+height = 1000
+spacing = 1200
+material = "wood"
+[[object]]
+kind = "rail"
+from = [2800, 2900]
+to = [2800, 30700]
+y = -4400
+height = 1000
+spacing = 1200
+material = "wood"
+
+[[light]]
+at = [16000, -8000, 16000]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 20000

@@ -1,0 +1,77 @@
+# Branched passage: a long cave corridor north-south with a branch west and
+# a pocket east near the north end; grey mossy stone, doors at both branch
+# ends and at the south-east.
+room = "ROOM3080"
+title = "Branched passage"
+seed = 3080
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.cave"
+wall_material = "stone.cave"
+ceiling_material = "stone.cave"
+skirting = 0
+trim = "stone"
+cell = 800
+
+[materials]
+"stone.cave" = { color = [0.34, 0.38, 0.30], tile = [1400, 1400] }
+stone = [0.40, 0.44, 0.36]
+"door.red" = [0.48, 0.12, 0.08]
+wood = [0.26, 0.14, 0.10]
+
+[lighting]
+ambient = [0.152, 0.171, 0.133]
+
+[[zone]]            # main corridor
+box = [7920, 3276, 11574, 29648]
+[[zone]]            # west branch
+box = [1800, 14598, 7920, 18594]
+floor_along = "x"
+[[zone]]            # east pocket
+box = [11574, 24894, 13194, 29648]
+
+[[door]]
+wall = "west"
+span = [15900, 17400]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "east"
+span = [26400, 28100]
+top = -3300
+material = "door.red"
+frame = "stone"
+[[door]]
+wall = "east"
+span = [2800, 4300]
+top = -3300
+material = "door.red"
+frame = "stone"
+
+[[sconce]]
+wall = "east"
+at = [-3200, 8000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "west"
+at = [-3200, 12000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "east"
+at = [-3200, 20000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]
+wall = "south"
+at = [-3200, 4500]
+candles = 1
+strength = 0.5
+reach = 3600

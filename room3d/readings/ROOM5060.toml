@@ -104,8 +104,5 @@ strength = 0.5
 reach = 8000
 
 [[object]]          # strip light
-kind = "box"
-box = [9300, 6440, 10700, 6560]
-top = -4200
-bottom = -4140
-material = "glow"
+kind = "strip"
+at = [10000, 6500]

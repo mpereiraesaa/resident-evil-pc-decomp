@@ -1324,6 +1324,18 @@ class Builder:
                 if o.get("spear", True):
                     mesh.box((x + 360, base - 2600, z - 20), (x + 400, base, z + 20), iron)
                     mesh.box((x + 345, base - 2850, z - 40), (x + 415, base - 2600, z + 40), steel)
+            elif kind == "strip":
+                # Ceiling strip light: sits on the (possibly raised) ceiling of
+                # the zone that contains it.
+                x, z = o["at"]
+                ceiling = self.reading.get("shell", {}).get("ceiling", -6000)
+                for zone in self.zones:
+                    x0, z0, x1, z1 = zone["box"]
+                    if x0 <= x <= x1 and z0 <= z <= z1 and zone.get("ceiling") is not None:
+                        ceiling = zone["ceiling"]
+                        break
+                half = o.get("length", 1400) / 2
+                mesh.box((x - half, ceiling, z - 60), (x + half, ceiling + 60, z + 60), self.use("glow"), omit=("top",))
             elif kind == "rail":
                 (ax, az), (bx, bz) = o["from"], o["to"]
                 y = o.get("y", floor)

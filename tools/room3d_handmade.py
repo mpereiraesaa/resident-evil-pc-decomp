@@ -71,7 +71,7 @@ class Mesh:
                 color = self.illumination(point, normal)
             self.vertex_count += 1
             self.uv_count += 1
-            self.lines.append("v %.1f %.1f %.1f %.3f %.3f %.3f" % (*point, *color))
+            self.lines.append("v %.0f %.0f %.0f %.3f %.3f %.3f" % (*point, *color))
             self.lines.append("vt %.4f %.4f" % uv)
             refs.append(f"{self.vertex_count}/{self.uv_count}")
         self.lines.append(f"usemtl {material}")

@@ -1,0 +1,105 @@
+# Study: blue damask wallpaper with a dark cornice, dark planks, a desk with a
+# lamp and chair by the south wall, wall cabinets on the north wall, the insect
+# display case on the east wall, a brass chandelier.
+room = "ROOM20A0"
+title = "Study"
+seed = 2100
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling_material = "plaster.dark"
+skirting = 200
+cell = 600
+
+[materials]
+wallpaper = { color = [0.30, 0.46, 0.56], motif = [0.20, 0.34, 0.44], repeats = 14 }
+"plaster.dark" = [0.24, 0.18, 0.12]
+planks = [0.24, 0.12, 0.08]
+wood = [0.42, 0.26, 0.12]
+door = [0.14, 0.14, 0.16]
+glass = [0.80, 0.85, 0.90]
+panel = [0.30, 0.18, 0.10]
+
+[lighting]
+ambient = [0.12, 0.14, 0.16]
+
+[[zone]]
+box = [2056, 2106, 7740, 7920]
+
+[[door]]
+wall = "west"
+span = [5000, 6600]
+top = -3300
+material = "door"
+
+[[object]]          # desk and chair
+kind = "table"
+box = [4914, 2106, 7704, 3114]
+top = -1400
+thickness = 100
+[[object]]
+kind = "cylinder"
+at = [5600, 2600]
+radius = 220
+top = -2000
+bottom = -1400
+material = "glow"
+segments = 8
+[[object]]
+kind = "chair"
+at = [6100, 3600]
+facing = "south"
+[[object]]          # north-west cabinet protrusion
+kind = "box"
+box = [2056, 7578, 3528, 7920]
+top = -2200
+material = "wood"
+omit = ["bottom", "north", "west"]
+[[object]]          # wall cabinets on the north wall
+kind = "wall_band"
+wall = "north"
+span = [4000, 5000]
+y = [-2800, -1900]
+material = "panel"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [5800, 6800]
+y = [-2800, -1900]
+material = "panel"
+rail = false
+[[object]]          # insect case on the east wall
+kind = "wall_band"
+wall = "east"
+span = [3600, 6400]
+y = [-3400, -1900]
+material = "glass"
+rail = false
+
+[[painting]]
+wall = "west"
+span = [2400, 3200]
+y = [-3200, -2400]
+[[painting]]
+wall = "west"
+span = [3500, 4300]
+y = [-3400, -2600]
+
+[[chandelier]]
+at = [4900, 5000]
+y = -3200
+radius = 300
+globes = 3
+globe_radius = 110
+ceiling = -4200
+strength = 0.40
+reach = 5000
+[[light]]
+at = [5600, -2000, 2600]
+color = [1.0, 0.95, 0.80]
+strength = 0.4
+reach = 4000

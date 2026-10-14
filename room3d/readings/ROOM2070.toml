@@ -1,0 +1,140 @@
+# 2F left stairs: tan plaster over a dark dado, planks with a runner, the
+# stair down from the landing with its balustrade and a small chandelier, a
+# long corridor east with paintings and doors. From ROOM2070.RDT.
+room = "ROOM2070"
+title = "2F left stairs"
+seed = 2070
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1100
+dado_material = "panel"
+chair_rail = true
+skirting = 180
+cell = 800
+
+[materials]
+plaster = { color = [0.72, 0.58, 0.40], stains = 0.3 }
+"plaster.dark" = [0.28, 0.22, 0.16]
+panel = [0.30, 0.15, 0.09]
+planks = [0.30, 0.17, 0.10]
+runner = { color = [0.30, 0.22, 0.26], motif = [0.60, 0.52, 0.40] }
+wood = [0.30, 0.12, 0.08]
+door = [0.26, 0.16, 0.10]
+"door.dark" = [0.12, 0.14, 0.16]
+
+[lighting]
+ambient = [0.13, 0.11, 0.08]
+
+[[zone]]            # west leg
+box = [1890, 2914, 3870, 10710]
+[[zone]]            # long corridor
+box = [1890, 10710, 31302, 12582]
+floor_along = "x"
+[[zone]]            # east leg
+box = [29574, 4194, 31302, 10710]
+[[zone]]            # landing west of the well
+box = [1890, 12582, 5472, 20124]
+[[zone]]            # landing north strip
+box = [5472, 16920, 10332, 20124]
+floor_along = "x"
+[[zone]]            # landing strip south of the well
+box = [5472, 12582, 10332, 13608]
+floor_along = "x"
+
+[[object]]
+kind = "rug"
+box = [4500, 11200, 29000, 12100]
+material = "runner"
+
+[[stair]]
+x = [5472, 10332]
+z = [13608, 16920]
+direction = "west"
+base = 3600
+top = 0
+steps = 12
+tread_material = "wood"
+under = false
+[[object]]
+kind = "rail"
+from = [5472, 13500]
+to = [10200, 13500]
+newels = [true, true]
+[[object]]
+kind = "rail"
+from = [5472, 17000]
+to = [10200, 17000]
+newels = [true, true]
+
+[[door]]
+wall = "south"
+span = [2500, 3500]
+top = -3300
+material = "door"
+[[door]]
+wall = "south"
+span = [16900, 18800]
+top = -3300
+material = "door.dark"
+[[door]]
+wall = "south"
+span = [29800, 30500]
+top = -3300
+material = "door"
+[[door]]
+wall = "east"
+span = [13428, 15400]
+top = -3300
+material = "door"
+
+[[painting]]
+wall = "north"
+span = [12000, 15000]
+y = [-4000, -2000]
+[[painting]]
+wall = "west"
+span = [14000, 16500]
+y = [-4000, -2200]
+[[painting]]
+wall = "north"
+span = [20000, 22500]
+y = [-3600, -2200]
+
+[[chandelier]]
+at = [7000, 15000]
+y = -3300
+radius = 420
+globes = 4
+globe_radius = 130
+ceiling = -4800
+strength = 0.35
+reach = 5000
+[[sconce]]
+wall = "north"
+at = [-3400, 14000]
+candles = 1
+strength = 0.4
+reach = 3400
+[[sconce]]
+wall = "south"
+at = [-3400, 24000]
+candles = 1
+strength = 0.4
+reach = 3400
+[[sconce]]
+wall = "east"
+at = [-3400, 8000]
+candles = 1
+strength = 0.4
+reach = 3400
+[[sconce]]
+wall = "west"
+at = [-3400, 6000]
+candles = 1
+strength = 0.4
+reach = 3400

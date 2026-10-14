@@ -1068,3 +1068,11 @@ furniture with the original texture on the lowered top and were moved to
 `visually_approved` (approximate); ROOM2090's bed tops come out partly gray.
 `propagate` now refreshes inherited entries when their source room changes.
 Catalog: 136 approved, 184 need work, 28 rooms covered by 11 override files.
+
+Fourth pass, same correction: ROOM1080 (display cases, cabinet, desk),
+ROOM1110 (sofa, side table), ROOM7160 (reading table), ROOM4020 (tub, toilet,
+sink), ROOM7190 (chair) and ROOM1120 (dresser). Slabs were mapped to objects
+by projecting each slab's top centre into the cameras and reading the
+original image at that pixel. ROOM1080, ROOM4020 and ROOM7190 moved to
+approved (approximate); the other three keep defects the slab fix cannot
+reach (globe fragments, misplaced slabs, a bed merged into a wall slab).

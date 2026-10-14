@@ -1,0 +1,79 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "4a1440a6c6962c52a78c139a4468ba44075ddadcd57a03d3bed150b54ce4886f",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:35:33+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "4a1440a6c6962c52a78c139a4468ba44075ddadcd57a03d3bed150b54ce4886f",
+      "edits": {
+        "boundary_3": {
+          "pivot": [
+            12564.0,
+            0,
+            10629.0
+          ],
+          "scale": [
+            1,
+            0.65,
+            1
+          ]
+        }
+      },
+      "note": "Dresser slab scaled to about 1 m; bed remains merged into the south wall slab",
+      "objects": {
+        "boundary_3": {
+          "kind": "wall",
+          "max": [
+            13500.0,
+            0.0,
+            17820.0
+          ],
+          "min": [
+            11628.0,
+            -1500.0,
+            3438.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:35:33+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM1120",
+    "room": 18,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "8e2196801514881ed384240a3108c01d28054df1daa177d37f2816856c738263",
+      "1": "2cd436d472578853437f0f291a51a8ee3fe97640a4926bb33fd75427c04f1e26"
+    },
+    "geometry_sha256": "6368f0d03ccbdf2cd75fe7684b984c88c9867460df08ebae2846653fd101682e",
+    "player": 0,
+    "rdt": "ROOM1120",
+    "rdt_sha256": "9d5b0cd0f342c8a0a96d328ea9cfe7cb133140f292f3ac65c6b1a593f72b7a8b",
+    "room": 18,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:35:33+00:00"
+}

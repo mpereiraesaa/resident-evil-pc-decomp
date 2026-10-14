@@ -1,0 +1,107 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "73bdee8c38d0202049a588caaad79f940d299884b17ffc9c8a149de7df60b42c",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:35:31+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "73bdee8c38d0202049a588caaad79f940d299884b17ffc9c8a149de7df60b42c",
+      "edits": {
+        "boundary_6": {
+          "pivot": [
+            1966.5,
+            0,
+            11790.5
+          ],
+          "scale": [
+            1,
+            0.55,
+            1
+          ]
+        },
+        "boundary_9": {
+          "pivot": [
+            8070.5,
+            0,
+            1903.0
+          ],
+          "scale": [
+            1,
+            0.6,
+            1
+          ]
+        }
+      },
+      "note": "Sofa and side table slabs scaled to about 0.8 m; globe pedestal kept",
+      "objects": {
+        "boundary_6": {
+          "kind": "wall",
+          "max": [
+            3150.0,
+            0.0,
+            14345.0
+          ],
+          "min": [
+            783.0,
+            -1500.0,
+            9236.0
+          ]
+        },
+        "boundary_9": {
+          "kind": "wall",
+          "max": [
+            10152.0,
+            0.0,
+            3337.0
+          ],
+          "min": [
+            5989.0,
+            -1500.0,
+            469.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:35:31+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM1110",
+    "room": 17,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "d0550b8c0975fbd53aaca310ec2ef78a9f9688a4194de0f77b883a776787fb4d",
+      "1": "8436e388bd1848bd8b2edb7e5b78ecbc689e7fb5792ebe4420d6a2fb06985346",
+      "2": "fe5d80930dc72cbca1d4b204e06eeb677dac14aab6ec60a273b0d0835066e417",
+      "3": "4fcb11991608473d9713fba3353e368b71b5b29124f712443694f7fe703fa291",
+      "4": "2d11df00629260591b4cf5917e5523e3ae0b33d9b7de4995b2ed290be6872189"
+    },
+    "geometry_sha256": "8788d861a5a36ecdba2168ef15e8669d83d26e6bbb73c3efb90f751949f26085",
+    "player": 0,
+    "rdt": "ROOM1110",
+    "rdt_sha256": "e635082674f4e686369b16978c987b64fff3c857ce3f982bb4db4dbc8844f6df",
+    "room": 17,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:35:31+00:00"
+}

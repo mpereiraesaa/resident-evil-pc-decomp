@@ -1,0 +1,79 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "77fdf14f499f87f7434661723ee1488f97ddd01dab4bc72dc912a4a4e6dd4bb4",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:35:33+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "77fdf14f499f87f7434661723ee1488f97ddd01dab4bc72dc912a4a4e6dd4bb4",
+      "edits": {
+        "boundary_2": {
+          "pivot": [
+            2187.0,
+            0,
+            2322.0
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ]
+        }
+      },
+      "note": "Desk chair slab scaled to about 0.75 m",
+      "objects": {
+        "boundary_2": {
+          "kind": "wall",
+          "max": [
+            3096.0,
+            0.0,
+            3222.0
+          ],
+          "min": [
+            1278.0,
+            -1500.0,
+            1422.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:35:33+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM7190",
+    "room": 25,
+    "stage": 7
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "308ce8892241d17e1d9bf7a58f6bc0f0e5619c2ac8cc6dd1da67c745b38f1fcc",
+      "1": "cf13c76e6aa2fd021bfbcfba601ad483a6d03fd874e5b182d4a9a2c5c252e8e3"
+    },
+    "geometry_sha256": "8e97ff7e79530959deef5191c57bcbab0bfb93fcb5b6368e09958bdc04e44924",
+    "player": 0,
+    "rdt": "ROOM7190",
+    "rdt_sha256": "d805e5c7a604e2b2720471b192622c16f79d5cc0bb699ed8e6963e21e1f96e67",
+    "room": 25,
+    "stage": 7
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:35:33+00:00"
+}

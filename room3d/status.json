@@ -106,16 +106,16 @@
     },
     "ROOM1080": {
       "gameplay": "not_validated",
-      "note": "Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
-      "review": "needs_work",
-      "updated": "2026-10-14T09:09:10+00:00"
+      "note": "Lounge: display cases, lamp cabinet and desk slabs scaled to furniture height; piano area remains a block. Camera 3 distorted. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:20+00:00"
     },
     "ROOM1081": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1080",
-      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: display cases, lamp cabinet and desk slabs scaled to furniture height; piano area remains a block. Camera 3 distorted. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM1090": {
       "gameplay": "not_validated",
@@ -210,29 +210,29 @@
     },
     "ROOM1110": {
       "gameplay": "not_validated",
-      "note": "Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "note": "Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
       "review": "needs_work",
-      "updated": "2026-10-14T09:18:20+00:00"
+      "updated": "2026-10-14T10:43:20+00:00"
     },
     "ROOM1111": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1110",
-      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM1120": {
       "gameplay": "not_validated",
-      "note": "Bed and canopy are merged into the 3 m thick south collision slab extruded to wall height; dresser block at the west wall is full height. Needs a split slab or blocks; floor and door acceptable.",
+      "note": "Bedroom: dresser slab scaled to about 1 m; the bed and canopy remain merged into the wall-height south collision slab and need a split slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T08:52:35+00:00"
+      "updated": "2026-10-14T10:43:21+00:00"
     },
     "ROOM1121": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1120",
-      "note": "Inherited from ROOM1120 (identical layout and background files); not reviewed separately. Bed and canopy are merged into the 3 m thick south collision slab extruded to wall height; dresser block at the west wall is full height. Needs a split slab or blocks; floor and door acceptable.",
+      "note": "Inherited from ROOM1120 (identical layout and background files); not reviewed separately. Bedroom: dresser slab scaled to about 1 m; the bed and canopy remain merged into the wall-height south collision slab and need a split slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM1130": {
       "gameplay": "not_validated",
@@ -834,16 +834,16 @@
     },
     "ROOM4020": {
       "gameplay": "not_validated",
-      "note": "Bathroom: 1.5 m collision slabs stand in for tub, sink and toilet; barrel primitive is the wall cistern. Approximate; no cheap fix yet.",
-      "review": "needs_work",
-      "updated": "2026-10-14T08:52:36+00:00"
+      "note": "Bathroom: tub, toilet and sink slabs scaled to fixture height; cistern barrel kept. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:20+00:00"
     },
     "ROOM4021": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM4020",
-      "note": "Inherited from ROOM4020 (identical layout and background files); not reviewed separately. Bathroom: 1.5 m collision slabs stand in for tub, sink and toilet; barrel primitive is the wall cistern. Approximate; no cheap fix yet.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM4020 (identical layout and background files); not reviewed separately. Bathroom: tub, toilet and sink slabs scaled to fixture height; cistern barrel kept. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM4030": {
       "gameplay": "not_validated",
@@ -1441,16 +1441,16 @@
     "ROOM6080": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1080",
-      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: display cases, lamp cabinet and desk slabs scaled to furniture height; piano area remains a block. Camera 3 distorted. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM6081": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1080",
-      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: piano is a flat gray block, bar counter partial; camera 3 distorted.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM1080 (identical layout and background files); not reviewed separately. Lounge: display cases, lamp cabinet and desk slabs scaled to furniture height; piano area remains a block. Camera 3 distorted. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM6090": {
       "gameplay": "not_validated",
@@ -1565,16 +1565,16 @@
     "ROOM6110": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1110",
-      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM6111": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1110",
-      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: globe fragments into blocks, sofa and cabinet are flat slabs, camera 4 close-up wrong.",
+      "note": "Inherited from ROOM1110 (identical layout and background files); not reviewed separately. Globe room: sofa and side table slabs scaled to furniture height; globe still fragments into blocks and camera 4 close-up is wrong.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM6120": {
       "gameplay": "not_validated",
@@ -1585,9 +1585,9 @@
     "ROOM6121": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1120",
-      "note": "Inherited from ROOM1120 (identical layout and background files); not reviewed separately. Bed and canopy are merged into the 3 m thick south collision slab extruded to wall height; dresser block at the west wall is full height. Needs a split slab or blocks; floor and door acceptable.",
+      "note": "Inherited from ROOM1120 (identical layout and background files); not reviewed separately. Bedroom: dresser slab scaled to about 1 m; the bed and canopy remain merged into the wall-height south collision slab and need a split slab.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM6130": {
       "gameplay": "not_validated",
@@ -2031,16 +2031,16 @@
     },
     "ROOM7160": {
       "gameplay": "not_validated",
-      "note": "Stage 7 library: shelves read in cameras 0, 1 and 4; slabs misplaced in cameras 2, 3, 5 and 6.",
+      "note": "Stage 7 library: reading table slab scaled; shelves read in cameras 0, 1 and 4; misplaced slabs remain in cameras 2, 3, 5 and 6.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:17:53+00:00"
+      "updated": "2026-10-14T10:43:20+00:00"
     },
     "ROOM7161": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM7160",
-      "note": "Inherited from ROOM7160 (identical layout and background files); not reviewed separately. Stage 7 library: shelves read in cameras 0, 1 and 4; slabs misplaced in cameras 2, 3, 5 and 6.",
+      "note": "Inherited from ROOM7160 (identical layout and background files); not reviewed separately. Stage 7 library: reading table slab scaled; shelves read in cameras 0, 1 and 4; misplaced slabs remain in cameras 2, 3, 5 and 6.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM7170": {
       "gameplay": "not_validated",
@@ -2070,16 +2070,16 @@
     },
     "ROOM7190": {
       "gameplay": "not_validated",
-      "note": "Small bedroom: bed is a flat slab on its collision box, desk projected; door and floor acceptable.",
-      "review": "needs_work",
-      "updated": "2026-10-14T08:52:37+00:00"
+      "note": "Small bedroom: chair slab scaled; bed is a flat slab on its collision box, desk reads on the wall. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:21+00:00"
     },
     "ROOM7191": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM7190",
-      "note": "Inherited from ROOM7190 (identical layout and background files); not reviewed separately. Small bedroom: bed is a flat slab on its collision box, desk projected; door and floor acceptable.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM7190 (identical layout and background files); not reviewed separately. Small bedroom: chair slab scaled; bed is a flat slab on its collision box, desk reads on the wall. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:43:22+00:00"
     },
     "ROOM71A0": {
       "gameplay": "not_validated",

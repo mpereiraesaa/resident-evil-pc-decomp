@@ -1,0 +1,84 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "b865f03e32bf1b0fae521cada47f295f03878180093d231dc7bf1c2d171810ee",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:35:32+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "b865f03e32bf1b0fae521cada47f295f03878180093d231dc7bf1c2d171810ee",
+      "edits": {
+        "boundary_3": {
+          "pivot": [
+            14301.0,
+            100.0,
+            16434.0
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ]
+        }
+      },
+      "note": "Reading table slab scaled to about 0.7 m; shelves kept",
+      "objects": {
+        "boundary_3": {
+          "kind": "wall",
+          "max": [
+            16236.0,
+            100.0,
+            18432.0
+          ],
+          "min": [
+            12366.0,
+            -1400.0,
+            14436.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:35:32+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM7160",
+    "room": 22,
+    "stage": 7
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "23c09e3766271cc4c7aa25f3888652bf4b437ec3d8fc4037ea2e1341c502e540",
+      "1": "803f39c4918a9661e48932d2170372020d7bf16e96f82cda219c5fa22ffe121f",
+      "2": "0cf52e31a512749b0b916e9e6db002eff876ddea45bb481616e1a43417168b1b",
+      "3": "e11418419a38db962baf88fc425ad2b14079056a247b7d786b2607cb0566bdd7",
+      "4": "fea7f3f80b47c2f6440cbd2d2f8123ebdc338ab9c6dec10a7f0ab16cafcbfc44",
+      "5": "08b3301ba5e10354fee532bb4ecf6c0b0c6c9d6c1a9b72088f61bd87b7a388ef",
+      "6": "29d27168183b92cd868ecf28ac444071c8bd16833849b2ee0ed7834a2cba8410"
+    },
+    "geometry_sha256": "a5b7750efc5f58ba59615d1b86917dc1842e86570a053bd2580d52c2677f6c97",
+    "player": 0,
+    "rdt": "ROOM7160",
+    "rdt_sha256": "25c43e23907a9832603a1c596848892baeba3e0c13714c3b1a92c16b135040fa",
+    "room": 22,
+    "stage": 7
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:35:32+00:00"
+}

@@ -1,0 +1,77 @@
+# Mansion wardrobe bedroom: stained plaster over a chair rail, green-grey
+# patterned tiles, canopy bed on the west wall, dark dressers.
+room = "ROOM1120"
+title = "Wardrobe bedroom"
+seed = 1800
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "marble.green"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+chair_rail = true
+dado = 1200
+dado_material = "plaster.low"
+skirting = 180
+cell = 700
+
+[materials]
+plaster = { color = [0.66, 0.64, 0.52], stains = 0.4 }
+"plaster.low" = [0.58, 0.56, 0.46]
+"plaster.dark" = [0.26, 0.26, 0.22]
+"marble.green" = { color = [0.56, 0.62, 0.50], tile = [1800, 1800] }
+wood = [0.28, 0.14, 0.08]
+velvet = [0.50, 0.10, 0.10]
+door = [0.28, 0.16, 0.09]
+
+[lighting]
+ambient = [0.13, 0.13, 0.10]
+
+[[zone]]
+box = [1870, 6156, 11646, 16420]
+[[zone]]
+box = [11646, 6156, 12657, 7686]
+[[zone]]
+box = [11646, 14490, 12657, 16420]
+
+[[door]]
+wall = "west"
+span = [14400, 16420]
+top = -3300
+material = "door"
+[[door]]
+wall = "south"
+span = [1870, 4300]
+top = -3300
+material = "door"
+
+[[object]]
+kind = "canopy_bed"
+box = [1870, 8377, 3796, 11946]
+top = -700
+canopy = -3300
+[[object]]
+kind = "box"
+box = [1870, 12200, 2700, 14200]
+top = -1400
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [9000, 6156, 11646, 6900]
+top = -1800
+material = "wood"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [11646, 14490, 12657, 16420]
+top = -2000
+material = "wood"
+omit = ["bottom", "east", "north"]
+
+[[light]]
+at = [6500, -3600, 11000]
+color = [1.0, 0.95, 0.80]
+strength = 0.4
+reach = 6000

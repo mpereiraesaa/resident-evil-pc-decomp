@@ -344,6 +344,9 @@ SOLIDS = {
     "velvet": {"kd": (0.45, 0.10, 0.12)},
     "soot": {"kd": (0.06, 0.05, 0.05)},
     "water": {"kd": (0.18, 0.32, 0.28)},
+    "night": {"kd": (0.05, 0.08, 0.06), "emissive": True},
+    "copper": {"kd": (0.48, 0.26, 0.16)},
+    "lacquer": {"kd": (0.05, 0.05, 0.06)},
     "linen": {"kd": (0.62, 0.62, 0.56)},
     "marble_dark": {"kd": (0.16, 0.15, 0.14)},
 }
@@ -596,7 +599,12 @@ class Builder:
         trim = self.use(shell.get("trim", "wood"))
         for zone in self.zones:
             x0, z0, x1, z1 = zone["box"]
-            mesh.set_group(zone.get("group", "floor"))
+            group = zone.get("group", "floor")
+            below = [cam["index"] for cam in self.cameras if cam["origin"][1] > floor]
+            if below and "group" not in zone:
+                group = f"floor_{self.zones.index(zone)}"
+                self.auto_hides += [(c, group) for c in below]
+            mesh.set_group(group)
             fm = self.use(zone.get("floor_material", shell.get("floor_material", "planks")))
             if zone.get("floor_along") == "z":
                 mesh.rect((x0, floor, z0), (0, 0, 1), (1, 0, 0), z1 - z0, x1 - x0, fm, flip=True)
@@ -1118,6 +1126,23 @@ class Builder:
                 for ax0, ax1 in ((x0, x0 + t), (x1 - t, x1)):
                     if back in ("north", "south"):
                         mesh.box((ax0, seat_y - 250, z0), (ax1, seat_y, z1), wood)
+            elif kind == "rail":
+                (ax, az), (bx, bz) = o["from"], o["to"]
+                y = o.get("y", floor)
+                balustrade(mesh, (ax, y, az), (bx, y, bz), height=o.get("height", 950), spacing=o.get("spacing", 420),
+                           newels=tuple(o.get("newels", (True, True))), material=self.use(o.get("material", "wood")))
+            elif kind == "canopy_bed":
+                x0, z0, x1, z1 = o["box"]
+                top = o.get("top", -700)
+                linen, wood, cloth = self.use("linen"), self.use("wood"), self.use(o.get("drape", "velvet"))
+                mesh.box((x0, top, z0), (x1, floor, z1), linen, omit=("bottom",))
+                canopy = o.get("canopy", -3200)
+                for px, pz in ((x0, z0), (x1 - 120, z0), (x0, z1 - 120), (x1 - 120, z1 - 120)):
+                    mesh.box((px, canopy, pz), (px + 120, floor, pz + 120), wood, omit=("bottom",))
+                mesh.box((x0 - 60, canopy - 200, z0 - 60), (x1 + 60, canopy, z1 + 60), cloth)
+                for px in (x0, x1 - 120):
+                    mesh.box((px - 40, canopy, z0 - 60), (px + 160, top - 200, z0 + 260), cloth)
+                    mesh.box((px - 40, canopy, z1 - 260), (px + 160, top - 200, z1 + 60), cloth)
             elif kind == "newel":
                 x, z = o["at"]
                 wood = self.use("wood")

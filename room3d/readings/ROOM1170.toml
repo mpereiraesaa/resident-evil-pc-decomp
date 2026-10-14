@@ -1,0 +1,101 @@
+# Large gallery: a loop around a central wall. Brown plaster over an
+# ornamented dado, red planks, paintings on every wall under spotlights.
+room = "ROOM1170"
+title = "Large gallery"
+seed = 2300
+
+[shell]
+floor = 0
+ceiling = -5000
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+dado = 1300
+dado_material = "panel.olive"
+chair_rail = true
+skirting = 160
+cell = 900
+
+[materials]
+plaster = [0.52, 0.42, 0.28]
+"plaster.dark" = [0.30, 0.24, 0.16]
+"panel.olive" = [0.36, 0.34, 0.20]
+planks = [0.42, 0.18, 0.11]
+wood = [0.40, 0.36, 0.22]
+door = [0.30, 0.18, 0.10]
+
+[lighting]
+ambient = [0.13, 0.11, 0.08]
+
+[[zone]]            # south leg
+box = [2320, 1975, 25374, 5887]
+floor_along = "x"
+[[zone]]            # east connection
+box = [23269, 5887, 25374, 7287]
+[[zone]]            # north leg
+box = [2320, 7287, 25374, 11265]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [2320, 4400]
+top = -3300
+material = "door"
+
+[[painting]]
+wall = "south"
+span = [5000, 8400]
+y = [-3800, -2000]
+[[painting]]
+wall = "south"
+span = [12000, 14600]
+y = [-3700, -2100]
+[[painting]]
+wall = "south"
+span = [19000, 22000]
+y = [-3800, -2000]
+[[painting]]
+wall = "north"
+span = [6000, 9000]
+y = [-3800, -2000]
+[[painting]]
+wall = "north"
+span = [13000, 15600]
+y = [-3700, -2100]
+[[painting]]
+wall = "north"
+span = [19500, 22500]
+y = [-3800, -2000]
+[[painting]]
+wall = "east"
+span = [5887, 7287]
+y = [-3600, -2200]
+[[painting]]            # the big canvas on the central wall's north face
+wall = "south"
+span = [7000, 11600]
+y = [-3900, -1900]
+
+[[light]]
+at = [8000, -4000, 3900]
+strength = 0.35
+reach = 5000
+[[light]]
+at = [17000, -4000, 3900]
+strength = 0.35
+reach = 5000
+[[light]]
+at = [8000, -4000, 9200]
+strength = 0.35
+reach = 5000
+[[light]]
+at = [17000, -4000, 9200]
+strength = 0.35
+reach = 5000
+[[light]]
+at = [9300, -3800, 8400]
+strength = 0.35
+reach = 4000
+[[light]]
+at = [24300, -4000, 6600]
+strength = 0.30
+reach = 4000

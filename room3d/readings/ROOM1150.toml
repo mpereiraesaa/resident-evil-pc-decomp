@@ -1,0 +1,49 @@
+# Mansion trap room: cream marble panels over a grey frieze and red velvet
+# dado, stone tiles, the spiked iron ceiling. Doors west and south.
+room = "ROOM1150"
+title = "Trap room"
+seed = 2100
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "stone.tiles"
+wall_material = "panel.cream"
+ceiling_material = "coffer.iron"
+dado = 900
+dado_material = "velvet"
+chair_rail = true
+skirting = 120
+trim = "stone"
+cell = 600
+
+[materials]
+"panel.cream" = { color = [0.72, 0.66, 0.54], tile = [2200, 3000] }
+"stone.tiles" = { color = [0.60, 0.56, 0.46], tile = [1600, 1600] }
+"coffer.iron" = { color = [0.12, 0.11, 0.10], tile = [1200, 1200] }
+stone = [0.62, 0.60, 0.54]
+velvet = [0.42, 0.08, 0.08]
+door = [0.30, 0.18, 0.10]
+
+[lighting]
+ambient = [0.16, 0.15, 0.12]
+
+[[zone]]
+box = [1823, 1885, 7717, 7818]
+
+[[door]]
+wall = "west"
+span = [4000, 6500]
+top = -3200
+material = "door"
+[[door]]
+wall = "south"
+span = [5300, 7700]
+top = -3200
+material = "door"
+
+[[light]]
+at = [4800, -3000, 4800]
+color = [1.0, 0.96, 0.86]
+strength = 0.4
+reach = 5000

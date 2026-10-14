@@ -1143,3 +1143,16 @@ build/room3d-tools-venv/bin/python tools/build_room10b_mesh.py \
 The result passes `tools/check_room3d_runtime.py --room 0x0B` and was
 play-tested in the Wine build on 2026-10-14: all four cameras, the stair
 trigger into ROOM2070 and the return.
+
+### Hand-authored ROOM1060 and the shared module
+
+`tools/room3d_handmade.py` now holds the mesh writer, tile-aligned cell
+splitting, baked-lighting hook, balustrade/door pieces, texture noise helpers
+and the preview/compare utilities; `build_room10b_mesh.py` was rewired onto it
+with byte-identical output. `tools/build_room1060_mesh.py` builds the main
+hall from ROOM1060.RDT's collision: the side colonnades (type-3 rectangles),
+the north arcade piers, the central stair block with its parapet strips, and
+the entrance and side doors from the door records. Storey heights, arches,
+the gallery, the fanlight and all materials are authored. The mesh is cut at
+1500-unit cells to stay under the loader's 4 MB OBJ limit (3.7 MB, 23971
+triangles). `tools/check_room3d_runtime.py --room 0x06` passes.

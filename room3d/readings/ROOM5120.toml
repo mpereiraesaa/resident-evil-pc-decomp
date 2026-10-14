@@ -1,0 +1,62 @@
+# Cell: a dark blue cell with the bed along the west wall, the toilet and
+# basin in the south-east corner, the barred door on the north wall.
+room = "ROOM5120"
+title = "Cell"
+seed = 5180
+
+[shell]
+floor = 0
+ceiling = -4000
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 600
+
+[materials]
+concrete = { color = [0.30, 0.36, 0.42], stains = 0.5 }
+"concrete.floor" = { color = [0.26, 0.30, 0.34], stains = 0.4 }
+"concrete.ceiling" = { color = [0.16, 0.18, 0.22], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.11, 0.13, 0.16]
+linen = [0.30, 0.32, 0.40]
+
+[[zone]]
+box = [1944, 1962, 8892, 10836]
+
+[[door]]
+wall = "north"
+span = [4800, 6100]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[object]]
+kind = "bed"
+box = [882, 1062, 3852, 4590]
+head = "south"
+top = -600
+[[object]]          # toilet
+kind = "box"
+box = [6912, 90, 8400, 2500]
+top = -500
+material = "porcelain"
+omit = ["bottom", "south", "east"]
+[[object]]          # basin
+kind = "box"
+box = [8300, 3000, 10098, 4400]
+top = -900
+material = "porcelain"
+omit = ["bottom", "east"]
+
+[[light]]
+at = [5400, -3700, 6400]
+color = [0.85, 0.92, 1.0]
+strength = 0.45
+reach = 6000

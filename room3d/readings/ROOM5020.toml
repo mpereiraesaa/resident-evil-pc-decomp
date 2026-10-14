@@ -1,0 +1,71 @@
+# Lab ladder room: a tall concrete cell with the ladder up on the west wall,
+# a red chest, a crate, a metal door south with its red lamp.
+room = "ROOM5020"
+title = "Lab ladder room"
+seed = 5020
+
+[shell]
+floor = 0
+ceiling = -5200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+chest = [0.42, 0.14, 0.12]
+crate = [0.46, 0.30, 0.16]
+"panel.ladder" = [0.36, 0.36, 0.34]
+
+[[zone]]
+box = [2436, 2340, 8586, 12438]
+
+[[door]]
+wall = "south"
+span = [4800, 6300]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "north"
+span = [4700, 6000]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[object]]
+kind = "chest"
+box = [666, 6516, 3780, 9162]
+top = -1200
+back = "west"
+[[object]]
+kind = "box"
+box = [6200, 3400, 8000, 5000]
+top = -1100
+material = "crate"
+omit = ["bottom"]
+[[object]]          # ladder on the west wall
+kind = "wall_band"
+wall = "west"
+span = [4800, 5400]
+y = [-5200, -200]
+material = "panel.ladder"
+rail = false
+
+[[light]]
+at = [5500, -4400, 7000]
+color = [0.95, 0.98, 1.0]
+strength = 0.5
+reach = 6000

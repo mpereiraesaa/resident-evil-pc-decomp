@@ -1,0 +1,82 @@
+# Lab B3 room B: a grey concrete bedroom with a sink and mirror on the west
+# wall, the desk and chair south-west, the framed picture puzzle on the
+# north wall, the door west.
+room = "ROOM50A0"
+title = "Lab B3 room B"
+seed = 5100
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+wood = [0.30, 0.22, 0.16]
+glass = [0.70, 0.74, 0.76]
+
+[[zone]]
+box = [1878, 1944, 12582, 10836]
+
+[[door]]
+wall = "west"
+span = [3000, 4300]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[object]]          # sink
+kind = "box"
+box = [1878, 6000, 2600, 7200]
+top = -900
+material = "porcelain"
+omit = ["bottom", "west"]
+[[object]]          # mirror over it
+kind = "wall_band"
+wall = "west"
+span = [5800, 7400]
+y = [-2800, -1600]
+material = "glass"
+rail = false
+[[object]]          # desk and chair
+kind = "table"
+box = [4770, 9846, 8208, 12006]
+top = -1400
+thickness = 100
+[[object]]
+kind = "chair"
+at = [6500, 9000]
+facing = "north"
+[[object]]          # locker
+kind = "box"
+box = [11196, 3060, 15138, 5814]
+top = -1200
+material = "steel"
+omit = ["bottom", "east"]
+[[object]]          # the picture
+kind = "wall_band"
+wall = "north"
+span = [5200, 7600]
+y = [-3400, -1800]
+material = "painting"
+rail = false
+
+[[light]]
+at = [7000, -3800, 6000]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 6000

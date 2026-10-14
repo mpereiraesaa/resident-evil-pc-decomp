@@ -1,0 +1,110 @@
+# Power room: rust-red concrete, the big generator in the centre with
+# hazard-striped railings, computer desks along the south wall, the double
+# door on the north wall.
+room = "ROOM5110"
+title = "Power room"
+seed = 5170
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 900
+
+[materials]
+concrete = { color = [0.50, 0.30, 0.22], stains = 0.5 }
+"concrete.floor" = { color = [0.40, 0.36, 0.34], stains = 0.4 }
+"concrete.ceiling" = { color = [0.24, 0.16, 0.12], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.70, 0.56, 0.14]
+
+[lighting]
+ambient = [0.15, 0.11, 0.09]
+"hedge" = [0.22, 0.44, 0.40]
+
+[[zone]]            # south corridor
+box = [1800, 2718, 23346, 5202]
+floor_along = "x"
+[[zone]]            # west strip
+box = [1800, 5202, 5400, 12942]
+[[zone]]            # east strip
+box = [19854, 5202, 23346, 12942]
+[[zone]]            # north strip
+box = [1800, 12942, 23346, 16254]
+floor_along = "x"
+
+[[door]]
+wall = "north"
+span = [11300, 14300]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+[[object]]          # generator mass
+kind = "box"
+box = [5400, 5202, 19854, 12942]
+top = -2600
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "cylinder"
+at = [12600, 9000]
+radius = 2600
+top = -3600
+bottom = -2600
+material = "steel"
+segments = 16
+[[object]]
+kind = "rail"
+from = [5300, 5100]
+to = [19950, 5100]
+height = 900
+spacing = 800
+material = "wood"
+[[object]]
+kind = "rail"
+from = [5300, 13050]
+to = [19950, 13050]
+height = 900
+spacing = 800
+material = "wood"
+[[object]]          # computer desks on the south wall
+kind = "box"
+box = [10386, 918, 19206, 2718]
+top = -1100
+material = "iron"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [4662, 900, 8244, 2700]
+top = -1800
+material = "iron"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [6390, 4500, 7884, 7020]
+top = -1300
+material = "iron"
+omit = ["bottom"]
+
+[[light]]
+at = [12000, -3800, 4000]
+color = [1.0, 0.85, 0.75]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [12000, -3800, 14500]
+color = [1.0, 0.85, 0.75]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [12600, -3500, 9000]
+color = [0.60, 1.0, 0.80]
+strength = 0.3
+reach = 6000

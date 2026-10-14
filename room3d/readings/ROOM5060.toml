@@ -1,0 +1,93 @@
+# Small laboratory: green-tinted lab with the cylindrical centrifuge in
+# the middle, benches along the walls, the computer desk south-west, the
+# specimen fridge and tanks, the door on the north wall.
+room = "ROOM5060"
+title = "Small laboratory"
+seed = 5060
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.48, 0.56, 0.50], stains = 0.5 }
+"concrete.floor" = { color = [0.42, 0.46, 0.42], stains = 0.4 }
+"concrete.ceiling" = { color = [0.28, 0.32, 0.30], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.15, 0.17, 0.15]
+"concrete.tiles" = { color = [0.42, 0.46, 0.42], stains = 0.2, panels = 6 }
+
+[[zone]]
+box = [3096, 2736, 17640, 10188]
+floor_along = "x"
+floor_material = "concrete.tiles"
+
+[[door]]
+wall = "north"
+span = [13800, 17100]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+[[object]]          # centrifuge drum (circle 7 + block 3)
+kind = "cylinder"
+at = [10746, 6300]
+radius = 1100
+top = -1800
+material = "steel"
+segments = 16
+[[object]]
+kind = "box"
+box = [8352, 5166, 13140, 7434]
+top = -800
+material = "iron"
+omit = ["bottom"]
+[[object]]          # bench south
+kind = "box"
+box = [11772, 9234, 21852, 12366]
+top = -1000
+material = "steel"
+omit = ["bottom", "south"]
+[[object]]          # bench east
+kind = "box"
+box = [16326, 7128, 19422, 12384]
+top = -1000
+material = "steel"
+omit = ["bottom", "east"]
+[[object]]          # tanks on the east bench
+kind = "cylinder"
+at = [17800, 8200]
+radius = 400
+top = -2400
+bottom = -1000
+material = "glass_dark"
+segments = 10
+[[object]]          # computer desk south-west
+kind = "box"
+box = [10134, 9612, 13122, 11412]
+top = -1100
+material = "iron"
+omit = ["bottom"]
+[[object]]          # specimen fridge
+kind = "box"
+box = [12078, 1098, 20052, 3402]
+top = -2800
+material = "steel"
+omit = ["bottom", "south"]
+
+[[light]]
+at = [10000, -3800, 6500]
+color = [0.85, 1.0, 0.90]
+strength = 0.5
+reach = 8000

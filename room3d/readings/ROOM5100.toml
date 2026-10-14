@@ -1,0 +1,117 @@
+# Power maze 2: the same mesh-caged walkways, with the yellow gas tank in
+# the north-west, pipes, the computer cabinet, and doors south.
+room = "ROOM5100"
+title = "Power maze 2"
+seed = 5160
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 900
+
+[materials]
+concrete = { color = [0.46, 0.30, 0.16], stains = 0.5 }
+"concrete.floor" = { color = [0.46, 0.40, 0.30], stains = 0.4 }
+"concrete.ceiling" = { color = [0.22, 0.14, 0.08], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.20, 0.13, 0.06]
+"panel.mesh" = [0.50, 0.32, 0.14]
+wood = [0.70, 0.56, 0.14]
+"drum" = [0.80, 0.62, 0.14]
+
+[[zone]]            # south corridor west
+box = [1890, 2034, 14742, 4500]
+floor_along = "x"
+wall_material = "panel.mesh"
+[[zone]]            # west leg
+box = [4680, 4500, 7380, 11214]
+wall_material = "panel.mesh"
+[[zone]]            # north corridor
+box = [4680, 9306, 20736, 11214]
+floor_along = "x"
+wall_material = "panel.mesh"
+[[zone]]            # east leg
+box = [20736, 2880, 23274, 17172]
+wall_material = "panel.mesh"
+[[zone]]            # south corridor east
+box = [18864, 2034, 20736, 4500]
+wall_material = "panel.mesh"
+
+[[door]]
+wall = "south"
+span = [3200, 5600]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[object]]          # gas tank
+kind = "cylinder"
+at = [2800, 6000]
+radius = 1200
+top = -3200
+material = "drum"
+segments = 14
+[[object]]
+kind = "rail"
+from = [4800, 4600]
+to = [4800, 11000]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [7250, 4600]
+to = [7250, 9200]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [7400, 9400]
+to = [20600, 9400]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [20850, 3000]
+to = [20850, 9200]
+height = 950
+spacing = 600
+newels = [false, false]
+
+[[light]]
+at = [8000, -3600, 3300]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [6000, -3600, 8000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [14000, -3600, 10200]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 7000
+[[light]]
+at = [22000, -3600, 7000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [22000, -3600, 14000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000

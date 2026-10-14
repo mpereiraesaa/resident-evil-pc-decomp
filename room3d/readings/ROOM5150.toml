@@ -1,0 +1,37 @@
+# Lift to the heliport: a small steel cage (its view did not decode).
+room = "ROOM5150"
+title = "Heliport lift"
+seed = 5210
+
+[shell]
+floor = 0
+ceiling = -4000
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 600
+
+[materials]
+concrete = { color = [0.42, 0.44, 0.44], stains = 0.5 }
+"concrete.floor" = { color = [0.36, 0.38, 0.38], stains = 0.4 }
+"concrete.ceiling" = { color = [0.26, 0.28, 0.28], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+grating = [0.50, 0.52, 0.52]
+
+[[zone]]
+box = [2466, 1836, 6984, 7146]
+wall_material = "grating"
+
+[[light]]
+at = [4700, -3600, 4500]
+color = [0.95, 0.98, 1.0]
+strength = 0.5
+reach = 5000

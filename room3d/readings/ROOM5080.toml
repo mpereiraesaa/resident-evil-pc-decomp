@@ -1,0 +1,76 @@
+# Lab B3 private passage: a dark blue-grey corridor with lamps, double
+# doors at each end and on the north wall, the keypad and power panel.
+room = "ROOM5080"
+title = "Lab B3 private passage"
+seed = 5080
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.34, 0.38, 0.42], stains = 0.5 }
+"concrete.floor" = { color = [0.30, 0.32, 0.34], stains = 0.4 }
+"concrete.ceiling" = { color = [0.20, 0.22, 0.24], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+"panel.iron" = [0.16, 0.16, 0.17]
+
+[lighting]
+ambient = [0.12, 0.13, 0.15]
+
+[[zone]]
+box = [1854, 1908, 20070, 5292]
+floor_along = "x"
+
+[[door]]
+wall = "east"
+span = [2400, 4900]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "north"
+span = [10700, 13000]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "south"
+span = [17700, 19100]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "west"
+span = [2500, 4700]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+[[object]]          # power panel by the west door
+kind = "wall_band"
+wall = "south"
+span = [2400, 3400]
+y = [-2600, -1800]
+material = "panel.iron"
+rail = false
+
+[[light]]
+at = [6000, -3800, 3600]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 6000
+[[light]]
+at = [15000, -3800, 3600]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 6000

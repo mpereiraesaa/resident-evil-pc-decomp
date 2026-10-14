@@ -1,0 +1,63 @@
+# Cell entry: a dark blue-grey concrete L with ceiling lamps, the barred
+# cell door on the south wall of the north passage and the double doors on
+# the east wall of the west leg.
+room = "ROOM50B0"
+title = "Cell entry"
+seed = 5110
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.34, 0.40, 0.44], stains = 0.5 }
+"concrete.floor" = { color = [0.30, 0.34, 0.36], stains = 0.4 }
+"concrete.ceiling" = { color = [0.18, 0.20, 0.22], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.12, 0.13, 0.15]
+
+[[zone]]            # west leg
+box = [1854, 2304, 5994, 19332]
+[[zone]]            # north passage
+box = [5994, 15336, 13536, 19332]
+floor_along = "x"
+
+[[door]]
+wall = "east"
+span = [2700, 5100]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "south"
+span = [9000, 10700]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[light]]
+at = [3900, -3900, 6000]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 6000
+[[light]]
+at = [3900, -3900, 14000]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 6000
+[[light]]
+at = [10000, -3900, 17300]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 6000

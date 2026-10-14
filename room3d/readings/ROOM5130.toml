@@ -1,0 +1,155 @@
+# Main lab: grey panelled concrete around a central block, glass tanks on
+# black bases glowing green, racks of machinery along the walls, a shiny
+# floor; the door at the west end of the north area.
+room = "ROOM5130"
+title = "Main lab"
+seed = 5190
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 1000
+
+[materials]
+concrete = { color = [0.46, 0.48, 0.50], stains = 0.5 }
+"concrete.floor" = { color = [0.36, 0.38, 0.42], stains = 0.4 }
+"concrete.ceiling" = { color = [0.16, 0.16, 0.18], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.14, 0.16, 0.16]
+"glass.tank" = [0.70, 1.0, 0.80]
+
+[[zone]]            # south-west strip
+box = [2808, 6174, 6822, 11322]
+[[zone]]            # west corridor
+box = [2808, 11322, 6822, 26334]
+[[zone]]            # south strip
+box = [6822, 6174, 14760, 11322]
+floor_along = "x"
+[[zone]]            # south-east
+box = [12672, 2052, 19512, 7146]
+floor_along = "x"
+[[zone]]            # east corridor
+box = [14760, 7146, 19026, 31050]
+[[zone]]            # north area
+box = [6228, 24210, 14760, 31050]
+floor_along = "x"
+
+[[door]]
+wall = "west"
+span = [26000, 28500]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+# Tanks: glass cylinders on black bases
+[[object]]
+kind = "cylinder"
+at = [10800, 8800]
+radius = 900
+top = -600
+material = "lacquer"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [10800, 8800]
+radius = 700
+top = -3200
+bottom = -600
+material = "glass.tank"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [4800, 20000]
+radius = 900
+top = -600
+material = "lacquer"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [4800, 20000]
+radius = 700
+top = -3200
+bottom = -600
+material = "glass.tank"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [17000, 20000]
+radius = 900
+top = -600
+material = "lacquer"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [17000, 20000]
+radius = 700
+top = -3200
+bottom = -600
+material = "glass.tank"
+segments = 14
+# Machinery racks along the outer walls
+[[object]]
+kind = "box"
+box = [810, 0, 9090, 6174]
+top = -2400
+material = "steel"
+omit = ["bottom", "south", "west"]
+[[object]]
+kind = "box"
+box = [7578, 18, 12672, 5796]
+top = -2000
+material = "steel"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [19026, 7146, 19512, 31050]
+top = -2400
+material = "steel"
+omit = ["bottom", "east"]
+[[object]]
+kind = "box"
+box = [6228, 30000, 14760, 31050]
+top = -2400
+material = "steel"
+omit = ["bottom", "north"]
+
+[[light]]
+at = [10800, -2000, 8800]
+color = [0.50, 1.0, 0.65]
+strength = 0.4
+reach = 5000
+[[light]]
+at = [4800, -2000, 20000]
+color = [0.50, 1.0, 0.65]
+strength = 0.4
+reach = 5000
+[[light]]
+at = [17000, -2000, 20000]
+color = [0.50, 1.0, 0.65]
+strength = 0.4
+reach = 5000
+[[light]]
+at = [10500, -3800, 27500]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [4800, -3800, 9000]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 7000
+[[light]]
+at = [17000, -3800, 5000]
+color = [0.90, 0.95, 1.0]
+strength = 0.4
+reach = 7000

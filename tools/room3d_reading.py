@@ -284,6 +284,26 @@ def tex_wallpaper(rng, size, color, motif=(0.30, 0.28, 0.20), repeats=8):
     return tint(pattern.astype(float) * 0.55, paper, motif)
 
 
+def tex_concrete(rng, size, color, stains=0.5, panels=2):
+    """Poured concrete with stains and panel joints."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    mottle = value_noise((size, size), rng, octaves=5, base_freq=4)
+    fine = value_noise((size, size), rng, octaves=3, base_freq=48, persistence=0.5)
+    level = 0.78 + 0.22 * mottle + 0.08 * fine
+    level -= stains * np.clip(value_noise((size, size), rng, octaves=3, base_freq=3) - 0.5, 0, 1) * 1.6
+    image = np.array(color)[None, None, :] * level[..., None]
+    joints = ((xx * panels) % 1 < 0.008) | ((yy * panels) % 1 < 0.008)
+    return tint(joints.astype(float) * 0.5, image, tuple(c * 0.5 for c in color))
+
+
+def tex_grating(rng, size, color):
+    """Steel mesh grating."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    bars = ((xx * 16) % 1 < 0.25) | ((yy * 16) % 1 < 0.25)
+    dark = np.array((0.06, 0.06, 0.06))[None, None, :] * np.ones((size, size, 1))
+    return np.where(bars[..., None], np.array(color)[None, None, :] * np.ones((size, size, 1)), dark)
+
+
 def tex_checker(rng, size, color, dark=(0.22, 0.17, 0.13)):
     """Two-tone marble tiles, two by two per texture."""
     yy, xx = np.mgrid[0:size, 0:size] / size
@@ -331,6 +351,8 @@ FAMILIES = {
     "chest": (tex_chest, (0.22, 0.14, 0.08), None),
     "wallpaper": (tex_wallpaper, (0.55, 0.52, 0.38), (1200, 1200)),
     "stripes": (tex_stripes, (0.86, 0.80, 0.68), (1600, 1600)),
+    "concrete": (tex_concrete, (0.58, 0.58, 0.54), (3000, 3000)),
+    "grating": (tex_grating, (0.50, 0.52, 0.52), (1200, 1200)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),
 }
@@ -349,7 +371,8 @@ SOLIDS = {
     "porcelain": {"kd": (0.52, 0.58, 0.46)},
     "steel": {"kd": (0.60, 0.62, 0.64)},
     "glass_dark": {"kd": (0.18, 0.24, 0.24)},
-    "concrete": {"kd": (0.46, 0.47, 0.46)},
+    "rust": {"kd": (0.52, 0.28, 0.14)},
+    "plastic": {"kd": (0.78, 0.78, 0.72)},
     "copper": {"kd": (0.48, 0.26, 0.16)},
     "lacquer": {"kd": (0.05, 0.05, 0.06)},
     "linen": {"kd": (0.62, 0.62, 0.56)},

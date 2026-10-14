@@ -1,0 +1,63 @@
+# Main lab entry: dark grey panelled concrete, the B.4 lift gate on the
+# south wall, grating patches, vents, the red-lit double door on the east.
+room = "ROOM5140"
+title = "Main lab entry"
+seed = 5200
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.34, 0.34, 0.36], stains = 0.5 }
+"concrete.floor" = { color = [0.34, 0.34, 0.36], stains = 0.4 }
+"concrete.ceiling" = { color = [0.12, 0.12, 0.14], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.13, 0.13, 0.14]
+grating = [0.50, 0.52, 0.52]
+
+[[zone]]            # south strip with the lift
+box = [1986, 1926, 5238, 7632]
+[[zone]]            # main
+box = [1986, 7632, 13950, 12474]
+floor_along = "x"
+
+[[door]]
+wall = "south"
+span = [2400, 4800]
+top = -3800
+material = "grating"
+frame = "steel"
+[[door]]
+wall = "east"
+span = [8500, 11400]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+[[object]]
+kind = "rug"
+box = [2400, 8600, 5000, 11400]
+material = "grating"
+
+[[light]]
+at = [3600, -3800, 4500]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 6000
+[[light]]
+at = [9000, -3800, 10000]
+color = [0.90, 0.95, 1.0]
+strength = 0.45
+reach = 7000

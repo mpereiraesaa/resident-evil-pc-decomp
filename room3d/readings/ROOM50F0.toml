@@ -1,0 +1,125 @@
+# Power maze 1: orange-lit mesh cages, grating walkways with yellow railings
+# and hazard stripes, machinery behind the mesh; doors on the north wall
+# (west end) and in the east.
+room = "ROOM50F0"
+title = "Power maze 1"
+seed = 5150
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 900
+
+[materials]
+concrete = { color = [0.46, 0.30, 0.16], stains = 0.5 }
+"concrete.floor" = { color = [0.46, 0.40, 0.30], stains = 0.4 }
+"concrete.ceiling" = { color = [0.22, 0.14, 0.08], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.20, 0.13, 0.06]
+grating = [0.56, 0.40, 0.22]
+"panel.mesh" = [0.50, 0.32, 0.14]
+wood = [0.70, 0.56, 0.14]
+
+[[zone]]            # south-west
+box = [2124, 2034, 7470, 6408]
+floor_along = "x"
+wall_material = "panel.mesh"
+[[zone]]            # west corridor
+box = [4788, 6408, 7470, 17640]
+wall_material = "panel.mesh"
+[[zone]]            # north corridor
+box = [2124, 17640, 23274, 20898]
+floor_along = "x"
+wall_material = "panel.mesh"
+[[zone]]            # middle corridor
+box = [14688, 2034, 17586, 17640]
+wall_material = "panel.mesh"
+[[zone]]            # east corridor
+box = [20790, 6876, 23274, 17640]
+wall_material = "panel.mesh"
+
+[[door]]
+wall = "north"
+span = [11100, 14300]
+top = -3600
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "east"
+span = [4800, 6900]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+# Railings along the walkways
+[[object]]
+kind = "rail"
+from = [4900, 6500]
+to = [4900, 17500]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [7350, 6500]
+to = [7350, 17500]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [14800, 2200]
+to = [14800, 17500]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [17470, 2200]
+to = [17470, 17500]
+height = 950
+spacing = 600
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [2200, 17750]
+to = [23200, 17750]
+height = 950
+spacing = 600
+newels = [false, false]
+
+[[light]]
+at = [6000, -3600, 4000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [6000, -3600, 12000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [16000, -3600, 10000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [12000, -3600, 19200]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 7000
+[[light]]
+at = [22000, -3600, 12000]
+color = [1.0, 0.70, 0.30]
+strength = 0.5
+reach = 6000

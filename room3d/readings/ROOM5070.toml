@@ -1,0 +1,129 @@
+# Morgue: concrete cells; the bunk room west with a row of beds and a desk,
+# the operating room east with the table, trolleys and green machines, the
+# double doors on the north wall of each.
+room = "ROOM5070"
+title = "Morgue"
+seed = 5070
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+"concrete.tiles" = { color = [0.56, 0.58, 0.56], stains = 0.2, panels = 8 }
+linen = [0.30, 0.32, 0.40]
+"hedge" = [0.22, 0.42, 0.36]
+
+[[zone]]            # bunk room
+box = [1914, 1800, 14616, 13050]
+[[zone]]            # operating room
+box = [16506, 2178, 26568, 13248]
+wall_material = "concrete.tiles"
+floor_material = "concrete.tiles"
+[[zone]]            # link
+box = [14616, 5310, 16506, 9432]
+floor_along = "x"
+
+[[door]]
+wall = "south"
+span = [10800, 13000]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "south"
+span = [20000, 22600]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+# Beds along the north wall of the bunk room
+[[object]]
+kind = "bed"
+box = [504, 9432, 2800, 11400]
+head = "west"
+top = -600
+[[object]]
+kind = "bed"
+box = [3200, 9432, 5500, 11400]
+head = "west"
+top = -600
+[[object]]
+kind = "bed"
+box = [5900, 9432, 8200, 11400]
+head = "west"
+top = -600
+[[object]]
+kind = "bed"
+box = [8600, 9432, 10998, 11400]
+head = "west"
+top = -600
+[[object]]          # desk
+kind = "table"
+box = [1422, 3762, 4464, 6462]
+top = -1400
+thickness = 100
+[[object]]          # locker
+kind = "box"
+box = [540, 144, 3000, 1800]
+top = -2800
+material = "steel"
+omit = ["bottom", "south", "west"]
+# Operating room
+[[object]]
+kind = "table"
+box = [22950, 6102, 25182, 9648]
+top = -1100
+thickness = 120
+material = "steel"
+[[object]]
+kind = "box"
+box = [20430, 4104, 21834, 5616]
+top = -1400
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [18144, 4086, 19476, 5616]
+top = -1400
+material = "hedge"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [23112, 5004, 24012, 9324]
+top = -1000
+material = "steel"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [23832, 11000, 29520, 13248]
+top = -1000
+material = "steel"
+omit = ["bottom", "north", "east"]
+
+[[light]]
+at = [8000, -3800, 7000]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [21500, -3800, 7500]
+color = [0.70, 1.0, 0.80]
+strength = 0.5
+reach = 8000

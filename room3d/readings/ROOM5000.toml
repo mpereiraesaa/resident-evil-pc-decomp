@@ -1,0 +1,91 @@
+# Laboratory entry: the lift cage arrives in a concrete cell with X-braced
+# steel framing, the big B.1 tank pipe, mesh doors at the north and the
+# emergency exit sign on the west mesh.
+room = "ROOM5000"
+title = "Laboratory entry"
+seed = 5000
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+rust = [0.52, 0.28, 0.14]
+grating = [0.50, 0.52, 0.52]
+
+[[zone]]
+box = [2188, 2030, 11046, 13714]
+
+[[door]]
+wall = "west"
+span = [8000, 10500]
+top = -3600
+material = "grating"
+frame = "rust"
+[[door]]
+wall = "south"
+span = [3200, 5300]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[object]]          # lift cage
+kind = "box"
+box = [4446, 36, 8676, 5454]
+top = -4800
+material = "grating"
+omit = ["bottom", "top", "south"]
+[[object]]          # the B.1 tank pipe (collision circle 5)
+kind = "cylinder"
+at = [6652, 4400]
+radius = 1708
+top = -4800
+material = "rust"
+segments = 16
+# X-braced framing: rust posts along the walls
+[[column]]
+at = [2188, 7000]
+top = -4800
+radius = 120
+material = "rust"
+square = true
+[[column]]
+at = [2188, 11000]
+top = -4800
+radius = 120
+material = "rust"
+square = true
+[[column]]
+at = [11046, 7000]
+top = -4800
+radius = 120
+material = "rust"
+square = true
+[[column]]
+at = [11046, 11000]
+top = -4800
+radius = 120
+material = "rust"
+square = true
+
+[[light]]
+at = [6600, -4200, 9500]
+color = [0.95, 0.98, 1.0]
+strength = 0.5
+reach = 7000

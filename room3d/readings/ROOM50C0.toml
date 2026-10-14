@@ -1,0 +1,94 @@
+# Lab B3 elevator entry / power house: dark teal concrete corridors with
+# green floor lines, the B.3 stencil, the mesh lift gate on the north area's
+# east wall, the lightning-marked double doors and the other doors.
+room = "ROOM50C0"
+title = "Lab B3 elevator entry"
+seed = 5120
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 900
+
+[materials]
+concrete = { color = [0.30, 0.40, 0.42], stains = 0.5 }
+"concrete.floor" = { color = [0.30, 0.36, 0.36], stains = 0.4 }
+"concrete.ceiling" = { color = [0.16, 0.20, 0.20], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.12, 0.14, 0.15]
+grating = [0.50, 0.52, 0.52]
+
+[[zone]]            # main corridor north-south
+box = [10512, 2016, 14760, 25326]
+[[zone]]            # west branch
+box = [1926, 16236, 10512, 18864]
+floor_along = "x"
+[[zone]]            # north area
+box = [10512, 25326, 16722, 30780]
+
+[[door]]
+wall = "west"
+span = [16300, 18300]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "north"
+span = [4700, 7200]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "east"
+span = [17000, 18600]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "south"
+span = [11400, 13900]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "east"
+span = [26400, 29000]
+top = -3800
+material = "grating"
+frame = "steel"
+
+[[light]]
+at = [12600, -3900, 6000]
+color = [0.85, 0.95, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [12600, -3900, 14000]
+color = [0.85, 0.95, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [12600, -3900, 22000]
+color = [0.85, 0.95, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [6000, -3900, 17500]
+color = [0.85, 0.95, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [13600, -3900, 28000]
+color = [0.85, 0.95, 1.0]
+strength = 0.45
+reach = 7000

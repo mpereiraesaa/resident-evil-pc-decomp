@@ -1,0 +1,89 @@
+# Lab save room: grey concrete; the desk with the typewriter and lamp on
+# the north-west, the bed on the north wall, the locker east, a red chest
+# south-east and a cabinet south-west; the door on the west wall.
+room = "ROOM50E0"
+title = "Lab save room"
+seed = 5140
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+chest = [0.44, 0.14, 0.12]
+linen = [0.80, 0.80, 0.78]
+
+[[zone]]
+box = [2166, 2070, 8226, 10656]
+[[zone]]
+box = [8226, 7110, 9144, 10656]
+
+[[door]]
+wall = "west"
+span = [2800, 4500]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[object]]
+kind = "table"
+box = [2412, 8982, 5148, 11484]
+top = -1400
+thickness = 100
+with = "typewriter"
+typewriter_at = [4000, 10200]
+[[object]]
+kind = "cylinder"
+at = [2900, 10200]
+radius = 180
+top = -2000
+bottom = -1400
+material = "glow"
+segments = 8
+[[object]]
+kind = "chair"
+at = [4000, 8200]
+facing = "north"
+[[object]]
+kind = "bed"
+box = [5148, 9054, 8600, 10890]
+head = "east"
+top = -600
+[[object]]          # locker on the east wall
+kind = "box"
+box = [8226, 774, 11106, 7110]
+top = -2600
+material = "steel"
+omit = ["bottom", "east", "south"]
+[[object]]
+kind = "chest"
+box = [7560, 540, 10854, 4338]
+top = -1200
+back = "south"
+
+[[light]]
+at = [5500, -3800, 6000]
+color = [0.95, 0.98, 1.0]
+strength = 0.5
+reach = 6000
+[[light]]
+at = [2900, -2000, 10200]
+color = [1.0, 0.95, 0.80]
+strength = 0.3
+reach = 3000

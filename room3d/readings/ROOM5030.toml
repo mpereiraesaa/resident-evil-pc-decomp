@@ -1,0 +1,100 @@
+# Lab B2 stairway: concrete landing with a railed grating platform over
+# the stairwell, the B.2 stencil, the corridor west to the visual data room.
+room = "ROOM5030"
+title = "Lab B2 stairway"
+seed = 5030
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+grating = [0.50, 0.52, 0.52]
+
+[[zone]]            # platform
+box = [14778, 2070, 30834, 6750]
+floor_along = "x"
+floor_material = "grating"
+[[zone]]            # east strip beside the well
+box = [25038, 6750, 30834, 9270]
+floor_along = "x"
+[[zone]]            # west corridor
+box = [3060, 15858, 14328, 17964]
+floor_along = "x"
+[[zone]]            # link
+box = [14328, 9306, 17316, 17964]
+[[zone]]            # stairwell
+box = [17316, 6876, 25038, 17964]
+open_floor = true
+
+[[stair]]
+x = [18198, 22932]
+z = [9432, 17964]
+direction = "south"
+base = 4000
+top = 0
+steps = 14
+tread_material = "grating"
+under = false
+rails = []
+[[object]]
+kind = "rail"
+from = [17400, 6900]
+to = [25000, 6900]
+height = 1000
+spacing = 700
+material = "steel"
+[[object]]
+kind = "rail"
+from = [17400, 6900]
+to = [17400, 17900]
+height = 1000
+spacing = 700
+material = "steel"
+newels = [false, false]
+
+[[door]]
+wall = "north"
+span = [26000, 27800]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "north"
+span = [6600, 10400]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "west"
+span = [16000, 17964]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[light]]
+at = [22000, -4200, 4000]
+color = [0.95, 0.98, 1.0]
+strength = 0.5
+reach = 8000
+[[light]]
+at = [8000, -4200, 16800]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 7000

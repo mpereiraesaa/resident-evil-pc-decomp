@@ -1,0 +1,113 @@
+# Visual data room: blue-grey concrete, strip lights, a long table with
+# chairs and a projector, the screen on the north wall, bookshelves, the
+# double door on the south wall.
+room = "ROOM5040"
+title = "Visual data room"
+seed = 5040
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.44, 0.52, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.30, 0.38, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.26, 0.30, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.14, 0.16, 0.18]
+wood = [0.30, 0.17, 0.10]
+velvet = [0.16, 0.24, 0.46]
+paper = [0.90, 0.92, 0.94]
+
+[[zone]]
+box = [2268, 2052, 12294, 14652]
+
+[[door]]
+wall = "south"
+span = [6100, 8500]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+
+[[object]]
+kind = "table"
+box = [5490, 5364, 8820, 11862]
+top = -1500
+thickness = 120
+[[object]]
+kind = "chair"
+at = [5792, 10758]
+facing = "east"
+[[object]]
+kind = "chair"
+at = [5733, 8631]
+facing = "east"
+[[object]]
+kind = "chair"
+at = [5796, 6516]
+facing = "east"
+[[object]]
+kind = "chair"
+at = [8532, 10800]
+facing = "west"
+[[object]]
+kind = "chair"
+at = [8523, 8577]
+facing = "west"
+[[object]]
+kind = "chair"
+at = [8604, 6444]
+facing = "west"
+[[object]]          # projector on the table
+kind = "box"
+box = [6700, 8300, 7600, 8900]
+top = -1800
+bottom = -1500
+material = "plastic"
+[[object]]          # screen on the north wall
+kind = "wall_band"
+wall = "north"
+span = [5200, 9000]
+y = [-3600, -1800]
+material = "paper"
+rail = false
+[[object]]          # bookshelves
+kind = "box"
+box = [11610, 7578, 13950, 9540]
+top = -2400
+material = "steel"
+omit = ["bottom", "east"]
+[[object]]
+kind = "box"
+box = [702, 684, 3204, 5922]
+top = -2400
+material = "steel"
+omit = ["bottom", "west", "south"]
+[[object]]
+kind = "box"
+box = [11844, 0, 13410, 8604]
+top = -1200
+material = "steel"
+omit = ["bottom", "east", "south"]
+
+[[light]]
+at = [7000, -3900, 5000]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [7000, -3900, 11000]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 7000

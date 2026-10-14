@@ -1,0 +1,69 @@
+# Emergency tunnel: a winding concrete corridor with strip lights and
+# pipes; from the lab entry (south-east) west and north to the ladder room,
+# with the mesh gate and phone at the far end.
+room = "ROOM5010"
+title = "Emergency tunnel"
+seed = 5010
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 800
+
+[materials]
+concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
+"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
+"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.16, 0.16, 0.15]
+grating = [0.50, 0.52, 0.52]
+
+[[zone]]            # south passage
+box = [2304, 2214, 30618, 4842]
+floor_along = "x"
+[[zone]]            # middle riser
+box = [6372, 4842, 16272, 19422]
+[[zone]]            # north passage west
+box = [2304, 19422, 8964, 30402]
+[[zone]]            # north pocket
+box = [8964, 25848, 12834, 30402]
+floor_along = "x"
+
+[[door]]
+wall = "east"
+span = [2500, 4600]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "north"
+span = [3000, 6000]
+top = -3600
+material = "grating"
+frame = "steel"
+
+[[light]]
+at = [16000, -3800, 3500]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [11000, -3800, 12000]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [5500, -3800, 25000]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 8000

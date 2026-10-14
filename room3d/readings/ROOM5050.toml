@@ -1,0 +1,103 @@
+# Lab B3 O passage: blue concrete corridors in a loop, with the stair up
+# at the north-west, strip lights, pipes, hazard stripes and several doors.
+room = "ROOM5050"
+title = "Lab B3 passage"
+seed = 5050
+
+[shell]
+floor = 0
+ceiling = -4200
+floor_material = "concrete.floor"
+wall_material = "concrete"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+trim = "steel"
+cell = 900
+
+[materials]
+concrete = { color = [0.40, 0.48, 0.52], stains = 0.5 }
+"concrete.floor" = { color = [0.30, 0.36, 0.38], stains = 0.4 }
+"concrete.ceiling" = { color = [0.24, 0.28, 0.30], stains = 0.3 }
+"door.lab" = [0.50, 0.46, 0.40]
+"double_door.lab" = [0.52, 0.50, 0.46]
+steel = [0.60, 0.62, 0.64]
+wood = [0.60, 0.62, 0.64]
+
+[lighting]
+ambient = [0.13, 0.15, 0.17]
+
+[[zone]]            # south corridor
+box = [2328, 2034, 23112, 7632]
+floor_along = "x"
+[[zone]]            # west leg
+box = [2328, 7632, 5796, 20250]
+[[zone]]            # east leg
+box = [20574, 7632, 23112, 21672]
+[[zone]]            # north passage
+box = [6390, 17262, 20052, 20250]
+floor_along = "x"
+[[zone]]            # north-west landing
+box = [2328, 20250, 5004, 28242]
+
+[[door]]
+wall = "south"
+span = [15700, 18500]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "east"
+span = [21300, 23500]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]
+wall = "west"
+span = [16100, 19500]
+top = -3600
+material = "double_door.lab"
+frame = "steel"
+[[door]]
+wall = "east"
+span = [2200, 4500]
+top = -3400
+material = "door.lab"
+frame = "steel"
+
+[[stair]]
+x = [2328, 5004]
+z = [20250, 24462]
+direction = "north"
+top = -3000
+steps = 10
+tread_material = "steel"
+under = false
+rails = []
+
+[[column]]          # pillar in the south corridor
+at = [20160, 7758]
+top = -4200
+radius = 756
+material = "concrete"
+square = true
+
+[[light]]
+at = [12000, -3800, 4800]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [4000, -3800, 14000]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [21800, -3800, 14000]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 8000
+[[light]]
+at = [13000, -3800, 18700]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 8000

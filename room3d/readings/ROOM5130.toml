@@ -50,17 +50,17 @@ top = -3600
 material = "double_door.lab"
 frame = "steel"
 
-# Tanks: glass cylinders on black bases
+# Tanks: glass cylinders on black bases, set against the central block
 [[object]]
 kind = "cylinder"
-at = [10800, 8800]
+at = [7400, 13500]
 radius = 900
 top = -600
 material = "lacquer"
 segments = 14
 [[object]]
 kind = "cylinder"
-at = [10800, 8800]
+at = [7400, 13500]
 radius = 700
 top = -3200
 bottom = -600
@@ -68,14 +68,14 @@ material = "tank"
 segments = 14
 [[object]]
 kind = "cylinder"
-at = [4800, 20000]
+at = [7400, 18000]
 radius = 900
 top = -600
 material = "lacquer"
 segments = 14
 [[object]]
 kind = "cylinder"
-at = [4800, 20000]
+at = [7400, 18000]
 radius = 700
 top = -3200
 bottom = -600
@@ -83,14 +83,59 @@ material = "tank"
 segments = 14
 [[object]]
 kind = "cylinder"
-at = [17000, 20000]
+at = [7400, 22500]
 radius = 900
 top = -600
 material = "lacquer"
 segments = 14
 [[object]]
 kind = "cylinder"
-at = [17000, 20000]
+at = [7400, 22500]
+radius = 700
+top = -3200
+bottom = -600
+material = "tank"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [14200, 13500]
+radius = 900
+top = -600
+material = "lacquer"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [14200, 13500]
+radius = 700
+top = -3200
+bottom = -600
+material = "tank"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [14200, 18000]
+radius = 900
+top = -600
+material = "lacquer"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [14200, 18000]
+radius = 700
+top = -3200
+bottom = -600
+material = "tank"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [14200, 22500]
+radius = 900
+top = -600
+material = "lacquer"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [14200, 22500]
 radius = 700
 top = -3200
 bottom = -600

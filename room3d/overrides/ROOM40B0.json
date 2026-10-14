@@ -1,0 +1,79 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "c06b48a8381829a4b98901c8a9e4b3bd3bba430a49c339e4c941cdb43889375b",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "575b1256ef16ce2fdbf86ab57342fca26b3977b854a97bbcf6ee5663ed3bfd06"
+  },
+  "created": "2026-10-14T08:53:07+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "c06b48a8381829a4b98901c8a9e4b3bd3bba430a49c339e4c941cdb43889375b",
+      "edits": {
+        "boundary_5": {
+          "pivot": [
+            2664,
+            0,
+            10323
+          ],
+          "scale": [
+            1,
+            0.4,
+            1
+          ]
+        }
+      },
+      "note": "Scale the tub collision slab to 600 high about the floor; ray casts from both cameras place the tub on this slab",
+      "objects": {
+        "boundary_5": {
+          "kind": "wall",
+          "max": [
+            4662.0,
+            0.0,
+            11610.0
+          ],
+          "min": [
+            666.0,
+            -1500.0,
+            9036.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T08:53:07+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Bathroom; the tub is its 1.5 m collision slab scaled to tub height",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM40B0",
+    "room": 11,
+    "stage": 4
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "f7caf59c8971439e701a15decf4f38bd6ce391b44ec2cf928c5a0dabb184efad",
+      "1": "2b575ba242414490f6a990026cd88713e86788e5165f5f33c3f45646a99c2e00"
+    },
+    "geometry_sha256": "72381b51ccce49f60fc7a9774da8b7521a8d6932b35cb95d3525d52936271c87",
+    "player": 0,
+    "rdt": "ROOM40B0",
+    "rdt_sha256": "0bf35e35205adaa35a6eb04919390dab0453a8c63b0e78e347904eea9ee33b8d",
+    "room": 11,
+    "stage": 4
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T08:53:07+00:00"
+}

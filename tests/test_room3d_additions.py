@@ -76,6 +76,21 @@ class AdditionsTests(unittest.TestCase):
         self.assertGreater(np.asarray(image)[mask].mean(), 0)
         self.assertTrue((out / 'reprojection.json').is_file())
 
+    def test_block_family_is_a_plain_elevated_box(self):
+        source = read_mesh(self.room / 'assisted.obj')
+        mesh, generated = append_objects(source, [
+            {'name': 'bed', 'kind': 'block', 'origin': [1000, 0, 2000], 'yaw': 0,
+             'parameters': {'width': 1400, 'depth': 2000, 'height': 500, 'elevation': 100}}])
+        bounds = catalog(mesh)['added_bed']
+        self.assertEqual(bounds['min'], [300, -600, 1000])
+        self.assertEqual(bounds['max'], [1700, -100, 3000])
+        self.assertEqual(len(mesh[2]) - len(source[2]), 6)
+        self.assertEqual(generated[0]['shape']['parameters']['elevation'], 100)
+        for parameters in ({'width': 0, 'depth': 1, 'height': 1}, {'width': 1, 'depth': 1, 'height': 1, 'elevation': -5},
+                           {'width': 1, 'depth': 1}):
+            with self.assertRaises(ValueError):
+                append_objects(source, [{'name': 'bad', 'kind': 'block', 'origin': [0, 0, 0], 'parameters': parameters}])
+
     def test_invalid_additions_are_rejected_before_output_creation(self):
         source = read_mesh(self.room / 'assisted.obj')
         unchanged = copy.deepcopy(source)

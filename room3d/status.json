@@ -1,10 +1,106 @@
 {
   "rooms": {
+    "ROOM10D0": {
+      "gameplay": "not_validated",
+      "note": "Fireplace room: walls distorted and dark, floor missing in camera 0, sconces projected. Needs substantial reconstruction, not retouch.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:36+00:00"
+    },
+    "ROOM1120": {
+      "gameplay": "not_validated",
+      "note": "Bed and canopy are merged into the 3 m thick south collision slab extruded to wall height; dresser block at the west wall is full height. Needs a split slab or blocks; floor and door acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:35+00:00"
+    },
     "ROOM1180": {
       "gameplay": "not_validated",
       "note": "Wall sconce added and small barrel raised; chest, door and table unchanged. Whole-room fidelity still approximate.",
       "review": "needs_work",
       "updated": "2026-10-14T08:38:57+00:00"
+    },
+    "ROOM2080": {
+      "gameplay": "not_validated",
+      "note": "Corridor: chandelier texture fragmented in camera 0, deer head unreconstructable, wall seam split. Camera 1 acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:35+00:00"
+    },
+    "ROOM4020": {
+      "gameplay": "not_validated",
+      "note": "Bathroom: 1.5 m collision slabs stand in for tub, sink and toilet; barrel primitive is the wall cistern. Approximate; no cheap fix yet.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:36+00:00"
+    },
+    "ROOM4070": {
+      "gameplay": "not_validated",
+      "note": "Bathroom: tub collision slab scaled to 600 high (ray casts from both cameras place the tub on boundary_4), below-floor barrel hidden. Sink and toilet remain projected on 1.5 m slabs.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:53:53+00:00"
+    },
+    "ROOM40B0": {
+      "gameplay": "not_validated",
+      "note": "Bathroom: tub collision slab (boundary_5) scaled to 600 high; toilet barrel kept. Sink and shelves remain projected.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:53:54+00:00"
+    },
+    "ROOM4100": {
+      "gameplay": "not_validated",
+      "note": "Control room: ceiling lamps fitted, consoles projected on walls, door panel present. Right wall of camera 1 is stretched; accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T08:52:36+00:00"
+    },
+    "ROOM50D0": {
+      "gameplay": "not_validated",
+      "note": "Single-camera duct/ceiling view; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM50E0": {
+      "gameplay": "not_validated",
+      "note": "Lab dormitory: bed slab, table, lamps and lockers read correctly; furniture is projected. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM5150": {
+      "gameplay": "not_validated",
+      "note": "Single-camera grating staircase; staircase primitive fitted but treads are striped texture. Approximate.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM60D0": {
+      "gameplay": "not_validated",
+      "note": "Stage 6 revisit of ROOM10D0; same layout and images. Same defects.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:36+00:00"
+    },
+    "ROOM6120": {
+      "gameplay": "not_validated",
+      "note": "Stage 6 revisit of ROOM1120; same layout and images. Same defects.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:35+00:00"
+    },
+    "ROOM6180": {
+      "gameplay": "not_validated",
+      "note": "Stage 6 revisit of ROOM1180; corrections shared from ROOM1180 by layout fingerprint.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM7000": {
+      "gameplay": "not_validated",
+      "note": "Single-camera duct view; not reconstructable with current tools.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:37+00:00"
+    },
+    "ROOM7080": {
+      "gameplay": "not_validated",
+      "note": "Stage 7 revisit of ROOM2080; same layout and images. Same defects.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:35+00:00"
+    },
+    "ROOM7190": {
+      "gameplay": "not_validated",
+      "note": "Small bedroom: bed is a flat slab on its collision box, desk projected; door and floor acceptable.",
+      "review": "needs_work",
+      "updated": "2026-10-14T08:52:37+00:00"
     }
   },
   "schema": 1

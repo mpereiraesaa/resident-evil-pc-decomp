@@ -41,6 +41,9 @@ class RoomsTests(unittest.TestCase):
         (stage / 'ROOM1010.RDT').write_bytes(rdt_bytes(CAMERAS, [(0, 0, 100, 200)]))
         (stage / 'ROOM1011.RDT').write_bytes(rdt_bytes(CAMERAS, [(0, 0, 100, 300)]))
         (stage / 'ROOM1020.RDT').write_bytes(bytes(4))
+        revisit = self.root / 'assets' / 'Stage6'
+        revisit.mkdir()
+        (revisit / 'ROOM6000.RDT').write_bytes(rdt_bytes(CAMERAS, [(0, 0, 100, 100)], salt=b'revisit'))
         (stage / 'RC1000.pak').write_bytes(b'image')
         (stage / 'RC1010.pak').write_bytes(b'image')
 
@@ -52,6 +55,9 @@ class RoomsTests(unittest.TestCase):
         self.assertEqual(records['ROOM1010']['same_geometry'], [])
         self.assertEqual(records['ROOM1010']['variant_group'], '1-01')
         self.assertTrue(records['ROOM1020']['empty_slot'])
+        self.assertEqual(records['ROOM6000']['same_geometry'], [])
+        self.assertEqual(records['ROOM6000']['shared_layout_with'], ['ROOM1000', 'ROOM1001'])
+        self.assertEqual(records['ROOM1000']['shared_layout_with'], ['ROOM1001', 'ROOM6000'])
         self.assertEqual(records['ROOM1000']['backgrounds'], {'0': records['ROOM1010']['backgrounds']['0']})
 
     def test_status_is_validated_and_catalog_reports_counts(self):
@@ -73,17 +79,19 @@ class RoomsTests(unittest.TestCase):
         (overrides / 'ROOM1000.json').write_text(json.dumps({'history': [{}, {}], 'created': 'now',
                                                              'appearance': {'mode': 'reprojected'}}))
         state = build(self.root / 'assets', self.root / 'catalog', overrides, status)
-        self.assertEqual(state['counts']['rdt_files'], 5)
+        self.assertEqual(state['counts']['rdt_files'], 6)
         self.assertEqual(state['counts']['empty_slots'], 1)
         self.assertEqual(state['counts']['unique_geometry'], 3)
         self.assertEqual(state['counts']['variants_with_same_geometry'], 2)
         self.assertEqual(state['counts']['variants_with_same_geometry_and_backgrounds'], 2)
-        self.assertEqual(state['counts']['overrides'], 1)
-        self.assertEqual(state['counts']['review'], {'unreviewed': 2, 'needs_work': 1, 'visually_approved': 1})
-        self.assertEqual(state['counts']['gameplay'], {'not_validated': 3, 'validated': 1, 'broken': 0})
+        self.assertEqual(state['counts']['overrides'], 3)
+        self.assertEqual(state['counts']['unique_layout_and_backgrounds'], 3)
+        self.assertEqual(state['counts']['review'], {'unreviewed': 3, 'needs_work': 1, 'visually_approved': 1})
+        self.assertEqual(state['counts']['gameplay'], {'not_validated': 4, 'validated': 1, 'broken': 0})
         rooms = {r['rdt']: r for r in state['rooms']}
         self.assertEqual(rooms['ROOM1000']['overrides']['steps'], 2)
         self.assertEqual(rooms['ROOM1000']['note'], 'door too wide')
+        self.assertEqual(rooms['ROOM6000']['overrides_shared_from'], 'ROOM1000')
         page = (self.root / 'catalog/index.html').read_text()
         self.assertIn('Misma geometría e imágenes que ROOM1001', page)
         self.assertIn('Necesita trabajo', page)

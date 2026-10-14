@@ -151,16 +151,18 @@ def named_group(group):
     return group in NAMED_GROUPS or group.startswith(NAMED_PREFIXES)
 
 
-def resolve(group, identity, current, tolerance=DEFAULT_TOLERANCE):
+def resolve(group, identity, current, tolerance=DEFAULT_TOLERANCE, anchors=True):
     """Find the one current group that is the recorded object, or raise a Conflict.
 
     Script-anchored objects resolve by anchor; structural groups by their stable
     name plus unchanged bounds; everything else by kind and bounds within the
-    tolerance. Zero or several candidates are conflicts, never a guess.
+    tolerance. Zero or several candidates are conflicts, never a guess. Script
+    offsets only identify objects within the same RDT, so ``anchors=False``
+    makes anchored objects resolve by kind and bounds like the others.
     """
     kind = identity['kind']
     same_kind = {name: item for name, item in current.items() if item['kind'] == kind}
-    if 'source_offset' in identity:
+    if 'source_offset' in identity and anchors:
         anchored = [name for name, item in same_kind.items()
                     if item.get('source_offset') == identity['source_offset']]
         if len(anchored) > 1:
@@ -290,6 +292,9 @@ def check_source(overrides, room):
     elif (fresh['geometry_sha256'] == recorded['geometry_sha256']
           and (fresh['stage'], fresh['room']) == (recorded['stage'], recorded['room'])):
         status = 'scenario_variant'
+    elif fresh['geometry_sha256'] == recorded['geometry_sha256'] and fresh['backgrounds'] == recorded['backgrounds']:
+        # Stages 6 and 7 revisit stage 1 and 2 rooms with the same layout and images.
+        status = 'layout_variant'
     else:
         raise Conflict('source_mismatch', f"{fresh['rdt']} does not share the recorded room layout of "
                        f"{recorded['rdt']}", recorded=recorded['rdt'], fresh=fresh['rdt'])
@@ -326,7 +331,8 @@ def replay(overrides, room, out, reproject=None, segmentation=None, depth=None,
         mapped = {}
         for group, transform in step['edits'].items():
             try:
-                name, method, delta = resolve(group, step['objects'][group], current, tolerance)
+                name, method, delta = resolve(group, step['objects'][group], current, tolerance,
+                                              anchors=source['status'] == 'exact')
                 if name in mapped:
                     raise Conflict('duplicate_target', f'{group}: {name} already receives an edit in step '
                                    f'{step["step"]}', group=group, candidates=[name])
@@ -389,18 +395,44 @@ def compare(a, b, tolerance=1e-6):
             'qualification': 'Agreement between two exports; not a fidelity measure against the original room'}
 
 
+def shared_override(overrides_root, room):
+    """The one override file whose recorded layout and images match this export, if any."""
+    try:
+        fresh = source_fingerprints(room)
+    except (OSError, ValueError, KeyError):
+        return None
+    matches = []
+    for path in sorted(Path(overrides_root).glob('ROOM*.json')):
+        try:
+            source = read_json(path)['source']
+        except (OSError, ValueError, KeyError, TypeError):
+            continue
+        if (source.get('geometry_sha256') == fresh['geometry_sha256']
+                and source.get('backgrounds') == fresh['backgrounds']):
+            matches.append(path)
+    return matches[0] if len(matches) == 1 else None
+
+
 def replay_for_batch(overrides_root, batch_out, room_name, segmentation=None, depth=None):
-    """Batch hook: replay ``<overrides_root>/<ROOM>.json`` into ``<batch_out>/corrected/<room>``."""
+    """Batch hook: replay ``<overrides_root>/<ROOM>.json`` into ``<batch_out>/corrected/<room>``.
+
+    Without a file of its own, a room uses the single override whose recorded
+    layout and background images match it exactly (a scenario or stage variant).
+    """
     overrides_root, batch_out = Path(overrides_root), Path(batch_out)
+    room = batch_out / room_name.lower()
     path = overrides_root / (room_name.upper() + '.json')
+    shared = None
     if not path.exists():
-        return {'status': 'no_overrides'}
+        path = shared_override(overrides_root, room)
+        if path is None:
+            return {'status': 'no_overrides'}
+        shared = path.stem
     out = batch_out / 'corrected' / room_name.lower()
     if out.exists():
         if not (out / 'replay.json').exists() and any(out.iterdir()):
             return {'status': 'error', 'error': f'{out} exists and is not a previous replay output'}
         shutil.rmtree(out)
-    room = batch_out / room_name.lower()
     try:
         overrides = validate(read_json(path))
         report = replay(overrides, room, out,
@@ -416,7 +448,8 @@ def replay_for_batch(overrides_root, batch_out, room_name, segmentation=None, de
         return {'status': 'error', 'error': str(error)}
     return {'status': report['status'], 'report': f'corrected/{room_name.lower()}/replay.json',
             'page': f'corrected/{room_name.lower()}/index.html', 'steps': report['steps'],
-            'conflicts': report['conflicts'], 'source_check': report['source_check']['status']}
+            'conflicts': report['conflicts'], 'source_check': report['source_check']['status'],
+            **({'shared_from': shared} if shared else {})}
 
 
 def main():
@@ -489,7 +522,8 @@ def main():
                 if group.startswith('added_'):
                     continue
                 try:
-                    name, method, delta = resolve(group, identity, current, args.tolerance)
+                    name, method, delta = resolve(group, identity, current, args.tolerance,
+                                                  anchors=report['source_check']['status'] == 'exact')
                     report['resolutions'].append({'step': step['step'], 'group': group, 'resolved': name,
                                                   'method': method, 'bounds_delta': round(delta, 3)})
                 except Conflict as conflict:

@@ -983,3 +983,34 @@ python tools/room3d_rooms.py catalog --assets assets/USA --out build/room3d-room
     --overrides room3d/overrides --status room3d/status.json --batch build/room3d-all-generated
 python -m unittest discover -s tests -p test_room3d_rooms.py
 ```
+
+### Layout variants, shared overrides and the block family
+
+Stages 6 and 7 revisit stage 1 and 2 rooms with the same measured layout and
+the same background files (ROOM6180 is ROOM1180 again), but their script
+offsets differ, so `source_offset` anchors identify objects only within one
+RDT. Replay therefore accepts a `layout_variant` whose layout and background
+hashes both match and resolves anchored objects by kind and bounds there; a
+room with the same layout but different images is still a source mismatch.
+When a batch room has no override file of its own and exactly one file in the
+override directory matches its layout and images, that file is replayed and the
+manifest records `shared_from`. The catalog lists `shared_layout_with` across
+groups and marks corrections shared this way. Over the USA assets the 320
+non-empty rooms have 116 unique layout-and-image combinations, so three override
+files currently cover eight rooms.
+
+`room3d_additions.py` accepts a `block` family (width, depth, height, optional
+elevation) for furniture-sized stand-ins; it is an explicit manual estimate.
+
+First manual pass, 2026-10-14, over the sixteen rooms with one or two cameras
+(`build/room3d-rooms-pass1/`, regenerated with cached evidence in about 20 s
+per room): two rooms were accepted as approximate (ROOM4100, ROOM50E0), the
+rest are tracked as `needs_work` with specific notes in `room3d/status.json`.
+Recurring defects: 1.5 m collision slabs standing in for furniture (bathrooms
+ROOM4020/4070/40B0), furniture merged into wall-height slabs (ROOM1120 bed),
+single-camera duct views that cannot be reconstructed (ROOM50D0, ROOM7000), and
+whole-room distortion that needs reconstruction rather than retouch (ROOM10D0).
+The reusable correction found so far is scaling a furniture collision slab to
+its real height about the floor, which ray casts from the cameras can locate:
+ROOM4070 and ROOM40B0 record it, and the reprojected texture lands on the slab.
+No gameplay validation was performed for any room.

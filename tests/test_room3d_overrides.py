@@ -216,6 +216,29 @@ class OverrideTests(unittest.TestCase):
         self.assertEqual(json.loads((self.root / 'variant-replay/replay.json').read_text())['source']['rdt_sha256'],
                          hashlib.sha256(b'room input for the other player').hexdigest())
 
+    def test_stage_revisit_with_same_layout_and_images_resolves_without_script_anchors(self):
+        overrides = self.record()
+        # ROOM6180 revisits ROOM1180: same layout and images, different script offsets.
+        revisit = make_room(self.root / 'revisit' / 'room6180', [('door_panel', DOOR[1], DOOR[2], 634), BARREL_A, BARREL_B],
+                            rdt=b'second visit', name='ROOM6180')
+        report = replay(overrides, revisit, self.root / 'revisit-replay')
+        self.assertEqual(report['source_check']['status'], 'layout_variant')
+        self.assertEqual({r['group']: r['method'] for r in report['resolutions']}['primitive_0'], 'kind_and_bounds')
+        different = make_room(self.root / 'different' / 'room6180', rdt=b'second visit', name='ROOM6180',
+                              background=b'other image')
+        with self.assertRaises(Conflict) as caught:
+            replay(overrides, different, self.root / 'different-replay')
+        self.assertEqual(caught.exception.record['conflict'], 'source_mismatch')
+        overrides_dir = self.root / 'shared'
+        overrides_dir.mkdir()
+        (overrides_dir / 'ROOM1180.json').write_text(json.dumps(overrides))
+        outcome = replay_for_batch(overrides_dir, self.root / 'revisit', 'room6180')
+        self.assertEqual((outcome['status'], outcome['shared_from'], outcome['source_check']),
+                         ('applied', 'ROOM1180', 'layout_variant'))
+        self.assertEqual(replay_for_batch(overrides_dir, self.root / 'different', 'room6180')['status'], 'no_overrides')
+        (overrides_dir / 'ROOM1181.json').write_text(json.dumps(overrides))
+        self.assertEqual(replay_for_batch(overrides_dir, self.root / 'revisit', 'room6180')['status'], 'no_overrides')
+
     def test_steps_compose_from_the_replayed_state_only(self):
         overrides = self.record(edits={'primitive_1': {'translate': [100, 0, 0]}})
         replay(overrides, self.room, self.root / 'state-1')

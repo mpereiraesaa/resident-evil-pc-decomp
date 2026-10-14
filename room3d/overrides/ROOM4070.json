@@ -1,0 +1,95 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "d99c541f062a4d251ef84224c3a528dcfd2082f55615567a8dfa26dd334510c2",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "575b1256ef16ce2fdbf86ab57342fca26b3977b854a97bbcf6ee5663ed3bfd06"
+  },
+  "created": "2026-10-14T08:53:07+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "d99c541f062a4d251ef84224c3a528dcfd2082f55615567a8dfa26dd334510c2",
+      "edits": {
+        "boundary_4": {
+          "pivot": [
+            2601,
+            0,
+            10098
+          ],
+          "scale": [
+            1,
+            0.4,
+            1
+          ]
+        },
+        "primitive_0": {
+          "hide": true
+        }
+      },
+      "note": "Scale the tub collision slab to 600 high about the floor; ray casts from both cameras place the tub on this slab",
+      "objects": {
+        "boundary_4": {
+          "kind": "wall",
+          "max": [
+            5202.0,
+            0.0,
+            11124.0
+          ],
+          "min": [
+            0.0,
+            -1500.0,
+            9072.0
+          ]
+        },
+        "primitive_0": {
+          "kind": "barrel",
+          "max": [
+            10030.75683,
+            709.69985,
+            11979.30205
+          ],
+          "min": [
+            8747.20782,
+            -111.90989,
+            10695.75304
+          ]
+        }
+      },
+      "recorded": "2026-10-14T08:53:07+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Bathroom; the tub is its 1.5 m collision slab scaled to tub height",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM4070",
+    "room": 7,
+    "stage": 4
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "94fe96abfe34f803a389b98ac29be78ba225249a9b0640f1a14ce354e5dd52ac",
+      "1": "7539abc8f50adf0640c4329c80ee7674b873b9347ae0d925dbd2b6c110fccca2"
+    },
+    "geometry_sha256": "a6362fbcfcc607237be9da31684f8f0a7364aeeefc176cb10ca5d7ede94e394d",
+    "player": 0,
+    "rdt": "ROOM4070",
+    "rdt_sha256": "6235b242d68d83cbe743d0493e45a9d6920205e555c3edc66eac86a23b5ae1e7",
+    "room": 7,
+    "stage": 4
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T08:53:07+00:00"
+}

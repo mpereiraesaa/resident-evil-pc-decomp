@@ -64,9 +64,16 @@ def inventory(assets):
 
 def group_variants(records):
     """Annotate each record with the scenario variants that share its layout or images."""
-    by_room = {}
+    by_room, by_layout = {}, {}
     for record in records:
         by_room.setdefault((record['stage'], record['room']), []).append(record)
+        if not record['empty_slot']:
+            by_layout.setdefault((record['geometry_sha256'], json.dumps(record['backgrounds'], sort_keys=True)),
+                                 []).append(record['rdt'])
+    for record in records:
+        if not record['empty_slot']:
+            key = (record['geometry_sha256'], json.dumps(record['backgrounds'], sort_keys=True))
+            record['shared_layout_with'] = [name for name in by_layout[key] if name != record['rdt']]
     for members in by_room.values():
         for record in members:
             record['variant_group'] = f"{record['stage']}-{record['room']:02X}"
@@ -125,6 +132,8 @@ def build(assets, out, overrides=None, status_path=None, batch=None):
               'variants_with_same_geometry': sum(bool(r.get('same_geometry')) for r in records),
               'variants_with_same_geometry_and_backgrounds': sum(
                   bool(set(r.get('same_geometry', [])) & set(r.get('same_backgrounds', []))) for r in records),
+              'unique_layout_and_backgrounds': len({(r['geometry_sha256'], json.dumps(r['backgrounds'], sort_keys=True))
+                                                    for r in records if not r['empty_slot']}),
               'overrides': 0, 'review': dict.fromkeys(REVIEW_STATES, 0), 'gameplay': dict.fromkeys(GAMEPLAY_STATES, 0)}
     rows = []
     for record in records:
@@ -137,6 +146,11 @@ def build(assets, out, overrides=None, status_path=None, batch=None):
             counts['review'][record['review']] += 1
             counts['gameplay'][record['gameplay']] += 1
         override_path = Path(overrides) / (name + '.json') if overrides else None
+        if override_path and not override_path.exists() and not record['empty_slot']:
+            shared = [other for other in record['shared_layout_with'] if (Path(overrides) / (other + '.json')).exists()]
+            if len(shared) == 1:
+                override_path = Path(overrides) / (shared[0] + '.json')
+                record['overrides_shared_from'] = shared[0]
         if override_path and override_path.exists():
             data = read_json(override_path, {})
             record['overrides'] = {'steps': len(data.get('history', [])), 'updated': data.get('updated', data.get('created')),
@@ -166,8 +180,12 @@ def build(assets, out, overrides=None, status_path=None, batch=None):
                 notes.append('Misma geometría, distintas imágenes que ' + ', '.join(sorted(record['same_geometry'])))
             elif record['variant_group'] and len([r for r in records if r['variant_group'] == record['variant_group']]) > 1:
                 notes.append('Geometría distinta de su variante')
+            cross = [other for other in record['shared_layout_with'] if other not in record['same_geometry']]
+            if cross:
+                notes.append('Misma disposición e imágenes que ' + ', '.join(sorted(cross)))
             if 'overrides' in record:
-                notes.append(f"Correcciones: {record['overrides']['steps']} pasos")
+                notes.append(f"Correcciones: {record['overrides']['steps']} pasos"
+                             + (f" (compartidas de {record['overrides_shared_from']})" if 'overrides_shared_from' in record else ''))
             if record.get('export'):
                 notes.append('Exportación: ' + record['export'])
             if record.get('corrections'):

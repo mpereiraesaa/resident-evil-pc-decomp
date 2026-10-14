@@ -35,7 +35,7 @@ def append_objects(mesh, additions):
         group = 'added_' + name
         if group in groups:
             raise ValueError('Duplicate object group: ' + group)
-        if spec['kind'] not in ('staircase', 'railing', 'lamp', 'column'):
+        if spec['kind'] not in ('staircase', 'railing', 'lamp', 'column', 'block'):
             raise ValueError('Unsupported parametric object family')
         if not isinstance(spec['parameters'], dict):
             raise TypeError('Object parameters must be a mapping')

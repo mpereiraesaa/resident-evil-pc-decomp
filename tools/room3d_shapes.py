@@ -370,6 +370,15 @@ def local_parts(kind, p):
                     for sx, sz in ((-1, -1), (1, -1), (1, 1), (-1, 1))
                 )
             parts.append(rings)
+    elif kind == "block":
+        # Plain box for furniture-sized stand-ins (beds, tubs, dressers, crates):
+        # an explicit manual estimate, not a recognized object.
+        width, depth, height = (_positive(p, k) for k in ("width", "depth", "height"))
+        elevation = float(p.get("elevation", 0))
+        if not math.isfinite(elevation) or elevation < 0:
+            raise ValueError("Block elevation must be finite and non-negative")
+        parts.append(prism([-width / 2, -elevation - height, -depth / 2],
+                           [width / 2, -elevation, depth / 2]))
     else:
         raise ValueError(f"Unknown shape family: {kind}")
     return parts

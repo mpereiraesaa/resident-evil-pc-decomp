@@ -887,6 +887,27 @@ lit backgrounds. Their final renders are identical within each pair as well;
 there is no camera-dependent cutaway mismatch. Such lighting variants must not
 be counted as independent geometric viewpoints.
 
+### Observed ceiling-panel appearance
+
+`observed_panel_appearance: true` requires segmentation and
+`local_fixture_appearance`. It keeps the retained panel geometry fixed and
+samples a 64-square texture for its underside only. Referenced own masks must
+retain detector/SAM confidence of at least 0.3/0.8; known other fixtures are
+excluded. The actual visible shade raster must coincide with the underside
+plane at each sampled native pixel and remain in front of the full scene.
+At least 16 distinct native source pixels per view and a minimum observed
+texture area are required. Less oblique, nearer views supply detail. Excluded
+source cameras supply no texture samples. Unknown texels keep estimated shade
+tint, while the top, sides and supports retain their existing appearance.
+
+Full, excluded-camera and retouch paths use the same option. Observed shade
+materials survive repeated reprojection without original masks, and preservation
+is prohibited during excluded-camera evaluation. Reports retain raw source
+confidence, mask/sample hashes and observed versus estimated texel counts.
+This transfers baked source detail, not recovered albedo, hidden art, tube
+geometry or illumination states. The option is disabled by default pending
+native-room comparison and independent positive validation.
+
 ```sh
 python -m unittest discover -s tests -p test_room3d_ceiling_linear.py
 ```

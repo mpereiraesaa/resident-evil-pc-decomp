@@ -501,6 +501,9 @@ def process(
             raise ValueError('visual_stair_proxy_cleanup requires parametric_details')
         if recipe.get('local_ladder_appearance', False) and not (segmentation_root and recipe.get('reconstructed_object_appearance', False)):
             raise ValueError('local_ladder_appearance requires segmentation and reconstructed_object_appearance')
+        if recipe.get('observed_panel_appearance', False) and not (
+                segmentation_root and recipe.get('local_fixture_appearance', False)):
+            raise ValueError('observed_panel_appearance requires segmentation and local_fixture_appearance')
         if recipe.get('object_wall_fitting', False) and not recipe.get('parametric_details', False):
             raise ValueError('object_wall_fitting requires parametric_details')
         if recipe.get('vertical_ladders', False) and not recipe.get('parametric_details', False):
@@ -756,6 +759,9 @@ def process(
         from room3d_texture_ownership import reconstructed_sources
 
         reconstructed_observations = reconstructed_sources(fitted)
+        from room3d_panel_appearance import panel_groups
+
+        observed_panel_groups = panel_groups(fitted)
         bake_depth_cache = BakeDepthCache()
         bake = bake_projected(
             fitted_mesh,
@@ -768,6 +774,7 @@ def process(
             fixture_observations=fixture_observations,
             reconstructed_observations=reconstructed_observations,
             local_ladder_appearance=recipe.get("local_ladder_appearance", False),
+            observed_panel_groups=observed_panel_groups,
             depth_cache=bake_depth_cache,
             foreground_fixture_guard=recipe.get("foreground_fixture_guard", False),
             fixture_core_appearance=recipe.get("fixture_core_appearance", False),
@@ -858,6 +865,7 @@ def process(
                 fixture_observations=fixture_observations,
                 reconstructed_observations=reconstructed_observations,
                 local_ladder_appearance=recipe.get("local_ladder_appearance", False),
+                observed_panel_groups=observed_panel_groups,
                 depth_cache=bake_depth_cache,
                 foreground_fixture_guard=recipe.get("foreground_fixture_guard", False),
                 fixture_core_appearance=recipe.get("fixture_core_appearance", False),

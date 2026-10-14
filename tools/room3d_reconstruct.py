@@ -275,6 +275,7 @@ def bake_projected(
     preserve_fixture_appearance=False,
     reconstructed_observations=None,
     local_ladder_appearance=False,
+    observed_panel_groups=None,
 ):
     """Bake visible source textures onto subdivided mesh triangles, with depth tests.
 
@@ -322,9 +323,10 @@ def bake_projected(
         observed_depths = calibrated
     # Load every group once, retaining visibility sidecar separately. Index -1
     # deliberately matches no valid sidecar camera.
-    loaded = load_obj(mesh, -1, with_face_charts=fixture_core_appearance)
+    with_charts = fixture_core_appearance or bool(observed_panel_groups)
+    loaded = load_obj(mesh, -1, with_face_charts=with_charts)
     triangles = loaded[0]
-    face_charts = loaded[2] if fixture_core_appearance else [None] * len(triangles)
+    face_charts = loaded[2] if with_charts else [None] * len(triangles)
     # Keep the original OBJ groups and triangle order to preserve cutaways.
     groups = []
     group = "default"
@@ -465,6 +467,21 @@ def bake_projected(
                 material_lines += [f'newmtl {name}_{role}', 'Kd 1 1 1', 'map_Kd ' + fixture_cores[group]['file']]
             else:
                 material_lines += [f'newmtl {name}_{role}', 'Kd ' + ' '.join(map(str, rgb))]
+    observed_panels = {}
+    if observed_panel_groups:
+        from room3d_panel_appearance import textures
+
+        wanted = set(observed_panel_groups) & interpreted_groups & set(groups)
+        wanted = {g for g in wanted if (group_kinds or {}).get(g) == 'lamp'}
+        for i, (group, (texture, evidence)) in enumerate(textures(
+                mesh, triangles, groups, face_charts, room, images, segments,
+                fixture_observations or {}, fixture_colors, wanted, depth,
+                exclude_camera, minimum_projection_cosine).items()):
+            name = f'fixture_observed_{i}_shade'
+            filename = f'{output.stem}-{name}.png'
+            texture.save(output.parent / filename)
+            material_lines += ['newmtl '+name, 'Kd 1 1 1', 'map_Kd '+filename]
+            observed_panels[group] = {**evidence, 'file':filename, 'material':name}
     output.with_suffix(".mtl").write_text("\n".join(material_lines) + "\n")
     lines.append("mtllib " + output.with_suffix(".mtl").name)
     vertex_count = 0
@@ -472,6 +489,9 @@ def bake_projected(
     total = 0
     for (tri, source_material), group, face_uv in zip(triangles, groups, face_charts, strict=True):
         preserved = preserved_materials.get((group, source_material))
+        panel = observed_panels.get(group)
+        observed_face = (panel is not None and source_material in ('fixture_shade', 'retouch_added_shade')
+                         and np.allclose(tri[:, 1], panel['face_y'], atol=1e-6, rtol=0))
         # Subdivision makes perspective projection colors useful at runtime,
         # without assigning a different camera texture to every original face.
         a, b, c = tri[:, :3]
@@ -587,6 +607,8 @@ def bake_projected(
                     material += '_' + source_material.removeprefix('retouch_added_')
             if group in ladder_materials:
                 material = ladder_materials[group]
+            if observed_face:
+                material = panel['material']
             if preserved is not None:
                 material = preserved
             lines.append(f"usemtl {material}")
@@ -602,6 +624,9 @@ def bake_projected(
                     uv = (point[chart_axes] - chart_origin) / chart_scale
                 if (group in fixture_cores and face_uv is not None
                         and source_material in ('fixture_shade', 'retouch_added_shade')):
+                    origin, axes, low, face_scale = face_uv
+                    uv = ((point-origin) @ axes.T - low) / face_scale
+                if observed_face and face_uv is not None:
                     origin, axes, low, face_scale = face_uv
                     uv = ((point-origin) @ axes.T - low) / face_scale
                 if preserved is not None:
@@ -625,6 +650,7 @@ def bake_projected(
         "depth_calibration": depth_calibration,
         "styled_faces": styled_faces,
         "fixture_tints": fixture_colors,
+        **({'observed_panels':observed_panels} if observed_panel_groups is not None else {}),
         **({"ladder_tints": ladder_colors} if local_ladder_appearance else {}),
         **({'fixture_cores': fixture_cores} if fixture_core_appearance else {}),
         **({'preserved_fixture_materials': [
@@ -640,7 +666,8 @@ def bake_projected(
         "minimum_projection_cosine": minimum_projection_cosine,
         "grazing_rejections": grazing_rejections,
         "interpreted_groups": sorted(interpreted_groups),
-        "interpretation_appearance": "Local material continuation; no camera projection onto redesigned objects",
+        "interpretation_appearance": ("Own-mask observed detail on retained panel undersides; other redesigned parts use estimated materials"
+                                      if observed_panels else "Local material continuation; no camera projection onto redesigned objects"),
         "filtered_texture_pixels": filtered_pixels,
         **({"foreground_fixture_guard": {
             "detector_minimum": .3, "mask_minimum": .8,

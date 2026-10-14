@@ -10,7 +10,7 @@ SHADE_MATERIALS = {'fixture_shade', 'retouch_added_shade'}
 
 def baked_fixture_role(material):
     """Recognize only the role names emitted by our fixture appearance bakers."""
-    match = re.fullmatch(r'(?:fixture_tint|preserved_fixture)_\d+_(shade|support)', material)
+    match = re.fullmatch(r'(?:fixture_tint|fixture_observed|preserved_fixture)_\d+_(shade|support)', material)
     return None if match is None else match[1]
 
 

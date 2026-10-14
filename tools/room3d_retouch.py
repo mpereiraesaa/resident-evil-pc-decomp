@@ -175,6 +175,7 @@ def reproject_appearance(room, out, survey, segmentation=None, depth=None):
         from room3d_refine import load_depth
 
         observations = load_depth(depth, room / 'survey.json', survey, images)
+    from room3d_panel_appearance import panel_groups
     from room3d_texture_ownership import reconstructed_sources
 
     report = bake_projected(out / 'assisted.obj', survey, images, out / 'reprojected.obj',
@@ -183,6 +184,7 @@ def reproject_appearance(room, out, survey, segmentation=None, depth=None):
                             fixture_observations=fixture_observations,
                             reconstructed_observations=reconstructed_sources(recipe),
                             local_ladder_appearance=recipe.get("local_ladder_appearance", False),
+                            observed_panel_groups=panel_groups(recipe),
                             foreground_fixture_guard=recipe.get('foreground_fixture_guard', False),
                             fixture_core_appearance=recipe.get('fixture_core_appearance', False),
                             preserve_fixture_appearance=True)

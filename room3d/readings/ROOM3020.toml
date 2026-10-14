@@ -23,7 +23,7 @@ door = [0.28, 0.16, 0.10]
 "door.iron" = [0.22, 0.20, 0.22]
 
 [lighting]
-ambient = [0.198, 0.247, 0.296]
+ambient = [0.257, 0.321, 0.385]
 
 [[zone]]            # entry walk from the south door
 box = [9252, 2106, 19278, 15696]

@@ -23,7 +23,7 @@ wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
 
 [lighting]
-ambient = [0.173, 0.222, 0.222]
+ambient = [0.259, 0.333, 0.333]
 
 [[zone]]            # entrance path from the courtyard gate (south)
 box = [9414, 2880, 17190, 6642]

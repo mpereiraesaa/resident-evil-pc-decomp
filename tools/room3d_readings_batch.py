@@ -20,6 +20,9 @@ import sys
 import time
 from pathlib import Path
 
+import numpy as np
+from PIL import Image
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from room3d_handmade import edge_agreement  # noqa: E402
 from room3d_reading import build_reading, survey_report  # noqa: E402
@@ -100,6 +103,13 @@ def main():
             scores = edge_agreement(built, stem.lower(), evidence, cameras)
             entry["cameras"] = cameras
             entry["edge"] = [(c, round(p, 2), round(r, 2)) for c, p, r in scores]
+            weak = []
+            for index in range(cameras):
+                pixels = np.asarray(Image.open(built / f"preview-camera{index}.png").convert("L"), dtype=float)
+                coverage, mean = float((pixels > 3).mean()), float(pixels.mean())
+                if coverage < 0.6 or mean < 12:
+                    weak.append((index, round(coverage, 2), round(mean, 1)))
+            entry["weak_cameras"] = weak
             entry["bytes"] = mesh.stat().st_size
             install(built, stem.lower(), args.out / "mods", stage)
             for sibling in siblings.get(stem, []):
@@ -118,12 +128,18 @@ def main():
         report.append(entry)
         print(f"{stem}: {entry['status']} ({entry['seconds']}s)", flush=True)
     (args.out / "report.json").write_text(json.dumps(report, indent=1))
-    lines = ["# Room readings batch", "", "| Room | Cameras | Edge precision / recall per camera | Runtime | Status |", "|---|---|---|---|---|"]
+    loaded = sum(1 for e in report if e.get("runtime", {}).get("mesh_loaded"))
+    weak = sum(len(e.get("weak_cameras", [])) for e in report)
+    lines = ["# Room readings batch", "",
+             f"{len(report)} rooms; {sum(1 for e in report if e['status'] == 'ok')} built; "
+             f"{loaded} loaded in the engine; {weak} cameras flagged as mostly empty or very dark.", "",
+             "| Room | Cameras | Edge precision / recall per camera | Weak cameras | Runtime | Status |", "|---|---|---|---|---|---|"]
     for e in report:
         edge = " ".join(f"{c}:{p:.2f}/{r:.2f}" for c, p, r in e.get("edge", []))
         runtime = e.get("runtime", {})
         rt = "-" if not runtime else ("loaded" if runtime.get("mesh_loaded") else f"not loaded: {runtime.get('error', 'see runtime dir')[:70]}")
-        lines.append(f"| {e['room']} | {e.get('cameras', '-')} | {edge} | {rt} | {e['status']} |")
+        wk = " ".join(f"{c}" for c, _, _ in e.get("weak_cameras", [])) or "-"
+        lines.append(f"| {e['room']} | {e.get('cameras', '-')} | {edge} | {wk} | {rt} | {e['status']} |")
     (args.out / "report.md").write_text("\n".join(lines) + "\n")
     print(args.out / "report.md")
 

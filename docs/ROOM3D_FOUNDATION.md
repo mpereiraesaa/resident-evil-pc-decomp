@@ -1165,3 +1165,14 @@ columns, carpeted galleries and one arched north window). `room3d_handmade.py`
 now reports a per-camera edge-agreement score between preview and original
 (precision/recall of edge pixels within 3 px) so layout regressions show up
 before a play-test.
+
+### Hand-authored ROOM1180
+
+`tools/build_room1180_mesh.py` rebuilds the storeroom on the shared module:
+walls from the blocking rectangles, the chest body (lid stays game-owned),
+the yellow drum, boxes and tins, the typewriter table and the wall lamp.
+Object positions were cast from the original views onto the wall planes
+(floor casts carry a depth bias in this room, so walls follow collision).
+Camera 1 sits behind the north wall, so that wall, the door and the table are
+hidden for it; the drum is hidden for camera 0. Both cameras score above 0.95
+edge precision. Passes the smoke test including the item-box menu.

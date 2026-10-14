@@ -42,6 +42,7 @@ box = [14328, 9306, 17316, 17964]
 [[zone]]            # stairwell
 box = [17316, 6876, 25038, 17964]
 open_floor = true
+depth = 4000
 
 [[stair]]
 x = [18198, 22932]

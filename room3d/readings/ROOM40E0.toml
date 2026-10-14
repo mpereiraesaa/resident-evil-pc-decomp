@@ -37,6 +37,7 @@ floor_along = "x"
 [[zone]]            # the tank
 box = [6228, 8172, 21690, 24714]
 open_floor = true
+depth = 6000
 
 [[slab]]            # water surface far below
 box = [6228, 8172, 21690, 24714]

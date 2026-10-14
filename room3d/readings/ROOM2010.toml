@@ -41,6 +41,7 @@ floor_along = "x"
 [[zone]]            # the well itself
 box = [5976, 8964, 14454, 13302]
 open_floor = true
+depth = 3000
 
 [[door]]
 wall = "east"

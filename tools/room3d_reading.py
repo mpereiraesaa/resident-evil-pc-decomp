@@ -772,6 +772,19 @@ class Builder:
                 skirting_box(mesh, side, fixed, a, b, cornice, 70, trim, floor=ceiling + cornice)
             if group:
                 mesh.set_group("walls")
+        # Shaft walls of voids and wells: from the floor down to the level below.
+        for zone in self.zones:
+            if not zone.get("open_floor") or not zone.get("depth"):
+                continue
+            x0, z0, x1, z1 = zone["box"]
+            depth = zone["depth"]
+            sm = self.use(zone.get("shaft_material", zone.get("wall_material", wm_default)))
+            mesh.set_group(zone.get("shaft_group", "walls"))
+            for side, fixed, a, b in (("west", x0, z0, z1), ("east", x1, z0, z1),
+                                      ("south", z0, x0, x1), ("north", z1, x0, x1)):
+                wall_rect(mesh, side, fixed, a, b, depth, floor, sm)
+        mesh.set_group(None)
+
         # Soffits between zones with different ceilings.
         for i, zone in enumerate(self.zones):
             ci = zone.get("ceiling", shell.get("ceiling", -6000))

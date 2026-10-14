@@ -43,6 +43,7 @@ floor_along = "x"
 [[zone]]            # the void over the dining room
 box = [4914, 4050, 29178, 13068]
 open_floor = true
+depth = 6500
 
 [[slab]]            # the dining room floor seen through the void
 box = [4914, 4050, 29178, 13068]
@@ -50,6 +51,27 @@ top = 6500
 thickness = 200
 top_material = "checker"
 bottom_material = "checker"
+
+[[object]]          # the dining table seen far below
+kind = "box"
+box = [7988, 6232, 26204, 10471]
+top = 5000
+bottom = 5140
+material = "wood"
+[[object]]
+kind = "box"
+box = [8200, 6450, 8400, 10250]
+top = 5140
+bottom = 6500
+material = "wood"
+omit = ["top", "bottom"]
+[[object]]
+kind = "box"
+box = [25800, 6450, 26000, 10250]
+top = 5140
+bottom = 6500
+material = "wood"
+omit = ["top", "bottom"]
 
 [[object]]
 kind = "rail"

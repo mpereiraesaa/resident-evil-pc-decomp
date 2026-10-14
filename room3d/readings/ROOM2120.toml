@@ -35,6 +35,7 @@ wall_materials = { south = "forest" }
 [[zone]]            # open bay (the garden below)
 box = [18486, 12906, 22284, 23022]
 open_floor = true
+depth = 5000
 wall_materials = { south = "forest", west = "forest" }
 ceiling = -4800
 

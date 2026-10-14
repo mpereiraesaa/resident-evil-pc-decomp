@@ -20,12 +20,12 @@ PATTERN = re.compile(
 )
 
 
-def observations(log, room):
+def observations(log, room, stage=1):
     events = [
         tuple(int(v, 16 if i == 1 else 10) for i, v in enumerate(m.groups()))
         for m in PATTERN.finditer(log)
     ]
-    events = [e for e in events if e[0] == 1 and e[1] == room]
+    events = [e for e in events if e[0] == stage and e[1] == room]
     cameras = {e[2] for e in events if not any(e[3:])}
     menu_index = next((i for i, e in enumerate(events) if e[3]), None)
     closed = menu_index is not None and any(
@@ -37,25 +37,31 @@ def observations(log, room):
         "menu_opened": menu_index is not None,
         "menu_closed": closed,
         "mesh_loaded": bool(
-            re.search(rf"\[room3d\] loaded .*room1{room:02x}0\.obj", log, re.IGNORECASE)
+            re.search(rf"\[room3d\] loaded .*room{stage}{room:02x}0\.obj", log, re.IGNORECASE)
         ),
+        "cameras_seen": len(cameras),
     }
 
 
-def run(executable, assets, mesh, output, timeout=150, target_room=0x18):
-    if target_room not in (0x18, 0x0B, 0x06):
-        raise ValueError("No runtime scenario for this room")
-    if not (assets / "USA" / "Stage1").is_dir():
-        raise ValueError("Assets must name the parent containing USA/Stage1")
-    mesh_name = f"room1{target_room:02x}0"
-    required = ("mesh_loaded", "camera_transition") + (
-        ("menu_opened", "menu_closed") if target_room == 0x18 else ()
+def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1):
+    """Load `mesh` for (stage, target_room) through the debug menu.
+
+    The three original scenarios (stage 1 rooms 0x18, 0x0B, 0x06) also require
+    a camera transition and, for the storeroom, the item-box menu; any other
+    room passes when its mesh loads and the player is placed.
+    """
+    if not (assets / "USA" / f"Stage{stage}").is_dir():
+        raise ValueError("Assets must name the parent containing USA/StageN")
+    mesh_name = f"room{stage}{target_room:02x}0"
+    scripted = stage == 1 and target_room in (0x18, 0x0B, 0x06)
+    required = ("mesh_loaded",) + (("camera_transition",) if scripted else ()) + (
+        ("menu_opened", "menu_closed") if (stage == 1 and target_room == 0x18) else ()
     )
     if output.exists():
         raise ValueError("Use a fresh output directory to prevent stale test evidence")
     output.mkdir(parents=True)
     shutil.copy2(executable, output / "residentevil.exe")
-    mod = output / "mods" / "Stage1"
+    mod = output / "mods" / f"Stage{stage}"
     mod.mkdir(parents=True)
     shutil.copy2(mesh, mod / (mesh_name + ".obj"))
     sidecar = mesh.with_suffix(".cameras")
@@ -119,7 +125,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18):
     env.pop("RE1_TEST_KEYS", None)
     valid_rooms = sorted(
         int(p.stem[5:7], 16)
-        for p in (assets / "USA" / "Stage1").glob("ROOM*0.RDT")
+        for p in (assets / "USA" / f"Stage{stage}").glob("ROOM*0.RDT")
         if p.stat().st_size > 4
     )
     phase = "boot"
@@ -152,17 +158,28 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18):
                 opened = re.search(r"\[debugmenu-test\] opened room=([0-9A-F]+)", log)
                 if phase == "await_debug_menu" and opened:
                     current = int(opened.group(1), 16)
-                    steps = (
-                        valid_rooms.index(target_room) - valid_rooms.index(current)
-                    ) % len(valid_rooms)
-                    sequence = (
-                        [(13, 100, 150)]
-                        + [(38, 700 + i * 250, 90) for i in range(steps)]
-                        + [(13, 1000 + steps * 250, 150)]
-                    )
+                    # RIGHT moves to the next stage; the room cursor keeps its
+                    # index, clamped and stepped up past unavailable rooms.
+                    stage_presses = stage - 1
+                    cursor = current
+                    if stage_presses:
+                        cursor = min(cursor, valid_rooms[-1])
+                        cursor = next(r for r in valid_rooms if r >= cursor)
+                    steps = valid_rooms.index(target_room) - valid_rooms.index(cursor)
+                    key = 38 if steps >= 0 else 40
+                    t = 100
+                    sequence = [(13, t, 150)]
+                    t += 600
+                    for _ in range(stage_presses):
+                        sequence.append((39, t, 90))
+                        t += 250
+                    for _ in range(abs(steps)):
+                        sequence.append((key, t, 90))
+                        t += 250
+                    sequence.append((13, t + 300, 150))
                     send_keys(sequence)
                     phase = "await_mesh"
-                observed = observations(log, target_room)
+                observed = observations(log, target_room, stage)
                 ready = (
                     observed["mesh_loaded"]
                     and observed["room_events"]
@@ -172,12 +189,12 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18):
                 if phase == "await_mesh" and ready:
                     send_keys(
                         [(38, 1500, 3000), (67, 5500, 150), (86, 8000, 150)]
-                        if target_room == 0x18
+                        if (stage == 1 and target_room == 0x18)
                         else [(38, 1500, 18000)]
                     )
                     phase = "interaction"
-                result = observations(log, target_room)
-                if all(result[k] for k in required):
+                result = observations(log, target_room, stage)
+                if all(result[k] for k in required) and (scripted or phase == "interaction" and time.monotonic() - start > 40):
                     break
                 time.sleep(0.5)
             result["mesh_sha256"] = hashlib.sha256(
@@ -193,6 +210,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18):
             result["scope"] = (
                 f"{mesh_name.upper()} smoke test: {', '.join(required)}; no visual fidelity, item transfer or save assertions"
             )
+            result["stage"] = stage
             (output / "result.json").write_text(json.dumps(result, indent=2) + "\n")
         finally:
             if process.poll() is None:
@@ -212,7 +230,8 @@ if __name__ == "__main__":
     parser.add_argument("--mesh", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--room", type=lambda v: int(v, 16), default=0x18)
+    parser.add_argument("--stage", type=int, default=1, help="RDT stage digit (ROOM<stage>xx0)")
     args = parser.parse_args()
-    report = run(args.exe, args.assets, args.mesh, args.out, target_room=args.room)
+    report = run(args.exe, args.assets, args.mesh, args.out, target_room=args.room, stage=args.stage)
     print(json.dumps(report, indent=2))
     raise SystemExit(0 if report["passed"] else 1)

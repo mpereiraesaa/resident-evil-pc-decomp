@@ -519,8 +519,11 @@ Manages up to 16 3D mesh objects with per-object transform matrices and texture/
 The original walked the ordering table at present time and drew each queued
 object through D3D5 execute buffers, with a **depth buffer** resolving the
 triangles inside a single object. The port replaces the OT with a flat per-frame
-queue in `src/game/TmdRenderer.cpp` and substitutes a per-triangle depth sort
-for that depth buffer.
+queue in `src/game/TmdRenderer.cpp` and submits triangles through
+`MarniDX::DrawTriangles3D`, which tests and writes the shared depth buffer for
+opaque triangles. Triangles still sort far-to-near to group textures and retain
+the original ordering for alpha-blended surfaces; those surfaces test depth but
+do not write it.
 
 Full chain for one entity joint:
 
@@ -532,7 +535,7 @@ Full chain for one entity joint:
 | 4 | `CreateTmdObjectInternal` (0x00483910) | TmdAnimation.cpp | Finds/reuses a `CMarniDirect3DTMD` slot, calls `PSXObject_Store` to parse the TMD into the slot's embedded `CMarniViewport2` elements, then matches each parsed object against a texture page and calls `Create` |
 | 5 | `CMarniDirect3DTMD::Transform` (0x00415520) | Marni3DObject.cpp | Inserts every object into the queue via `vtable[10]`, **then** writes the 16-float matrix to `objData+0x08` |
 | 6 | `TmdQueueObject` | TmdRenderer.cpp | Records `(slot, objData, objIndex, depth)` only — never a copy of the render state |
-| 7 | `FlushTmdObjects` | TmdRenderer.cpp | Transforms/projects/lights every vertex, collects triangles, depth-sorts them, submits via `MarniDX::DrawTriangles` |
+| 7 | `FlushTmdObjects` | TmdRenderer.cpp | Transforms/projects/lights every vertex, collects triangles, depth-sorts them, submits via `MarniDX::DrawTriangles3D` |
 
 #### Projection
 
@@ -551,14 +554,12 @@ renderScale`. Vertices with `vz <= 1` are dropped.
 #### Depth resolution and culling
 
 Triangles from **all** queued objects are gathered into one per-frame pool with
-their mean view-space Z, sorted far-to-near, then submitted with adjacent
-same-texture runs merged. There is **no backface culling**: the PS1 GPU draws
-both sides and the depth sort makes the nearer face win, which removes any
-dependence on the TMD winding convention. Only zero-area triangles are dropped.
-
-> Re-enabling backface culling would roughly halve the submitted triangle count
-> (~609 → ~305 for the player model). It is safe now that the vertex indices are
-> read correctly, but it is not required for correctness.
+their mean view-space Z and sorted far-to-near. Opaque triangles test and write
+the shared depth buffer, so the nearest surface wins across different models
+as well as within one model. Alpha-blended triangles test but do not write depth
+and retain far-to-near order. Adjacent same-texture runs are merged where the
+write mode matches. Backface culling is enabled per source primitive using the
+screen-space winding; zero-area and back-facing primitives are dropped.
 
 #### Lighting
 

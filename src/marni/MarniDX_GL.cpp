@@ -88,6 +88,7 @@ static const char* kVertexSrc =
     "uniform int  uPersp;\n"
     "out vec2 vUV;\n"
     "out vec4 vCol;\n"
+    "out float vDepth;\n"
     "void main() {\n"
     // GL's NDC z is [-1,1]; the callers pass normalised [0,1] depth.
     "    float z = aZW.x * 2.0 - 1.0;\n"
@@ -103,16 +104,21 @@ static const char* kVertexSrc =
     "    gl_Position = p;\n"
     "    vUV = aUV;\n"
     "    vCol = aCol;\n"
+    "    vDepth = aZW.x;\n"
     "}\n";
 
 static const char* kFragmentSrc =
     "#version 330 core\n"
     "in vec2 vUV;\n"
     "in vec4 vCol;\n"
+    "in float vDepth;\n"
     "uniform sampler2D uTex;\n"
     "out vec4 oCol;\n"
     "void main() {\n"
+    // Same linear view-depth varying as the D3D11 pixel shader: gl_FragCoord.z
+    // alone is affine in screen space and gives incorrect planar occlusion.
     "    oCol = texture(uTex, vUV) * vCol;\n"
+    "    gl_FragDepth = vDepth;\n"
     "}\n";
 
 static GLuint CompileShader(GLenum type, const char* src)

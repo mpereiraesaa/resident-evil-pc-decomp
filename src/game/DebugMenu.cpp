@@ -1418,6 +1418,7 @@ int debug_menu_overlay(void)
     if (g_debugMenuOpen == 0) {
         if (f1Edge) {
             g_debugMenuOpen = 1;
+            dbg_printf("[debugmenu-test] opened room=%02X\n", (unsigned int)g_roomId);
             s_dbgContext = 0;
             s_dbgCursor = 0;
             // Clamp: only the seven base stages are listed.

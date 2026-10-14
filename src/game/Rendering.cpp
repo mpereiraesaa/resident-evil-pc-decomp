@@ -22,6 +22,8 @@ extern void Flg_on(int baseAddr, unsigned int bitIndex);
 extern void room_event_item_pickup(void);        // 0x00451700
 extern void display_room_camera_bg(void);
 extern void rearrange_item_slots(void);
+extern bool Room3D_IsActive(void);
+extern void Room3D_Render(void);
 
 // ============================================================================
 // Pending sprite queue (filled by AddTintSprite / draw_rect / OT_InsertPrimitive,
@@ -533,6 +535,9 @@ void FrameRateGovernor(void)
             // scene, then replay it at the current pose for the next refresh.
             // No game/update routine is called a second time.
             auto renderQueuedScene = [&](float poseAlpha) {
+                // A valid opt-in room mesh shares the depth buffer with TMDs,
+                // so draw it first in each interpolated scene replay.
+                Room3D_Render();
                 // Collision boundaries belong between the background and
                 // geometry in both passes so actors occlude them consistently.
                 CollisionDebug_Draw();
@@ -675,6 +680,9 @@ void OT_InsertPrimitive(void* prim, unsigned int depth)
     if (p[0] != 1) return;
 
     if (g_displayImageSRV == MARNI_NULL_HANDLE) return;
+    // Only replace the pre-rendered backdrop when the opted-in mesh loaded.
+    // Invalid or missing assets keep the original image path untouched.
+    if (Room3D_IsActive()) return;
     // Menu-mode bit hides the room bg quad (the real menus draw their own
     // graphics). The F1 debug menu keeps the frozen game visible underneath,
     // so don't drop the bg while it is open - its flag editor can set this

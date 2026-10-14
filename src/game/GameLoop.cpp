@@ -22,6 +22,8 @@
 #include "../DebugPrint.h"
 #include "../system/AssetPath.h"
 
+extern bool Room3D_SuppressRoomMasks(void);  // Room3D.cpp
+
 // Forward declarations for functions only used within game_loop
 extern void FUN_00473f10(int* baseAddr, unsigned int bitIndex);
 extern void run_command_functions(unsigned short* scd_opcodes);
@@ -351,7 +353,7 @@ LAB_00480e89:
 
                     // 0x00480f6e-0x00480f70: 2D effects and room sprites
                     update_2d_effects();
-                    DrawRoomSpr();
+                    if (!Room3D_SuppressRoomMasks()) DrawRoomSpr();
                 }
 
                 // 0x00480f70-0x00480f90: Debug save menu

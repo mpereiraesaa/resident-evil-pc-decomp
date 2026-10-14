@@ -2,6 +2,7 @@
 // WindowProc (0x00441170), OnKeyDown (0x00497830)
 #include "Globals.h"
 #include <mmsystem.h>
+#include <cstdlib>
 
 // ============================================================================
 // OnKeyDown - Handle keyboard input (0x00497830)
@@ -81,6 +82,17 @@ void OnKeyDown(HWND hwnd, WPARAM wparam)
 // ============================================================================
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+    // Opt-in scripted tests must keep ticking when another desktop window gains
+    // focus. Normalize activation for both Marni and the game without changing
+    // OS focus. Ordinary runs retain the original focus-loss pause behavior.
+    static const bool backgroundTest = []() {
+        const char* value = std::getenv("RE1_TEST_BACKGROUND");
+        return value && value[0] == '1' && value[1] == '\0'
+            && std::getenv("RE1_TEST_KEYS_FILE") != nullptr;
+    }();
+    if (backgroundTest && msg == WM_ACTIVATE)
+        wParam = WA_ACTIVE;
+
     // 0x0044119c: Check if Marni Direct3D handles this message first
     if (g_pMarniDirect3D != NULL) {
         // Call vtable[5] -> HandleWindowMessage (0x00448b60)

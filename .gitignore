@@ -17,3 +17,7 @@ dist/
 # so it is no longer tracked; re1.lock is the single-instance guard.
 config.ini
 re1.lock
+
+# Authored room reconstruction fixtures, not extracted game assets.
+!tests/fixtures/room3d/Stage1/room1180_atlas.png
+!tests/fixtures/room3d/Stage1/room1180_plaster.png

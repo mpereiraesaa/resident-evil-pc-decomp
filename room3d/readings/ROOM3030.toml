@@ -16,16 +16,16 @@ trim = "concrete"
 cell = 1500
 
 [materials]
-"stone.concrete" = { color = [0.46, 0.48, 0.48], tile = [4000, 4000] }
-"stone.panel" = { color = [0.58, 0.60, 0.60], tile = [3000, 3000] }
-stone = [0.52, 0.54, 0.54]
+"stone.concrete" = { color = [0.667, 0.696, 0.696], tile = [4000, 4000] }
+"stone.panel" = { color = [0.841, 0.87, 0.87], tile = [3000, 3000] }
+stone = [0.754, 0.783, 0.783]
 wood = [0.60, 0.62, 0.62]
 door = [0.64, 0.66, 0.66]
 "double_door.lift" = [0.70, 0.72, 0.74]
 "night.sky" = [0.06, 0.10, 0.10]
 
 [lighting]
-ambient = [0.22, 0.23, 0.24]
+ambient = [0.286, 0.299, 0.312]
 
 [[zone]]
 box = [2722, 2826, 29574, 30834]

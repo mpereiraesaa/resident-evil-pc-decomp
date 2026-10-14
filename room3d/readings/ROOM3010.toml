@@ -16,14 +16,14 @@ trim = "stone"
 cell = 1200
 
 [materials]
-"stone.paving" = { color = [0.34, 0.38, 0.34], tile = [2000, 2000] }
-"stone.brick" = { color = [0.34, 0.36, 0.30], tile = [1200, 1200] }
-stone = [0.44, 0.46, 0.42]
+"stone.paving" = { color = [0.493, 0.551, 0.493], tile = [2000, 2000] }
+"stone.brick" = { color = [0.493, 0.522, 0.435], tile = [1200, 1200] }
+stone = [0.638, 0.667, 0.609]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
 
 [lighting]
-ambient = [0.133, 0.171, 0.171]
+ambient = [0.173, 0.222, 0.222]
 
 [[zone]]            # entrance path from the courtyard gate (south)
 box = [9414, 2880, 17190, 6642]

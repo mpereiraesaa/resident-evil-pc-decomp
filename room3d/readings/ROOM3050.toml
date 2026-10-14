@@ -16,14 +16,14 @@ trim = "stone"
 cell = 1500
 
 [materials]
-"stone.paving" = { color = [0.36, 0.34, 0.34], tile = [2200, 2200] }
-"stone.hedge" = { color = [0.16, 0.26, 0.12], tile = [1600, 1600] }
-stone = [0.52, 0.52, 0.50]
+"stone.paving" = { color = [0.522, 0.493, 0.493], tile = [2200, 2200] }
+"stone.hedge" = { color = [0.232, 0.377, 0.174], tile = [1600, 1600] }
+stone = [0.754, 0.754, 0.725]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
 
 [lighting]
-ambient = [0.152, 0.171, 0.171]
+ambient = [0.198, 0.222, 0.222]
 
 [[zone]]            # east court around the fountain
 box = [10440, 2070, 30420, 23220]

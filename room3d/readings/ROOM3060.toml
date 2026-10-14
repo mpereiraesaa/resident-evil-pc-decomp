@@ -15,14 +15,14 @@ trim = "stone"
 cell = 600
 
 [materials]
-"stone.mossy" = { color = [0.24, 0.30, 0.18], tile = [1200, 1200] }
-stone = [0.30, 0.34, 0.24]
+"stone.mossy" = { color = [0.348, 0.435, 0.261], tile = [1200, 1200] }
+stone = [0.435, 0.493, 0.348]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
 "panel.red" = [0.42, 0.14, 0.10]
 
 [lighting]
-ambient = [0.12, 0.14, 0.10]
+ambient = [0.156, 0.182, 0.13]
 
 [[zone]]
 box = [2238, 2286, 10368, 10494]

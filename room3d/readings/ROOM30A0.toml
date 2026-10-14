@@ -15,13 +15,13 @@ trim = "stone"
 cell = 800
 
 [materials]
-"stone.cave" = { color = [0.40, 0.42, 0.26], tile = [1400, 1400] }
-stone = [0.44, 0.46, 0.30]
+"stone.cave" = { color = [0.58, 0.609, 0.377], tile = [1400, 1400] }
+stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
 
 [lighting]
-ambient = [0.133, 0.133, 0.095]
+ambient = [0.173, 0.173, 0.124]
 
 [[zone]]            # west corridor
 box = [2542, 2700, 6462, 20664]

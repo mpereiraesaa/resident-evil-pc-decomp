@@ -16,17 +16,17 @@ trim = "stone"
 cell = 1200
 
 [materials]
-"stone.paving" = { color = [0.32, 0.36, 0.34], tile = [2000, 2000] }
-"stone.brick" = { color = [0.40, 0.42, 0.36], tile = [1200, 1200] }
+"stone.paving" = { color = [0.464, 0.522, 0.493], tile = [2000, 2000] }
+"stone.brick" = { color = [0.58, 0.609, 0.522], tile = [1200, 1200] }
 "plaster.house" = [0.62, 0.64, 0.62]
-stone = [0.46, 0.48, 0.44]
+stone = [0.667, 0.696, 0.638]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
 double_door = [0.30, 0.18, 0.10]
 panel = [0.22, 0.14, 0.09]
 
 [lighting]
-ambient = [0.171, 0.209, 0.19]
+ambient = [0.222, 0.272, 0.247]
 
 [[zone]]            # east walk along the mansion wall
 box = [26478, 2232, 30474, 28188]

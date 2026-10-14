@@ -8,16 +8,18 @@ seed = 3000
 [shell]
 floor = 0
 ceiling = -14000
-floor_material = "stone.paving"
-wall_material = "stone.brick"
-ceiling_material = "night"
+floor_material = "rock.cobble"
+wall_material = "forest"
+dado = 3000
+dado_material = "stone.brick"
+ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1200
 
 [materials]
-"stone.paving" = { color = [0.464, 0.522, 0.493], tile = [2000, 2000] }
-"stone.brick" = { color = [0.58, 0.609, 0.522], tile = [1200, 1200] }
+"rock.cobble" = { color = [0.26, 0.28, 0.27], tile = [1600, 1600] }
+"stone.brick" = { color = [0.30, 0.31, 0.27], tile = [1200, 1200] }
 "plaster.house" = [0.62, 0.64, 0.62]
 stone = [0.667, 0.696, 0.638]
 wood = [0.26, 0.14, 0.10]
@@ -26,7 +28,7 @@ double_door = [0.30, 0.18, 0.10]
 panel = [0.22, 0.14, 0.09]
 
 [lighting]
-ambient = [0.222, 0.272, 0.247]
+ambient = [0.14, 0.17, 0.16]
 
 [[zone]]            # east walk along the mansion wall
 box = [26478, 2232, 30474, 28188]
@@ -61,25 +63,25 @@ frame_depth = 300
 kind = "box"
 box = [28044, 12546, 30474, 21546]
 top = -900
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [20160, 23724, 26478, 26478]
 top = -900
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [2088, 13212, 18180, 14200]
 top = -800
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [2088, 9396, 2600, 13212]
 top = -800
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 
 # Timber band on the house wall

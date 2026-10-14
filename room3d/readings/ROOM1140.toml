@@ -9,8 +9,10 @@ seed = 2000
 floor = 0
 ceiling = -20000
 floor_material = "stone.paving"
-wall_material = "stone.brick"
-ceiling_material = "night"
+wall_material = "forest"
+dado = 2600
+dado_material = "stone.brick"
+ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1200
@@ -27,11 +29,11 @@ ambient = [0.12, 0.14, 0.13]
 
 [[zone]]            # walkway north to the door
 box = [7578, 12886, 10764, 24570]
-wall_materials = { west = "night" }
+wall_materials = { west = "forest" }
 [[zone]]            # east terrace
 box = [10764, 12886, 19710, 14472]
 floor_along = "x"
-wall_materials = { south = "night" }
+wall_materials = { south = "forest" }
 [[zone]]
 box = [10764, 14472, 13842, 15678]
 

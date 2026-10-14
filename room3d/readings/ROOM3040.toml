@@ -9,8 +9,10 @@ seed = 3040
 floor = 0
 ceiling = -12000
 floor_material = "stone.paving"
-wall_material = "stone.brick"
-ceiling_material = "night"
+wall_material = "forest"
+dado = 3600
+dado_material = "stone.brick"
+ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1200
@@ -53,13 +55,13 @@ frame = "stone"
 kind = "box"
 box = [2376, 14886, 23904, 15500]
 top = -800
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [23904, 2286, 24400, 14886]
 top = -800
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 
 [[light]]

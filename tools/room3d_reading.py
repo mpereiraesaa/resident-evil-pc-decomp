@@ -329,6 +329,37 @@ def tex_rock(rng, size, color, slabs=34, moss=0.6):
     return tint(np.clip(green - 0.45, 0, 1) * 2 * moss, image, (0.26, 0.34, 0.08))
 
 
+def tex_forest(rng, size, color, sky=(0.08, 0.12, 0.14)):
+    """Night forest backdrop: layered conifer silhouettes under a dark sky.
+
+    Used for the open sides of outdoor rooms, where the originals show trees
+    beyond the walls. The texture runs top (sky) to bottom (undergrowth).
+    """
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    image = np.array(sky)[None, None, :] * (0.8 + 0.4 * (1 - yy))[..., None]
+    for layer, (base, height, density, shade) in enumerate(((0.30, 0.55, 5, 0.5), (0.40, 0.65, 7, 0.75), (0.50, 0.75, 9, 1.0))):
+        line = np.full(size, 1.0)
+        for i in range(density):
+            cx = (i + rng.random() * 0.8) / density
+            w = 0.5 / density + rng.random() * 0.3 / density
+            tip = base + rng.random() * 0.12
+            prof = tip + np.abs(xx[0] - cx) / w * height
+            line = np.minimum(line, prof)
+        trees = yy > line[None, :]
+        leaf = value_noise((size, size), rng, octaves=3, base_freq=24 + layer * 8)
+        col = np.array(color)[None, None, :] * (shade * (0.55 + 0.6 * leaf))[..., None]
+        image = np.where(trees[..., None], col, image)
+    return image
+
+
+def tex_leaves(rng, size, color):
+    """Dense foliage for hedges and planted beds."""
+    blobs = value_noise((size, size), rng, octaves=5, base_freq=20, persistence=0.6)
+    fine = value_noise((size, size), rng, octaves=2, base_freq=96, persistence=0.5)
+    level = 0.35 + 0.9 * np.clip(blobs - 0.3, 0, 1) + 0.25 * fine
+    return np.array(color)[None, None, :] * level[..., None]
+
+
 def tex_checker(rng, size, color, dark=(0.22, 0.17, 0.13)):
     """Two-tone marble tiles, two by two per texture."""
     yy, xx = np.mgrid[0:size, 0:size] / size
@@ -378,6 +409,8 @@ FAMILIES = {
     "stripes": (tex_stripes, (0.86, 0.80, 0.68), (1600, 1600)),
     "concrete": (tex_concrete, (0.58, 0.58, 0.54), (3000, 3000)),
     "rock": (tex_rock, (0.62, 0.60, 0.40), (2200, 2200)),
+    "forest": (tex_forest, (0.16, 0.26, 0.14), (8000, 12000)),
+    "leaves": (tex_leaves, (0.16, 0.30, 0.12), (1200, 1200)),
     "grating": (tex_grating, (0.50, 0.52, 0.52), (1200, 1200)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),
@@ -393,6 +426,7 @@ SOLIDS = {
     "soot": {"kd": (0.06, 0.05, 0.05)},
     "water": {"kd": (0.18, 0.32, 0.28)},
     "night": {"kd": (0.05, 0.08, 0.06), "emissive": True},
+    "sky": {"kd": (0.06, 0.09, 0.12), "emissive": True},
     "hedge": {"kd": (0.16, 0.26, 0.12)},
     "porcelain": {"kd": (0.52, 0.58, 0.46)},
     "steel": {"kd": (0.60, 0.62, 0.64)},
@@ -440,7 +474,7 @@ class Palette:
         _, _, tile = FAMILIES[family]
         extra = self.extra.get(name, {})
         self.spec[name] = {"map": name.replace(".", "-") + ".png", "tile": tuple(extra.get("tile", tile)) if (extra.get("tile", tile)) else None}
-        if family in ("fanlight", "glass", "window_fan"):
+        if family in ("fanlight", "glass", "window_fan", "forest"):
             self.spec[name]["emissive"] = True
         return name
 

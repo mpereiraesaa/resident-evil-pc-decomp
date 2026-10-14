@@ -9,8 +9,10 @@ seed = 3050
 floor = 0
 ceiling = -14000
 floor_material = "stone.paving"
-wall_material = "stone.hedge"
-ceiling_material = "night"
+wall_material = "forest"
+dado = 2200
+dado_material = "stone.hedge"
+ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1500
@@ -70,19 +72,19 @@ segments = 12
 kind = "box"
 box = [6390, 2070, 12672, 14562]
 top = -1600
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [17496, 19548, 30420, 23220]
 top = -1200
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [2592, 10062, 4320, 12132]
 top = -1200
-material = "hedge"
+material = "leaves"
 omit = ["bottom"]
 
 # Sunken spiral stair in the west court

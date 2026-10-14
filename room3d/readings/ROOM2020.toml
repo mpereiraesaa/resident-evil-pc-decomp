@@ -1,0 +1,111 @@
+# Dining room gallery: the balcony ring around the dining room's void, red
+# carpet, marble walls over a red panelled dado, the arched stained window
+# on the east wall. The void shows the dining room floor far below.
+room = "ROOM2020"
+title = "Dining room 2F"
+seed = 2020
+
+[shell]
+floor = 0
+ceiling = -4500
+floor_material = "carpet.floor"
+wall_material = "marble"
+ceiling_material = "coffer"
+dado = 1200
+dado_material = "panel"
+chair_rail = true
+skirting = 200
+cell = 1200
+
+[materials]
+marble = [0.72, 0.66, 0.54]
+panel = [0.42, 0.11, 0.10]
+"carpet.floor" = { color = [0.50, 0.12, 0.10], motif = [0.78, 0.62, 0.30], tile = [2600, 2600] }
+coffer = [0.18, 0.13, 0.09]
+wood = [0.24, 0.15, 0.09]
+stone = [0.66, 0.62, 0.54]
+checker = { color = [0.76, 0.70, 0.60], dark = [0.24, 0.18, 0.14] }
+door = [0.26, 0.17, 0.10]
+
+[lighting]
+ambient = [0.13, 0.115, 0.09]
+
+[[zone]]            # south strip
+box = [1732, 1944, 31986, 4050]
+floor_along = "x"
+[[zone]]            # west strip
+box = [1732, 4050, 4914, 13068]
+[[zone]]            # east strip
+box = [29178, 4050, 31986, 13068]
+[[zone]]            # north strip
+box = [1732, 13068, 31986, 15174]
+floor_along = "x"
+
+[[slab]]            # the dining room floor seen through the void
+box = [4914, 4050, 29178, 13068]
+top = 6500
+thickness = 200
+top_material = "checker"
+bottom_material = "checker"
+
+[[object]]
+kind = "rail"
+from = [5000, 4150]
+to = [29100, 4150]
+[[object]]
+kind = "rail"
+from = [5000, 12970]
+to = [29100, 12970]
+[[object]]
+kind = "rail"
+from = [5000, 4150]
+to = [5000, 12970]
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [29100, 4150]
+to = [29100, 12970]
+newels = [false, false]
+
+[[door]]
+wall = "north"
+span = [5000, 7300]
+top = -3500
+material = "door"
+[[door]]
+wall = "east"
+span = [6900, 10200]
+top = -3500
+material = "door"
+
+[[window]]
+wall = "east"
+kind = "arch"
+at = 12000
+half = 1000
+sill = -800
+height = 3400
+strength = 0.30
+reach = 8000
+
+[[sconce]]
+wall = "south"
+at = [-3300, 9000]
+[[sconce]]
+wall = "south"
+at = [-3300, 17000]
+[[sconce]]
+wall = "south"
+at = [-3300, 25000]
+[[sconce]]
+wall = "north"
+at = [-3300, 9000]
+[[sconce]]
+wall = "north"
+at = [-3300, 17000]
+[[sconce]]
+wall = "north"
+at = [-3300, 25000]
+[[sconce]]
+wall = "west"
+at = [-3300, 8500]

@@ -1,0 +1,125 @@
+# 2F right stairs: the top of ROOM10B0's switchback. Olive damask corridor
+# with red-brown trim, a landing with the stairwell and its balustrade, doors
+# at both ends and on the west side. From ROOM2010.RDT blocks.
+room = "ROOM2010"
+title = "2F right stairs"
+seed = 2010
+
+[shell]
+floor = 0
+ceiling = -5000
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling_material = "plaster.dark"
+skirting = 260
+chair_rail = true
+cell = 700
+
+[materials]
+wallpaper = { color = [0.58, 0.54, 0.30], motif = [0.40, 0.36, 0.18], repeats = 8 }
+"plaster.dark" = [0.26, 0.22, 0.14]
+planks = [0.36, 0.20, 0.11]
+wood = [0.42, 0.14, 0.08]
+door = [0.34, 0.18, 0.09]
+
+[lighting]
+ambient = [0.12, 0.11, 0.06]
+
+[[zone]]            # long corridor
+box = [14454, 2232, 16596, 26262]
+[[zone]]            # south-east pocket
+box = [16596, 2232, 21312, 4590]
+floor_along = "x"
+[[zone]]            # landing west strip
+box = [2340, 7328, 5976, 15156]
+[[zone]]            # landing south strip
+box = [5976, 7328, 14454, 8964]
+floor_along = "x"
+[[zone]]            # landing north strip
+box = [5976, 13302, 14454, 15156]
+floor_along = "x"
+
+[[door]]
+wall = "east"
+span = [2232, 4590]
+top = -3300
+material = "door"
+[[door]]
+wall = "north"
+span = [14700, 16200]
+top = -3300
+material = "door"
+[[door]]
+wall = "west"
+span = [16500, 18300]
+top = -3300
+material = "door"
+[[door]]
+wall = "west"
+span = [9000, 11000]
+top = -3300
+material = "door"
+
+# The well: flight down to the 1F landing (reaches the room below)
+[[stair]]
+x = [5976, 14454]
+z = [9432, 12798]
+direction = "west"
+base = 3000
+top = 0
+steps = 10
+tread_material = "wood"
+under = false
+[[object]]
+kind = "rail"
+from = [5976, 9100]
+to = [14300, 9100]
+height = 950
+[[object]]
+kind = "rail"
+from = [5976, 13100]
+to = [14300, 13100]
+height = 950
+[[object]]
+kind = "rail"
+from = [14300, 9100]
+to = [14300, 13100]
+height = 950
+newels = [false, false]
+
+[[sconce]]
+wall = "east"
+at = [-3500, 6000]
+candles = 1
+strength = 0.40
+reach = 3400
+[[sconce]]
+wall = "east"
+at = [-3500, 12000]
+candles = 1
+strength = 0.40
+reach = 3400
+[[sconce]]
+wall = "east"
+at = [-3500, 19000]
+candles = 1
+strength = 0.40
+reach = 3400
+[[sconce]]
+wall = "west"
+at = [-3500, 22500]
+candles = 1
+strength = 0.40
+reach = 3400
+[[sconce]]
+wall = "west"
+at = [-3500, 9500]
+candles = 1
+strength = 0.40
+reach = 3400
+[[sconce]]
+wall = "north"
+at = [-3500, 8000]
+candles = 1
+strength = 0.40
+reach = 3400

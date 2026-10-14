@@ -38,7 +38,7 @@ COL_R = 520
 GALLERY_Z = 14472                      # north gallery front edge (ROOM2030 collision block 3)
 ARCADE_FRONT_Z = 16000                 # free-standing columns carrying it (type-3 circles)
 FRONT_COLUMNS = ((9297, 16100), (24900, 16100))   # free-standing columns (type-3 circles 16 and 2)
-FRONT_POSTS = ((13986, 17100), (20210, 17100))    # lamp posts flanking the stair foot (circle 19 and mirror)
+FRONT_POSTS = ((14050, 16050), (20150, 16050))    # lamp posts at the stair foot (floor-cast sprites, cams 1/2/6)
 GAL_W = 1922                           # gallery depth: 2F void edge at x=4014 (ROOM2030 collision)
 ARCADE_Z0, ARCADE_Z1 = 22750, 24850    # north pier row
 PIERS = ((X0, 4378), (6879, 9507), (12430, 14766), (19026, 21942), (25092, 27108), (30384, X1))
@@ -120,8 +120,8 @@ def illumination(point, normal):
 
 # ---------------------------------------------------------------- pieces --
 def wainscot(mesh, origin, eu, length, top, flip):
-    """Dark panelling band along a wall base: panel field plus a cap rail."""
-    mesh.rect(origin, eu, (0, -1, 0), length, -top, "panel", flip)
+    """Dark panelling band from the wall base at `origin` up to `top`."""
+    mesh.rect(origin, eu, (0, -1, 0), length, origin[1] - top, "panel", flip)
 
 
 def wall_with_dado(mesh, origin, eu, length, bottom, top, flip, dado=2400):
@@ -177,7 +177,7 @@ def lamp_post(mesh, x, z):
     mesh.box((x - 220, -3600, z - 220), (x + 220, -500, z + 220), "stone")
     mesh.box((x - 300, -3800, z - 300), (x + 300, -3600, z + 300), "stone")
     mesh.cylinder(x, z, 40, -4300, -3800, "brass", segments=6)
-    mesh.sphere((x, -4600, z), 300, "glow", rings=4, segments=8)
+    mesh.sphere((x, -4600, z), 230, "glow", rings=4, segments=8)
 
 
 def sconce(mesh, x, y, z, direction):
@@ -316,10 +316,10 @@ def build(name):
     wall_with_dado(mesh, (X0, FLOOR, Z1), (1, 0, 0), X1 - X0, FLOOR, SLAB, False)
     wall_with_dado(mesh, (X0, UPPER, Z1), (1, 0, 0), X1 - X0, UPPER, CEIL, False)
     # Slab edge band on every wall.
-    mesh.rect((X0, SLAB, Z0), (0, 0, 1), (0, -1, 0), Z1 - Z0, UPPER - SLAB, "stone")
-    mesh.rect((X1, SLAB, Z1), (0, 0, -1), (0, -1, 0), Z1 - Z0, UPPER - SLAB, "stone")
-    mesh.rect((X1, SLAB, Z0), (-1, 0, 0), (0, -1, 0), X1 - X0, UPPER - SLAB, "stone")
-    mesh.rect((X0, SLAB, Z1), (1, 0, 0), (0, -1, 0), X1 - X0, UPPER - SLAB, "stone")
+    mesh.rect((X0, SLAB, Z0), (0, 0, 1), (0, -1, 0), Z1 - Z0, SLAB - UPPER, "stone")
+    mesh.rect((X1, SLAB, Z1), (0, 0, -1), (0, -1, 0), Z1 - Z0, SLAB - UPPER, "stone")
+    mesh.rect((X1, SLAB, Z0), (-1, 0, 0), (0, -1, 0), X1 - X0, SLAB - UPPER, "stone")
+    mesh.rect((X0, SLAB, Z1), (1, 0, 0), (0, -1, 0), X1 - X0, SLAB - UPPER, "stone")
 
     mesh.set_group("gallery")
     # Side colonnades: columns, arches, spandrels; gallery slab over the aisle.
@@ -342,9 +342,9 @@ def build(name):
         mesh.rect((ex0, UPPER - 8, Z0), (1, 0, 0), (0, 0, 1), 450, GALLERY_Z - Z0, "carpet_edge")
         mesh.rect((gx0, SLAB, Z0), (1, 0, 0), (0, 0, 1), gx1 - gx0, GALLERY_Z - Z0, "plaster", flip=True)
         if d > 0:
-            mesh.rect((inner, SLAB, Z0), (0, 0, 1), (0, -1, 0), GALLERY_Z - Z0, UPPER - SLAB, "stone")
+            mesh.rect((inner, SLAB, Z0), (0, 0, 1), (0, -1, 0), GALLERY_Z - Z0, SLAB - UPPER, "stone")
         else:
-            mesh.rect((inner, SLAB, GALLERY_Z), (0, 0, -1), (0, -1, 0), GALLERY_Z - Z0, UPPER - SLAB, "stone")
+            mesh.rect((inner, SLAB, GALLERY_Z), (0, 0, -1), (0, -1, 0), GALLERY_Z - Z0, SLAB - UPPER, "stone")
         rail_x = inner - d * 90
         balustrade(mesh, (rail_x, UPPER, Z0 + 200), (rail_x, UPPER, GALLERY_Z - 90), height=950, spacing=420)
 
@@ -358,11 +358,11 @@ def build(name):
     mesh.rect((well_x0, SLAB, STAIR_Z1), (1, 0, 0), (0, 0, 1), well_x1 - well_x0, Z1 - STAIR_Z1, "plaster", flip=True)
     # Front edge of the north gallery (slab band) and its balustrade, split at the well.
     for a, b in ((X0 + GAL_W, well_x0), (well_x1, X1 - GAL_W)):
-        mesh.rect((a, SLAB, GALLERY_Z), (1, 0, 0), (0, -1, 0), b - a, UPPER - SLAB, "stone", flip=True)
+        mesh.rect((a, SLAB, GALLERY_Z), (1, 0, 0), (0, -1, 0), b - a, SLAB - UPPER, "stone", flip=True)
         balustrade(mesh, (a + 100, UPPER, GALLERY_Z - 90), (b - 100, UPPER, GALLERY_Z - 90), height=950, spacing=420)
     # Well edges: slab faces and balustrades along the flight.
-    mesh.rect((well_x0, SLAB, GALLERY_Z), (0, 0, 1), (0, -1, 0), STAIR_Z1 - GALLERY_Z, UPPER - SLAB, "stone")
-    mesh.rect((well_x1, SLAB, STAIR_Z1), (0, 0, -1), (0, -1, 0), STAIR_Z1 - GALLERY_Z, UPPER - SLAB, "stone", flip=True)
+    mesh.rect((well_x0, SLAB, GALLERY_Z), (0, 0, 1), (0, -1, 0), STAIR_Z1 - GALLERY_Z, SLAB - UPPER, "stone")
+    mesh.rect((well_x1, SLAB, STAIR_Z1), (0, 0, -1), (0, -1, 0), STAIR_Z1 - GALLERY_Z, SLAB - UPPER, "stone", flip=True)
     balustrade(mesh, (well_x0 - 90, UPPER, GALLERY_Z - 90), (well_x0 - 90, UPPER, STAIR_Z1 - 300), height=950, spacing=420, newels=(True, False))
     balustrade(mesh, (well_x1 + 90, UPPER, GALLERY_Z - 90), (well_x1 + 90, UPPER, STAIR_Z1 - 300), height=950, spacing=420, newels=(True, False))
     # Front arcade carrying the north gallery: free-standing columns from the collision circles.

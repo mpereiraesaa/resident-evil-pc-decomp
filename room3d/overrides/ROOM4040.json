@@ -1,0 +1,134 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "0dc3001d329b32a83cdb94225562d050ae3b158ccd90f563ebe36fbcc44d77dd",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:44:30+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "0dc3001d329b32a83cdb94225562d050ae3b158ccd90f563ebe36fbcc44d77dd",
+      "edits": {
+        "boundary_15": {
+          "pivot": [
+            20502.0,
+            0,
+            10287.0
+          ],
+          "scale": [
+            1,
+            0.75,
+            1
+          ]
+        },
+        "boundary_17": {
+          "pivot": [
+            6426.0,
+            0,
+            10386.0
+          ],
+          "scale": [
+            1,
+            0.6,
+            1
+          ]
+        },
+        "boundary_2": {
+          "pivot": [
+            5625.5,
+            0,
+            21880.5
+          ],
+          "scale": [
+            1,
+            0.55,
+            1
+          ]
+        }
+      },
+      "note": "Billiard table, bar counter and barrel slabs scaled to 0.8-1.1 m",
+      "objects": {
+        "boundary_15": {
+          "kind": "wall",
+          "max": [
+            23490.0,
+            0.0,
+            12384.0
+          ],
+          "min": [
+            17514.0,
+            -1500.0,
+            8190.0
+          ]
+        },
+        "boundary_17": {
+          "kind": "wall",
+          "max": [
+            8586.0,
+            0.0,
+            11592.0
+          ],
+          "min": [
+            4266.0,
+            -1500.0,
+            9180.0
+          ]
+        },
+        "boundary_2": {
+          "kind": "wall",
+          "max": [
+            7264.0,
+            0.0,
+            25051.0
+          ],
+          "min": [
+            3987.0,
+            -1500.0,
+            18710.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:44:30+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM4040",
+    "room": 4,
+    "stage": 4
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "c2d6e4cb57c61b5797574f3e1be0698cbf9cf04c622feed017900c4ad9ceb17f",
+      "1": "74613c800d5b81a9c476158f676d9c11ef7b178a85fda318b02a6d9090453103",
+      "2": "a88d984b416619971068509de370258e99db67ad3d3a4501643f9c1fa4cae94e",
+      "3": "a69dfc9221ad99d496a73f9915248314c66aa2d09c9df5ece4c515563294564d",
+      "4": "264ad0324333ae35baf2fb28438bb173541ffd8d0253c9c889e3d8a6b67135f8",
+      "5": "8ca8542bde3a0b14829b171f066d065c5b0228b89c76bc6359a9b3ca762b61f7",
+      "6": "75650adab7b2be8a06acd7779731934f3338ab9f598efb77d75b025da1d93175"
+    },
+    "geometry_sha256": "69aec35cd7732f7c8d5a1bd34f65380c691bf25037d13a97879cf4143f73a437",
+    "player": 0,
+    "rdt": "ROOM4040",
+    "rdt_sha256": "e42836d5b8fce7ef6a1c226b87c181d8f5bdb08bd3e334f7fb7d6e1bfda8d0ff",
+    "room": 4,
+    "stage": 4
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:44:30+00:00"
+}

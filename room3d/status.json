@@ -236,16 +236,16 @@
     },
     "ROOM1130": {
       "gameplay": "not_validated",
-      "note": "Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
-      "review": "needs_work",
-      "updated": "2026-10-14T09:18:21+00:00"
+      "note": "Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:20+00:00"
     },
     "ROOM1131": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1130",
-      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM1140": {
       "gameplay": "not_validated",
@@ -756,16 +756,16 @@
     },
     "ROOM30E0": {
       "gameplay": "not_validated",
-      "note": "Cave office: desk and typewriter fragment into blocks; camera 3 close-up pixelated.",
+      "note": "Cave office: trunk and desk slabs scaled to desk height; the typewriter still fragments into blocks and camera 3 close-up is pixelated.",
       "review": "needs_work",
-      "updated": "2026-10-14T09:51:58+00:00"
+      "updated": "2026-10-14T10:49:20+00:00"
     },
     "ROOM30E1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM30E0",
-      "note": "Inherited from ROOM30E0 (identical layout and background files); not reviewed separately. Cave office: desk and typewriter fragment into blocks; camera 3 close-up pixelated.",
+      "note": "Inherited from ROOM30E0 (identical layout and background files); not reviewed separately. Cave office: trunk and desk slabs scaled to desk height; the typewriter still fragments into blocks and camera 3 close-up is pixelated.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM30F0": {
       "gameplay": "not_validated",
@@ -860,16 +860,16 @@
     },
     "ROOM4040": {
       "gameplay": "not_validated",
-      "note": "Bar with billiard table: tables and stools read; billiard table is a large bare slab in cameras 4 and 5; camera 6 close-up wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T09:51:59+00:00"
+      "note": "Bar with billiard table: table, bar counter and barrel slabs scaled to furniture height; green felt lands on the table top. Camera 6 close-up still wrong. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:20+00:00"
     },
     "ROOM4041": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM4040",
-      "note": "Inherited from ROOM4040 (identical layout and background files); not reviewed separately. Bar with billiard table: tables and stools read; billiard table is a large bare slab in cameras 4 and 5; camera 6 close-up wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM4040 (identical layout and background files); not reviewed separately. Bar with billiard table: table, bar counter and barrel slabs scaled to furniture height; green felt lands on the table top. Camera 6 close-up still wrong. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM4050": {
       "gameplay": "not_validated",
@@ -1120,16 +1120,16 @@
     },
     "ROOM5060": {
       "gameplay": "not_validated",
-      "note": "Lab with tank and computer: tank and console become slabs; camera 4 and 5 monitor close-ups are empty frames.",
+      "note": "Lab with tank: counter, desk and cabinet slabs scaled; a wall-height slab still splits the room and the monitor close-ups are empty frames.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:08:46+00:00"
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM5061": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM5060",
-      "note": "Inherited from ROOM5060 (identical layout and background files); not reviewed separately. Lab with tank and computer: tank and console become slabs; camera 4 and 5 monitor close-ups are empty frames.",
+      "note": "Inherited from ROOM5060 (identical layout and background files); not reviewed separately. Lab with tank: counter, desk and cabinet slabs scaled; a wall-height slab still splits the room and the monitor close-ups are empty frames.",
       "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM5070": {
       "gameplay": "not_validated",
@@ -1592,16 +1592,16 @@
     "ROOM6130": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1130",
-      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM6131": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM1130",
-      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: shower and tub become tall slabs, ceiling fan scattered; needs slab scaling once located.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM1130 (identical layout and background files); not reviewed separately. Bathroom with shower: tub, stool and stand slabs scaled; shower stall kept tall. Ceiling fan still scatters into fragments. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM6140": {
       "gameplay": "not_validated",
@@ -1674,16 +1674,16 @@
     },
     "ROOM6190": {
       "gameplay": "not_validated",
-      "note": "Stage 6 study: desk and chair are slabs; cameras 0 and 2 are nearly black.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:17:52+00:00"
+      "note": "Stage 6 study: desk and chair slabs scaled to desk height; cameras 0 and 2 are dark in the original too. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:20+00:00"
     },
     "ROOM6191": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM6190",
-      "note": "Inherited from ROOM6190 (identical layout and background files); not reviewed separately. Stage 6 study: desk and chair are slabs; cameras 0 and 2 are nearly black.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM6190 (identical layout and background files); not reviewed separately. Stage 6 study: desk and chair slabs scaled to desk height; cameras 0 and 2 are dark in the original too. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:21+00:00"
     },
     "ROOM61A0": {
       "gameplay": "not_validated",
@@ -2109,16 +2109,16 @@
     },
     "ROOM71C0": {
       "gameplay": "not_validated",
-      "note": "Stage 7 kitchen: counters and appliances become slabs; camera 3 and 4 close-ups wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:17:54+00:00"
+      "note": "Stage 7 kitchen: table and counter slabs scaled to counter height; wall cabinets kept. Cameras 3 and 4 close-ups still rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:20+00:00"
     },
     "ROOM71C1": {
       "gameplay": "not_validated",
       "inherited_from": "ROOM71C0",
-      "note": "Inherited from ROOM71C0 (identical layout and background files); not reviewed separately. Stage 7 kitchen: counters and appliances become slabs; camera 3 and 4 close-ups wrong.",
-      "review": "needs_work",
-      "updated": "2026-10-14T10:19:01+00:00"
+      "note": "Inherited from ROOM71C0 (identical layout and background files); not reviewed separately. Stage 7 kitchen: table and counter slabs scaled to counter height; wall cabinets kept. Cameras 3 and 4 close-ups still rough. Accepted as approximate.",
+      "review": "visually_approved",
+      "updated": "2026-10-14T10:49:21+00:00"
     }
   },
   "schema": 1

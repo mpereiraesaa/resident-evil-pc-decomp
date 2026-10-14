@@ -1,0 +1,131 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "f7c4a6e0c000b575bad992b3de656469c84ba34ddb569eba8fd81b2783909aed",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:44:30+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "f7c4a6e0c000b575bad992b3de656469c84ba34ddb569eba8fd81b2783909aed",
+      "edits": {
+        "boundary_4": {
+          "pivot": [
+            3635.5,
+            -100.0,
+            7587.5
+          ],
+          "scale": [
+            1,
+            0.3,
+            1
+          ]
+        },
+        "boundary_7": {
+          "pivot": [
+            6748.0,
+            -100.0,
+            2076.5
+          ],
+          "scale": [
+            1,
+            0.4,
+            1
+          ]
+        },
+        "boundary_9": {
+          "pivot": [
+            9373.5,
+            -100.0,
+            2631.5
+          ],
+          "scale": [
+            1,
+            0.6,
+            1
+          ]
+        }
+      },
+      "note": "Stool, tub and stand slabs scaled to 0.45-0.9 m; shower stall kept tall",
+      "objects": {
+        "boundary_4": {
+          "kind": "wall",
+          "max": [
+            4511.0,
+            -100.0,
+            8104.0
+          ],
+          "min": [
+            2760.0,
+            -1600.0,
+            7071.0
+          ]
+        },
+        "boundary_7": {
+          "kind": "wall",
+          "max": [
+            9025.0,
+            -100.0,
+            3052.0
+          ],
+          "min": [
+            4471.0,
+            -1600.0,
+            1101.0
+          ]
+        },
+        "boundary_9": {
+          "kind": "wall",
+          "max": [
+            10775.0,
+            -100.0,
+            3600.0
+          ],
+          "min": [
+            7972.0,
+            -1600.0,
+            1663.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:44:31+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM1130",
+    "room": 19,
+    "stage": 1
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "b32e11b4f15be27b7844aa09b37cd580c6518b78be9f8f0dc958ab92a6dd6c52",
+      "1": "d50c2800016f4e8000b56fb6714274c170e8b826731466f60d8cdfee4b0e0cd9",
+      "2": "ae0bef7d4bf22a27c0f4c4f5400c383f2a34b9c8486a66a7330506580ab4234c",
+      "3": "cb30be1e2ff0b57d99800a4c2689a98c511ddd673e28d783578b3482c39513a8"
+    },
+    "geometry_sha256": "54126c8d9deb1cf191fa3d6e3266b00ccafbf28b2c2adeaa744cd407897b6aed",
+    "player": 0,
+    "rdt": "ROOM1130",
+    "rdt_sha256": "dd78af55a61eefbdaad3bfab74dbf6c03f67b140073f604d9131690f8f7ea9eb",
+    "room": 19,
+    "stage": 1
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:44:31+00:00"
+}

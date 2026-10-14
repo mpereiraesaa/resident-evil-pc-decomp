@@ -1,0 +1,107 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "8d34087b8955eeb73fd8d0ac1f208a9a17f07547644b33d29fd79106ad3c7bf0",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:44:31+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "8d34087b8955eeb73fd8d0ac1f208a9a17f07547644b33d29fd79106ad3c7bf0",
+      "edits": {
+        "boundary_2": {
+          "pivot": [
+            9441.0,
+            74.64827967949384,
+            5319.0
+          ],
+          "scale": [
+            1,
+            0.65,
+            1
+          ]
+        },
+        "boundary_4": {
+          "pivot": [
+            12375.0,
+            74.64827967949384,
+            11187.0
+          ],
+          "scale": [
+            1,
+            0.65,
+            1
+          ]
+        }
+      },
+      "note": "Kitchen table and counter slabs scaled to about 0.9 m; wall cabinets kept",
+      "objects": {
+        "boundary_2": {
+          "kind": "wall",
+          "max": [
+            12942.0,
+            74.64828,
+            7128.0
+          ],
+          "min": [
+            5940.0,
+            -1425.35172,
+            3510.0
+          ]
+        },
+        "boundary_4": {
+          "kind": "wall",
+          "max": [
+            18594.0,
+            74.64828,
+            14076.0
+          ],
+          "min": [
+            6156.0,
+            -1425.35172,
+            8298.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:44:31+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM71C0",
+    "room": 28,
+    "stage": 7
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "0f0deeae9ceaf3cc499b0850e343105d81d2b26bbe69bbd18e59b586364265d4",
+      "1": "8fe2a0bec831e9a3a087f6abc2ddf1dbffbcd3f9a47db854f721a6c98ab39561",
+      "2": "421c497908cdf7a54a263eaee100b64bbe9165facf4afd75b6fc3a121d6603d3",
+      "3": "304c72640ea0ffa49f5e726ec8a11c0b16a870f462a5f84e7503d7bd058a4fee",
+      "4": "fd1f0bc7a1dec3b7986f164ab3b4d9b520297a5dc126d867a67bc087ec29c364"
+    },
+    "geometry_sha256": "8c7a3a32b5a83beca26aefcfd35c76084d116c7115d55ab1b85868cd443611b0",
+    "player": 0,
+    "rdt": "ROOM71C0",
+    "rdt_sha256": "91d2c36af180d04da1cf2c0430aa575665fa48a4e9871f0d3f80329c45e23a7f",
+    "room": 28,
+    "stage": 7
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:44:31+00:00"
+}

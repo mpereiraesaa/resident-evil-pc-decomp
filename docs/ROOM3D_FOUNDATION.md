@@ -1076,3 +1076,12 @@ by projecting each slab's top centre into the cameras and reading the
 original image at that pixel. ROOM1080, ROOM4020 and ROOM7190 moved to
 approved (approximate); the other three keep defects the slab fix cannot
 reach (globe fragments, misplaced slabs, a bed merged into a wall slab).
+
+Fifth pass, same correction: ROOM4040 (billiard table, bar, barrel), ROOM1130
+(tub, stool, stand), ROOM71C0 (kitchen table, counters), ROOM6190 (desk,
+chair), ROOM30E0 (trunk, desk) and ROOM5060 (counters, desk, cabinet). The
+first four moved to approved (approximate); ROOM30E0 and ROOM5060 keep a
+fragmenting typewriter and a room-splitting wall slab. After this pass 152
+rooms are approved and 168 need work; 23 override files cover 58 rooms. The
+remaining needs-work rooms have no furniture slab left to scale: their
+defects are black or empty cameras, caves, stairs and scattered fixtures.

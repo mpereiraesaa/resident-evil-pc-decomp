@@ -1,0 +1,131 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "a757279ca8babf471dcdd22e5175d6e570f11af6cf6f1a4c734523d374a536da",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:44:32+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "a757279ca8babf471dcdd22e5175d6e570f11af6cf6f1a4c734523d374a536da",
+      "edits": {
+        "boundary_2": {
+          "pivot": [
+            2151.0,
+            100.0,
+            10512.0
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ]
+        },
+        "boundary_3": {
+          "pivot": [
+            5346.0,
+            100.0,
+            6336.0
+          ],
+          "scale": [
+            1,
+            0.55,
+            1
+          ]
+        },
+        "boundary_4": {
+          "pivot": [
+            6084.0,
+            100.0,
+            6435.0
+          ],
+          "scale": [
+            1,
+            0.55,
+            1
+          ]
+        }
+      },
+      "note": "Trunk and desk slabs scaled to about 0.7-0.8 m",
+      "objects": {
+        "boundary_2": {
+          "kind": "wall",
+          "max": [
+            4302.0,
+            100.0,
+            11844.0
+          ],
+          "min": [
+            0.0,
+            -1400.0,
+            9180.0
+          ]
+        },
+        "boundary_3": {
+          "kind": "wall",
+          "max": [
+            6354.0,
+            100.0,
+            8244.0
+          ],
+          "min": [
+            4338.0,
+            -1400.0,
+            4428.0
+          ]
+        },
+        "boundary_4": {
+          "kind": "wall",
+          "max": [
+            7002.0,
+            100.0,
+            6750.0
+          ],
+          "min": [
+            5166.0,
+            -1400.0,
+            6120.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:44:32+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM30E0",
+    "room": 14,
+    "stage": 3
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "b7fc17012e5c154e0d4fc8f6ebc3594c45a77c577188f24634e724b6f60889e8",
+      "1": "0c18f7493e509bbfff95e68abfd6bccc90137e8834913c1e96153feb2bb77fb2",
+      "2": "0d24d2123bdb7090a74fb9eb501ddcfbd1b789c5e144aeea1da9ad13980686df",
+      "3": "463a83e0e72c87fd4cd187e1553fac8a694bca70a3793bddeab320772c5b577e"
+    },
+    "geometry_sha256": "22bf8ca1ca6459f6dd9b8f640f260d7d48c8274a4754668672ab9309c6bc17a4",
+    "player": 0,
+    "rdt": "ROOM30E0",
+    "rdt_sha256": "83369f8a1cae53950f80b730b8016ecb6d3c9903c32fb8743a6aecb8846fb031",
+    "room": 14,
+    "stage": 3
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:44:32+00:00"
+}

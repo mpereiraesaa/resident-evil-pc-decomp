@@ -1,0 +1,133 @@
+{
+  "appearance": {
+    "mode": "reprojected"
+  },
+  "baseline": {
+    "assisted_obj_sha256": "9b47a74b19ded055d1aa34262f1a67492526f37a6df6af99b3837549c69c1afe",
+    "schema": 1,
+    "settings": {
+      "creative_fallback": true,
+      "joint_stair_supports": true,
+      "parametric_details": true
+    },
+    "tool": "room3d_overrides",
+    "tools_sha256": "2ec3edded62154d6fdb6a0ee0a2b12ebeb7b94616ef6256bdd32df74f10db748"
+  },
+  "created": "2026-10-14T10:44:32+00:00",
+  "history": [
+    {
+      "additions": [],
+      "base": "automatic",
+      "base_sha256": "9b47a74b19ded055d1aa34262f1a67492526f37a6df6af99b3837549c69c1afe",
+      "edits": {
+        "boundary_2": {
+          "pivot": [
+            16812.0,
+            0,
+            10800.0
+          ],
+          "scale": [
+            1,
+            0.65,
+            1
+          ]
+        },
+        "boundary_4": {
+          "pivot": [
+            17874.0,
+            0,
+            9756.0
+          ],
+          "scale": [
+            1,
+            0.5,
+            1
+          ]
+        },
+        "boundary_5": {
+          "pivot": [
+            11628.0,
+            0,
+            10512.0
+          ],
+          "scale": [
+            1,
+            0.7,
+            1
+          ]
+        }
+      },
+      "note": "Counter, computer desk and cabinet slabs scaled to 0.75-1.0 m",
+      "objects": {
+        "boundary_2": {
+          "kind": "wall",
+          "max": [
+            21852.0,
+            0.0,
+            12366.0
+          ],
+          "min": [
+            11772.0,
+            -1500.0,
+            9234.0
+          ]
+        },
+        "boundary_4": {
+          "kind": "wall",
+          "max": [
+            19422.0,
+            0.0,
+            12384.0
+          ],
+          "min": [
+            16326.0,
+            -1500.0,
+            7128.0
+          ]
+        },
+        "boundary_5": {
+          "kind": "wall",
+          "max": [
+            13122.0,
+            0.0,
+            11412.0
+          ],
+          "min": [
+            10134.0,
+            -1500.0,
+            9612.0
+          ]
+        }
+      },
+      "recorded": "2026-10-14T10:44:32+00:00",
+      "step": 1
+    }
+  ],
+  "note": "Furniture collision slabs scaled to furniture height about the floor",
+  "qualification": "Manual visual correction; gameplay collisions and scripts are unchanged",
+  "room": {
+    "player": 0,
+    "rdt": "ROOM5060",
+    "room": 6,
+    "stage": 5
+  },
+  "schema": 1,
+  "source": {
+    "backgrounds": {
+      "0": "6f8f5ba2e14e8ba03ef2da78b496ea1daebbf3d838fde84f600c24fe9a0840fd",
+      "1": "1e9b45eb29dc2a9b77beca6efa9caa442ce6ef7f6945febe1e1bbd55233b78cb",
+      "2": "e5af7ab060a773ebd4b86e45ffa108d278f81a8e0767efb1f2aaa6211c035ceb",
+      "3": "5e046ba023c8c245160224fbcd9c67e0bf247f8b54ba82041ae736a211060880",
+      "4": "8ed819ecf08517c51d08a8009413240b50f25246e86766b87f88b624cb78d97d",
+      "5": "ac466267b02d454dba52c01e7d001ea12a674aa521b38481c4139ced0ae70f32"
+    },
+    "geometry_sha256": "b03baf80b67087ad41e15b27acb1ab24c19aa4a45a1d906627cefc231e68d7ff",
+    "player": 0,
+    "rdt": "ROOM5060",
+    "rdt_sha256": "57f4cf6ee6ece9737fb3eb2e3af02017caaf35d51e81ce182bf38c07d2d3e306",
+    "room": 6,
+    "stage": 5
+  },
+  "tool": "room3d_overrides",
+  "updated": "2026-10-14T10:44:32+00:00"
+}

@@ -1097,5 +1097,5 @@ and ROOM1110 (the globe, a creative removal). ROOM10E0, ROOM1110, ROOM10B0 and
 ROOM1160 are approved as approximate; ROOM2010 and ROOM2080 keep flat stairs
 and an unreconstructable deer head. The corrected ROOM10B0 mesh passes the
 Wine smoke test (`build/room3d-runtime-corrected-10b0/result.json`), so its
-gameplay record now refers to the corrected mesh. Catalog after this pass: 164
-rooms approved, 156 need work, 74 rooms covered by 30 override files.
+gameplay record now refers to the corrected mesh. Catalog after this pass: 166
+rooms approved, 154 need work, 80 rooms covered by 30 override files.

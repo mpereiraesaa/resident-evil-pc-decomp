@@ -29,7 +29,7 @@ cell = 1000
 
 [materials]
 concrete = { color = [0.40, 0.42, 0.48], stains = 0.4, panels = 2, tile = [3600, 3600] }
-"concrete.ceiling" = { color = [0.14, 0.14, 0.16], stains = 0.3 }
+"concrete.ceiling" = { color = [0.30, 0.31, 0.34], stains = 0.3, panels = 3 }
 "tiles.floor" = { color = [0.46, 0.48, 0.54], count = 2, grout = [0.30, 0.31, 0.34], grime = 0.3, tile = [2400, 2400] }
 "tiles.cabinet" = { color = [0.66, 0.70, 0.68], count = 3, grout = [0.20, 0.22, 0.24], grime = 0.2, tile = [1200, 1200] }
 "double_door.lab" = [0.26, 0.28, 0.36]
@@ -38,7 +38,7 @@ iron = [0.10, 0.10, 0.12]
 lacquer = [0.05, 0.05, 0.06]
 steel = [0.60, 0.62, 0.66]
 plastic = [0.30, 0.50, 0.40]
-tank = [0.38, 0.72, 0.54]
+tank = [0.26, 0.56, 0.42]
 glow = [0.82, 0.84, 0.72]
 velvet = [0.80, 0.10, 0.08]
 
@@ -418,3 +418,29 @@ at = [12000, -4800, 28500]
 color = [0.80, 0.85, 1.0]
 strength = 0.4
 reach = 8000
+
+# Overhead duct runs and cable trays (the originals show them in every high view)
+[[object]]
+kind = "pipe"
+from = [8400, -5250, 7600]
+to = [8400, -5250, 25800]
+radius = 260
+material = "steel"
+[[object]]
+kind = "pipe"
+from = [13000, -5250, 7600]
+to = [13000, -5250, 25800]
+radius = 260
+material = "steel"
+[[object]]
+kind = "pipe"
+from = [3400, -5150, 9000]
+to = [18400, -5150, 9000]
+radius = 200
+material = "iron"
+[[object]]
+kind = "pipe"
+from = [3400, -5150, 24500]
+to = [18400, -5150, 24500]
+radius = 200
+material = "iron"

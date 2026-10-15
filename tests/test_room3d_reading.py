@@ -137,6 +137,12 @@ class BuilderKindTests(unittest.TestCase):
                 _, mesh = self.build(kind)
                 self.assertGreater(mesh.triangles, empty.triangles)
 
+    def test_solid_variants_take_their_own_tint(self):
+        builder, _ = self.build('[materials]\n"iron.tread" = [0.5, 0.4, 0.3]\n'
+                                '[[object]]\nkind = "box"\nbox = [2000, 3000, 2500, 3500]\ntop = -300\nmaterial = "iron.tread"\n')
+        self.assertEqual(builder.palette.spec['iron.tread']['kd'], (0.5, 0.4, 0.3))
+        self.assertNotEqual(builder.palette.spec['iron']['kd'], (0.5, 0.4, 0.3))
+
     def test_door_can_start_above_the_floor(self):
         _, mesh = self.build('[[door]]\nwall = "north"\nspan = [3000, 4000]\nbottom = -1000\ntop = -3000\n')
         verts, material, door_y = [], None, []

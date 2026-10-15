@@ -567,6 +567,10 @@ class Palette:
         if name in self.spec:
             return name
         family = name.split(".")[0]
+        if family in SOLIDS:  # a tinted variant of a flat solid, e.g. "iron.tread"
+            tint_ = self.tints.get(name)
+            self.spec[name] = dict(SOLIDS[family], kd=tuple(tint_) if tint_ else SOLIDS[family]["kd"])
+            return name
         if family not in FAMILIES:
             raise KeyError(f"unknown material {name}")
         _, _, tile = FAMILIES[family]

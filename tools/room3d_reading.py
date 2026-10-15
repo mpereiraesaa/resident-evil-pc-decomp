@@ -1525,6 +1525,65 @@ class Builder:
                 p = self.use(o.get("material", "porcelain"))
                 self._wall_box(side, line, -330, 330, top, top + 220, 0, 480, p, along=along)
                 self._wall_box(side, line, -60, 60, top + 220, top + 600, 0, 200, self.use("iron"), along=along)
+            elif kind == "pipe":
+                # Straight pipe, lying tank or rolled carpet between two points.
+                points = [tuple(o["from"])] + [tuple(p) for p in o.get("via", [])] + [tuple(o["to"])]
+                mat = self.use(o.get("material", "steel"))
+                for a, b in zip(points, points[1:]):
+                    mesh.tube(a, b, o.get("radius", 120), mat, segments=o.get("segments", 10),
+                              caps=o.get("caps", True))
+            elif kind == "ring":
+                # Annular wall: fountain rims, raised edges round water, well heads.
+                x, z = o["at"]
+                inner, outer = o["inner"], o["outer"]
+                top, bottom = o.get("top", -500), o.get("bottom", floor)
+                mat = self.use(o.get("material", "stone"))
+                n = o.get("segments", 24)
+                mesh.cylinder(x, z, outer, top, bottom, mat, segments=n, caps=False)
+                ang = [i * math.tau / n for i in range(n)]
+                for i, a in enumerate(ang):
+                    b = ang[(i + 1) % n]
+                    # inner face (looking inward) and the top band
+                    mesh.poly([(x + inner * math.cos(b), bottom, z + inner * math.sin(b)),
+                               (x + inner * math.cos(b), top, z + inner * math.sin(b)),
+                               (x + inner * math.cos(a), top, z + inner * math.sin(a)),
+                               (x + inner * math.cos(a), bottom, z + inner * math.sin(a))], mat)
+                    mesh.poly([(x + inner * math.cos(a), top, z + inner * math.sin(a)),
+                               (x + inner * math.cos(b), top, z + inner * math.sin(b)),
+                               (x + outer * math.cos(b), top, z + outer * math.sin(b)),
+                               (x + outer * math.cos(a), top, z + outer * math.sin(a))], mat)
+                if o.get("fill"):  # water or soil inside the ring
+                    fy = o.get("fill_y", top + 120)
+                    mesh.poly([(x + inner * math.cos(a), fy, z + inner * math.sin(a)) for a in ang], self.use(o["fill"]))
+            elif kind == "spiral_stair":
+                # Wedge treads winding round a central newel.
+                x, z = o["at"]
+                r_out, r_in = o.get("radius", 1500), o.get("newel", 200)
+                base, top = o.get("base", floor), o["top"]
+                steps = o.get("steps", 16)
+                turn = math.radians(o.get("turn", 360))
+                a0 = math.radians(o.get("start", 0))
+                rise = (base - top) / steps
+                tread = self.use(o.get("tread_material", "stone"))
+                mesh.cylinder(x, z, r_in, top - o.get("newel_above", 900), base, self.use(o.get("newel_material", "stone")), segments=10)
+                for i in range(steps):
+                    a, b = a0 + turn * i / steps, a0 + turn * (i + 1) / steps
+                    y = base - (i + 1) * rise
+                    pts = [(x + r_in * math.cos(a), y, z + r_in * math.sin(a)),
+                           (x + r_out * math.cos(a), y, z + r_out * math.sin(a)),
+                           (x + r_out * math.cos(b), y, z + r_out * math.sin(b)),
+                           (x + r_in * math.cos(b), y, z + r_in * math.sin(b))]
+                    mesh.poly(pts, tread)
+                    riser = [(x + r_in * math.cos(a), y + rise, z + r_in * math.sin(a)),
+                             (x + r_out * math.cos(a), y + rise, z + r_out * math.sin(a)),
+                             (x + r_out * math.cos(a), y, z + r_out * math.sin(a)),
+                             (x + r_in * math.cos(a), y, z + r_in * math.sin(a))]
+                    mesh.poly(riser, tread)
+                    # outer edge face so the stair reads as solid from the side
+                    mesh.poly([(x + r_out * math.cos(a), y, z + r_out * math.sin(a)),
+                               (x + r_out * math.cos(b), y, z + r_out * math.sin(b)),
+                               (x + r_out * math.cos(b), y + rise + 120, z + r_out * math.sin(b)),
+                               (x + r_out * math.cos(a), y + rise + 120, z + r_out * math.sin(a))], tread)
             elif kind == "plant":
                 # Potted plant: a pot and a crown of overlapping leaf clumps.
                 x, z = o["at"]

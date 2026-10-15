@@ -172,6 +172,29 @@ class Mesh:
             self.poly([(a, bottom, b) for a, b in reversed(ring)], material)
 
 
+    def tube(self, start, end, radius, material, segments=10, caps=True):
+        """Cylinder between two arbitrary points (pipes, lying tanks, rolls)."""
+        axis = tuple(end[k] - start[k] for k in range(3))
+        length = math.sqrt(sum(c * c for c in axis))
+        if length < 1:
+            return
+        w = tuple(c / length for c in axis)
+        helper = (0.0, 1.0, 0.0) if abs(w[1]) < 0.9 else (1.0, 0.0, 0.0)
+        u = unit(cross(w, helper))
+        v = cross(w, u)
+
+        def at(base, angle):
+            c, s_ = math.cos(angle) * radius, math.sin(angle) * radius
+            return tuple(base[k] + u[k] * c + v[k] * s_ for k in range(3))
+        angles = [i * math.tau / segments for i in range(segments)]
+        for i, a in enumerate(angles):
+            b = angles[(i + 1) % segments]
+            self.poly([at(start, a), at(end, a), at(end, b), at(start, b)], material)
+        if caps:
+            self.poly([at(start, a) for a in reversed(angles)], material)
+            self.poly([at(end, a) for a in angles], material)
+
+
 # ------------------------------------------------------------- furniture --
 
 

@@ -132,6 +132,9 @@ class BuilderKindTests(unittest.TestCase):
             '[[window]]\nkind = "rect"\nwall = "north"\nat = 4000\nsill = -1200\nheight = 2000\npanes = 3\ntransom = -2600\n',
             '[[object]]\nkind = "table_round"\nat = [4000, 5000]\nradius = 500\ntop = -800\ncloth = "linen"\n',
             '[[object]]\nkind = "plant"\nat = [4000, 5000]\nheight = 1400\n',
+            '[[object]]\nkind = "pipe"\nfrom = [2000, -3000, 3000]\nto = [6000, -3000, 3000]\nvia = [[4000, -3000, 6000]]\nradius = 150\n',
+            '[[object]]\nkind = "ring"\nat = [4000, 5000]\ninner = 900\nouter = 1200\ntop = -500\nfill = "water"\n',
+            '[[object]]\nkind = "spiral_stair"\nat = [4000, 5000]\nradius = 1400\ntop = -3000\nbase = 3000\nsteps = 20\n',
         ):
             with self.subTest(kind=kind.split('\n')[1]):
                 _, mesh = self.build(kind)
@@ -161,6 +164,18 @@ def load_reading_text(text):
         path = Path(tmp) / 'ROOMTEST.toml'
         path.write_text(text)
         return load_reading(path)
+
+
+class TubeTests(unittest.TestCase):
+    def test_tube_vertices_lie_on_the_cylinder(self):
+        from room3d_handmade import Mesh
+        mesh = Mesh('t', {'steel': {'kd': (0.5, 0.5, 0.5)}}, lambda p, n: (1, 1, 1))
+        mesh.tube((0, 0, 0), (1000, 0, 0), 100, 'steel', segments=8)
+        verts = [tuple(map(float, line.split()[1:4])) for line in mesh.lines if line.startswith('v ')]
+        self.assertTrue(verts)
+        for x, y, z in verts:
+            self.assertIn(round(x), (0, 1000))
+            self.assertAlmostEqual((y * y + z * z) ** 0.5, 100, delta=1)
 
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ ceiling = -14000
 floor_material = "rock.flag"
 wall_material = "forest"
 dado = 900
-dado_material = "stone.brick"
+dado_material = "brick.stone"
 ceiling_material = "sky"
 skirting = 0
 trim = "stone"
@@ -20,7 +20,7 @@ cell = 1200
 
 [materials]
 "rock.flag" = { color = [0.30, 0.32, 0.28], tile = [2000, 2000] }
-"stone.brick" = { color = [0.28, 0.30, 0.26], tile = [1200, 1200] }
+"brick.stone" = { color = [0.36, 0.38, 0.32], rows = 6, per_row = 3, ivy = 0.4, stains = 0.4, tile = [2400, 1500] }
 stone = [0.638, 0.667, 0.609]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
@@ -62,7 +62,7 @@ bottom_material = "water"
 kind = "box"
 box = [6012, 3348, 10300, 18702]
 top = -900
-material = "stone.brick"
+material = "brick.stone"
 omit = ["bottom"]
 
 # Low stone walls along the paths
@@ -89,13 +89,13 @@ material = "iron"
 kind = "box"
 box = [24300, 2880, 29286, 11304]
 top = -4500
-material = "stone.brick"
+material = "brick.stone"
 omit = ["bottom"]
 [[object]]          # building block in the north-west corner
 kind = "box"
 box = [1980, 25956, 9414, 28764]
 top = -4500
-material = "stone.brick"
+material = "brick.stone"
 omit = ["bottom"]
 [[object]]          # low wall along the east channel
 kind = "box"

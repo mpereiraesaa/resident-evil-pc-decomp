@@ -9,7 +9,7 @@ seed = 3020
 floor = 0
 ceiling = -9000
 floor_material = "rock.cobble"
-wall_material = "stone.brick"
+wall_material = "brick.stone"
 ceiling_material = "stone.dark"
 skirting = 0
 trim = "stone"
@@ -17,7 +17,7 @@ cell = 1200
 
 [materials]
 "rock.cobble" = { color = [0.32, 0.38, 0.46], tile = [1600, 1600] }
-"stone.brick" = { color = [0.40, 0.42, 0.36], tile = [1200, 1200] }
+"brick.stone" = { color = [0.40, 0.42, 0.36], rows = 6, per_row = 3, ivy = 0.2, stains = 0.4, tile = [2400, 1500] }
 "stone.dark" = { color = [0.12, 0.13, 0.13], tile = [2000, 2000] }
 stone = [0.42, 0.46, 0.44]
 grating = [0.30, 0.20, 0.14]

@@ -19,6 +19,9 @@ enum MarniPresentationMode {
     MARNI_PRESENT_STRETCH = 0,
     MARNI_PRESENT_FIT_4_3,
     MARNI_PRESENT_CROP_16_9,
+    // The authored 4:3 frame at its real scale in the middle, as FIT_4_3, but
+    // not clipped to it: a 3D room (Room3D) fills the sides of a wide display.
+    MARNI_PRESENT_WIDE_4_3,
 };
 
 // ============================================================================

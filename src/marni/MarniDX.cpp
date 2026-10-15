@@ -290,7 +290,8 @@ static D3D11_RECT BuildPresentationScissor(MarniDX::Impl* p)
         (LONG)(p && p->width ? p->width : 640),
         (LONG)(p && p->height ? p->height : 480) };
     if (!p || !p->width || !p->height ||
-        p->presentation == MARNI_PRESENT_STRETCH)
+        p->presentation == MARNI_PRESENT_STRETCH ||
+        p->presentation == MARNI_PRESENT_WIDE_4_3)
         return rect;
 
     const float outputW = (float)p->width;

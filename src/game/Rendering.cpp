@@ -48,6 +48,9 @@ extern void Room3D_Render(void);
 // crop follows the projected player with a small safe band and snaps to the
 // right place on a camera cut, matching fixed-camera scene composition.
 static float s_widescreenPan = 30.0f;
+// True while a fixed camera's room is drawn natively wide (WIDE_4_3): the 3D
+// room continues past the 4:3 frame, so full-screen rects must too.
+static bool s_presentWide = false;
 static unsigned int s_widescreenCameraKey = 0xFFFFFFFFu;
 
 static float ProjectPlayerScreenY(void)
@@ -73,6 +76,7 @@ static void UpdatePresentation(void)
 {
     MarniDX* dx = Marni_DX();
     if (!dx) return;
+    s_presentWide = false;
     if (!g_bWidescreen) {
         dx->SetPresentation(MARNI_PRESENT_STRETCH);
         s_widescreenCameraKey = 0xFFFFFFFFu;
@@ -85,6 +89,16 @@ static void UpdatePresentation(void)
         g_debugMenuOpen == 0;
     if (!scene) {
         dx->SetPresentation(MARNI_PRESENT_FIT_4_3);
+        s_widescreenCameraKey = 0xFFFFFFFFu;
+        return;
+    }
+
+    // A fixed camera over a Room3D mesh renders natively wide: the original
+    // frame stays whole in the middle and the mesh fills the sides, instead
+    // of cropping the top and bottom off the authored shot.
+    if (Room3D_IsActive() && !ModernCamera_Active()) {
+        dx->SetPresentation(MARNI_PRESENT_WIDE_4_3);
+        s_presentWide = true;
         s_widescreenCameraKey = 0xFFFFFFFFu;
         return;
     }
@@ -299,6 +313,12 @@ void draw_rect(RectDrawDesc* rect, int blend, int flags)
     float gameY = (float)(rect->y + g_ScreenOffsetY);
     float gameW = (float)rect->w;
     float gameH = (float)rect->h;
+    // Full-width rects (fades, flashes, the cinematic letterbox) also cover
+    // the sides of a natively wide room.
+    if (s_presentWide && gameW >= 320.0f) {
+        gameX -= 160.0f;
+        gameW += 320.0f;
+    }
 
     // Scale game-space (320x240) to the real backbuffer (see AddTintSprite).
     float scaleX, scaleY;

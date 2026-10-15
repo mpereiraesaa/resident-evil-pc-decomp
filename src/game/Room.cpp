@@ -78,6 +78,7 @@ void RestoreRoomCamera(void) // 0x00462940
 // behaviour and is reproduced deliberately; do not "fix" it to a signed read.
 // ============================================================================
 bool ModernCamera_Active(void);   // ModernCamera.cpp
+bool Room3D_IsActive(void);      // Room3D.cpp
 
 int is_entity_in_switch_zone(VECTOR* position, void* zoneData) // 0x00462d90
 {
@@ -91,9 +92,12 @@ int is_entity_in_switch_zone(VECTOR* position, void* zoneData) // 0x00462d90
     // visibility test ("is this inside the fixed camera's shot?") - room
     // object models, enemy shadows and joint effects are culled with it.
     // Under the modern follow camera there is no fixed shot, so everything
-    // in the room is in view. Camera switching passes the zones after the
-    // current record and is unaffected.
-    if (zoneData == g_CurrentRdtDataTypePtr && ModernCamera_Active()) return 1;
+    // in the room is in view; a fixed camera over a room mesh draws the room
+    // past its frame on a wide display, and the mesh's depth hides what is
+    // behind walls. Camera switching passes the zones after the current
+    // record and is unaffected.
+    if (zoneData == g_CurrentRdtDataTypePtr && (ModernCamera_Active() || Room3D_IsActive()))
+        return 1;
 
     // 0x00462d9a-0x00462da2: pivot on corner 0, zero-extended
     int x0 = (int)(unsigned short)zone->x0;

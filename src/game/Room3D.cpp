@@ -119,6 +119,7 @@ float s_backgroundScale[32];         // loaded background width / 320
 enum { kDetailGeneric, kDetailWood, kDetailFabric, kDetailMetal, kDetailClasses };
 MarniHandle s_detailTextures[kDetailClasses];
 const float kDetailRepeat = 1200.0f;
+float s_featherCenterX = 0.0f, s_featherScaleX = 1.0f;   // frame-edge blend (Room3D_Render)
 
 void MaterialColor(const char* name, float* r, float* g, float* b)
 {
@@ -1468,6 +1469,21 @@ Vertex InterpolateVertex(const Vertex& a, const Vertex& b, float t)
     return result;
 }
 
+// Clip a convex polygon (room space) to n . p + d >= 0; returns the count.
+int ClipPolygonToPlane(const Vertex* input, int count, const float n[3], float d, Vertex* output)
+{
+    int written = 0;
+    for (int i = 0; i < count; ++i) {
+        const Vertex& a = input[i];
+        const Vertex& b = input[(i + 1) % count];
+        const float da = n[0] * a.x + n[1] * a.y + n[2] * a.z + d;
+        const float db = n[0] * b.x + n[1] * b.y + n[2] * b.z + d;
+        if (da >= 0.0f) output[written++] = a;
+        if ((da >= 0.0f) != (db >= 0.0f)) output[written++] = InterpolateVertex(a, b, da / (da - db));
+    }
+    return written;
+}
+
 int ClipTriangleToNearPlane(const Vertex input[3], const RoomCameraBasis& camera,
                             float nearZ, Vertex output[4])
 {
@@ -1626,7 +1642,7 @@ void Room3D_Render(void)
             }
             if (!visible) continue;
             if (adjust != NULL && !adjust(vertices, triangle, focal * scaleY)) continue;
-            if (fixedBackground != MARNI_NULL_HANDLE) {
+            if (fixedBackground != MARNI_NULL_HANDLE && texture == fixedBackground) {
                 for (int v = 0; v < 3; ++v) {
                     float* out = vertices + v * 10;
                     out[4] = ((out[0] - centerX) / scaleX + 160.0f) / 320.0f;
@@ -1645,7 +1661,7 @@ void Room3D_Render(void)
         }
     };
 
-    std::vector<size_t> fading, detailed;
+    std::vector<size_t> fading, detailed, framed;
     static const char* detailEnv = std::getenv("RE1_ROOM3D_DETAIL");   // 0 = no grain
     static const bool detailOn = detailEnv == NULL || detailEnv[0] != '0';
     for (size_t i = 0; i < s_triangles.size(); ++i) {
@@ -1671,9 +1687,12 @@ void Room3D_Render(void)
         const Triangle& tri = s_triangles[i];
         const int projection = tri.projection;
         if (modern && detailOn && tri.detail >= 0) detailed.push_back(i);
-        if (fixedBackground != MARNI_NULL_HANDLE) {
-            emit(tri.v, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE);
-        } else if (modern && projection >= 0 &&
+        // A fixed camera's own background covers its original frame (pass
+        // below); the sides of a wide display show the room as the free
+        // camera textures it.
+        if (fixedBackground != MARNI_NULL_HANDLE) framed.push_back(i);
+        const bool reconstructed = modern || fixedBackground != MARNI_NULL_HANDLE;
+        if (reconstructed && projection >= 0 &&
                    s_projectionTextures[projection] != MARNI_NULL_HANDLE) {
             if (tri.patch >= 0) {
                 // Fading into the wall's tile: the tile first, the art over
@@ -1712,6 +1731,60 @@ void Room3D_Render(void)
              MARNI_BLEND_ALPHA);
     }
     flush();
+
+    // The fixed camera's background, exactly as authored inside its 4:3 frame
+    // (UVs from screen position), over the reconstruction: clipped to the
+    // frame's left and right edges in room space, the outer kFeather pixels
+    // blended so the original art fades into the wide sides.
+    if (!framed.empty()) {
+        static const float kFeather = 12.0f;
+        struct Region { float lowEdge, highEdge; bool blend; };
+        // x in frame pixels from the centre: inner, left band, right band.
+        const Region regions[3] = {
+            { -(160.0f - kFeather), 160.0f - kFeather, false },
+            { -160.0f, -(160.0f - kFeather), true },
+            { 160.0f - kFeather, 160.0f, true },
+        };
+        s_featherCenterX = centerX;
+        s_featherScaleX = scaleX;
+        for (size_t k = 0; k < framed.size(); ++k) {
+            const Triangle& tri = s_triangles[framed[k]];
+            for (int r = 0; r < 3; ++r) {
+                Vertex polygon[9], scratch[9];
+                for (int v = 0; v < 3; ++v) { polygon[v] = tri.v[v]; polygon[v].a = 1.0f; }
+                int count = 3;
+                // sx >= low  <=>  focal * x - low * z >= 0;  sx <= high  <=>  -focal * x + high * z >= 0
+                const float planes[2][2] = { { focal, -regions[r].lowEdge },
+                                             { -focal, regions[r].highEdge } };
+                for (int q = 0; q < 2 && count >= 3; ++q) {
+                    float n[3];
+                    for (int axis = 0; axis < 3; ++axis)
+                        n[axis] = camera.right[axis] * planes[q][0] + camera.forward[axis] * planes[q][1];
+                    const float d = -(n[0] * camera.from[0] + n[1] * camera.from[1] + n[2] * camera.from[2]);
+                    count = ClipPolygonToPlane(polygon, count, n, d, scratch);
+                    for (int v = 0; v < count; ++v) polygon[v] = scratch[v];
+                }
+                for (int fan = 1; fan + 1 < count; ++fan) {
+                    const Vertex piece[3] = { polygon[0], polygon[fan], polygon[fan + 1] };
+                    if (regions[r].blend) {
+                        emit(piece, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_ALPHA,
+                             [](float* vertices, const Vertex* const*, float) {
+                                 for (int v = 0; v < 3; ++v) {
+                                     float* out = vertices + v * 10;
+                                     const float x = fabsf((out[0] - s_featherCenterX) / s_featherScaleX);
+                                     float alpha = (160.0f - x) / 12.0f;
+                                     out[9] = alpha < 0.0f ? 0.0f : (alpha > 1.0f ? 1.0f : alpha);
+                                 }
+                                 return true;
+                             });
+                    } else {
+                        emit(piece, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE);
+                    }
+                }
+            }
+        }
+        flush();
+    }
 
     // Detail grain over magnified art: where the screen shows more pixels
     // per room unit than the art has texels, multiply in the material's

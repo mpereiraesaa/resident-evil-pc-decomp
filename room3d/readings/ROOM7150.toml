@@ -8,6 +8,7 @@
 # From ROOM7150.RDT collision and its eight backgrounds.
 room = "ROOM7150"
 title = "Trophy room"
+backdrop = [3, 7]  # close-ups of the deer head over the fireplace
 seed = 7150
 
 [shell]
@@ -129,3 +130,11 @@ at = [-2400, 4400]
 candles = 1
 strength = 0.4
 reach = 4500
+
+# Lights-off (dimmer) camera set over the same geometry: the runtime scales
+# the baked colours for these cameras (ratio of the originals' brightness).
+[shade]
+"0" = 0.43
+"1" = 0.37
+"2" = 0.12
+"3" = 0.13

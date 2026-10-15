@@ -130,14 +130,16 @@ def main():
             entry["cameras"] = cameras
             entry["edge"] = [(c, round(p, 2), round(r, 2)) for c, p, r in scores]
             weak = []
-            backdrop = set(tomllib.loads(reading.read_text()).get("backdrop", []))
+            parsed = tomllib.loads(reading.read_text())
+            backdrop = set(parsed.get("backdrop", []))
+            shaded = {int(c) for c in parsed.get("shade", {})}
             entry["backdrop"] = sorted(backdrop)
             for index in range(cameras):
                 if index in backdrop:  # keeps the original background in game
                     continue
                 pixels = np.asarray(Image.open(built / f"preview-camera{index}.png").convert("L"), dtype=float)
                 coverage, mean = float((pixels > 3).mean()), float(pixels.mean())
-                if coverage < 0.6 or mean < 12:
+                if coverage < 0.6 or (mean < 12 and index not in shaded):
                     weak.append((index, round(coverage, 2), round(mean, 1)))
             entry["weak_cameras"] = weak
             entry["bytes"] = mesh.stat().st_size

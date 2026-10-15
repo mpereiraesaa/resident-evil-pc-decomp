@@ -178,3 +178,10 @@ at = [7400, -4400, 8500]
 color = [0.95, 1.0, 1.0]
 strength = 0.4
 reach = 7000
+
+# Lights-off (dimmer) camera set over the same geometry: the runtime scales
+# the baked colours for these cameras (ratio of the originals' brightness).
+[shade]
+"0" = 0.58
+"1" = 0.57
+"2" = 0.59

@@ -1734,6 +1734,8 @@ class Builder:
                 lines.append(f"hide {h['camera']} {g}")
         # Cameras that keep the original background (cutscene/aerial views).
         lines += [f"backdrop {c}" for c in self.reading.get("backdrop", [])]
+        # Lights-off camera sets: the runtime scales the baked colours.
+        lines += [f"shade {int(c)} {f:g}" for c, f in sorted(self.reading.get("shade", {}).items(), key=lambda kv: int(kv[0]))]
         return "\n".join(lines) + ("\n" if lines else "")
 
     def build(self):
@@ -1908,6 +1910,11 @@ def build_reading(path, rdt, out, originals=None):
         raise SystemExit("exceeds the Room3D loader limits")
     cameras = len(builder.room["cameras"])
     preview(out, name, rdt)
+    for camera, factor in reading.get("shade", {}).items():
+        shot = out / f"preview-camera{int(camera)}.png"
+        if shot.exists():
+            pixels = np.asarray(Image.open(shot).convert("RGB"), dtype=float) * factor
+            Image.fromarray(np.clip(pixels, 0, 255).astype(np.uint8)).save(shot)
     if originals:
         print(compare_sheet(out, name, originals, cameras))
         for camera, precision, recall in edge_agreement(out, name, originals, cameras):

@@ -10,7 +10,7 @@ floor = 0
 ceiling = -4500
 floor_material = "carpet.floor"
 wall_material = "marble"
-ceiling_material = "coffer"
+ceiling_material = "plaster.ceiling"
 dado = 1200
 dado_material = "panel"
 chair_rail = true
@@ -26,6 +26,8 @@ wood = [0.24, 0.15, 0.09]
 stone = [0.66, 0.62, 0.54]
 checker = { color = [0.76, 0.70, 0.60], dark = [0.24, 0.18, 0.14] }
 door = [0.26, 0.17, 0.10]
+"panel.lower" = { color = [0.62, 0.56, 0.44], tile = [1500, 3000] }
+"plaster.ceiling" = { color = [0.70, 0.64, 0.52], stains = 0.2 }
 
 [lighting]
 ambient = [0.13, 0.115, 0.09]
@@ -44,6 +46,7 @@ floor_along = "x"
 box = [4914, 4050, 29178, 13068]
 open_floor = true
 depth = 6500
+shaft_material = "panel.lower"
 
 [[slab]]            # the dining room floor seen through the void
 box = [4914, 4050, 29178, 13068]
@@ -103,12 +106,12 @@ span = [6900, 10200]
 top = -3500
 material = "door"
 
-[[window]]
-wall = "east"
+[[window]]          # stained-glass arch on the west wall (cameras 1 and 2 look west at it)
+wall = "west"
 kind = "arch"
-at = 12000
+at = 9800
 half = 1000
-sill = -800
+sill = -1100
 height = 3400
 strength = 0.30
 reach = 8000
@@ -134,3 +137,47 @@ at = [-3300, 25000]
 [[sconce]]
 wall = "west"
 at = [-3300, 8500]
+
+# Wooden posts carrying the gallery along the void's west and east edges
+[[column]]
+at = [5100, 5600]
+base = 6500
+top = 300
+radius = 260
+material = "wood"
+square = true
+[[column]]
+at = [5100, 8600]
+base = 6500
+top = 300
+radius = 260
+material = "wood"
+square = true
+[[column]]
+at = [5100, 11600]
+base = 6500
+top = 300
+radius = 260
+material = "wood"
+square = true
+[[column]]
+at = [29000, 5600]
+base = 6500
+top = 300
+radius = 260
+material = "wood"
+square = true
+[[column]]
+at = [29000, 8600]
+base = 6500
+top = 300
+radius = 260
+material = "wood"
+square = true
+[[column]]
+at = [29000, 11600]
+base = 6500
+top = 300
+radius = 260
+material = "wood"
+square = true

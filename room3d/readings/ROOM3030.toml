@@ -1,6 +1,9 @@
-# Heliport: a concrete pad with the H marking, grey panel walls with a
-# railing on top, the forest beyond, the lift block and two cabinets on the
-# south side, the gate with its WARNING sign east.
+# Heliport: an asphalt pad with the orange circled H, pale concrete panel
+# walls with a railing on top and the forest beyond. The steel lift block
+# stands in the south-west corner with its WARNING gate facing east; two grey
+# bins against the south wall; an ivy-covered building with floodlights in the
+# north-west and a low base with gas tanks west. Blocks identified by
+# projecting the collision into the eight views.
 room = "ROOM3030"
 title = "Heliport"
 seed = 3030
@@ -25,6 +28,11 @@ wood = [0.60, 0.62, 0.62]
 door = [0.64, 0.66, 0.66]
 "double_door.lift" = [0.70, 0.72, 0.74]
 "night.sky" = [0.06, 0.10, 0.10]
+steel = [0.40, 0.42, 0.44]
+"grating.lift" = [0.70, 0.72, 0.72]
+plastic = [0.66, 0.68, 0.68]
+velvet = [0.70, 0.10, 0.08]
+"plaster.ivy" = { color = [0.42, 0.44, 0.42], stains = 0.4, ivy = 0.7 }
 
 [lighting]
 ambient = [0.20, 0.21, 0.22]
@@ -32,44 +40,99 @@ ambient = [0.20, 0.21, 0.22]
 [[zone]]
 box = [2722, 2826, 29574, 30834]
 
-[[object]]          # the helipad marking
+[[object]]          # the helipad marking (centre and size cast from cameras 1, 2 and 5)
 kind = "rug"
-box = [9000, 9500, 21000, 21500]
+box = [16650, 13650, 23350, 20350]
 material = "helipad"
-
-[[object]]          # lift block on the south wall (gate to the lab)
+[[object]]          # lift block in the south-west corner (collision block 8)
 kind = "box"
-box = [15660, 2826, 25272, 4662]
-top = -4400
-material = "stone.panel"
-omit = ["bottom", "south"]
-[[door]]
-wall = "south"
-span = [18500, 22400]
+box = [2722, 2826, 7974, 8424]
+top = -5000
+material = "steel"
+omit = ["bottom", "south", "west"]
+[[door]]            # lift gate with the WARNING plate on the block's east face (the pad's west side)
+wall = "west"
+line = 7974
+span = [3900, 6600]
 top = -3800
-material = "double_door.lift"
-frame = "concrete"
-line = 4662
-[[object]]          # cabinets by the lift
+material = "grating.lift"
+frame = "steel"
+[[object]]          # red call button panel beside the gate
 kind = "box"
-box = [1134, 12078, 7686, 22212]
-top = -1600
-material = "concrete"
+box = [7974, 6800, 8080, 7300]
+top = -2000
+bottom = -1300
+material = "velvet"
+[[object]]          # two grey bins against the south wall (block 7)
+kind = "box"
+box = [16400, 2826, 19900, 4300]
+top = -1700
+material = "plastic"
+omit = ["bottom", "south"]
+[[object]]
+kind = "box"
+box = [21600, 2826, 25200, 4300]
+top = -1700
+material = "plastic"
+omit = ["bottom", "south"]
+[[object]]          # ivy-covered building in the north-west with floodlights (blocks 4, 5)
+kind = "box"
+box = [2722, 19674, 9810, 30834]
+top = -3400
+material = "plaster.ivy"
+omit = ["bottom", "north", "west"]
+[[object]]          # low ivy planter east of the building (camera 1 hovers over it)
+kind = "box"
+box = [9810, 24138, 16632, 30834]
+top = -700
+material = "plaster.ivy"
+omit = ["bottom", "north"]
+[[object]]          # low concrete base with gas tanks (block 3)
+kind = "box"
+box = [2722, 12078, 7686, 19674]
+top = -500
+material = "plaster.ivy"
 omit = ["bottom", "west"]
-[[object]]          # fuel tanks (the round things)
+[[object]]
 kind = "cylinder"
-at = [6000, 26000]
-radius = 900
-top = -1800
+at = [4500, 14500]
+radius = 700
+top = -2300
+bottom = -500
 material = "iron"
 segments = 12
 [[object]]
 kind = "cylinder"
-at = [8200, 27500]
+at = [4500, 17000]
 radius = 700
-top = -1500
+top = -2300
+bottom = -500
 material = "iron"
 segments = 12
+[[object]]          # floodlights on the building roof
+kind = "cylinder"
+at = [6000, 21000]
+radius = 160
+top = -3800
+bottom = -3400
+material = "glow"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [7600, 21000]
+radius = 160
+top = -3800
+bottom = -3400
+material = "glow"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [9200, 21000]
+radius = 160
+top = -3800
+bottom = -3400
+material = "glow"
+segments = 8
 
 # Railing on top of the walls
 [[object]]

@@ -4,6 +4,7 @@
 room = "ROOM2010"
 title = "2F right stairs"
 seed = 2010
+backdrop = [7]  # camera 7 is a close-up of the door keypad
 
 [shell]
 floor = 0

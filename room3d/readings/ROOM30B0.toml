@@ -17,13 +17,13 @@ trim = "stone"
 cell = 900
 
 [materials]
-"rock.cave" = { color = [0.504, 0.475, 0.288], tile = [2200, 2200] }
+"rock.cave" = { color = [0.504, 0.475, 0.288], tile = [2200, 2200], slabs = 20, moss = 0.9 }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
 
 [lighting]
-ambient = [0.198, 0.198, 0.148]
+ambient = [0.27, 0.27, 0.20]
 
 [[zone]]            # main corridor
 box = [3924, 11772, 25074, 16326]
@@ -37,8 +37,9 @@ box = [25758, 2556, 29916, 9360]
 [[zone]]            # link between the corridors (seen from camera 2)
 box = [25074, 11772, 27414, 15876]
 floor_along = "x"
-[[zone]]            # east corridor, north part up to the boulder
+[[zone]]            # east corridor, north part up to the boulder (tall: camera 5 hangs at -7200)
 box = [27414, 9360, 29916, 15876]
+ceiling = -8400
 
 [[door]]
 wall = "north"

@@ -4,6 +4,7 @@
 room = "ROOM4080"
 title = "Beehive passage"
 seed = 4080
+backdrop = [5]  # camera 5 is a close-up of the wall keypad
 
 [shell]
 floor = 0
@@ -32,8 +33,10 @@ ambient = [0.20, 0.19, 0.13]
 [[zone]]            # south corridor
 box = [2538, 2016, 28386, 6030]
 floor_along = "x"
-[[zone]]            # west leg north
-box = [2538, 6030, 6156, 14022]
+[[zone]]            # strip north of the corridor, west part
+box = [2538, 6030, 14688, 8946]
+[[zone]]            # middle hall (camera 6 stands here)
+box = [7974, 8946, 14688, 14022]
 [[zone]]            # east leg north
 box = [14688, 6030, 18594, 22536]
 
@@ -44,6 +47,7 @@ top = -3300
 material = "door"
 [[door]]
 wall = "west"
+line = 7974
 span = [9400, 11200]
 top = -3300
 material = "door"
@@ -52,6 +56,12 @@ wall = "west"
 span = [6500, 8500]
 top = -3300
 material = "door.red"
+[[door]]            # locked door on the east leg
+wall = "east"
+line = 18594
+span = [6500, 8500]
+top = -3300
+material = "door"
 [[door]]
 wall = "east"
 span = [2100, 6030]

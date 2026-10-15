@@ -17,16 +17,16 @@ trim = "stone"
 cell = 900
 
 [materials]
-"rock.cave" = { color = [0.518, 0.49, 0.302], tile = [2200, 2200] }
+"rock.cave" = { color = [0.518, 0.49, 0.302], tile = [2200, 2200], slabs = 20, moss = 0.9 }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
 
 [lighting]
-ambient = [0.198, 0.198, 0.148]
+ambient = [0.27, 0.27, 0.20]
 
-[[zone]]            # north corridor
-box = [2542, 21726, 27396, 26100]
+[[zone]]            # north corridor (runs on past the round rock at its east end,
+box = [2542, 21726, 33100, 26100]  # where camera 3 stands)
 floor_along = "x"
 [[zone]]            # pocket to the item chamber
 box = [11970, 14778, 16002, 21726]

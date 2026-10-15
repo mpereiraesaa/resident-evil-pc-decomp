@@ -43,16 +43,17 @@ span = [10700, 12300]
 top = -3300
 material = "door"
 
-[[object]]          # west bookcase
+[[object]]          # low west dresser (camera 3 stands inside its footprint)
 kind = "box"
 box = [2052, 7398, 2718, 11988]
-top = -3000
+top = -1100
 material = "wood"
 omit = ["bottom", "west"]
-[[object]]          # north cabinet
+group = "west_case"
+[[object]]          # low north cabinet
 kind = "box"
 box = [2052, 11988, 6390, 12780]
-top = -3000
+top = -1100
 material = "wood"
 omit = ["bottom", "north", "west"]
 [[object]]          # south-east cabinet with the lamp
@@ -108,3 +109,7 @@ at = [8800, -1900, 2300]
 color = [1.0, 0.92, 0.72]
 strength = 0.6
 reach = 5000
+
+[[hide]]            # camera 3 sits in the west wall, inside the bookcase footprint
+camera = 3
+groups = ["west_case"]

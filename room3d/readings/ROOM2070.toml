@@ -33,7 +33,10 @@ ambient = [0.13, 0.11, 0.08]
 [[zone]]            # west leg
 box = [1890, 2914, 3870, 10710]
 [[zone]]            # long corridor
-box = [1890, 10710, 31302, 12582]
+box = [1890, 10710, 20000, 12582]
+floor_along = "x"
+[[zone]]            # long corridor, east half: the north wall stands a little
+box = [20000, 10710, 31302, 13100]  # behind the collision edge (camera 6 sits at z 12600)
 floor_along = "x"
 [[zone]]            # east leg
 box = [29574, 4194, 31302, 10710]

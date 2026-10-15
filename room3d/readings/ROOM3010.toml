@@ -1,6 +1,7 @@
 # Water gate: a dark garden of stone paths and low walls over a channel of
-# water, iron gates, the pump control at the north-east. Approximated as the
-# main walkable paths with water slabs beside them, under the night sky.
+# water, iron gates, the pump control at the north-east. Approximated as one
+# open garden zone with water surfaces, low walls, planted beds and building
+# blocks as objects, under the night sky.
 room = "ROOM3010"
 title = "Water gate"
 seed = 3010
@@ -23,21 +24,13 @@ cell = 1200
 stone = [0.638, 0.667, 0.609]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
+water = [0.07, 0.12, 0.12]
 
 [lighting]
 ambient = [0.14, 0.17, 0.17]
 
-[[zone]]            # entrance path from the courtyard gate (south)
-box = [9414, 2880, 17190, 6642]
-[[zone]]            # middle path east-west
-box = [1980, 22464, 24300, 25956]
-floor_along = "x"
-[[zone]]            # north-south path between the ponds
-box = [10656, 6642, 13176, 22464]
-[[zone]]            # east path by the pump
-box = [21150, 2880, 24300, 22464]
-[[zone]]            # west pocket
-box = [1980, 13554, 5400, 22464]
+[[zone]]            # the whole garden: forest beyond its stone boundary walls
+box = [1980, 2880, 29286, 28764]
 
 [[door]]
 wall = "south"
@@ -54,17 +47,23 @@ frame = "stone"
 
 # Water on either side of the paths
 [[slab]]
-box = [13176, 6642, 21150, 22464]
-top = 600
+box = [13500, 6642, 21150, 22464]
+top = -5
 thickness = 100
 top_material = "water"
 bottom_material = "water"
 [[slab]]
-box = [1980, 6642, 10656, 13554]
-top = 600
+box = [24300, 11304, 29286, 24624]
+top = -5
 thickness = 100
 top_material = "water"
 bottom_material = "water"
+[[object]]          # planted stone bed between the west path and the ponds
+kind = "box"
+box = [6012, 3348, 10300, 18702]
+top = -900
+material = "stone.brick"
+omit = ["bottom"]
 
 # Low stone walls along the paths
 [[object]]
@@ -86,6 +85,24 @@ to = [21150, 22464]
 height = 900
 spacing = 500
 material = "iron"
+[[object]]          # building block in the south-east corner
+kind = "box"
+box = [24300, 2880, 29286, 11304]
+top = -4500
+material = "stone.brick"
+omit = ["bottom"]
+[[object]]          # building block in the north-west corner
+kind = "box"
+box = [1980, 25956, 9414, 28764]
+top = -4500
+material = "stone.brick"
+omit = ["bottom"]
+[[object]]          # low wall along the east channel
+kind = "box"
+box = [24300, 11304, 24600, 24624]
+top = -500
+material = "stone"
+omit = ["bottom"]
 [[object]]          # pump control box
 kind = "box"
 box = [23616, 23850, 25470, 25146]

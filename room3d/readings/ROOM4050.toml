@@ -29,11 +29,13 @@ door = [0.36, 0.24, 0.12]
 [lighting]
 ambient = [0.22, 0.18, 0.13]
 
-[[zone]]            # west leg
-box = [1926, 2178, 23742, 4968]
+[[zone]]            # west leg (south wall drawn behind camera 7, which stands at z 1980)
+box = [1926, 1800, 23742, 4968]
 floor_along = "x"
 [[zone]]            # east leg north
 box = [20772, 4968, 23742, 24174]
+[[zone]]            # bay east of the leg, in front of the green door (camera 6 stands here)
+box = [23742, 20232, 25164, 24174]
 [[zone]]            # pocket at the north end
 box = [22608, 24174, 25164, 28854]
 
@@ -49,7 +51,8 @@ top = -3300
 material = "door"
 [[door]]
 wall = "east"
-span = [19800, 22300]
+line = 25164
+span = [20400, 22400]
 top = -3300
 material = "door.green"
 [[door]]

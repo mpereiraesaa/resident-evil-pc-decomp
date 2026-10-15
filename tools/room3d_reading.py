@@ -1553,6 +1553,11 @@ class Builder:
                 self._wall_box(side, line, -80, 80, top - 260, top, 0, 120, self.use("steel"), along=along)
                 if o.get("mirror"):
                     self._wall_box(side, line, -half + 60, half - 60, top - 1500, top - 500, 0, 30, self.use("mirror"), along=along)
+            elif kind == "globe":
+                # Sphere or egg (stretch > 1): lamp globes, nests, statue balls.
+                x, z = o["at"]
+                mesh.sphere((x, o["y"], z), o.get("radius", 300), self.use(o.get("material", "stone")),
+                            rings=o.get("rings", 8), segments=o.get("segments", 12), stretch=o.get("stretch", 1.0))
             elif kind == "pipe":
                 # Straight pipe, lying tank or rolled carpet between two points.
                 points = [tuple(o["from"])] + [tuple(p) for p in o.get("via", [])] + [tuple(o["to"])]

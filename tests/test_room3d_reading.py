@@ -132,6 +132,7 @@ class BuilderKindTests(unittest.TestCase):
             '[[window]]\nkind = "rect"\nwall = "north"\nat = 4000\nsill = -1200\nheight = 2000\npanes = 3\ntransom = -2600\n',
             '[[object]]\nkind = "table_round"\nat = [4000, 5000]\nradius = 500\ntop = -800\ncloth = "linen"\n',
             '[[object]]\nkind = "plant"\nat = [4000, 5000]\nheight = 1400\n',
+            '[[object]]\nkind = "globe"\nat = [4000, 5000]\ny = -2000\nradius = 400\nstretch = 1.6\n',
             '[[object]]\nkind = "pipe"\nfrom = [2000, -3000, 3000]\nto = [6000, -3000, 3000]\nvia = [[4000, -3000, 6000]]\nradius = 150\n',
             '[[object]]\nkind = "ring"\nat = [4000, 5000]\ninner = 900\nouter = 1200\ntop = -500\nfill = "water"\n',
             '[[object]]\nkind = "spiral_stair"\nat = [4000, 5000]\nradius = 1400\ntop = -3000\nbase = 3000\nsteps = 20\n',

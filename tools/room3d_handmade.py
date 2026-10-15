@@ -144,7 +144,8 @@ class Mesh:
                 continue
             self.rect(origin, eu, ev, lu, lv, material, flip)
 
-    def sphere(self, centre, radius, material, rings=6, segments=10):
+    def sphere(self, centre, radius, material, rings=6, segments=10, stretch=1.0):
+        """Sphere; `stretch` scales it vertically (an egg or a hanging nest)."""
         cx, cy, cz = centre
         for i in range(rings):
             t0, t1 = math.pi * i / rings, math.pi * (i + 1) / rings
@@ -153,7 +154,7 @@ class Mesh:
                 ring = []
                 for t, p in ((t0, p0), (t1, p0), (t1, p1), (t0, p1)):
                     ring.append((cx + radius * math.sin(t) * math.cos(p),
-                                 cy - radius * math.cos(t),
+                                 cy - radius * stretch * math.cos(t),
                                  cz + radius * math.sin(t) * math.sin(p)))
                 if i == 0:
                     ring = [ring[0], ring[1], ring[2]]

@@ -1518,9 +1518,19 @@ def survey_report(rdt, originals=None):
         originals = Path(originals)
         originals.mkdir(parents=True, exist_ok=True)
         stage_dir = rdt.parent
+        stage = int(rdt.stem[4])
+        # Return stages 6/7 ship no backgrounds; the game reads stage 1/2's
+        # (same room number, first digit minus five).
+        sources = [(stage_dir, rdt.stem[4:7])]
+        if stage in (6, 7):
+            sources.append((stage_dir.parent / f"Stage{stage - 5}", f"{stage - 5}{rdt.stem[5:7]}"))
         for c in room["cameras"]:
-            name = f"rc{rdt.stem[4:7].lower()}{c["index"]}.pak"
-            hits = [p for p in stage_dir.iterdir() if p.name.lower() == name]
+            hits = []
+            for folder, key in sources:
+                name = f"rc{key.lower()}{c['index']}.pak"
+                hits = [p for p in folder.iterdir() if p.name.lower() == name]
+                if hits:
+                    break
             if hits:
                 image = background(hits[0]).resize((960, 720), Image.NEAREST)
                 draw = ImageDraw.Draw(image)

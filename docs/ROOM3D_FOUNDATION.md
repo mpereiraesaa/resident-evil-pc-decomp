@@ -1237,10 +1237,23 @@ ROOM2010 camera 7 and ROOM4080 camera 5, the aerial shot in ROOM7180 camera 2,
 and the event rooms ROOM3100 and ROOM3110 (all cameras). The batch does not
 flag backdrop cameras as weak.
 
-Caveats: the outdoor water garden (ROOM3010) and the pool courtyard (ROOM3020)
-are one open zone each with water surfaces, low walls and blocks as objects,
-not the original terrain; the trophy room (ROOM7150) and the 1F study
-(ROOM6190) bake their lit state for both their lights-off and lights-on
-cameras; ROOM6100's narrow stairwell has no sloped soffit, so camera 1 sees
-past it; a few steep top-down cameras (ROOM7190 camera 1, ROOM7000,
-ROOM5150) frame the floor smaller than the originals in the preview.
+Placing furniture: `tools/room3d_evidence.py blocks ROOMxxxx --originals
+DIR --out PNG` draws every collision block's floor outline and number on each
+original view, and `floor ROOMxxxx CAMERA PX PY` gives the room point under a
+pixel. Readings written by eye from the views were mirrored or misplaced in
+many rooms (bathrooms, bedrooms, the guardhouse bar, the heliport); every
+reading was re-checked this way on 2026-10-15.
+
+Character variants: every ROOMxxx1.RDT (Jill) has the same cameras and
+collision as ROOMxxx0, and the runtime asks for `roomSRRV.obj` with the
+variant digit, so the batch installs each mesh under both names (the Jill
+copy reuses the Chris material library). `tools/check_room3d_runtime.py
+--character jill` exercises that path.
+
+Caveats: outdoor terrain is approximate (the water garden, the falls pool
+courtyard and the heliport are open zones with water surfaces, walls and
+blocks as objects); lights-off camera sets (trophy room, 1F study, ROOM50A0)
+bake the lit state; there are no horizontal cylinders, spiral stairs, ring
+shapes or sloped rails, so pipes, the spiral stair and fountain rims are
+approximations; a few steep top-down cameras frame the floor smaller than
+the originals in the preview.

@@ -1,7 +1,8 @@
 # Boulder passage 1: two cave corridors joined at the east (camera 2 looks
 # from the east corridor straight down the main one), the boulder's one west
 # with a door at its north pocket, and the east one from the south door up to
-# the boulder; yellow-green rock.
+# the boulder (full width from the south door up to z 11772, so camera 6
+# sees straight down it); yellow-green rock.
 room = "ROOM30B0"
 title = "Boulder 1 passage"
 seed = 3110
@@ -28,17 +29,20 @@ ambient = [0.27, 0.27, 0.20]
 [[zone]]            # main corridor
 box = [3924, 11772, 25074, 16326]
 floor_along = "x"
-[[zone]]            # west pocket
-box = [2196, 10026, 3924, 16326]
+[[zone]]            # west pocket (its west wall stands back from the collision line at
+box = [1200, 10026, 3924, 16326]  # 2196: camera 4 hangs only 90 units inside it)
 [[zone]]            # north pocket with the door
 box = [21186, 16326, 25074, 19386]
 [[zone]]            # east corridor, south part
 box = [25758, 2556, 29916, 9360]
+[[zone]]            # east corridor, middle: full width up to z 11772 (camera 6 looks
+box = [25758, 9360, 29916, 11772]  # straight down it to the south door)
+ceiling = -8400
 [[zone]]            # link between the corridors (seen from camera 2)
 box = [25074, 11772, 27414, 15876]
 floor_along = "x"
 [[zone]]            # east corridor, north part up to the boulder (tall: camera 5 hangs at -7200)
-box = [27414, 9360, 29916, 15876]
+box = [27414, 11772, 29916, 15876]
 ceiling = -8400
 
 [[door]]

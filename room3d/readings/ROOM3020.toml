@@ -1,6 +1,10 @@
-# Falls: a cavern with a pool, stone walks with rope-and-wood edges, a
-# wooden water wheel and gate at the north, an iron door south. Approximated
-# as one cavern floor with the pools as water surfaces between the walks.
+# Falls: a stone-brick court with two pools, stone walks with curbs, the
+# culvert in the north wall (a round arch with iron bars over the inner ends
+# of both pools, a grated window above it), a recess to the wooden north
+# door, and off the entry walk's east wall a dark alcove with a ladder and
+# the iron south door. There is no water wheel: the drum in an earlier
+# reading was not in any original view. Approximate: the pools are flat
+# water surfaces at floor level; the tunnel behind the bars is a plain dark box.
 room = "ROOM3020"
 title = "Falls"
 seed = 3020
@@ -24,15 +28,28 @@ grating = [0.30, 0.20, 0.14]
 wood = [0.34, 0.18, 0.12]
 door = [0.28, 0.16, 0.10]
 "door.iron" = [0.22, 0.20, 0.22]
-water = [0.08, 0.14, 0.16]
+water = [0.14, 0.26, 0.30]
+rust = [0.36, 0.20, 0.14]
 
 [lighting]
 ambient = [0.20, 0.22, 0.25]
 
 [[zone]]            # entry walk from the south door
 box = [9252, 2106, 19278, 15696]
-[[zone]]            # the cavern: walks around two pools (pools are water surfaces)
-box = [3024, 15696, 26370, 29088]
+[[zone]]            # the cavern: walks around two pools (pools are water surfaces);
+box = [3024, 15696, 26370, 27540]  # north wall at z 27540 (blocks 8, 4, 5)
+[[zone]]            # the culvert behind its arch: a dark tunnel the pools run into
+box = [11100, 27540, 18000, 30006]
+ceiling = -3500
+wall_material = "stone.dark"
+floor_material = "stone.dark"
+[[zone]]            # recess in the north wall up to the wooden north door (block 6)
+box = [18324, 27540, 23904, 29088]
+[[zone]]            # dark alcove off the entry walk's east wall with a wooden ladder (camera 7)
+box = [19278, 2300, 21330, 6300]
+ceiling = -4400
+wall_material = "stone.dark"
+floor_material = "stone.dark"
 
 [[door]]
 wall = "south"
@@ -53,34 +70,222 @@ top = -3800
 material = "wood"
 frame = "stone"
 
-[[door]]            # arched iron grate over the culvert in the north wall
+# The culvert: a wide round arch in the north wall over the inner ends of both
+# pools and the walk between them, closed by iron bars (cameras 2, 3), with a
+# small grated window high above it
+[[window]]
+kind = "rect"
 wall = "north"
-span = [13000, 15800]
-top = -3200
-material = "grating"
+at = 14400
+line = 27440        # on the face of the brick fill over the culvert
+half = 1500
+sill = -5200
+height = 1700
+panes = 1
+glass = "grating"
 frame = "stone"
 
 [[slab]]            # west pool
-box = [7470, 21042, 13590, 29088]
+box = [7470, 21042, 13590, 30006]
 top = -5
 thickness = 100
 top_material = "water"
 bottom_material = "water"
 [[slab]]            # east pool
-box = [15246, 21042, 21888, 29088]
+box = [15246, 21042, 21888, 30006]
 top = -5
 thickness = 100
 top_material = "water"
 bottom_material = "water"
 
-[[object]]          # water wheel (approximate drum)
-kind = "cylinder"
-at = [10500, 27300]
-radius = 2200
-top = -4600
-bottom = -200
+[[object]]          # brick wall over the culvert opening (the tunnel ceiling is at -3500)
+kind = "box"
+box = [11100, 27440, 18000, 27540]
+top = -9000
+bottom = -3500
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [11100, 27440, 11400, 27540]
+top = -3500
+bottom = -1056
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [11400, 27440, 11700, 27540]
+top = -3500
+bottom = -1754
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [11700, 27440, 12000, 27540]
+top = -3500
+bottom = -2198
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [12000, 27440, 12300, 27540]
+top = -3500
+bottom = -2528
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [12300, 27440, 12600, 27540]
+top = -3500
+bottom = -2787
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [12600, 27440, 12900, 27540]
+top = -3500
+bottom = -2993
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [12900, 27440, 13200, 27540]
+top = -3500
+bottom = -3157
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [13200, 27440, 13500, 27540]
+top = -3500
+bottom = -3285
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [13500, 27440, 13800, 27540]
+top = -3500
+bottom = -3381
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [13800, 27440, 14100, 27540]
+top = -3500
+bottom = -3447
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [15000, 27440, 15300, 27540]
+top = -3500
+bottom = -3447
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [15300, 27440, 15600, 27540]
+top = -3500
+bottom = -3381
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [15600, 27440, 15900, 27540]
+top = -3500
+bottom = -3285
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [15900, 27440, 16200, 27540]
+top = -3500
+bottom = -3157
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [16200, 27440, 16500, 27540]
+top = -3500
+bottom = -2993
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [16500, 27440, 16800, 27540]
+top = -3500
+bottom = -2787
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [16800, 27440, 17100, 27540]
+top = -3500
+bottom = -2528
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [17100, 27440, 17400, 27540]
+top = -3500
+bottom = -2198
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [17400, 27440, 17700, 27540]
+top = -3500
+bottom = -1754
+material = "brick.stone"
+[[object]]          # spandrel
+kind = "box"
+box = [17700, 27440, 18000, 27540]
+top = -3500
+bottom = -1056
+material = "brick.stone"
+[[object]]          # stone voussoir ring round the culvert arch
+kind = "pipe"
+from = [10850, 0, 27420]
+via = [[10850, -50, 27420], [10976, -1008, 27420], [11346, -1900, 27420], [11934, -2666, 27420], [12700, -3254, 27420], [13592, -3624, 27420], [14550, -3750, 27420], [15508, -3624, 27420], [16400, -3254, 27420], [17166, -2666, 27420], [17754, -1900, 27420], [18124, -1008, 27420], [18250, -50, 27420]]
+to = [18250, 0, 27420]
+radius = 250
+segments = 8
+material = "stone"
+[[object]]
+kind = "pipe"
+from = [11700, 0, 27470]
+to = [11700, -1994, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]
+kind = "pipe"
+from = [12650, 0, 27470]
+to = [12650, -2930, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]
+kind = "pipe"
+from = [13600, 0, 27470]
+to = [13600, -3367, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]
+kind = "pipe"
+from = [14550, 0, 27470]
+to = [14550, -3500, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]
+kind = "pipe"
+from = [15500, 0, 27470]
+to = [15500, -3367, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]
+kind = "pipe"
+from = [16450, 0, 27470]
+to = [16450, -2930, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]
+kind = "pipe"
+from = [17400, 0, 27470]
+to = [17400, -1994, 27470]
+radius = 70
+segments = 6
+material = "rust"
+[[object]]          # wooden ladder at the back of the east alcove
+kind = "ladder"
+box = [21200, 2900, 21260, 4300]
+top = -4400
 material = "wood"
-segments = 16
 [[object]]          # stone curb
 kind = "box"
 box = [7470, 21042, 13590, 21292]

@@ -1,7 +1,7 @@
 # Boulder passage 2: a long cave corridor across the north with the
 # boulder at its east end, a link down to the south corridor, a pocket with
 # the item chamber door, and the east bay with the door to the straight
-# passage. 
+# passage, and the red door closing the south corridor's end.
 room = "ROOM30F0"
 title = "Boulder 2 passage"
 seed = 3150
@@ -33,7 +33,9 @@ box = [11970, 14778, 16002, 21726]
 [[zone]]            # link to the south corridor
 box = [25218, 17514, 27846, 21726]
 [[zone]]            # south corridor
-box = [23202, 2484, 26154, 17514]
+box = [23202, 4212, 26154, 17514]
+[[zone]]            # its narrowed south end (rock block 21 juts in on the east)
+box = [23202, 2484, 25380, 4212]
 [[zone]]            # east bay
 box = [26154, 13158, 29340, 17352]
 floor_along = "x"
@@ -48,6 +50,14 @@ frame = "stone"
 wall = "east"
 span = [14000, 17100]
 top = -3300
+material = "door.red"
+frame = "stone"
+
+[[door]]            # red door closing the south end of the corridor (camera 1)
+wall = "south"
+span = [23300, 25300]
+line = 2484
+top = -3800
 material = "door.red"
 frame = "stone"
 

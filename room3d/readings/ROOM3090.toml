@@ -3,7 +3,8 @@
 # floor, no machine stands there), and the east room. The east room runs on
 # past its collision line to x 27126: at its back a grey cabinet and a long
 # wooden workbench with the open-frame generator (drums, struts) behind,
-# all cast from camera 7. Doors west (two) and south. Cables not modelled.
+# all cast from camera 7. Doors west (two) and south. The link and east room
+# are tall (camera 6 looks down on them from y -7344). Cables not modelled.
 room = "ROOM3090"
 title = "Underground generator"
 seed = 3090
@@ -37,8 +38,10 @@ box = [3420, 16038, 16326, 29268]
 [[zone]]            # link east
 box = [16326, 18972, 19494, 23202]
 floor_along = "x"
+ceiling = -8200     # camera 6 looks down from y -7344, above the shell ceiling
 [[zone]]            # east room (bench and cabinet stand on blocks 9/10 at the back)
 box = [19494, 18018, 27126, 25362]
+ceiling = -8200
 wall_materials = { east = "soot" }
 
 [[door]]

@@ -1,6 +1,12 @@
 # Courtyard garden behind the mansion: stone paving between brick garden
-# walls and hedge beds, the white timber-framed back of the mansion on the
-# west side of the east walk, the iron gate north. Open to the night sky.
+# walls (trees beyond) and hedge beds. The white back of the mansion (block
+# 14) fills the south-west: the east walk runs south past its east face (the
+# back door), the west walk runs west along its north face to the generator
+# yard between trees at the far west end; the open garden north of the house
+# corner has beds either side of the paving and the arched iron gate in a
+# recess of the north wall. Open to the night sky. Approximate: the house is
+# a plain white block with a timber band (no roof or balcony); the levels
+# round the generator yard (block 9 may be steps) are taken as flat.
 room = "ROOM3000"
 title = "Courtyard garden"
 seed = 3000
@@ -26,72 +32,150 @@ wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
 double_door = [0.30, 0.18, 0.10]
 panel = [0.22, 0.14, 0.09]
+"rust.generator" = [0.50, 0.20, 0.10]
+leaves = { color = [0.20, 0.30, 0.16] }
+"rock.dark" = { color = [0.17, 0.18, 0.17], tile = [2200, 2200] }
 
 [lighting]
 ambient = [0.14, 0.17, 0.16]
 
-[[zone]]            # east walk along the mansion wall
-box = [26478, 2232, 30474, 28188]
-wall_materials = { west = "plaster.house" }
-[[zone]]            # north walk to the gate
-box = [18180, 21276, 26478, 28188]
-floor_along = "x"
-[[zone]]            # west strip between the beds
-box = [2088, 9396, 26478, 13212]
-floor_along = "x"
-[[zone]]            # west pocket
-box = [2088, 13212, 18180, 18090]
-floor_along = "x"
+[[zone]]            # east walk south of the garden, past the house's east face
+box = [26478, 2232, 30474, 9396]
+[[zone]]            # west walk along the house's north face
+box = [5004, 9396, 20844, 13212]
+[[zone]]            # the open garden north of the house corner (beds on blocks 1, 3, 4)
+box = [20844, 9396, 30474, 28188]
+[[zone]]            # north walk's west end (block 7 beyond)
+box = [18180, 21276, 20844, 28188]
+[[zone]]            # recess in the north wall for the gate
+box = [20700, 28188, 24900, 29500]
+[[zone]]            # generator yard at the west end, between trees (camera 2 hangs over x -306)
+box = [-1500, 6624, 5004, 15750]
+floor_material = "hedge"
 
-[[door]]            # mansion back door
+# The house: a white block standing just proud of the walk walls so the
+# brick dado does not show on it
+[[object]]
+kind = "box"
+box = [5004, 2232, 26498, 9416]
+top = -5600
+material = "plaster.house"
+omit = ["bottom"]
+[[object]]          # timber band under the eaves, east face
+kind = "box"
+box = [26498, 2232, 26560, 9478]
+top = -5600
+bottom = -4900
+material = "panel"
+[[object]]          # timber band under the eaves, north face
+kind = "box"
+box = [5004, 9416, 26498, 9478]
+top = -5600
+bottom = -4900
+material = "panel"
+
+[[door]]            # mansion back door in the house's east face
 wall = "west"
 span = [3200, 7300]
+line = 26498
 top = -3800
 material = "double_door"
 frame = "stone"
 frame_depth = 200
-[[door]]            # gate to the water gate path
+[[door]]            # arched iron gate to the water gate path, in its recess
 wall = "north"
-span = [23100, 24800]
-top = -3600
+span = [21400, 24200]
+line = 29500
+top = -4200
 material = "door"
 frame = "stone"
 frame_depth = 300
+[[column]]          # white gate pillars
+at = [20980, 29220]
+top = -4700
+radius = 280
+square = true
+material = "stone"
+[[column]]
+at = [24620, 29220]
+top = -4700
+radius = 280
+square = true
+material = "stone"
 
 # Hedge beds (flags-512 blocks) as low planters
-[[object]]
+[[object]]          # block 1, east of the garden paving
 kind = "box"
 box = [28044, 12546, 30474, 21546]
 top = -900
 material = "leaves"
 omit = ["bottom"]
-[[object]]
+[[object]]          # block 4's east end, west of the garden paving
 kind = "box"
-box = [20160, 23724, 26478, 26478]
+box = [20844, 13212, 23310, 21546]
 top = -900
 material = "leaves"
 omit = ["bottom"]
-[[object]]
+[[object]]          # block 3, in front of the gate
 kind = "box"
-box = [2088, 13212, 18180, 14200]
-top = -800
+box = [20844, 23724, 28602, 26478]
+top = -900
 material = "leaves"
 omit = ["bottom"]
-[[object]]
+[[object]]          # along the foot of the west walk's north wall
 kind = "box"
-box = [2088, 9396, 2600, 13212]
+box = [5004, 12300, 20844, 13212]
 top = -800
 material = "leaves"
 omit = ["bottom"]
 
-# Timber band on the house wall
+# Generator yard: the red generator on the paving, trees either side on grass
 [[object]]
-kind = "wall_band"
-wall = "west"
-span = [2232, 9396]
-y = [-5200, -4400]
-material = "panel"
-rail = false
+kind = "cylinder"
+at = [2900, 10000]
+radius = 800
+top = -1500
+bottom = 0
+material = "rust.generator"
+segments = 14
+hoops = [-300, -700, -1100]
+[[object]]          # dark stone wall closing the yard's east side behind the generator,
+kind = "box"        # brick at its foot (camera 2); camera 1 sees it as the walk's dark far end
+box = [5004, 9396, 5400, 13212]
+top = -7000
+bottom = -1800
+material = "rock.dark"
+[[object]]
+kind = "box"
+box = [5004, 9396, 5400, 13212]
+top = -1800
+material = "brick.stone"
+[[object]]
+kind = "box"
+box = [1900, 8700, 3900, 11300]
+top = -250
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "plant"
+at = [2100, 14300]
+height = 3200
+spread = 2300
+pot_radius = 260
+pot_height = 1300
+clumps = 8
+material = "leaves"
+pot = "wood"
+[[object]]
+kind = "plant"
+at = [2700, 7300]
+height = 3200
+spread = 2300
+pot_radius = 260
+pot_height = 1300
+clumps = 8
+material = "leaves"
+pot = "wood"
 
 [[light]]
 at = [28000, -3000, 5000]
@@ -108,3 +192,8 @@ at = [10000, -3000, 11500]
 color = [0.80, 0.90, 1.0]
 strength = 0.25
 reach = 9000
+[[light]]
+at = [3000, -3500, 11000]
+color = [0.80, 0.90, 1.0]
+strength = 0.3
+reach = 7000

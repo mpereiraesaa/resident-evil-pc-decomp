@@ -1,7 +1,12 @@
-# Water gate: a dark garden of stone paths and low walls over a channel of
-# water, iron gates, the pump control at the north-east. Approximated as one
-# open garden zone with water surfaces, low walls, planted beds and building
-# blocks as objects, under the night sky.
+# Water gate: a dark garden of stone paths and low walls over pools of
+# water, under the night sky. The south entry path (x 21000-24300) runs
+# between tree masses from the arched gate up to the low cross wall at
+# z 10710-11736; north of it the west pool (block 8) with the black iron
+# sluice frame and its dial pillar (camera 3) and the east channel. A lawn
+# west of the pool, a stone wall along the west path. Approximate: the pool
+# basins are flat water slabs at floor level (the originals show them sunk,
+# with a ladder down from the cross wall), the arched balustrades are not
+# modelled, and the west door is kept from an earlier reading unconfirmed.
 room = "ROOM3010"
 title = "Water gate"
 seed = 3010
@@ -24,7 +29,10 @@ cell = 1200
 stone = [0.638, 0.667, 0.609]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
-water = [0.07, 0.12, 0.12]
+water = [0.17, 0.33, 0.33]   # dark teal; anything darker reads as a black hole
+leaves = { color = [0.30, 0.44, 0.28] }
+"iron.dark" = [0.05, 0.05, 0.05]
+"steel.sign" = [0.62, 0.60, 0.56]
 
 [lighting]
 ambient = [0.14, 0.17, 0.17]
@@ -32,10 +40,10 @@ ambient = [0.14, 0.17, 0.17]
 [[zone]]            # the whole garden: forest beyond its stone boundary walls
 box = [1980, 2880, 29286, 28764]
 
-[[door]]
+[[door]]            # the arched gate at the end of the south path (camera 0)
 wall = "south"
-span = [9414, 12700]
-top = -3600
+span = [21400, 23900]
+top = -3300
 material = "door"
 frame = "stone"
 [[door]]
@@ -46,8 +54,8 @@ material = "door"
 frame = "stone"
 
 # Water on either side of the paths
-[[slab]]
-box = [13500, 6642, 21150, 22464]
+[[slab]]            # the west pool, north of the cross wall (block 8)
+box = [13500, 11736, 20394, 22464]
 top = -5
 thickness = 100
 top_material = "water"
@@ -58,17 +66,23 @@ top = -5
 thickness = 100
 top_material = "water"
 bottom_material = "water"
-[[object]]          # planted stone bed between the west path and the ponds
+[[object]]          # stone wall between the west path and the lawn (camera 7, right)
 kind = "box"
-box = [6012, 3348, 10300, 18702]
-top = -900
+box = [6012, 3348, 7218, 18702]
+top = -1400
 material = "brick.stone"
+omit = ["bottom"]
+[[object]]          # the lawn east of it, level with the paving (camera 3 hangs over it)
+kind = "box"
+box = [7218, 3348, 10300, 18702]
+top = -40
+material = "hedge"
 omit = ["bottom"]
 
 # Low stone walls along the paths
 [[object]]
 kind = "box"
-box = [13176, 6642, 13500, 22464]
+box = [13176, 11736, 13500, 22464]
 top = -500
 material = "stone"
 omit = ["bottom"]
@@ -85,11 +99,82 @@ to = [21150, 22464]
 height = 900
 spacing = 500
 material = "iron"
-[[object]]          # building block in the south-east corner
+# Trees flank the south entry path (camera 1): blocks 19 east and 25 west
+[[object]]
 kind = "box"
-box = [24300, 2880, 29286, 11304]
-top = -4500
-material = "brick.stone"
+box = [24300, 2880, 29286, 10710]
+top = -5500
+material = "leaves"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [10656, 2880, 20934, 9270]
+top = -5500
+material = "leaves"
+omit = ["bottom"]
+[[object]]          # wooden fence along the west side of the entry path
+kind = "rail"
+from = [20934, 2880]
+to = [20934, 10710]
+height = 1000
+spacing = 900
+material = "wood"
+[[object]]          # the low cross wall the paths meet at (block 17)
+kind = "box"
+box = [13752, 10710, 29286, 11736]
+top = -500
+material = "stone"
+omit = ["bottom"]
+
+# Black iron sluice frame over the west pool (camera 3): a beam along
+# z 17600 on posts, and the tall control pillar (block 12) with its dial sign
+[[object]]
+kind = "box"
+box = [9800, 17450, 21000, 17750]
+top = -1850
+bottom = -1450
+material = "iron.dark"
+[[object]]
+kind = "box"
+box = [10350, 15000, 10600, 17750]
+top = -1850
+bottom = -1450
+material = "iron.dark"
+[[object]]
+kind = "box"
+box = [10350, 17350, 10600, 17650]
+top = -1850
+material = "iron.dark"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [10350, 14950, 10600, 15250]
+top = -1850
+material = "iron.dark"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [20700, 17450, 21000, 17750]
+top = -1850
+material = "iron.dark"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [12300, 17200, 13000, 17900]
+top = -2900
+material = "iron.dark"
+omit = ["bottom"]
+[[object]]          # the dial sign on the pillar's south face
+kind = "box"
+box = [12400, 17140, 12950, 17200]
+top = -2650
+bottom = -1850
+material = "steel.sign"
+[[object]]          # grey stone stele beside the frame
+kind = "box"
+box = [9900, 17900, 10500, 18300]
+top = -1400
+material = "stone"
 omit = ["bottom"]
 [[object]]          # building block in the north-west corner
 kind = "box"

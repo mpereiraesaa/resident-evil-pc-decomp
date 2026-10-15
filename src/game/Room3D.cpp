@@ -84,6 +84,11 @@ int s_loadedVariant = -1;
 // Cameras whose original pre-rendered background is kept (cutscene and
 // aerial views placed outside the room); set by "backdrop N" lines.
 unsigned int s_backdropCameras = 0;
+// Per-camera brightness for rooms whose originals have a lights-off camera
+// set over the same geometry ("shade N F" lines); 1 leaves the bake alone.
+float s_cameraShade[32];
+unsigned int s_shadedCameras = 0;
+float s_activeShade = 1.0f;
 
 void MaterialColor(const char* name, float* r, float* g, float* b)
 {
@@ -266,6 +271,20 @@ void LoadCameraVisibility(const std::string& objPath,
         TextToken command, indexToken, groupToken, extra;
         if (!NextToken(line, &tokenOffset, &command)) continue;
         float index = 0.0f;
+        TextToken factorToken;
+        float factor = 1.0f;
+        if (TokenEquals(command, "shade") &&
+            NextToken(line, &tokenOffset, &indexToken) &&
+            NextToken(line, &tokenOffset, &factorToken) &&
+            !NextToken(line, &tokenOffset, &extra) &&
+            ParseFloatToken(indexToken, &index) &&
+            ParseFloatToken(factorToken, &factor) &&
+            index >= 0.0f && index < 32.0f && index == floorf(index) &&
+            factor >= 0.0f && factor <= 4.0f) {
+            s_cameraShade[(unsigned int)index] = factor;
+            s_shadedCameras |= 1u << (unsigned int)index;
+            continue;
+        }
         if (TokenEquals(command, "backdrop") &&
             NextToken(line, &tokenOffset, &indexToken) &&
             !NextToken(line, &tokenOffset, &extra) &&
@@ -456,6 +475,7 @@ bool LoadRoomMesh()
         s_loaded = false;
         s_loadAttempted = false;
         s_backdropCameras = 0;
+        s_shadedCameras = 0;
         s_loadedFileStage = fileStage;
         s_loadedRoomId = roomId;
         s_loadedVariant = variant;
@@ -706,9 +726,9 @@ bool Project(const Vertex& v, const RoomCameraBasis& camera,
     out[3] = viewZ;
     out[4] = v.u;
     out[5] = 1.0f - v.v;
-    out[6] = v.r;
-    out[7] = v.g;
-    out[8] = v.b;
+    out[6] = v.r * s_activeShade;
+    out[7] = v.g * s_activeShade;
+    out[8] = v.b * s_activeShade;
     out[9] = 1.0f;
     return true;
 }
@@ -829,6 +849,9 @@ void Room3D_Render(void)
 
     RoomCameraBasis camera;
     if (!BuildRoomCameraBasis(&camera)) return;
+    s_activeShade = ((unsigned int)g_roomCameraId < 32 &&
+                     (s_shadedCameras & (1u << g_roomCameraId)) != 0)
+        ? s_cameraShade[g_roomCameraId] : 1.0f;
 
     float scaleX, scaleY;
     MarniGetRenderScale(&scaleX, &scaleY);

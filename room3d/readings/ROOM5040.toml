@@ -1,13 +1,19 @@
-# Visual data room: blue-grey concrete, strip lights, a long table with
-# chairs and a projector, the screen on the north wall, bookshelves, the
-# double door on the south wall.
+# Visual data room: blue-grey concrete, strip lights under ceiling beams, a
+# long table with six chairs and a projector at its south end, the pull-down
+# screen on the south wall, the double door on the north wall, a whiteboard on
+# a stand in the south-west, a bookcase in a west-wall niche and another in
+# the north-east corner, a phone table on the west wall, and a deep pilaster
+# stepping the east wall (blocks 10/13). Positions from collision blocks and
+# floor picks; the whiteboard is angled in the original (here square to the
+# room) and the ceiling beams/strip lights are a simplified lattice.
 room = "ROOM5040"
+backdrop = [4]       # close-up of the screen: a magnified insert, larger than the screen seen in cam1
 title = "Visual data room"
 seed = 5040
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5000
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
@@ -24,89 +30,205 @@ concrete = { color = [0.44, 0.52, 0.56], stains = 0.5 }
 steel = [0.60, 0.62, 0.64]
 wood = [0.30, 0.17, 0.10]
 velvet = [0.16, 0.24, 0.46]
+plastic = [0.56, 0.58, 0.58]
+"iron.beam" = [0.16, 0.18, 0.20]
 paper = [0.90, 0.92, 0.94]
+"books.lab" = { color = [0.30, 0.30, 0.34], shelves = 4 }
 
 [lighting]
 ambient = [0.14, 0.16, 0.18]
 
-[[zone]]
-box = [2268, 2052, 12294, 14652]
+# Visible walls sit 500-900 units behind the collision blocks (floor picks
+# along the skirtings): west x 1400, south z 1550, east x 12800, north z 15400.
+[[zone]]            # south half
+box = [1400, 1550, 12800, 7800]
+[[zone]]            # beside the pilaster (blocks 10/13 end)
+box = [1400, 7800, 11900, 9200]
+[[zone]]            # north half
+box = [1400, 9200, 12900, 15400]
 
-[[door]]
-wall = "south"
-span = [6100, 8500]
+[[door]]            # double door in the north wall
+wall = "north"
+span = [5800, 8600]
 top = -3600
 material = "double_door.lab"
 frame = "steel"
 
-[[object]]
+[[object]]          # long table (block 12 is wider than the visible top)
 kind = "table"
-box = [5490, 5364, 8820, 11862]
+box = [6100, 5300, 8650, 11600]
 top = -1500
 thickness = 120
 [[object]]
 kind = "chair"
 at = [5792, 10758]
 facing = "east"
+seat_y = -650
+back = -1750
+half = 270
+material = "velvet"
 [[object]]
 kind = "chair"
 at = [5733, 8631]
 facing = "east"
+seat_y = -650
+back = -1750
+half = 270
+material = "velvet"
 [[object]]
 kind = "chair"
 at = [5796, 6516]
 facing = "east"
+seat_y = -650
+back = -1750
+half = 270
+material = "velvet"
 [[object]]
 kind = "chair"
 at = [8532, 10800]
 facing = "west"
+seat_y = -650
+back = -1750
+half = 270
+material = "velvet"
 [[object]]
 kind = "chair"
 at = [8523, 8577]
 facing = "west"
+seat_y = -650
+back = -1750
+half = 270
+material = "velvet"
 [[object]]
 kind = "chair"
 at = [8604, 6444]
 facing = "west"
-[[object]]          # projector on the table
+seat_y = -650
+back = -1750
+half = 270
+material = "velvet"
+[[object]]          # projector at the south end of the table, facing the screen
 kind = "box"
-box = [6700, 8300, 7600, 8900]
+box = [6950, 6000, 7650, 6700]
 top = -1800
 bottom = -1500
 material = "plastic"
-[[object]]          # screen on the north wall
+[[object]]          # pull-down screen on the south wall
 kind = "wall_band"
-wall = "north"
-span = [5200, 9000]
-y = [-3600, -1800]
+wall = "south"
+span = [5150, 9250]
+y = [-3700, -1950]
 material = "paper"
 rail = false
-[[object]]          # bookshelves
+[[object]]          # whiteboard on its stand, south-west (block 14)
 kind = "box"
-box = [11610, 7578, 13950, 9540]
-top = -2400
-material = "steel"
-omit = ["bottom", "east"]
+box = [2050, 4600, 3350, 4750]
+top = -2900
+bottom = -1100
+material = "paper"
 [[object]]
 kind = "box"
-box = [702, 684, 3204, 5922]
-top = -2400
-material = "steel"
-omit = ["bottom", "west", "south"]
+box = [2000, 4550, 2100, 4800]
+top = -2950
+bottom = 0
+material = "iron"
 [[object]]
 kind = "box"
-box = [11844, 0, 13410, 8604]
-top = -1200
+box = [3300, 4550, 3400, 4800]
+top = -2950
+bottom = 0
+material = "iron"
+[[object]]          # bookcase set in a niche of the west wall
+kind = "bookcase"
+box = [1400, 7950, 1850, 9000]
+top = -2500
+front = "east"
+books = "books.lab"
+[[object]]          # bookcase in the north-east corner (block 2)
+kind = "bookcase"
+box = [11700, 14750, 12800, 15400]
+top = -2500
+front = "south"
+books = "books.lab"
+[[object]]          # phone table on the west wall (block 15)
+kind = "table"
+box = [1450, 11800, 2300, 12700]
+top = -1300
+thickness = 80
+material = "wood"
+[[object]]          # telephone
+kind = "box"
+box = [1700, 12050, 2050, 12400]
+top = -1450
+bottom = -1300
+material = "paper"
+[[object]]          # fuse box on the east wall
+kind = "box"
+box = [12740, 3550, 12800, 4050]
+top = -2500
+bottom = -1850
 material = "steel"
-omit = ["bottom", "east", "south"]
+
+[[object]]          # ceiling beams along the room with strip lights between
+kind = "box"
+box = [6500, 1550, 6750, 15400]
+top = -5000
+bottom = -4600
+material = "iron.beam"
+omit = ["top"]
+group = "beams"
+[[object]]
+kind = "box"
+box = [8750, 1550, 9000, 15400]
+top = -5000
+bottom = -4600
+material = "iron.beam"
+omit = ["top"]
+group = "beams"
+[[object]]
+kind = "strip"
+at = [7750, 3500]
+[[object]]
+kind = "strip"
+at = [7750, 6500]
+[[object]]
+kind = "strip"
+at = [7750, 9500]
+[[object]]
+kind = "strip"
+at = [7750, 12500]
+[[object]]
+kind = "strip"
+at = [4400, 6500]
+[[object]]
+kind = "strip"
+at = [4400, 11000]
+[[object]]
+kind = "strip"
+at = [11000, 6500]
+[[object]]
+kind = "strip"
+at = [11000, 11000]
+
+[[hide]]            # cams 2 and 3 sit up among the beams
+camera = 2
+groups = ["beams"]
+[[hide]]
+camera = 3
+groups = ["beams"]
 
 [[light]]
-at = [7000, -3900, 5000]
+at = [7000, -4400, 5000]
 color = [0.90, 0.96, 1.0]
 strength = 0.45
-reach = 7000
+reach = 8000
 [[light]]
-at = [7000, -3900, 11000]
+at = [7000, -4400, 11000]
 color = [0.90, 0.96, 1.0]
 strength = 0.45
-reach = 7000
+reach = 8000
+[[light]]           # blue exit lamp above the door
+at = [7300, -4000, 15000]
+color = [0.45, 0.60, 1.0]
+strength = 0.35
+reach = 4000

@@ -1,66 +1,228 @@
-# Cell: a dark blue cell with the bed along the west wall, the toilet and
-# basin in the south-east corner, the barred door on the north wall.
+# Cell: a small dark blue-grey concrete cell. The iron-framed bed stands in
+# the south-east (foot rail facing north, block 4), the toilet against the
+# south wall near the south-west corner with the wall basin and mirror on the
+# west wall beside it (blocks 5/6), two pipes run high along the south wall,
+# the barred steel door is in the north wall with a call box beside it and a
+# security camera high in the north-west corner. Walls from floor picks; the
+# east wall is pushed out to x 9300 so cam 2 (x 9090) stands inside.
 room = "ROOM5120"
 title = "Cell"
 seed = 5180
 
 [shell]
 floor = 0
-ceiling = -4000
+ceiling = -4200
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 150
+trim = "steel.skirt"
 cell = 600
 
 [materials]
-concrete = { color = [0.30, 0.36, 0.42], stains = 0.5 }
-"concrete.floor" = { color = [0.26, 0.30, 0.34], stains = 0.4 }
-"concrete.ceiling" = { color = [0.16, 0.18, 0.22], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-linen = [0.30, 0.32, 0.40]
+concrete = { color = [0.24, 0.30, 0.33], stains = 0.6 }
+"concrete.floor" = { color = [0.22, 0.25, 0.27], stains = 0.5 }
+"concrete.ceiling" = { color = [0.06, 0.07, 0.08], stains = 0.2 }
+"steel.skirt" = [0.40, 0.46, 0.38]
+"door.cell" = [0.42, 0.44, 0.46]
+steel = [0.50, 0.52, 0.54]
+iron = [0.12, 0.13, 0.14]
+wood = [0.50, 0.52, 0.54]
+linen = [0.36, 0.40, 0.42]
+porcelain = [0.70, 0.74, 0.76]
+"rust.pipe" = [0.30, 0.20, 0.18]
+"paper.box" = [0.60, 0.60, 0.56]
+mirror = [0.10, 0.11, 0.12]
 
 [lighting]
-ambient = [0.11, 0.13, 0.16]
+ambient = [0.10, 0.12, 0.14]
 
 [[zone]]
-box = [1944, 1962, 8892, 10836]
+box = [1750, 1850, 9300, 10836]
 
-[[door]]
+[[door]]            # barred steel door in the north wall
 wall = "north"
-span = [4800, 6100]
-top = -3400
-material = "door.lab"
+span = [5000, 6300]
+top = -3500
+material = "door.cell"
 frame = "steel"
+[[object]]          # its barred window
+kind = "box"
+box = [5300, 10760, 6000, 10836]
+top = -3100
+bottom = -2650
+material = "iron"
+[[object]]          # call box beside the door
+kind = "wall_band"
+wall = "north"
+span = [4200, 4600]
+y = [-2300, -1800]
+material = "paper.box"
+rail = false
+[[object]]          # security camera high in the north-west corner
+kind = "box"
+box = [2100, 10400, 2600, 10836]
+top = -3700
+bottom = -3300
+material = "steel"
 
+[[object]]          # iron-framed bed, south-east, head to the south wall
+kind = "box"
+box = [7200, 1980, 9200, 5050]
+top = -800
+bottom = -550
+material = "linen"
+[[object]]          # foot rail: top and lower bars, posts, uprights
+kind = "box"
+box = [7150, 5050, 9250, 5130]
+top = -1400
+bottom = -1300
+material = "iron"
 [[object]]
-kind = "bed"
-box = [882, 1062, 3852, 4590]
-head = "south"
-top = -600
-[[object]]          # toilet
 kind = "box"
-box = [6912, 90, 8400, 2500]
-top = -500
-material = "porcelain"
-omit = ["bottom", "south", "east"]
-[[object]]          # basin
+box = [7150, 5050, 9250, 5130]
+top = -700
+bottom = -600
+material = "iron"
+[[object]]
 kind = "box"
-box = [8300, 3000, 10098, 4400]
-top = -900
-material = "porcelain"
-omit = ["bottom", "east"]
+box = [7150, 5050, 7250, 5130]
+top = -1400
+bottom = 0
+material = "iron"
+[[object]]
+kind = "box"
+box = [9150, 5050, 9250, 5130]
+top = -1400
+bottom = 0
+material = "iron"
+[[object]]
+kind = "box"
+box = [7550, 5070, 7600, 5110]
+top = -1300
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [7900, 5070, 7950, 5110]
+top = -1300
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [8250, 5070, 8300, 5110]
+top = -1300
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [8600, 5070, 8650, 5110]
+top = -1300
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [8950, 5070, 9000, 5110]
+top = -1300
+bottom = -700
+material = "iron"
+[[object]]          # head rail
+kind = "box"
+box = [7150, 1900, 9250, 1980]
+top = -1500
+bottom = -1400
+material = "iron"
+[[object]]
+kind = "box"
+box = [7150, 1900, 9250, 1980]
+top = -700
+bottom = -600
+material = "iron"
+[[object]]
+kind = "box"
+box = [7150, 1900, 7250, 1980]
+top = -1500
+bottom = 0
+material = "iron"
+[[object]]
+kind = "box"
+box = [9150, 1900, 9250, 1980]
+top = -1500
+bottom = 0
+material = "iron"
+[[object]]
+kind = "box"
+box = [7550, 1920, 7600, 1960]
+top = -1400
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [7900, 1920, 7950, 1960]
+top = -1400
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [8250, 1920, 8300, 1960]
+top = -1400
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [8600, 1920, 8650, 1960]
+top = -1400
+bottom = -700
+material = "iron"
+[[object]]
+kind = "box"
+box = [8950, 1920, 9000, 1960]
+top = -1400
+bottom = -700
+material = "iron"
+[[object]]          # toilet against the south wall near the south-west corner
+kind = "toilet"
+at = [2700, 2300]
+back = "south"
+[[object]]          # wall basin and mirror on the west wall
+kind = "sink"
+wall = "west"
+at = 3300
+top = -1100
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2900, 3700]
+y = [-2400, -1600]
+material = "mirror"
+rail = false
+[[object]]          # pipes high along the south wall
+kind = "pipe"
+from = [1750, -3000, 1950]
+to = [6200, -3000, 1950]
+radius = 70
+material = "rust.pipe"
+[[object]]
+kind = "pipe"
+from = [1750, -2750, 1950]
+to = [5200, -2750, 1950]
+radius = 70
+material = "rust.pipe"
+[[object]]          # drain pipe down the west wall over the basin
+kind = "pipe"
+from = [1830, -4200, 3800]
+to = [1830, -2600, 3800]
+radius = 60
+material = "steel"
+[[object]]          # ceiling light panel
+kind = "box"
+box = [5300, 5700, 6100, 6300]
+top = -4200
+bottom = -4120
+material = "glow"
 
 [[light]]
-at = [5400, -3700, 6400]
+at = [5800, -3900, 6000]
 color = [0.85, 0.92, 1.0]
 strength = 0.45
-reach = 6000
-
-[[object]]          # strip light
-kind = "strip"
-at = [5400, 6400]
+reach = 6500

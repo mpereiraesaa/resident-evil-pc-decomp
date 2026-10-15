@@ -1,114 +1,269 @@
-# Lab B3 elevator entry / power house: dark teal concrete corridors with
-# green floor lines, the B.3 stencil, the mesh lift gate on the north area's
-# east wall, the lightning-marked double doors and the other doors.
+# Lab B3 elevator entry / power house: dark teal concrete corridors. A main
+# corridor runs north-south (the X-braced power-house double door under a
+# hazard-striped lintel at its south end, a red lightning emblem painted on
+# the floor before it, a door on its east wall, a black pipe dropping from the
+# ceiling onto its west wall, a low green exit lamp); a branch runs west to a
+# double door, with a door on its north wall and a red alarm button on its
+# south wall; at the north end the corridor opens east to the mesh lift gate
+# (XD-R B.3) with the big B.3 stencil on the north wall. Green floor lines.
+# Visible walls from floor picks along the skirtings sit 300-600 units off the
+# collision blocks (the lift gate ~800 behind block 1). Floor lettering and
+# the B.3 stencil are not modelled. Cams 3/7 and 2/6 are the same views
+# (lift lit / unlit).
 room = "ROOM50C0"
 title = "Lab B3 elevator entry"
 seed = 5120
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5200
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 160
+trim = "iron"
 cell = 900
 
 [materials]
-concrete = { color = [0.30, 0.40, 0.42], stains = 0.5 }
-"concrete.floor" = { color = [0.30, 0.36, 0.36], stains = 0.4 }
-"concrete.ceiling" = { color = [0.16, 0.20, 0.20], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-grating = [0.50, 0.52, 0.52]
+concrete = { color = [0.22, 0.29, 0.30], stains = 0.6 }
+"concrete.floor" = { color = [0.34, 0.40, 0.41], stains = 0.4 }
+"concrete.ceiling" = { color = [0.06, 0.07, 0.07], stains = 0.2 }
+"door.lab" = [0.24, 0.26, 0.26]
+"double_door.lab" = [0.30, 0.31, 0.31]
+"double_door.power" = [0.36, 0.34, 0.33]
+steel = [0.50, 0.52, 0.54]
+iron = [0.10, 0.11, 0.11]
+wood = [0.50, 0.52, 0.54]
+grating = [0.30, 0.32, 0.32]
+"enamel.red" = [0.62, 0.10, 0.08]
+"enamel.green" = [0.10, 0.24, 0.14]
+"glow.green" = [0.45, 0.85, 0.55]
+"stripes.hazard" = { color = [0.85, 0.70, 0.10], stripe = [0.08, 0.08, 0.08], count = 10 }
 
 [lighting]
-ambient = [0.12, 0.14, 0.15]
+ambient = [0.10, 0.12, 0.12]
 
 [[zone]]            # main corridor north-south
-box = [10512, 2016, 14760, 25326]
+box = [10300, 1800, 14900, 25000]
 [[zone]]            # west branch
-box = [1926, 16236, 10512, 18864]
+box = [2200, 15900, 10300, 19450]
 floor_along = "x"
-[[zone]]            # north area
-box = [10512, 25326, 16722, 30780]
+[[zone]]            # north area, opening east to the lift
+box = [10300, 25000, 17500, 30400]
 
-[[door]]
+[[door]]            # west end of the branch
 wall = "west"
-span = [16300, 18300]
+span = [16200, 19150]
 top = -3600
 material = "double_door.lab"
 frame = "steel"
-[[door]]
+[[door]]            # north wall of the branch, near its west end
 wall = "north"
-span = [4700, 7200]
-top = -3600
-material = "double_door.lab"
-frame = "steel"
-[[door]]
-wall = "east"
-span = [17000, 18600]
+span = [3900, 5600]
 top = -3400
 material = "door.lab"
 frame = "steel"
-[[door]]
-wall = "south"
-span = [11400, 13900]
-top = -3600
-material = "double_door.lab"
-frame = "steel"
-[[door]]
+[[door]]            # east wall of the main corridor
 wall = "east"
-span = [26400, 29000]
-top = -3800
+line = 14900
+span = [17900, 19900]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]            # power-house double door, south end
+wall = "south"
+span = [11200, 14100]
+top = -3700
+material = "double_door.power"
+frame = "steel"
+[[door]]            # mesh lift gate
+wall = "east"
+line = 17500
+span = [25900, 29800]
+top = -4000
 material = "grating"
 frame = "steel"
 
+[[object]]          # hazard stripes over the power-house door
+kind = "wall_band"
+wall = "south"
+span = [11200, 14100]
+y = [-4150, -3800]
+material = "stripes.hazard"
+rail = false
+[[object]]          # red sign above it
+kind = "wall_band"
+wall = "south"
+span = [12900, 13700]
+y = [-4700, -4300]
+material = "enamel.red"
+rail = false
+[[object]]          # red lightning emblem on the floor before it
+kind = "box"
+box = [11700, 3000, 13900, 5300]
+top = -6
+bottom = 0
+material = "enamel.red"
+[[object]]          # green floor lines: two along the branch, one down the main corridor
+kind = "box"
+box = [2300, 16350, 12000, 16450]
+top = -4
+bottom = 0
+material = "enamel.green"
+[[object]]
+kind = "box"
+box = [2300, 17050, 12000, 17150]
+top = -4
+bottom = 0
+material = "enamel.green"
+[[object]]
+kind = "box"
+box = [12450, 5800, 12550, 15500]
+top = -4
+bottom = 0
+material = "enamel.green"
+[[object]]          # red alarm button, south wall of the branch
+kind = "wall_band"
+wall = "south"
+span = [3700, 4300]
+y = [-2600, -1900]
+material = "enamel.red"
+rail = false
+[[object]]          # alarm box beside the lift gate
+kind = "wall_band"
+wall = "east"
+line = 17500
+span = [25200, 25700]
+y = [-2300, -1800]
+material = "enamel.red"
+rail = false
+[[object]]          # low green exit lamps
+kind = "wall_band"
+wall = "west"
+line = 10300
+span = [12800, 13500]
+y = [-1300, -900]
+material = "glow.green"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [16000, 16700]
+y = [-1300, -900]
+material = "glow.green"
+rail = false
+[[object]]          # black pipe dropping from the ceiling onto the west wall
+kind = "pipe"
+from = [10520, -5200, 13600]
+via = [[10520, -3400, 13000]]
+to = [10520, -3400, 4300]
+radius = 180
+material = "iron"
+[[object]]          # conduit down the wall beside the lift gate
+kind = "pipe"
+from = [17350, -5200, 25500]
+to = [17350, -2600, 25500]
+radius = 110
+material = "steel"
+
+[[object]]          # round ceiling lamps, two rows down the main corridor
+kind = "cylinder"
+at = [11600, 6000]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [13600, 6000]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [11600, 12000]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [13600, 12000]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [11600, 18000]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [13600, 18000]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [11600, 23500]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [13600, 23500]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [6000, 17600]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [14000, 27700]
+radius = 250
+top = -5200
+bottom = -5150
+material = "glow"
+
 [[light]]
-at = [12600, -3900, 6000]
+at = [12600, -4800, 6000]
 color = [0.85, 0.95, 1.0]
-strength = 0.45
+strength = 0.42
 reach = 7000
 [[light]]
-at = [12600, -3900, 14000]
+at = [12600, -4800, 14000]
 color = [0.85, 0.95, 1.0]
-strength = 0.45
+strength = 0.42
 reach = 7000
 [[light]]
-at = [12600, -3900, 22000]
+at = [12600, -4800, 22000]
 color = [0.85, 0.95, 1.0]
-strength = 0.45
+strength = 0.42
 reach = 7000
 [[light]]
-at = [6000, -3900, 17500]
+at = [5500, -4800, 17600]
 color = [0.85, 0.95, 1.0]
-strength = 0.45
+strength = 0.42
 reach = 7000
 [[light]]
-at = [13600, -3900, 28000]
+at = [14000, -4800, 27700]
 color = [0.85, 0.95, 1.0]
-strength = 0.45
+strength = 0.42
 reach = 7000
-
-[[object]]          # strip light
-kind = "strip"
-at = [12600, 6000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [12600, 14000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [12600, 22000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [6000, 17500]
-
-[[object]]          # strip light
-kind = "strip"
-at = [13600, 28000]
+[[light]]           # red glow by the branch alarm
+at = [4000, -2200, 16400]
+color = [1.0, 0.2, 0.1]
+strength = 0.25
+reach = 1600

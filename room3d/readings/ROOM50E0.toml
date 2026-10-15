@@ -1,13 +1,20 @@
-# Lab save room: grey concrete; the desk with the typewriter and lamp on
-# the north-west, the bed on the north wall, the locker east, a red chest
-# south-east and a cabinet south-west; the door on the west wall.
+# Lab save room: small bare concrete room with heavy cross beams and tube
+# lights mounted high on the side walls. A dark metal desk with the
+# typewriter and a desk lamp in the north-west corner (cork board above it,
+# green chair in front), an iron-framed bed along the north wall, an open
+# white steel shelf unit with binders against the east wall, the red item
+# chest in the south-east, the door at the south end of the west wall.
+# Visible walls from floor picks sit 300-500 units inside the collision
+# blocks' outer edges (north wall ~10900, so cam 0 looks in from behind it).
+# Heights measured in the views are large for this room: door 4400, bed 900,
+# shelf 4000, beams' underside ~5700.
 room = "ROOM50E0"
 title = "Lab save room"
 seed = 5140
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -6300
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
@@ -16,79 +23,183 @@ trim = "steel"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
+concrete = { color = [0.50, 0.49, 0.46], stains = 0.7 }
+"concrete.floor" = { color = [0.46, 0.45, 0.42], stains = 0.4 }
+"concrete.ceiling" = { color = [0.30, 0.30, 0.28], stains = 0.3 }
+"door.lab" = [0.40, 0.40, 0.38]
 steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-chest = [0.44, 0.14, 0.12]
-linen = [0.80, 0.80, 0.78]
+"steel.shelf" = [0.78, 0.80, 0.82]
+"steel.desk" = [0.22, 0.25, 0.24]
+wood = [0.42, 0.42, 0.40]
+iron = [0.20, 0.20, 0.20]
+brass = [0.16, 0.17, 0.17]
+shade = [0.18, 0.19, 0.19]
+velvet = [0.16, 0.30, 0.26]
+chest = [0.44, 0.26, 0.23]
+linen = [0.84, 0.84, 0.82]
+"paper.cork" = [0.50, 0.36, 0.18]
+"enamel.red" = [0.55, 0.10, 0.10]
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.18, 0.18, 0.17]
 
 [[zone]]
-box = [2166, 2070, 8226, 10656]
-[[zone]]
-box = [8226, 7110, 9144, 10656]
+box = [1900, 2400, 9500, 10900]
 
-[[door]]
+[[door]]            # south end of the west wall
 wall = "west"
-span = [2800, 4500]
-top = -3400
+span = [2700, 4300]
+top = -4400
 material = "door.lab"
 frame = "steel"
 
-[[object]]
+[[beam]]            # heavy cross beams
+box = [1900, 3200, 9500, 3900]
+top = -6300
+depth = 600
+[[beam]]
+box = [1900, 9500, 9500, 10200]
+top = -6300
+depth = 600
+
+[[object]]          # desk, north-west corner (block 5)
 kind = "table"
-box = [2412, 8982, 5148, 11484]
-top = -1400
+box = [1950, 9900, 3950, 10850]
+top = -1450
 thickness = 100
+material = "steel.desk"
 with = "typewriter"
-typewriter_at = [4000, 10200]
+typewriter_at = [2600, 10400]
+[[object]]          # desk pedestal
+kind = "box"
+box = [3300, 9950, 3900, 10800]
+top = -1350
+bottom = 0
+material = "steel.desk"
 [[object]]
 kind = "lamp"
-at = [2900, 10200]
-base = -1400
-height = 650
+at = [3450, 10500]
+base = -1450
+height = 800
 [[object]]
 kind = "chair"
-at = [4000, 8200]
+at = [2900, 9300]
 facing = "north"
-[[object]]
-kind = "bed"
-box = [5148, 9054, 8600, 10890]
-head = "east"
-top = -600
-[[object]]          # locker on the east wall
+material = "iron"
+seat = "velvet"
+seat_y = -750
+back = -1700
+half = 300
+[[object]]          # cork board above the desk
+kind = "wall_band"
+wall = "north"
+span = [2300, 3800]
+y = [-3300, -2200]
+material = "paper.cork"
+group = "cork"
+rail = false
+[[object]]          # iron-framed bed along the north wall, head east
 kind = "box"
-box = [8226, 774, 11106, 7110]
-top = -2600
-material = "steel"
-omit = ["bottom", "east", "south"]
+box = [5000, 9950, 8900, 10850]
+top = -900
+bottom = -700
+material = "linen"
 [[object]]
+kind = "box"
+box = [5000, 9950, 5060, 10850]
+top = -1100
+bottom = 0
+material = "iron"
+[[object]]
+kind = "box"
+box = [8840, 9950, 8900, 10850]
+top = -1500
+bottom = 0
+material = "iron"
+[[object]]
+kind = "box"
+box = [5000, 9950, 8900, 10010]
+top = -700
+bottom = -620
+material = "iron"
+[[object]]          # open white shelf unit against the east wall: back, sides, top, two boards
+kind = "box"
+box = [9400, 5000, 9500, 7100]
+top = -4000
+bottom = 0
+material = "steel.shelf"
+[[object]]
+kind = "box"
+box = [8600, 5000, 9500, 5070]
+top = -4000
+bottom = 0
+material = "steel.shelf"
+[[object]]
+kind = "box"
+box = [8600, 7030, 9500, 7100]
+top = -4000
+bottom = 0
+material = "steel.shelf"
+[[object]]
+kind = "box"
+box = [8600, 5000, 9500, 7100]
+top = -4000
+bottom = -3900
+material = "steel.shelf"
+[[object]]
+kind = "box"
+box = [8600, 5000, 9500, 7100]
+top = -2550
+bottom = -2480
+material = "steel.shelf"
+[[object]]
+kind = "box"
+box = [8600, 5000, 9500, 7100]
+top = -300
+bottom = -230
+material = "steel.shelf"
+[[object]]          # binders on the upper board
+kind = "box"
+box = [8800, 6350, 9350, 6950]
+top = -3050
+bottom = -2550
+material = "enamel.red"
+[[object]]          # red item chest, south-east
 kind = "chest"
-box = [7560, 540, 10854, 4338]
-top = -1200
-back = "south"
+box = [7300, 2450, 9300, 3700]
+top = -1500
+back = "east"
+[[object]]          # tube lights mounted high on the side walls
+kind = "wall_band"
+wall = "west"
+span = [7600, 9300]
+y = [-5000, -4650]
+material = "glow"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [7600, 9300]
+y = [-5000, -4650]
+material = "glow"
+rail = false
+
+[[hide]]            # cam 0 looks in through the north wall
+camera = 0
+groups = ["cork"]
 
 [[light]]
-at = [5500, -3800, 6000]
+at = [2300, -4600, 8400]
 color = [0.95, 0.98, 1.0]
-strength = 0.5
-reach = 6000
+strength = 0.45
+reach = 7500
 [[light]]
-at = [2900, -2000, 10200]
-color = [1.0, 0.95, 0.80]
-strength = 0.3
-reach = 3000
-
-[[object]]          # strip light
-kind = "strip"
-at = [5500, 6000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [2900, 10200]
+at = [9100, -4600, 8400]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 7500
+[[light]]
+at = [5500, -4000, 5000]
+color = [0.95, 0.98, 1.0]
+strength = 0.25
+reach = 7500

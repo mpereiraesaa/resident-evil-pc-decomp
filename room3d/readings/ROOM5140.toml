@@ -1,5 +1,13 @@
-# Main lab entry: dark grey panelled concrete, the B.4 lift gate on the
-# south wall, grating patches, vents, the red-lit double door on the east.
+# Main lab entry (B.4): dark grey panelled concrete in an L. The main
+# corridor runs east-west and ends east at the mesh lift gate (XD-R B.4)
+# with a light box above it and a call button beside it; three grating
+# patches in the floor before the lift. The short south leg runs from the
+# west end of the corridor down to the red-lit double door on its south wall
+# (biohazard mat in front); an electrical panel over a low cabinet on the
+# leg's east wall, a low vented unit on the corridor wall east of the corner. Louvred vents high on the walls, a pipe
+# run along the top of the north wall, strip lights. Walls follow the
+# collision blocks (they line up with the skirtings in the block overlay);
+# the B.4 stencil is not modelled.
 room = "ROOM5140"
 title = "Main lab entry"
 seed = 5200
@@ -10,62 +18,186 @@ ceiling = -4200
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 200
+trim = "iron"
 cell = 800
 
 [materials]
-concrete = { color = [0.34, 0.34, 0.36], stains = 0.5 }
-"concrete.floor" = { color = [0.34, 0.34, 0.36], stains = 0.4 }
-"concrete.ceiling" = { color = [0.12, 0.12, 0.14], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-grating = [0.50, 0.52, 0.52]
+concrete = { color = [0.30, 0.30, 0.32], stains = 0.4, panels = 4 }
+"concrete.floor" = { color = [0.36, 0.36, 0.38], stains = 0.3, panels = 3 }
+"concrete.ceiling" = { color = [0.08, 0.08, 0.09], stains = 0.2 }
+"double_door.lab" = [0.20, 0.20, 0.22]
+steel = [0.50, 0.50, 0.52]
+iron = [0.12, 0.12, 0.13]
+wood = [0.50, 0.50, 0.52]
+grating = [0.34, 0.34, 0.33]
+"grating.lift" = [0.62, 0.58, 0.48]
+"enamel.red" = [0.55, 0.10, 0.10]
+"glow.red" = [1.0, 0.25, 0.25]
+"steel.vent" = [0.42, 0.42, 0.44]
+"steel.panel" = [0.36, 0.36, 0.38]
 
 [lighting]
-ambient = [0.13, 0.13, 0.14]
+ambient = [0.11, 0.11, 0.12]
 
-[[zone]]            # south strip with the lift
+[[zone]]            # south leg down to the double door
 box = [1986, 1926, 5238, 7632]
-[[zone]]            # main
+[[zone]]            # main corridor, lift at the east end
 box = [1986, 7632, 13950, 12474]
 floor_along = "x"
 
-[[door]]
-wall = "south"
-span = [2400, 4800]
-top = -3800
-material = "grating"
-frame = "steel"
-[[door]]
+[[door]]            # mesh lift gate, east end
 wall = "east"
-span = [8500, 11400]
-top = -3600
+span = [8600, 11400]
+top = -3900
+material = "grating.lift"
+frame = "steel"
+[[door]]            # red-lit double door, south wall of the leg
+wall = "south"
+span = [2600, 4600]
+top = -3400
 material = "double_door.lab"
 frame = "steel"
 
-[[object]]
-kind = "rug"
-box = [2400, 8600, 5000, 11400]
+[[object]]          # light box over the lift gate
+kind = "wall_band"
+wall = "east"
+span = [9300, 10700]
+y = [-4150, -3950]
+material = "glow"
+rail = false
+[[object]]          # call button panel beside the gate
+kind = "wall_band"
+wall = "east"
+span = [7900, 8350]
+y = [-2600, -2000]
+material = "enamel.red"
+rail = false
+[[object]]          # grating patches in the floor before the lift
+kind = "box"
+box = [7300, 10600, 8400, 12200]
+top = -8
+bottom = 0
 material = "grating"
+[[object]]
+kind = "box"
+box = [8700, 10600, 9800, 12200]
+top = -8
+bottom = 0
+material = "grating"
+[[object]]
+kind = "box"
+box = [10100, 10600, 11200, 12200]
+top = -8
+bottom = 0
+material = "grating"
+
+[[object]]          # red sign over the double door
+kind = "wall_band"
+wall = "south"
+span = [3200, 4000]
+y = [-3800, -3550]
+material = "glow.red"
+rail = false
+[[object]]          # biohazard mat before it
+kind = "box"
+box = [2900, 1926, 4300, 2900]
+top = -10
+bottom = 0
+material = "enamel.red"
+[[object]]          # low cabinet on the leg's east wall
+kind = "box"
+box = [5130, 4600, 5238, 6600]
+top = -700
+bottom = 0
+material = "steel.panel"
+group = "panel"
+[[object]]          # electrical panel with a bar handle above it
+kind = "wall_band"
+wall = "east"
+line = 5238
+span = [5600, 6400]
+y = [-1550, -750]
+material = "steel"
+rail = false
+group = "panel"
+[[object]]          # low vented unit on the corridor's south wall, east of the corner
+kind = "box"
+box = [5238, 7632, 6600, 7950]
+top = -600
+bottom = 0
+material = "steel.vent"
+[[object]]          # louvred vents high on the walls
+kind = "wall_band"
+wall = "west"
+span = [8400, 9600]
+y = [-3500, -3000]
+material = "steel.vent"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [10300, 11700]
+y = [-3500, -3000]
+material = "steel.vent"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [2700, 4500]
+y = [-3300, -2900]
+material = "steel.vent"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [3500, 5500]
+y = [-3800, -3000]
+material = "steel.vent"
+rail = false
+[[object]]          # pipes along the top of the north wall
+kind = "pipe"
+from = [1986, -3700, 12300]
+to = [13950, -3700, 12300]
+radius = 110
+material = "iron"
+[[object]]
+kind = "pipe"
+from = [1986, -3950, 12150]
+to = [13950, -3950, 12150]
+radius = 90
+material = "iron"
+[[object]]          # strip lights
+kind = "strip"
+at = [3600, 11300]
+[[object]]
+kind = "strip"
+at = [3600, 4500]
+[[object]]
+kind = "strip"
+at = [9000, 10000]
+
+[[hide]]            # cam 6 stands right against the panel
+camera = 6
+groups = ["panel"]
 
 [[light]]
 at = [3600, -3800, 4500]
 color = [0.90, 0.95, 1.0]
-strength = 0.45
+strength = 0.40
 reach = 6000
 [[light]]
-at = [9000, -3800, 10000]
+at = [4000, -3800, 10500]
 color = [0.90, 0.95, 1.0]
+strength = 0.40
+reach = 6000
+[[light]]
+at = [11000, -3800, 10000]
+color = [0.95, 0.92, 0.80]
 strength = 0.45
 reach = 7000
-
-[[object]]          # strip light
-kind = "strip"
-at = [3600, 4500]
-
-[[object]]          # strip light
-kind = "strip"
-at = [9000, 10000]
+[[light]]           # red glow over the double door
+at = [3600, -3600, 2400]
+color = [1.0, 0.25, 0.25]
+strength = 0.35
+reach = 3000

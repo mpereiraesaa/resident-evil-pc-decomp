@@ -1,84 +1,166 @@
-# Lab B3 private passage: a dark blue-grey corridor with lamps, double
-# doors at each end and on the north wall, the keypad and power panel.
+# Lab B3 private passage: a long dark concrete corridor running east-west,
+# a double door at each end (the west one X-braced, with the keypad and
+# battery panel beside it on the north wall), a side door on the north wall
+# about mid-way and another on the south wall near the east end, a red alarm
+# box and fire extinguisher on the north wall near the east end, a green
+# exit sign low on the south wall near the west end, pipes along the south
+# side of the ceiling and round ceiling lamps. The visible walls stand
+# 400-700 units behind the collision blocks (floor picks along the
+# skirtings). Cam 4 is the keypad close-up and keeps its background.
 room = "ROOM5080"
 title = "Lab B3 private passage"
 seed = 5080
+backdrop = [4]
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -4600
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 160
+trim = "iron"
 cell = 800
 
 [materials]
-concrete = { color = [0.34, 0.38, 0.42], stains = 0.5 }
-"concrete.floor" = { color = [0.30, 0.32, 0.34], stains = 0.4 }
-"concrete.ceiling" = { color = [0.20, 0.22, 0.24], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-"panel.iron" = [0.16, 0.16, 0.17]
+concrete = { color = [0.27, 0.30, 0.33], stains = 0.6 }
+"concrete.floor" = { color = [0.32, 0.35, 0.37], stains = 0.4 }
+"concrete.ceiling" = { color = [0.13, 0.14, 0.16], stains = 0.3 }
+"door.lab" = [0.24, 0.25, 0.27]
+"double_door.lab" = [0.26, 0.27, 0.29]
+steel = [0.50, 0.52, 0.54]
+iron = [0.10, 0.11, 0.12]
+wood = [0.50, 0.52, 0.54]
+"enamel.red" = [0.70, 0.12, 0.08]
+"glow.green" = [0.40, 0.85, 0.55]
+"brass.panel" = [0.55, 0.45, 0.22]
 
 [lighting]
-ambient = [0.12, 0.13, 0.15]
+ambient = [0.10, 0.11, 0.13]
 
 [[zone]]
-box = [1854, 1908, 20070, 5292]
+box = [1800, 1500, 20400, 5750]
 floor_along = "x"
 
-[[door]]
+[[door]]            # east end
 wall = "east"
-span = [2400, 4900]
+span = [2100, 5150]
 top = -3600
 material = "double_door.lab"
 frame = "steel"
-[[door]]
-wall = "north"
-span = [10700, 13000]
-top = -3400
-material = "door.lab"
-frame = "steel"
-[[door]]
-wall = "south"
-span = [17700, 19100]
-top = -3400
-material = "door.lab"
-frame = "steel"
-[[door]]
+[[door]]            # west end, X-braced (cam 3)
 wall = "west"
-span = [2500, 4700]
+span = [2000, 5150]
 top = -3600
 material = "double_door.lab"
 frame = "steel"
+[[door]]            # north side door, mid corridor (cam 2, standing ajar)
+wall = "north"
+span = [9200, 10900]
+top = -3400
+material = "door.lab"
+frame = "steel"
+[[door]]            # south side door near the east end (cam 0 right)
+wall = "south"
+span = [17400, 19300]
+top = -3400
+material = "door.lab"
+frame = "iron"
 
-[[object]]          # power panel by the west door
+[[object]]          # battery panel above the keypad, north wall by the west door
+kind = "wall_band"
+wall = "north"
+span = [2350, 3050]
+y = [-2650, -2250]
+material = "brass.panel"
+rail = false
+[[object]]          # keypad
+kind = "wall_band"
+wall = "north"
+span = [2450, 2950]
+y = [-2050, -1450]
+material = "steel"
+rail = false
+[[object]]          # red alarm box, north wall near the east end
+kind = "wall_band"
+wall = "north"
+span = [16550, 17250]
+y = [-2100, -1600]
+material = "enamel.red"
+rail = false
+[[object]]          # fire extinguisher under it
+kind = "cylinder"
+at = [16900, 5600]
+radius = 110
+top = -800
+bottom = -150
+material = "enamel.red"
+[[object]]          # green exit sign low on the south wall
 kind = "wall_band"
 wall = "south"
-span = [2400, 3400]
-y = [-2600, -1800]
-material = "panel.iron"
+span = [7000, 7400]
+y = [-1100, -600]
+material = "glow.green"
 rail = false
+[[object]]          # pipes along the south side of the ceiling
+kind = "pipe"
+from = [1800, -4380, 2000]
+to = [20400, -4380, 2000]
+radius = 70
+material = "iron"
+[[object]]
+kind = "pipe"
+from = [1800, -4380, 2200]
+to = [20400, -4380, 2200]
+radius = 70
+material = "iron"
+[[object]]
+kind = "pipe"
+from = [1800, -4420, 2420]
+to = [20400, -4420, 2420]
+radius = 90
+material = "iron"
+[[object]]          # round ceiling lamps
+kind = "cylinder"
+at = [6000, 3800]
+radius = 260
+top = -4600
+bottom = -4540
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [10500, 3800]
+radius = 260
+top = -4600
+bottom = -4540
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [15000, 3800]
+radius = 260
+top = -4600
+bottom = -4540
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [19000, 3800]
+radius = 260
+top = -4600
+bottom = -4540
+material = "glow"
 
 [[light]]
-at = [6000, -3800, 3600]
+at = [6000, -4200, 3800]
 color = [0.90, 0.95, 1.0]
-strength = 0.45
+strength = 0.40
 reach = 6000
 [[light]]
-at = [15000, -3800, 3600]
+at = [15000, -4200, 3800]
 color = [0.90, 0.95, 1.0]
-strength = 0.45
+strength = 0.40
 reach = 6000
-
-[[object]]          # strip light
-kind = "strip"
-at = [6000, 3600]
-
-[[object]]          # strip light
-kind = "strip"
-at = [15000, 3600]
+[[light]]           # red glow from the alarm box
+at = [16900, -1800, 5200]
+color = [1.0, 0.25, 0.15]
+strength = 0.25
+reach = 1800

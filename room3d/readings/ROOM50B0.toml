@@ -1,6 +1,14 @@
-# Cell entry: a dark blue-grey concrete L with ceiling lamps, the barred
-# cell door on the south wall of the north passage and the double doors on
-# the east wall of the west leg.
+# Cell entry: a dark concrete L. The west leg runs north-south with an
+# X-braced iron double gate at the south end of its east wall and an amber
+# beacon high on its west wall; at its north end the passage turns east, the
+# heavy cell door (barred window, keypad, sign plate) on its south wall near
+# the east end, a red alarm box and extinguisher on its north wall, a camera
+# on the end wall. Pipes along the ceiling, round ceiling lamps and small
+# floor-level wall lamps. Visible walls (floor picks along the skirtings) sit
+# a few hundred units off the collision blocks. Cam 3 is the cell-door
+# close-up (cam 2 picks put the door ~1000 further east than cam 3's; the
+# span leans to cam 3): the door is a flat steel door, the barred window and keypad are
+# approximated with bands.
 room = "ROOM50B0"
 title = "Cell entry"
 seed = 5110
@@ -11,65 +19,160 @@ ceiling = -4200
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 160
+trim = "iron.skirt"
 cell = 800
 
 [materials]
-concrete = { color = [0.34, 0.40, 0.44], stains = 0.5 }
-"concrete.floor" = { color = [0.30, 0.34, 0.36], stains = 0.4 }
-"concrete.ceiling" = { color = [0.18, 0.20, 0.22], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
+concrete = { color = [0.24, 0.28, 0.31], stains = 0.6 }
+"concrete.floor" = { color = [0.32, 0.36, 0.38], stains = 0.4 }
+"concrete.ceiling" = { color = [0.08, 0.09, 0.10], stains = 0.2 }
+"door.cell" = [0.22, 0.22, 0.23]
+"double_door.gate" = [0.14, 0.15, 0.17]
+steel = [0.42, 0.44, 0.46]
+iron = [0.12, 0.13, 0.12]
+"iron.skirt" = [0.20, 0.24, 0.18]
+wood = [0.42, 0.44, 0.46]
+"enamel.red" = [0.70, 0.14, 0.08]
+"enamel.amber" = [0.95, 0.55, 0.10]
+"paper.plate" = [0.55, 0.56, 0.56]
+"steel.pipe" = [0.70, 0.72, 0.74]
 
 [lighting]
-ambient = [0.12, 0.13, 0.15]
+ambient = [0.10, 0.11, 0.13]
 
 [[zone]]            # west leg
-box = [1854, 2304, 5994, 19332]
-[[zone]]            # north passage
-box = [5994, 15336, 13536, 19332]
+box = [1900, 2200, 6300, 14700]
+[[zone]]            # north end of the west leg and the passage east
+box = [1900, 14700, 13950, 19500]
 floor_along = "x"
 
-[[door]]
+[[door]]            # X-braced iron gate, east wall of the west leg
 wall = "east"
-span = [2700, 5100]
-top = -3600
-material = "double_door.lab"
-frame = "steel"
-[[door]]
+span = [2300, 4600]
+top = -3200
+material = "double_door.gate"
+frame = "iron"
+[[door]]            # cell door, south wall of the passage
 wall = "south"
-span = [9000, 10700]
+span = [9600, 11300]
+top = -3300
+material = "door.cell"
+frame = "iron"
+
+[[object]]          # barred window in the cell door
+kind = "box"
+box = [9950, 14700, 10950, 14790]
+top = -2900
+bottom = -2300
+material = "iron"
+[[object]]          # sign plate west of the cell door
+kind = "wall_band"
+wall = "south"
+span = [8850, 9350]
+y = [-2000, -1600]
+material = "paper.plate"
+rail = false
+[[object]]          # red alarm box on the north wall of the passage
+kind = "wall_band"
+wall = "north"
+span = [6600, 7000]
+y = [-2300, -1800]
+material = "enamel.red"
+rail = false
+[[object]]          # extinguisher below it
+kind = "cylinder"
+at = [6800, 19350]
+radius = 110
+top = -800
+bottom = -150
+material = "enamel.red"
+[[object]]          # security camera on the end wall
+kind = "box"
+box = [13650, 16900, 13950, 17400]
 top = -3400
-material = "door.lab"
-frame = "steel"
+bottom = -3000
+material = "steel"
+[[object]]          # amber beacon high on the west wall
+kind = "cylinder"
+at = [2000, 8500]
+radius = 180
+top = -3700
+bottom = -3300
+material = "enamel.amber"
+
+[[object]]          # pipes along the ceiling: down the west leg's east side, then along the passage
+kind = "pipe"
+from = [6050, -3950, 2200]
+to = [6050, -3950, 14900]
+radius = 90
+material = "steel.pipe"
+[[object]]
+kind = "pipe"
+from = [6050, -3950, 14900]
+to = [13950, -3950, 14900]
+radius = 90
+material = "steel.pipe"
+[[object]]
+kind = "pipe"
+from = [2150, -3900, 2200]
+to = [2150, -3900, 19300]
+radius = 80
+material = "steel.pipe"
+[[object]]          # pipe along the top of the south end wall
+kind = "pipe"
+from = [1900, -3700, 2400]
+to = [6300, -3700, 2400]
+radius = 90
+material = "steel.pipe"
+[[object]]          # round ceiling lamps
+kind = "cylinder"
+at = [4000, 5000]
+radius = 300
+top = -4200
+bottom = -4150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [4000, 10500]
+radius = 300
+top = -4200
+bottom = -4150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [4000, 16800]
+radius = 300
+top = -4200
+bottom = -4150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [9000, 17100]
+radius = 300
+top = -4200
+bottom = -4150
+material = "glow"
+[[object]]
+kind = "cylinder"
+at = [12500, 17100]
+radius = 260
+top = -4200
+bottom = -4150
+material = "glow"
 
 [[light]]
-at = [3900, -3900, 6000]
-color = [0.90, 0.95, 1.0]
-strength = 0.45
+at = [4000, -3900, 5000]
+color = [0.85, 0.95, 1.0]
+strength = 0.40
 reach = 6000
 [[light]]
-at = [3900, -3900, 14000]
-color = [0.90, 0.95, 1.0]
-strength = 0.45
+at = [4000, -3900, 13000]
+color = [0.85, 0.95, 1.0]
+strength = 0.40
 reach = 6000
 [[light]]
-at = [10000, -3900, 17300]
-color = [0.90, 0.95, 1.0]
-strength = 0.45
+at = [10500, -3900, 17100]
+color = [0.85, 0.95, 1.0]
+strength = 0.40
 reach = 6000
-
-[[object]]          # strip light
-kind = "strip"
-at = [3900, 6000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [3900, 14000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [10000, 17300]

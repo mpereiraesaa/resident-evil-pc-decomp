@@ -3,7 +3,9 @@
 # square frame, grey-green plaster walls with a dark cornice, red carpeted
 # stairs with a wrought red balustrade descending on the east side. Two
 # scripted exits (stairs down). From ROOM7000.RDT collision and its one
-# background; the stairs are a guess at what lies beyond the frame edge.
+# background; the medallion is placed by casting its centre and rim from the
+# view (it is wider than the walkable pocket, so the walls stand outside the
+# collision); the stairs are a guess at what lies beyond the frame edge.
 room = "ROOM7000"
 title = "Stair-head alcove"
 seed = 7000
@@ -30,29 +32,46 @@ planks = { color = [0.14, 0.08, 0.06], tile = [1200, 1200] }
 ambient = [0.18, 0.16, 0.14]
 
 [[zone]]
-box = [1764, 1800, 3942, 5076]
+box = [500, 1500, 4300, 5400]
 
 [[object]]          # red square frame with a gold border
 kind = "rug"
-box = [2000, 2238, 3706, 4638]
+box = [800, 1820, 4072, 5094]
 material = "carpet.square"
 border = 140
 border_material = "border.gold"
 [[object]]          # cream medallion disc
 kind = "cylinder"
-at = [2853, 3438]
-radius = 720
+at = [2436, 3457]
+radius = 1300
 top = -14
 material = "paper"
 segments = 24
 [[object]]          # balustrade at the stair head on the east side
 kind = "rail"
-from = [3900, 1900]
-to = [3900, 5000]
+from = [4250, 1600]
+to = [4250, 5300]
 material = "rust"
 
 [[light]]
-at = [2853, -4000, 3438]
+at = [2436, -4000, 3457]
 color = [1.0, 0.92, 0.80]
 strength = 0.4
 reach = 5000
+
+# The red-carpeted stair going down east beside the medallion
+[[zone]]
+box = [4300, 1500, 7400, 5400]
+open_floor = true
+depth = 3200
+[[stair]]
+x = [4300, 7400]
+z = [1700, 5200]
+direction = "west"
+base = 3200
+top = 0
+steps = 12
+tread_material = "wood"
+runner = [2300, 4600]
+runner_material = "runner"
+under = false

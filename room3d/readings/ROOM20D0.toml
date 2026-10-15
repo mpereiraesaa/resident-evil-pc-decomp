@@ -1,6 +1,10 @@
 # Pillar passage: white marble plaster with blind arches, a carved wainscot
-# with a chair rail, dark red tiles, square pillars at the corner. An L of
-# west leg and south passage from ROOM20D0.RDT blocks.
+# with a chair rail, dark red tiles. A west leg (door north) and a south
+# passage (door east) meet round a free-standing square pillar (block 5)
+# with open floor east of it up to blocks 1 and 2. Along the north side of
+# the south passage's east half runs a wainscot-high parapet with a dark
+# recess and the wall set back behind it (cameras 3-5); the recess depth is
+# a guess. Camera 2 hangs just outside the west wall (auto-hidden).
 room = "ROOM20D0"
 title = "Pillar passage"
 seed = 2130
@@ -35,6 +39,11 @@ box = [1998, 1996, 3924, 13050]
 [[zone]]            # south passage
 box = [3924, 1996, 12150, 4104]
 floor_along = "x"
+[[zone]]            # open floor round the pillar, up to blocks 1 and 2
+box = [3924, 4104, 6840, 6948]
+[[zone]]            # recess behind the parapet
+box = [6840, 4104, 12150, 5000]
+floor_along = "x"
 
 [[door]]
 wall = "north"
@@ -53,6 +62,17 @@ box = [3924, 4104, 5544, 5634]
 top = -5000
 material = "marble"
 omit = ["bottom", "top"]
+[[object]]          # parapet along the recess, carved panels, wooden coping
+kind = "box"
+box = [5544, 4104, 12150, 4400]
+top = -1200
+material = "panel.carved"
+[[object]]
+kind = "box"
+box = [5544, 4054, 12150, 4450]
+top = -1290
+bottom = -1200
+material = "wood"
 [[object]]
 kind = "box"
 box = [1998, 7500, 2300, 8300]

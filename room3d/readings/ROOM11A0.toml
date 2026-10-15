@@ -1,129 +1,292 @@
-# Roofed garden passage west of the corridor's north leg: stone walls with
-# arched openings on the west side, green paving, wooden ceiling. Shell from
-# ROOM11A0.RDT blocks 1,6,8,9,0; the east bay at the north end from blocks 0,5,7.
+# Roofed garden passage: a sunken walk between ivy-hung stone walls topped by
+# a dark red ledge, with raised galleries set back above both ledges (an
+# arcade of dark arched openings and square piers on the east, piers on the
+# west), a dark plank roof high over everything, crazy-paved green floor.
+# At the north end a bay with big round ivy-covered planters (circles 2, 3,
+# 4), the door in its east wall and the bronze relief on its north wall.
+# A dark doorway opens in the east wall at the south end (camera 0).
+# Shell from blocks 6, 8, 9 (passage) and 0, 1 (bay); the galleries' depth,
+# the ledge height (-3600) and the roof height are read off cameras 1 and 2
+# and are approximate; the arches are drawn square-headed (the builder only
+# arches windows on north/south walls, so they are dark wall bands). Camera 4 is the relief close-up and
+# keeps the original.
 room = "ROOM11A0"
 title = "Roofed passage"
 seed = 110
+backdrop = [4]
 
 [shell]
 floor = 0
-ceiling = -4600
-floor_material = "stone.paving"
-wall_material = "stone.white"
+ceiling = -7200
+floor_material = "rock.paving"
+wall_material = "plaster.upper"
 ceiling_material = "planks.ceiling"
+dado = 3600
+dado_material = "plaster.ivy"
+chair_rail = true
 skirting = 0
-trim = "stone"
+trim = "wood.ledge"
 cell = 800
 
 [materials]
-"stone.white" = [0.80, 0.80, 0.75]
-"stone.paving" = { color = [0.30, 0.40, 0.26], tile = [1600, 1600] }
-stone = [0.78, 0.78, 0.72]
-"planks.ceiling" = { color = [0.42, 0.24, 0.14], count = 10 }
-wood = [0.30, 0.17, 0.10]
-door = [0.40, 0.26, 0.12]
-"panel.bronze" = [0.55, 0.33, 0.14]
-leaves = [0.16, 0.30, 0.12]
-soot = [0.02, 0.03, 0.02]
+"plaster.ivy" = { color = [0.52, 0.51, 0.49], stains = 0.9, ivy = 0.85, tile = [2000, 3600] }
+"plaster.upper" = { color = [0.50, 0.49, 0.46], stains = 0.9, tile = [2400, 2400] }
+"rock.paving" = { color = [0.14, 0.19, 0.11], tile = [2000, 2000], slabs = 40, moss = 0.1 }
+"stone.pier" = [0.70, 0.69, 0.66]
+"planks.ceiling" = { color = [0.24, 0.15, 0.10], count = 10 }
+"wood.ledge" = [0.34, 0.10, 0.07]
+wood = [0.34, 0.12, 0.08]
+door = [0.42, 0.22, 0.10]
+"panel.bronze" = [0.55, 0.30, 0.12]
+soot = [0.03, 0.03, 0.03]
 
 [lighting]
-ambient = [0.14, 0.15, 0.13]
+ambient = [0.15, 0.15, 0.14]
 
 [[zone]]            # long passage
 box = [1882, 1868, 5340, 22158]
 [[zone]]            # bay at the north end
 box = [1882, 22158, 8700, 27214]
+ceiling = -6000
+[[zone]]            # east gallery above the ledge (open: the slab below is the lower wall)
+box = [5340, 1868, 7000, 22158]
+open_floor = true
+dado_material = "plaster.upper"
+[[zone]]            # west gallery
+box = [400, 1868, 1882, 22158]
+open_floor = true
 
-[[door]]
-wall = "east"
-span = [2700, 5000]
-top = -3400
-material = "door"
-[[door]]
-wall = "east"
-span = [24500, 26600]
-top = -3400
-material = "door"
-
-# Planted beds along both walls, ivy hanging over them, and high arched
-# openings on the west wall (cameras 0, 1 and 2 look along them).
+# The lower walls are the fronts of the gallery slabs, ivy-covered.
+[[slab]]
+box = [5340, 1868, 7000, 22158]
+top = -3600
+thickness = 3600
+top_material = "plaster.upper"
+bottom_material = "plaster.upper"
+edge_material = "plaster.ivy"
+edges = ["west"]
+group = "gallery_east"
+[[slab]]
+box = [400, 1868, 1882, 22158]
+top = -3600
+thickness = 3600
+top_material = "plaster.upper"
+bottom_material = "plaster.upper"
+edge_material = "plaster.ivy"
+edges = ["east"]
+group = "gallery_west"
+[[object]]          # red ledge copings
+kind = "box"
+box = [5240, 1868, 5640, 22158]
+top = -3700
+bottom = -3560
+material = "wood.ledge"
 [[object]]
 kind = "box"
-box = [1882, 1868, 2700, 22158]
-top = -1000
-material = "leaves"
-omit = ["bottom", "west"]
-[[object]]
-kind = "box"
-box = [4600, 1868, 5340, 22158]
-top = -1000
-material = "leaves"
-omit = ["bottom", "east"]
-[[object]]
-kind = "wall_band"
-wall = "west"
-span = [1868, 22158]
-y = [-2600, -1000]
-material = "leaves"
-rail = false
-[[object]]
+box = [1582, 1868, 1982, 22158]
+top = -3700
+bottom = -3560
+material = "wood.ledge"
+
+[[door]]            # dark doorway at the south end of the east wall
+wall = "east"
+span = [2300, 4300]
+top = -3300
+material = "soot"
+line = 5340
+[[door]]
+wall = "east"
+span = [24600, 26700]
+top = -4100
+material = "door"
+line = 8700
+[[column]]
+at = [5900, 3000]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [1350, 3000]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [5900, 6400]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [1350, 6400]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [5900, 9800]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [1350, 9800]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [5900, 13200]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [1350, 13200]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [5900, 16600]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [1350, 16600]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [5900, 20000]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[column]]
+at = [1350, 20000]
+base = -3700
+top = -7200
+radius = 320
+square = true
+material = "stone.pier"
+[[object]]          # dark arched opening in the east arcade
 kind = "wall_band"
 wall = "east"
-span = [1868, 22158]
-y = [-2600, -1000]
-material = "leaves"
-rail = false
-[[object]]
-kind = "wall_band"
-wall = "west"
-span = [2900, 4300]
-y = [-4600, -3000]
+span = [3700, 5700]
+y = [-6600, -3700]
 material = "soot"
 rail = false
-[[object]]
+[[object]]          # dark arched opening in the east arcade
 kind = "wall_band"
-wall = "west"
-span = [6500, 7900]
-y = [-4600, -3000]
+wall = "east"
+span = [7100, 9100]
+y = [-6600, -3700]
 material = "soot"
 rail = false
-[[object]]
+[[object]]          # dark arched opening in the east arcade
 kind = "wall_band"
-wall = "west"
-span = [10100, 11500]
-y = [-4600, -3000]
+wall = "east"
+span = [10500, 12500]
+y = [-6600, -3700]
 material = "soot"
 rail = false
-[[object]]
+[[object]]          # dark arched opening in the east arcade
 kind = "wall_band"
-wall = "west"
-span = [13700, 15100]
-y = [-4600, -3000]
+wall = "east"
+span = [13900, 15900]
+y = [-6600, -3700]
 material = "soot"
 rail = false
-[[object]]
+[[object]]          # dark arched opening in the east arcade
 kind = "wall_band"
-wall = "west"
-span = [17300, 18700]
-y = [-4600, -3000]
+wall = "east"
+span = [17300, 19300]
+y = [-6600, -3700]
 material = "soot"
 rail = false
 
-[[object]]          # bronze relief on the bay's north wall
+# Bay: round ivy-covered planters with red rims
+[[object]]
+kind = "cylinder"
+at = [6887, 22242]
+radius = 1550
+top = -1600
+material = "plaster.ivy"
+segments = 20
+[[object]]
+kind = "cylinder"
+at = [6887, 22242]
+radius = 1600
+top = -1700
+bottom = -1600
+material = "wood.ledge"
+segments = 20
+[[object]]
+kind = "cylinder"
+at = [2045, 26367]
+radius = 1550
+top = -1600
+material = "plaster.ivy"
+segments = 20
+[[object]]
+kind = "cylinder"
+at = [2045, 26367]
+radius = 1600
+top = -1700
+bottom = -1600
+material = "wood.ledge"
+segments = 20
+[[object]]
+kind = "cylinder"
+at = [3844, 27890]
+radius = 1700
+top = -1600
+material = "plaster.ivy"
+segments = 20
+[[object]]
+kind = "cylinder"
+at = [3844, 27890]
+radius = 1750
+top = -1700
+bottom = -1600
+material = "wood.ledge"
+segments = 20
+
+[[object]]          # bronze relief on the bay's north wall (camera 4)
 kind = "wall_band"
 wall = "north"
-span = [3200, 7200]
-y = [-3400, -1200]
+span = [6400, 8300]
+y = [-3300, -900]
 material = "panel.bronze"
 rail = false
 
 [[light]]
-at = [3500, -2600, 12000]
-color = [0.85, 0.95, 0.85]
-strength = 0.3
-reach = 9000
+at = [3600, -3000, 12000]
+color = [0.90, 0.90, 0.86]
+strength = 0.35
+reach = 10000
 [[light]]
-at = [4500, -2600, 24500]
+at = [3600, -3000, 4000]
+color = [0.90, 0.90, 0.86]
+strength = 0.3
+reach = 6000
+[[light]]
+at = [5000, -3000, 24500]
 color = [0.95, 0.85, 0.70]
 strength = 0.35
 reach = 5000

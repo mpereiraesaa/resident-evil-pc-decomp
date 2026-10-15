@@ -117,6 +117,25 @@ outside the viewer.
 
 ## Entity mesh refinement
 
+For the authored model upgrades, set `RE1_HD_MODELS=1` and point the game at
+the installed replacement directory. The switch is off by default; setting
+`RE1_HD_MODELS=0` explicitly disables subdivision, patches, and replacements.
+From the repository root:
+
+```sh
+RE1_HD_MODELS=1 \
+RE1_HD_MODELS_DIR="$PWD/tools/data/entity_mesh_replacements" \
+RE1_HD_MODELS_PATCH_DIR="$PWD/tools/data/entity_mesh_patches" \
+wine path/to/residentevil.exe
+```
+
+`RE1_HD_MODELS=1` selects the 16-triangle refinement used by the installed
+meshes. The directory variables are required to load those authored files;
+they are not inferred from the working directory. The older
+`RE1_ENTITY_MESH`, `RE1_ENTITY_MESH_REPLACE_DIR`, and
+`RE1_ENTITY_MESH_PATCH_DIR` names remain available for export scripts and
+earlier setups. The HD names take precedence when both forms are set.
+
 Set `RE1_ENTITY_MESH=2` to apply the same render-only curved subdivision and
 moderate vertex rounding to every character and enemy EMD loaded through
 `LoadEntityEMD`. This includes the player, NPCs, alternate costumes, and

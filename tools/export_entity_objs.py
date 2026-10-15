@@ -40,6 +40,11 @@ def main():
             "RE1_ENTITY_OBJ_EXPORT_STAGE": options.mesh,
         })
         env.pop("RE1_ENTITY_MESH", None)
+        env.pop("RE1_ENTITY_MESH_REPLACE_DIR", None)
+        env.pop("RE1_ENTITY_MESH_PATCH_DIR", None)
+        env.pop("RE1_HD_MODELS", None)
+        env.pop("RE1_HD_MODELS_DIR", None)
+        env.pop("RE1_HD_MODELS_PATCH_DIR", None)
         env.pop("RE1_CHRIS_MESH", None)
         if options.mesh == "refined":
             env["RE1_ENTITY_MESH"] = options.refinement

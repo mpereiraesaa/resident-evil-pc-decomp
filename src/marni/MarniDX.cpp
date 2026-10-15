@@ -187,6 +187,7 @@ struct MarniDX::Impl {
     ID3D11BlendState*        blendDisabled = nullptr;
     ID3D11SamplerState*      sampLinear    = nullptr;
     ID3D11SamplerState*      sampPoint     = nullptr;
+    ID3D11SamplerState*      sampLinearWrap = nullptr;   // tiled Room3D surfaces
     ID3D11DepthStencilState* depthDisabled = nullptr;
     ID3D11DepthStencilState* depthEnabled  = nullptr;
     // Test-only depth (write off) for the translucent ground-shadow / blood
@@ -857,6 +858,7 @@ void MarniDX::Impl::ReleaseAllState()
     if (blendDisabled) { blendDisabled->Release(); blendDisabled = nullptr; }
     if (sampLinear)    { sampLinear->Release();    sampLinear    = nullptr; }
     if (sampPoint)     { sampPoint->Release();     sampPoint     = nullptr; }
+    if (sampLinearWrap) { sampLinearWrap->Release(); sampLinearWrap = nullptr; }
     if (model3DLayout) { model3DLayout->Release(); model3DLayout = nullptr; }
     if (model3DVS)     { model3DVS->Release();     model3DVS     = nullptr; }
     if (model3DVB)     { model3DVB->Release();     model3DVB     = nullptr; }
@@ -1011,6 +1013,11 @@ BOOL MarniDX::Create(HWND hWnd, int width, int height, BOOL fullScreen,
     }
     ss.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
     if (FAILED(p->device->CreateSamplerState(&ss, &p->sampPoint))) {
+        p->ReleaseAllState(); return FALSE;
+    }
+    ss.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    ss.AddressU = ss.AddressV = ss.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    if (FAILED(p->device->CreateSamplerState(&ss, &p->sampLinearWrap))) {
         p->ReleaseAllState(); return FALSE;
     }
 
@@ -1676,7 +1683,8 @@ static void DrawQuadInternal(MarniDX::Impl* p, const QuadVertex verts[6],
     if (!srv) return; // no fallback at all -- skip
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
@@ -1758,7 +1766,8 @@ void MarniDX::DrawTriangles(const float* verts, int triCount, MarniHandle tex,
     if (!srv) return;
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
@@ -1814,7 +1823,8 @@ void MarniDX::DrawTriangles3D(const float* verts, int triCount, MarniHandle tex,
     if (!srv) return;
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
@@ -1881,7 +1891,8 @@ void MarniDX::DrawTrianglesPersp(const float* verts, int triCount, MarniHandle t
     if (!srv) return;
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 

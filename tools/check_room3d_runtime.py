@@ -105,7 +105,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
     # Further mod roots (an HD background pack, ...) rank after the mesh mod.
     mods = ";".join(["mods"] + ["Z:" + str(Path(m).resolve()).replace("/", "\\") for m in extra_mods])
     (output / "config.ini").write_text(
-        f"[Display]\nFullScreen=0\nWidth=640\nHeight=480\nBitDepth=32\nVSync=1\n[Assets]\nPath={asset_win}\nVersion=USA\nMods={mods}\n[Save]\nPath=saves\n[Game]\nMode=OG\nSkipUnskippableFmv=1\nSkipDoorAnimations=1\n[Debug]\nEnableDebug=1\n"
+        f"[Display]\nFullScreen=0\nWidth=854\nHeight=480\nBitDepth=32\nVSync=1\n[Assets]\nPath={asset_win}\nVersion=USA\nMods={mods}\n[Save]\nPath=saves\n[Game]\nMode=OG\nSkipUnskippableFmv=1\nSkipDoorAnimations=1\n[Debug]\nEnableDebug=1\n"
     )
     keys = [
         (13, 1000, 150),

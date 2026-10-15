@@ -1376,7 +1376,7 @@ class Builder:
                 side = o["wall"]
                 a, b = o["span"]
                 depth, mantel = o.get("depth", 700), o.get("mantel", -1500)
-                line = self._wall_line(side, (a + b) / 2)
+                line = o.get("line", self._wall_line(side, (a + b) / 2))
                 d = SIDES[side]
                 stone, soot = self.use(o.get("material", "stone")), self.use("soot")
                 ow, oh = o.get("opening", (1400, 1100))

@@ -17,11 +17,11 @@ skirting = 160
 cell = 800
 
 [materials]
-plaster = [0.48, 0.36, 0.26]
+plaster = { color = [0.40, 0.24, 0.14], stains = 0.3 }
 "plaster.dark" = [0.18, 0.14, 0.10]
 panel = [0.20, 0.10, 0.06]
 planks = [0.22, 0.12, 0.08]
-runner = [0.44, 0.08, 0.08]
+runner = { color = [0.44, 0.08, 0.08], motif = [0.26, 0.05, 0.04] }
 wood = [0.24, 0.13, 0.08]
 door = [0.28, 0.16, 0.09]
 

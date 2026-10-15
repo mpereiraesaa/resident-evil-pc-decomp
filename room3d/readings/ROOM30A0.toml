@@ -1,5 +1,9 @@
-# Enrico's room: a cave corridor west with a lantern, a rock in the way, and
-# the wider hall east; the red door on the north wall.
+# Enrico's room: a cave corridor west with the red door at its north end,
+# a link running east along the south side, and the wider hall north of it
+# reached through its east end (collision block 6 is the hall's south wall,
+# not a free-standing rock; camera 4 stands inside it looking north). The
+# west and south walls are set ~500 outside the collision lines so cameras
+# 1 and 2, which stand on those lines, see the corridor instead of black.
 room = "ROOM30A0"
 title = "Enrico room"
 seed = 3100
@@ -15,7 +19,7 @@ trim = "stone"
 cell = 800
 
 [materials]
-"rock.cave" = { color = [0.475, 0.446, 0.288], tile = [2200, 2200] }
+"rock.cave" = { color = [0.40, 0.38, 0.25], tile = [1600, 1600] }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 wood = [0.26, 0.14, 0.10]
@@ -24,12 +28,14 @@ wood = [0.26, 0.14, 0.10]
 ambient = [0.173, 0.173, 0.124]
 
 [[zone]]            # west corridor
-box = [2542, 2700, 6462, 20664]
-[[zone]]            # south link
-box = [6462, 2700, 9036, 7218]
+box = [2000, 2000, 6462, 20664]
+[[zone]]            # south link running east
+box = [6462, 2000, 16164, 7218]
 floor_along = "x"
+[[zone]]            # opening from the link into the hall
+box = [13536, 7218, 16164, 9342]
 [[zone]]            # east hall
-box = [9036, 2700, 16164, 17046]
+box = [9036, 9342, 16164, 17046]
 
 [[door]]
 wall = "north"
@@ -38,34 +44,31 @@ top = -3300
 material = "door.red"
 frame = "stone"
 
-[[column]]          # rock in the east hall
-at = [11268, 8280]
-top = -4200
-radius = 1100
-material = "rock.cave"
-square = true
-
-[[sconce]]
-wall = "west"
-at = [-3200, 6000]
-candles = 1
-strength = 0.5
-reach = 3600
-[[sconce]]
-wall = "west"
-at = [-3200, 17000]
-candles = 1
-strength = 0.5
-reach = 3600
-[[sconce]]
-wall = "east"
-at = [-3200, 12000]
-candles = 1
-strength = 0.5
-reach = 3600
-[[sconce]]
+[[sconce]]          # lantern beside the door (camera 0)
 wall = "north"
-at = [-3200, 14000]
+line = 20664
+at = [-3400, 5600]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]          # corridor lantern (camera 1)
+wall = "east"
+line = 6462
+at = [-3400, 8500]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]          # link lantern (camera 2)
+wall = "south"
+line = 2000
+at = [-3400, 10000]
+candles = 1
+strength = 0.5
+reach = 3600
+[[sconce]]          # lantern on the hall's south wall (camera 3)
+wall = "south"
+line = 9342
+at = [-3400, 9700]
 candles = 1
 strength = 0.5
 reach = 3600

@@ -1,6 +1,11 @@
 # Underground entry: a rough cave U around a rock mass, yellow-green rock,
-# lanterns, red iron doors south and east, a wooden desk in the east leg
-# (camera 3). Views decode since the 316-pixel row fix.
+# lanterns. A red iron door closes the south end of the west leg; the east
+# leg runs on past its collision line to an end wall with a rusty ladder, and
+# a second iron door sits in a recess to its east (both cast from camera 0).
+# A pale dressed-stone pillar stands in the east leg near its north end;
+# a wooden desk with a typewriter sits in a niche at the north-west corner
+# of the rock mass (cast from camera 3; collision circle 6 is the desk, not
+# a pillar).
 room = "ROOM3070"
 title = "Underground entry"
 seed = 3070
@@ -19,6 +24,8 @@ cell = 800
 "rock.cave" = { color = [0.475, 0.446, 0.288], tile = [2200, 2200] }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
+"brick.pillar" = { color = [0.62, 0.60, 0.48], rows = 6, per_row = 2, stains = 0.5 }
+rust = [0.42, 0.16, 0.10]
 wood = [0.46, 0.20, 0.12]
 
 [lighting]
@@ -26,8 +33,12 @@ ambient = [0.147, 0.147, 0.105]
 
 [[zone]]            # west leg
 box = [2052, 2826, 5692, 22734]
-[[zone]]            # east leg
-box = [10500, 2826, 14364, 22734]
+[[zone]]            # east leg (camera 0 shows its floor running on to z~500, past the collision line)
+box = [10500, 500, 14364, 22734]
+[[zone]]            # recess east of the south end, holding the iron door (camera 0, left)
+box = [14364, 500, 17600, 2826]
+[[zone]]            # niche cut into the rock mass at the north-west corner, holding the desk
+box = [5692, 16200, 9000, 18936]
 [[zone]]            # north connection
 box = [5692, 18936, 10500, 22734]
 floor_along = "x"
@@ -40,42 +51,41 @@ material = "door.red"
 frame = "stone"
 [[door]]
 wall = "south"
-span = [10500, 12100]
-top = -3300
-material = "door.red"
-frame = "stone"
-[[door]]
-wall = "east"
-span = [2826, 4900]
+span = [15700, 17200]
 top = -3300
 material = "door.red"
 frame = "stone"
 
-[[column]]          # rock pillars at the north end
+[[column]]          # rock pillar at the north-east corner of the rock mass
 at = [10017, 17901]
 top = -4200
 radius = 900
 material = "rock.cave"
 square = true
-[[column]]
-at = [6012, 18108]
+[[column]]          # pale dressed-stone pillar in the east leg (camera 2, base cast at z~16250)
+at = [11250, 16350]
 top = -4200
-radius = 900
-material = "rock.cave"
+radius = 450
+material = "brick.pillar"
 square = true
 
-[[object]]          # wooden desk with a typewriter (camera 3)
-kind = "box"
-box = [11000, 15500, 12400, 16500]
+[[object]]          # wooden desk with a typewriter in the niche (camera 3)
+kind = "table"
+box = [5400, 16500, 6300, 18700]
 top = -1300
+thickness = 900
 material = "wood"
-omit = ["bottom"]
-[[object]]
-kind = "box"
-box = [11300, 15800, 12000, 16300]
-top = -1520
-bottom = -1300
-material = "enamel"
+with = "typewriter"
+[[object]]          # rusty ladder up the south end wall of the east leg (camera 0)
+kind = "ladder"
+box = [11000, 500, 11800, 680]
+top = -4200
+
+[[light]]           # lamp light at the south end of the east leg (camera 0)
+at = [12800, -3200, 1800]
+color = [1.0, 0.95, 0.75]
+strength = 0.5
+reach = 4500
 
 [[sconce]]
 wall = "west"

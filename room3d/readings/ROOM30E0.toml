@@ -1,23 +1,25 @@
-# Underground save room: grey stone walls, a desk with the typewriter and
-# a chair, a chest against the west wall, a cabinet in the north-west, the
-# door at the south end of the west wall.
+# Underground save room: dark rough grey rock walls with moss streaks, a
+# desk with the typewriter and a chair, a chest against the west wall, a
+# cabinet in the north-west, the door in the south wall. Camera 3 is the
+# typewriter close-up and keeps the original background.
 room = "ROOM30E0"
 title = "Underground save room"
 seed = 3140
+backdrop = [3]
 
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.floor"
-wall_material = "stone.grey"
-ceiling_material = "stone.grey"
+floor_material = "rock.floor"
+wall_material = "rock.grey"
+ceiling_material = "rock.grey"
 skirting = 0
 trim = "stone"
 cell = 600
 
 [materials]
-"stone.grey" = { color = [0.812, 0.812, 0.783], tile = [1400, 1400] }
-"stone.floor" = { color = [0.493, 0.493, 0.464], tile = [1400, 1400] }
+"rock.grey" = { color = [0.36, 0.36, 0.37], tile = [2400, 2400], slabs = 14, moss = 0.3 }
+"rock.floor" = { color = [0.30, 0.30, 0.31], tile = [1800, 1800], slabs = 24, moss = 0.1 }
 stone = [0.725, 0.725, 0.696]
 wood = [0.30, 0.16, 0.10]
 door = [0.30, 0.17, 0.10]

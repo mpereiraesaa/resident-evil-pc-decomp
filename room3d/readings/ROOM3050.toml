@@ -1,116 +1,445 @@
-# Fountain court: a round stone basin in a paved court between hedges and
-# trees, a sunken spiral stair in the west, the courtyard door west and
-# the elevator shed north. Open to the sky.
+# Fountain court at night: dark stone paving between tall hedges and the
+# forest, a white shed wall with a double door on the west side of the west
+# court, a stone balustrade with square posts along the south and east edges
+# and around the hedge bed in the north-east. The fountain is a raised stone
+# ring on a two-step round platform (platform from collision circle 0, ring
+# from blocks 4-6); its rim is a ring of overlapping stone drums around the
+# water. Camera 5 is the cutscene of the drained fountain revealing the
+# spiral stair and lift: kept as the original background (the builder has no
+# spiral stair). The west strip floor is the rust-red lift deck seen from
+# camera 0; the machinery beside the shed is a dark box. Tree trunks in the
+# planters are not modelled.
 room = "ROOM3050"
 title = "Fountain"
 seed = 3050
+backdrop = [5]
 
 [shell]
 floor = 0
 ceiling = -14000
 floor_material = "rock.flag"
 wall_material = "forest"
-dado = 2200
-dado_material = "stone.hedge"
+dado = 0
 ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1500
 
 [materials]
-"rock.flag" = { color = [0.28, 0.29, 0.27], tile = [2000, 2000] }
-"stone.hedge" = { color = [0.232, 0.377, 0.174], tile = [1600, 1600] }
-stone = [0.26, 0.27, 0.27]
+"rock.flag" = { color = [0.25, 0.25, 0.26], tile = [2000, 2000], moss = 0.0 }
+"plaster.shed" = { color = [0.70, 0.72, 0.78], stains = 0.2 }
+"concrete.lift" = { color = [0.34, 0.13, 0.09], stains = 0.5 }
+forest = { color = [0.14, 0.22, 0.12] }
+leaves = { color = [0.12, 0.22, 0.10] }
+stone = [0.22, 0.23, 0.25]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
+water = [0.16, 0.22, 0.22]
 
 [lighting]
-ambient = [0.198, 0.222, 0.222]
+ambient = [0.20, 0.21, 0.23]
 
 [[zone]]            # east court around the fountain
 box = [10440, 2070, 30420, 23220]
 [[zone]]            # west court
 box = [2412, 14598, 10440, 23220]
-[[zone]]            # west strip north of the beds
+[[zone]]            # west strip north of the beds (the lift deck)
 box = [2592, 12132, 10440, 14598]
 floor_along = "x"
+floor_material = "concrete.lift"
+[[zone]]            # drop beyond the south balustrade, trees further off
+box = [10440, -2500, 32000, 2070]
+open_floor = true
+depth = 4000
+shaft_material = "leaves"
+[[zone]]            # drop beyond the east balustrade
+box = [30420, 2070, 32000, 19935]
+open_floor = true
+depth = 4000
+shaft_material = "leaves"
 
+[[object]]          # white shed wall along the west court (stands proud of the hedge wall)
+kind = "box"
+box = [2000, 12132, 2500, 23220]
+top = -6200
+material = "plaster.shed"
+omit = ["bottom", "west"]
 [[door]]
 wall = "west"
+line = 2500
 span = [15200, 19000]
-top = -3600
+top = -3800
 material = "door"
 frame = "stone"
+[[object]]          # lift machinery beside the shed (block 14)
+kind = "box"
+box = [2592, 12600, 4000, 14300]
+top = -1100
+material = "iron"
+omit = ["bottom"]
 
-# Fountain basin
+# Fountain: two round steps, the ring of rim stones, the water and the plinth
 [[object]]
 kind = "cylinder"
 at = [21618, 11088]
 radius = 5724
-top = -700
+top = -250
 material = "stone"
-segments = 24
+segments = 28
+group = "fountain"
 [[object]]
 kind = "cylinder"
-at = [21618, 11088]
-radius = 5100
+at = [22300, 11250]
+radius = 5150
 top = -500
-bottom = -690
-material = "water"
-segments = 24
+bottom = -250
+material = "stone"
+segments = 28
+group = "fountain"
 [[object]]
 kind = "cylinder"
-at = [21618, 11088]
-radius = 1400
-top = -1400
+at = [22878, 11358]
+radius = 5000
+top = -600
 bottom = -500
 material = "stone"
+segments = 28
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [27178, 11358]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [27004, 12569]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [26495, 13683]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [25694, 14608]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [24664, 15269]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [23490, 15614]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [22266, 15614]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [21092, 15269]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [20062, 14608]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [19261, 13683]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [18752, 12569]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [18578, 11358]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [18752, 10147]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [19261, 9033]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [20062, 8108]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [21092, 7447]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [22266, 7102]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [23490, 7102]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [24664, 7447]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [25694, 8108]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [26495, 9033]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [27004, 10147]
+radius = 700
+top = -1300
+bottom = -600
+material = "stone"
+segments = 8
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [22878, 11358]
+radius = 4000
+top = -1050
+bottom = -600
+material = "water"
+segments = 24
+group = "fountain"
+[[object]]
+kind = "cylinder"
+at = [22878, 11358]
+radius = 900
+top = -1800
+bottom = -1050
+material = "stone"
 segments = 12
+group = "fountain"
 
-# Hedge beds and tree pits
+# Hedge beds and planters
 [[object]]
 kind = "box"
-box = [6390, 2070, 12672, 14562]
+box = [6390, 2070, 12672, 12132]
 top = -1600
 material = "leaves"
 omit = ["bottom"]
 [[object]]
 kind = "box"
-box = [17496, 19548, 30420, 23220]
-top = -1200
-material = "leaves"
-omit = ["bottom"]
-[[object]]
-kind = "box"
-box = [2592, 10062, 4320, 12132]
-top = -1200
+box = [17800, 19935, 30420, 23220]
+top = -500
 material = "leaves"
 omit = ["bottom"]
 
-# Sunken spiral stair in the west court
+# Stone pedestals (blocks 13, 17, 25)
 [[object]]
-kind = "cylinder"
-at = [7731, 14481]
-radius = 900
-top = -600
+kind = "box"
+box = [7200, 13950, 8260, 15010]
+top = -1500
 material = "stone"
-segments = 14
+omit = ["bottom"]
 [[object]]
-kind = "cylinder"
-at = [7731, 14481]
-radius = 700
-top = -590
-bottom = 3000
-material = "soot"
-segments = 14
+kind = "box"
+box = [12100, 13920, 13190, 15010]
+top = -1500
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [12030, 8100, 13100, 9180]
+top = -1500
+material = "stone"
+omit = ["bottom"]
+
+# Balustrades: south edge, east edge, and around the north-east hedge bed
+[[object]]
+kind = "rail"
+from = [12627, 2016]
+to = [30429, 2016]
+height = 1000
+spacing = 400
+material = "stone"
+[[object]]
+kind = "rail"
+from = [30429, 2016]
+to = [30429, 19395]
+height = 1000
+spacing = 400
+material = "stone"
+[[object]]
+kind = "rail"
+from = [17973, 19935]
+to = [30429, 19935]
+height = 1000
+spacing = 400
+material = "stone"
+[[object]]
+kind = "rail"
+from = [17973, 19935]
+to = [17800, 23220]
+height = 1000
+spacing = 400
+material = "stone"
+[[object]]
+kind = "box"
+box = [12297, 1686, 12957, 2346]
+top = -1400
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [21396, 1660, 22056, 2320]
+top = -1400
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [30099, 1659, 30759, 2319]
+top = -1400
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [30170, 10479, 30830, 11139]
+top = -1400
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [30170, 19065, 30830, 19725]
+top = -1400
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [17643, 19605, 18303, 20265]
+top = -1400
+material = "stone"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [17470, 22670, 18130, 23330]
+top = -1400
+material = "stone"
+omit = ["bottom"]
 
 [[light]]
 at = [21618, -4000, 11088]
 color = [0.75, 0.85, 1.0]
-strength = 0.35
+strength = 0.5
 reach = 12000
+[[light]]           # lamp over the shed door
+at = [4000, -4500, 17000]
+color = [0.80, 0.88, 1.0]
+strength = 0.6
+reach = 9000
 [[light]]
-at = [6000, -3500, 18500]
+at = [14000, -4000, 18000]
 color = [0.75, 0.85, 1.0]
 strength = 0.3
-reach = 8000
+reach = 9000

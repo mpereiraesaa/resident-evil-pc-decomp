@@ -1,9 +1,12 @@
-# Straight passage: a long cave corridor with lanterns, the red double
-# door with the Umbrella plaque on the north wall, a red door at the east
-# end of the north wall and a door at the west end.
+# Straight passage: a long cave corridor of dark mossy rock with lanterns,
+# the red double door on the north wall, a red door at the east end of the
+# north wall and a door at the west end. The Umbrella plaque hangs on the
+# north wall near the west end (cast from camera 4); camera 4 is the
+# plaque close-up and keeps the original background.
 room = "ROOM30D0"
 title = "Straight passage"
 seed = 3130
+backdrop = [4]
 
 [shell]
 floor = 0
@@ -16,7 +19,7 @@ trim = "stone"
 cell = 900
 
 [materials]
-"rock.cave" = { color = [0.475, 0.446, 0.288], tile = [2200, 2200] }
+"rock.cave" = { color = [0.29, 0.32, 0.22], tile = [1600, 1600], moss = 0.8 }
 stone = [0.638, 0.667, 0.435]
 "door.red" = [0.48, 0.12, 0.08]
 "double_door.red" = [0.46, 0.12, 0.08]
@@ -50,13 +53,12 @@ top = -3300
 material = "door.red"
 frame = "stone"
 
-[[object]]          # Umbrella plaque beside the double door
-kind = "wall_band"
+[[painting]]        # Umbrella plaque near the west end (camera 4)
 wall = "north"
-span = [17000, 19400]
-y = [-2800, -1800]
+span = [3350, 4700]
+y = [-3100, -2250]
 material = "panel.red"
-rail = false
+frame = "wood"
 
 [[sconce]]
 wall = "north"

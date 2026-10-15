@@ -3,8 +3,7 @@
 # court, a stone balustrade with square posts along the south and east edges
 # and around the hedge bed in the north-east. The fountain is a raised stone
 # ring on a two-step round platform (platform from collision circle 0, ring
-# from blocks 4-6); its rim is a ring of overlapping stone drums around the
-# water. Camera 5 is the cutscene of the drained fountain revealing the
+# from blocks 4-6); its rim is a solid stone ring with water inside. Camera 5 is the cutscene of the drained fountain revealing the
 # spiral stair and lift: kept as the original background (the builder has no
 # spiral stair). The west strip floor is the rust-red lift deck seen from
 # camera 0; the machinery beside the shed is a dark box. Tree trunks in the
@@ -105,203 +104,17 @@ bottom = -500
 material = "stone"
 segments = 28
 group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [27178, 11358]
-radius = 700
+[[object]]          # the stone rim round the basin, water inside
+kind = "ring"
+at = [22878, 11358]
+inner = 3600
+outer = 5000
 top = -1300
 bottom = -600
+segments = 32
 material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [27004, 12569]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [26495, 13683]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [25694, 14608]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [24664, 15269]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [23490, 15614]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [22266, 15614]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [21092, 15269]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [20062, 14608]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [19261, 13683]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [18752, 12569]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [18578, 11358]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [18752, 10147]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [19261, 9033]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [20062, 8108]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [21092, 7447]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [22266, 7102]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [23490, 7102]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [24664, 7447]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [25694, 8108]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [26495, 9033]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
-group = "fountain"
-[[object]]
-kind = "cylinder"
-at = [27004, 10147]
-radius = 700
-top = -1300
-bottom = -600
-material = "stone"
-segments = 8
+fill = "water"
+fill_y = -950
 group = "fountain"
 [[object]]
 kind = "cylinder"

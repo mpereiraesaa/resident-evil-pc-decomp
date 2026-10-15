@@ -1,0 +1,128 @@
+# Mansion 2F passage (return visit): white plaster heavily stained grey and
+# ochre, tall polished red-wood skirting, dark red planks, a dark teal ceiling,
+# black iron lantern sconces. A long north-south leg along x 15498-17532 with
+# a blue door and the ornate wooden lift gate on its west side and red
+# curtains on its east wall, a wider bay at its middle, a south leg west to a
+# door, and a west leg ending at a carved door. From ROOM7130.RDT collision
+# and its seven backgrounds.
+room = "ROOM7130"
+title = "2F lantern passage"
+seed = 7130
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+skirting = 450
+trim = "wood"
+cornice = 200
+cell = 700
+
+[materials]
+plaster = { color = [0.62, 0.62, 0.60], stains = 0.45 }
+"plaster.ceiling" = [0.10, 0.16, 0.16]
+planks = { color = [0.26, 0.09, 0.06], tile = [1400, 1400] }
+wood = [0.36, 0.10, 0.06]
+"door.blue" = [0.12, 0.16, 0.34]
+door = [0.34, 0.20, 0.10]
+"door.carved" = [0.46, 0.28, 0.12]
+"grating.gate" = [0.36, 0.18, 0.08]
+velvet = [0.44, 0.08, 0.07]
+
+[lighting]
+ambient = [0.15, 0.15, 0.15]
+
+[[zone]]            # long north-south leg
+box = [15498, 1998, 17532, 22428]
+floor_along = "z"
+[[zone]]            # middle bay
+box = [12240, 9666, 15498, 12492]
+[[zone]]            # south leg
+box = [8784, 1998, 15498, 4572]
+floor_along = "x"
+[[zone]]            # link north from the south leg
+box = [8784, 4572, 11592, 7974]
+[[zone]]            # west leg
+box = [1980, 5634, 8784, 7974]
+floor_along = "x"
+
+[[door]]            # blue door on the west side of the long leg
+wall = "west"
+span = [14600, 16300]
+top = -3300
+material = "door.blue"
+[[door]]            # ornate lift gate
+wall = "west"
+line = 15498
+span = [7600, 9600]
+top = -3500
+material = "grating.gate"
+[[door]]
+wall = "west"
+line = 8784
+span = [2200, 3600]
+top = -3200
+material = "door"
+[[door]]
+wall = "west"
+span = [6100, 7500]
+top = -3200
+material = "door.carved"
+
+[[object]]          # red curtains on the east wall
+kind = "box"
+box = [17300, 12600, 17532, 13300]
+top = -3800
+material = "velvet"
+omit = ["east"]
+[[object]]
+kind = "box"
+box = [17300, 14300, 17532, 15000]
+top = -3800
+material = "velvet"
+omit = ["east"]
+
+[[sconce]]
+wall = "west"
+at = [-2700, 13900]
+candles = 1
+strength = 0.4
+reach = 4500
+[[sconce]]
+wall = "west"
+at = [-2700, 17000]
+candles = 1
+strength = 0.4
+reach = 4500
+[[sconce]]
+wall = "east"
+at = [-2700, 9000]
+candles = 1
+strength = 0.4
+reach = 4500
+[[sconce]]
+wall = "south"
+at = [-2700, 13500]
+candles = 1
+strength = 0.4
+reach = 4500
+[[sconce]]
+wall = "east"
+at = [-2700, 6300]
+candles = 1
+strength = 0.4
+reach = 4500
+[[sconce]]
+wall = "north"
+at = [-2700, 6000]
+candles = 1
+strength = 0.4
+reach = 4500
+[[sconce]]
+wall = "north"
+at = [-2700, 3600]
+candles = 1
+strength = 0.4
+reach = 4500

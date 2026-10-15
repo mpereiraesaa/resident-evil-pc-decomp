@@ -1,0 +1,58 @@
+# Mansion 2F stair-head alcove (return visit): one steep camera looking down
+# at a cream floor medallion with a gold wreath inside a dark red and gold
+# square frame, grey-green plaster walls with a dark cornice, red carpeted
+# stairs with a wrought red balustrade descending on the east side. Two
+# scripted exits (stairs down). From ROOM7000.RDT collision and its one
+# background; the stairs are a guess at what lies beyond the frame edge.
+room = "ROOM7000"
+title = "Stair-head alcove"
+seed = 7000
+
+[shell]
+floor = 0
+ceiling = -4800
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster"
+skirting = 200
+trim = "wood"
+cornice = 300
+cell = 500
+
+[materials]
+plaster = { color = [0.44, 0.44, 0.40], stains = 0.3 }
+wood = [0.16, 0.08, 0.06]
+planks = { color = [0.14, 0.08, 0.06], tile = [1200, 1200] }
+"border.gold" = { color = [0.60, 0.46, 0.22], motif = [0.70, 0.58, 0.32] }
+"carpet.square" = { color = [0.36, 0.08, 0.07], motif = [0.36, 0.08, 0.07], tile = [1700, 2400] }
+
+[lighting]
+ambient = [0.18, 0.16, 0.14]
+
+[[zone]]
+box = [1764, 1800, 3942, 5076]
+
+[[object]]          # red square frame with a gold border
+kind = "rug"
+box = [2000, 2238, 3706, 4638]
+material = "carpet.square"
+border = 140
+border_material = "border.gold"
+[[object]]          # cream medallion disc
+kind = "cylinder"
+at = [2853, 3438]
+radius = 720
+top = -14
+material = "paper"
+segments = 24
+[[object]]          # balustrade at the stair head on the east side
+kind = "rail"
+from = [3900, 1900]
+to = [3900, 5000]
+material = "rust"
+
+[[light]]
+at = [2853, -4000, 3438]
+color = [1.0, 0.92, 0.80]
+strength = 0.4
+reach = 5000

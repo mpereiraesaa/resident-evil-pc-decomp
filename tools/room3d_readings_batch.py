@@ -18,6 +18,7 @@ import shutil
 import subprocess
 import sys
 import time
+import tomllib
 from pathlib import Path
 
 import numpy as np
@@ -72,6 +73,8 @@ def main():
     parser.add_argument("--checker", type=Path, default=ROOT / "tools" / "check_room3d_runtime.py",
                         help="check_room3d_runtime.py to use (lives in the root checkout)")
     parser.add_argument("--siblings", type=Path, help="room3d_rooms.py catalog JSON to copy identical layouts")
+    parser.add_argument("--merge", action="store_true",
+                        help="keep entries already in report.json for rooms not rebuilt this run")
     args = parser.parse_args()
     usa = args.assets / "USA" if (args.assets / "USA").is_dir() else args.assets
     args.out.mkdir(parents=True, exist_ok=True)
@@ -112,7 +115,11 @@ def main():
             entry["cameras"] = cameras
             entry["edge"] = [(c, round(p, 2), round(r, 2)) for c, p, r in scores]
             weak = []
+            backdrop = set(tomllib.loads(reading.read_text()).get("backdrop", []))
+            entry["backdrop"] = sorted(backdrop)
             for index in range(cameras):
+                if index in backdrop:  # keeps the original background in game
+                    continue
                 pixels = np.asarray(Image.open(built / f"preview-camera{index}.png").convert("L"), dtype=float)
                 coverage, mean = float((pixels > 3).mean()), float(pixels.mean())
                 if coverage < 0.6 or mean < 12:
@@ -135,6 +142,10 @@ def main():
         entry["seconds"] = round(time.monotonic() - started, 1)
         report.append(entry)
         print(f"{stem}: {entry['status']} ({entry['seconds']}s)", flush=True)
+    if args.merge and (args.out / "report.json").exists():
+        rebuilt = {e["room"] for e in report}
+        kept = [e for e in json.loads((args.out / "report.json").read_text()) if e["room"] not in rebuilt]
+        report = sorted(kept + report, key=lambda e: e["room"])
     (args.out / "report.json").write_text(json.dumps(report, indent=1))
     loaded = sum(1 for e in report if e.get("runtime", {}).get("mesh_loaded"))
     weak = sum(len(e.get("weak_cameras", [])) for e in report)

@@ -1,0 +1,76 @@
+# Mansion B1 passage (return visit), twin of ROOM71A0: blue-grey stained
+# plaster, tall pale skirting, grey stone-tile floor, single-bulb wall lamps.
+# U-shaped: long south leg with a wooden door on its north wall near the west
+# end, a cross leg north at x 19926-23076 and a north leg east ending at a red
+# wooden door. From ROOM71B0.RDT collision and its six backgrounds.
+room = "ROOM71B0"
+title = "B1 return passage"
+seed = 7111
+
+[shell]
+floor = 0
+ceiling = -3700
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+skirting = 420
+trim = "plaster.trim"
+cornice = 120
+cell = 700
+
+[materials]
+plaster = { color = [0.24, 0.30, 0.38], stains = 0.55 }
+"plaster.ceiling" = [0.34, 0.34, 0.32]
+"plaster.trim" = [0.50, 0.52, 0.48]
+"stone.floor" = { color = [0.38, 0.42, 0.44], tile = [1500, 1500] }
+door = [0.44, 0.28, 0.13]
+"door.red" = [0.42, 0.18, 0.10]
+wood = [0.40, 0.26, 0.13]
+
+[lighting]
+ambient = [0.10, 0.12, 0.14]
+
+[[zone]]            # long south leg, west part
+box = [1998, 1890, 19926, 5292]
+floor_along = "x"
+[[zone]]            # long south leg, east part (dead end)
+box = [19926, 1890, 29484, 5310]
+floor_along = "x"
+[[zone]]            # cross leg north
+box = [19926, 5310, 23076, 14310]
+floor_along = "z"
+[[zone]]            # north leg east
+box = [23076, 10944, 28512, 14310]
+floor_along = "x"
+
+[[door]]            # locked door on the north wall of the south leg
+wall = "north"
+span = [3700, 5100]
+top = -3000
+material = "door.red"
+[[door]]            # door at the east end of the north leg
+wall = "east"
+span = [11900, 13300]
+top = -3000
+material = "door"
+
+[[wall_lamp]]
+strength = 0.6
+wall = "south"
+at = [-2500, 6500]
+[[wall_lamp]]
+strength = 0.6
+wall = "south"
+at = [-2500, 15500]
+[[wall_lamp]]
+strength = 0.6
+wall = "south"
+at = [-2500, 25500]
+[[wall_lamp]]
+strength = 0.6
+wall = "west"
+at = [-2500, 8000]
+[[wall_lamp]]
+strength = 0.6
+wall = "north"
+at = [-2500, 25500]

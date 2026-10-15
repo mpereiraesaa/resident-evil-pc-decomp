@@ -1,0 +1,171 @@
+# Mansion B1 kitchen (return visit): grimy white wall tiles with dark grout,
+# dark concrete floor, dark ceiling with an extractor duct. A long steel prep
+# table in the middle, steel counters, a range hood and wall cabinets on the
+# north wall, lockers and a glazed shelf unit on the west wall, a microwave on
+# a steel trolley, a two-door steel fridge against the central block, and the
+# red-caged service elevator on that block's east face. Doors: red-framed one
+# on the south wall (locked), one in the north-west alcove.
+# From ROOM71C0.RDT collision and its five backgrounds.
+room = "ROOM71C0"
+title = "Kitchen"
+seed = 7112
+
+[shell]
+floor = 0
+ceiling = -3600
+floor_material = "concrete.floor"
+wall_material = "tiles"
+ceiling_material = "concrete.ceiling"
+skirting = 0
+cornice = 0
+cell = 700
+
+[materials]
+tiles = { color = [0.76, 0.76, 0.70], tile = [2400, 2400], grime = 0.55 }
+"tiles.dark" = { color = [0.40, 0.40, 0.36], tile = [2400, 2400], grime = 0.6 }
+"concrete.floor" = { color = [0.24, 0.21, 0.18], tile = [3000, 3000] }
+"concrete.ceiling" = [0.16, 0.16, 0.15]
+steel = [0.40, 0.42, 0.38]
+door = [0.36, 0.14, 0.08]
+"door.red" = [0.40, 0.12, 0.08]
+"grating.cage" = [0.40, 0.10, 0.08]
+crate = [0.46, 0.14, 0.10]
+plastic = [0.56, 0.56, 0.52]
+"carpet.mat" = { color = [0.56, 0.18, 0.10], motif = [0.80, 0.62, 0.40], tile = [1500, 800] }
+
+[lighting]
+ambient = [0.18, 0.18, 0.16]
+
+[[zone]]            # main kitchen
+box = [1800, 1908, 14562, 9144]
+[[zone]]            # north-west alcove by the door
+box = [1800, 9144, 4500, 11250]
+[[zone]]            # strip south of the central block
+box = [14562, 1908, 19260, 4392]
+floor_along = "x"
+[[zone]]            # east strip in front of the elevator
+box = [19260, 1908, 21096, 11250]
+floor_along = "z"
+wall_materials = { west = "tiles.dark" }
+
+[[door]]            # locked door to the B1 passage
+wall = "south"
+span = [5700, 7300]
+top = -3000
+material = "door.red"
+[[door]]
+wall = "east"
+span = [9400, 10900]
+top = -3000
+material = "door"
+[[door]]            # service elevator cage
+wall = "west"
+line = 19260
+span = [5400, 8100]
+top = -3000
+material = "grating.cage"
+
+[[object]]          # steel counters along the north wall
+kind = "box"
+box = [4500, 8300, 14562, 9144]
+top = -900
+material = "steel"
+omit = ["bottom", "north"]
+[[object]]          # range top
+kind = "box"
+box = [11200, 8400, 13600, 9144]
+top = -960
+bottom = -900
+material = "iron"
+[[object]]          # wall cabinets
+kind = "box"
+box = [5200, 8700, 11000, 9144]
+top = -3000
+bottom = -2050
+material = "steel"
+omit = ["north"]
+[[object]]          # range hood
+kind = "box"
+box = [11200, 8200, 13700, 9144]
+top = -3000
+bottom = -2350
+material = "steel"
+omit = ["north"]
+[[object]]          # two-door fridge against the central block
+kind = "box"
+box = [13700, 5300, 14562, 7900]
+top = -2700
+material = "steel"
+omit = ["bottom", "east"]
+[[object]]          # long prep table
+kind = "table"
+box = [5940, 3510, 12942, 7128]
+top = -950
+thickness = 140
+material = "steel"
+[[object]]          # lockers on the west wall
+kind = "box"
+box = [1800, 1950, 2400, 3300]
+top = -2400
+material = "plastic"
+omit = ["bottom", "west"]
+[[object]]          # steel trolley with the microwave
+kind = "table"
+box = [1850, 5200, 2700, 6900]
+top = -950
+thickness = 60
+material = "steel"
+[[object]]
+kind = "box"
+box = [1900, 5400, 2600, 6400]
+top = -1450
+bottom = -950
+material = "enamel"
+[[object]]          # glazed shelf unit
+kind = "box"
+box = [1800, 7000, 2400, 8400]
+top = -2500
+material = "glass_dark"
+omit = ["bottom", "west"]
+[[object]]          # red crate at the end of the east strip
+kind = "box"
+box = [20300, 10500, 21096, 11250]
+top = -600
+material = "crate"
+[[object]]          # mat by the range
+kind = "rug"
+box = [10200, 7300, 11800, 8200]
+material = "carpet.mat"
+[[object]]          # floor drain grate
+kind = "box"
+box = [13300, 3000, 14000, 3700]
+top = -10
+material = "grating"
+[[object]]          # ceiling strip lights
+kind = "strip"
+at = [9400, 5300]
+length = 2400
+[[object]]
+kind = "strip"
+at = [4000, 5300]
+length = 1600
+[[object]]
+kind = "strip"
+at = [20200, 6600]
+length = 1400
+
+[[light]]
+at = [9400, -3200, 5300]
+color = [0.95, 0.98, 0.90]
+strength = 0.55
+reach = 7000
+[[light]]
+at = [4000, -3200, 5300]
+color = [0.95, 0.98, 0.90]
+strength = 0.4
+reach = 5000
+[[light]]
+at = [20200, -3200, 6600]
+color = [0.95, 0.98, 0.90]
+strength = 0.35
+reach = 5000

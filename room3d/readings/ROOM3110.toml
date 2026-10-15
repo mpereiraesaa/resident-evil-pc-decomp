@@ -1,0 +1,21 @@
+# Courtyard event room: camera 0 looks over a concrete wall with a railing
+# and forest beyond, cameras 1-2 are close-ups of the concrete floor and wall
+# used by a scripted scene. Its only collision is a degenerate 36 by 18 block,
+# so nobody walks here; all three cameras keep their original backgrounds.
+# The mesh is a minimal floor so the room still loads.
+room = "ROOM3110"
+title = "Courtyard event"
+seed = 3110
+backdrop = [0, 1, 2]
+
+[shell]
+floor = 0
+ceiling = -4000
+floor_material = "concrete"
+wall_material = "concrete"
+ceiling_material = "concrete"
+skirting = 0
+cornice = 0
+
+[[zone]]
+box = [0, 0, 36, 18]

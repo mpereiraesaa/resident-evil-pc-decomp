@@ -1,0 +1,92 @@
+# Mansion 2F small study (return visit): grey stained plaster dado under dark
+# wood frames with black panels, an ornamental dark frieze, a pale ceiling
+# with dark beams, dark grey stone-tile floor. A tall bookcase and a small
+# stand east of the south door, a pedestal table in the middle, a three-pane
+# window on the north wall. Camera 2 is an exterior aerial shot of the
+# mansion and keeps its original background.
+# From ROOM7180.RDT collision and its three backgrounds.
+room = "ROOM7180"
+title = "Small study"
+seed = 7180
+backdrop = [2]
+
+[shell]
+floor = 0
+ceiling = -4300
+floor_material = "stone.floor"
+wall_material = "panel.dark"
+ceiling_material = "plaster.ceiling"
+dado = 1700
+dado_material = "plaster"
+chair_rail = true
+skirting = 180
+trim = "wood"
+cornice = 350
+cell = 600
+
+[materials]
+plaster = { color = [0.40, 0.40, 0.38], stains = 0.6 }
+"plaster.ceiling" = [0.56, 0.56, 0.54]
+"panel.dark" = { color = [0.16, 0.12, 0.10], tile = [1500, 1500] }
+"stone.floor" = { color = [0.20, 0.21, 0.21], tile = [1400, 1400] }
+wood = [0.20, 0.12, 0.08]
+door = [0.30, 0.17, 0.09]
+night = [0.12, 0.20, 0.22]
+
+[lighting]
+ambient = [0.14, 0.14, 0.14]
+
+[[zone]]
+box = [1926, 2034, 5886, 8982]
+[[zone]]
+box = [5886, 2664, 8820, 8982]
+
+[[beam]]
+box = [1926, 4200, 8820, 4500]
+top = -4300
+[[beam]]
+box = [1926, 6800, 8820, 7100]
+top = -4300
+
+[[door]]
+wall = "south"
+span = [4550, 5550]
+top = -3000
+material = "door"
+
+[[window]]
+kind = "rect"
+wall = "north"
+at = 4900
+half = 1300
+sill = -1500
+height = 2000
+panes = 3
+glass = "night"
+
+[[object]]          # tall bookcase east of the door, against the wall jog
+kind = "bookcase"
+box = [5950, 2664, 7250, 3130]
+top = -2300
+front = "north"
+[[object]]          # small stand with an ornament
+kind = "box"
+box = [7300, 2664, 7600, 3200]
+top = -1100
+material = "wood"
+[[object]]
+kind = "table_round"
+at = [5382, 5454]
+radius = 650
+top = -950
+
+[[light]]
+at = [4900, -2200, 8200]
+color = [0.70, 0.80, 0.95]
+strength = 0.25
+reach = 5000
+[[light]]
+at = [5000, -3800, 5000]
+color = [1.0, 0.92, 0.78]
+strength = 0.22
+reach = 5000

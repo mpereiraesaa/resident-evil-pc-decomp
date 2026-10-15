@@ -1,0 +1,138 @@
+# Mansion private library (return visit): stained beige plaster, a dark
+# green ornamented ceiling with hanging lamps, grey square floor tiles. Tall
+# red-brown bookcases against the south and north walls, a free-standing
+# island, a double-sided case closing a desk alcove in the north-east (desk,
+# lamp and book piles), a green stone pillar on the west wall with a white
+# bust beside it, brass sconces by the east door.
+# From ROOM7170.RDT collision and its six backgrounds.
+room = "ROOM7170"
+title = "Private library"
+seed = 7170
+
+[shell]
+floor = 0
+ceiling = -5000
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "wallpaper.ceiling"
+skirting = 200
+trim = "stone"
+cornice = 300
+cell = 800
+
+[materials]
+plaster = { color = [0.44, 0.40, 0.31], stains = 0.35 }
+"wallpaper.ceiling" = { color = [0.14, 0.20, 0.17], motif = [0.24, 0.32, 0.28] }
+"stone.floor" = { color = [0.24, 0.24, 0.22], tile = [1800, 1800] }
+"stone.pillar" = [0.18, 0.22, 0.18]
+stone = [0.46, 0.44, 0.36]
+wood = [0.26, 0.07, 0.05]
+books = { color = [0.26, 0.07, 0.05], shelves = 6 }
+door = [0.22, 0.10, 0.07]
+porcelain = [0.78, 0.78, 0.76]
+
+[lighting]
+ambient = [0.15, 0.15, 0.13]
+
+[[zone]]            # main room
+box = [2988, 3096, 11232, 14652]
+[[zone]]            # desk alcove
+box = [7812, 12402, 11232, 15912]
+
+[[door]]
+wall = "east"
+span = [3500, 4700]
+top = -3300
+material = "door"
+
+[[object]]          # stone pillar against the west wall
+kind = "box"
+box = [2988, 8316, 3384, 10098]
+top = -5000
+material = "stone.pillar"
+omit = ["bottom", "west"]
+[[object]]          # white bust on a pedestal beside the pillar
+kind = "urn"
+at = [3750, 9900]
+radius = 260
+top = -1900
+pedestal = 450
+pedestal_top = -1100
+material = "porcelain"
+[[object]]          # bookcase against the south wall
+kind = "bookcase"
+box = [6012, 3096, 7956, 4374]
+top = -3000
+front = ["north", "west", "east"]
+[[object]]          # island bookcase
+kind = "bookcase"
+box = [5724, 5364, 8334, 9792]
+top = -3000
+front = ["west", "east", "south", "north"]
+[[object]]          # bookcases along the north wall
+kind = "bookcase"
+box = [3400, 14100, 7812, 14652]
+top = -3000
+front = "south"
+[[object]]          # double-sided case closing the alcove
+kind = "bookcase"
+box = [7848, 11250, 11232, 12402]
+top = -3000
+front = ["north", "south", "west"]
+[[object]]          # alcove bookcase on its north side
+kind = "bookcase"
+box = [7812, 15300, 9700, 15912]
+top = -3000
+front = "south"
+[[object]]          # bookcase along the west wall, north of the pillar
+kind = "bookcase"
+box = [2988, 10400, 3500, 13900]
+top = -3000
+front = "east"
+[[object]]          # desk in the alcove
+kind = "table"
+box = [9800, 13600, 11232, 15000]
+top = -900
+thickness = 140
+[[object]]
+kind = "lamp"
+at = [10200, 14600]
+base = -900
+height = 700
+[[object]]          # book piles on the desk and floor
+kind = "box"
+box = [10500, 13800, 11000, 14200]
+top = -1200
+bottom = -900
+material = "books"
+[[object]]
+kind = "box"
+box = [9300, 13700, 9750, 14200]
+top = -600
+material = "books"
+
+[[chandelier]]
+at = [6000, 7200]
+y = -4100
+radius = 200
+globes = 2
+globe_radius = 140
+ceiling = -5000
+strength = 0.4
+reach = 6500
+[[chandelier]]
+at = [6000, 12000]
+y = -4100
+radius = 200
+globes = 2
+globe_radius = 140
+ceiling = -5000
+strength = 0.35
+reach = 6000
+
+[[sconce]]
+wall = "east"
+at = [-2400, 5100]
+candles = 1
+strength = 0.35
+reach = 4500

@@ -53,14 +53,28 @@ def _grain(rng, size):
     return grain, streak
 
 
-def tex_plaster(rng, size, color, stains=0.0):
+def tex_plaster(rng, size, color, stains=0.0, peel=0.0, ivy=0.0, under=(0.42, 0.28, 0.16)):
     yy, xx = np.mgrid[0:size, 0:size] / size
     mottle = value_noise((size, size), rng, octaves=4, base_freq=3)
     fine = value_noise((size, size), rng, octaves=2, base_freq=64, persistence=0.5)
     level = 0.82 + 0.20 * mottle + 0.07 * fine
     if stains:
         level -= stains * np.clip(value_noise((size, size), rng, octaves=3, base_freq=2) - 0.55, 0, 1) * 2.0
-    return np.array(color)[None, None, :] * level[..., None]
+    image = np.array(color)[None, None, :] * level[..., None]
+    if peel:
+        # Flaked-off patches showing the ochre render beneath, with dark rims.
+        field = value_noise((size, size), rng, octaves=5, base_freq=4)
+        cut = 1.0 - 0.5 * peel
+        bare = field > cut
+        rim = (field > cut - 0.025) & ~bare
+        image = np.where(bare[..., None], np.array(under)[None, None, :] * (0.8 + 0.3 * fine)[..., None], image)
+        image = tint(rim.astype(float) * 0.8, image, (0.10, 0.08, 0.06))
+    if ivy:
+        trail = value_noise((size, size), rng, octaves=5, base_freq=6)
+        hang = np.clip(1.2 - yy * 1.6, 0, 1)  # ivy creeps down from the top of the tile
+        leaves = (trail * hang) > (0.62 - 0.25 * ivy)
+        image = tint(leaves.astype(float) * 0.9, image, (0.20, 0.28, 0.10))
+    return image
 
 
 def tex_wood(rng, size, color):
@@ -398,6 +412,50 @@ def tex_stripes(rng, size, color, stripe=(0.72, 0.40, 0.34), count=10):
     return tint(dots.astype(float) * 0.7, paper, tuple(c * 0.7 for c in stripe))
 
 
+def tex_books(rng, size, color, shelves=4):
+    """Bookcase front: wooden shelf boards with rows of coloured spines."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    grain, streak = _grain(rng, size)
+    wood = np.array(color)[None, None, :] * (0.70 + 0.25 * grain + 0.15 * streak)[..., None]
+    image = wood * 0.35
+    palette = np.array([(0.42, 0.10, 0.08), (0.14, 0.20, 0.32), (0.18, 0.26, 0.14),
+                        (0.46, 0.34, 0.18), (0.30, 0.22, 0.14), (0.52, 0.46, 0.34), (0.12, 0.10, 0.09)])
+    row_h = size // shelves
+    board = max(4, row_h // 9)
+    for row in range(shelves):
+        y0, y1 = row * row_h + board, (row + 1) * row_h
+        x = int(rng.integers(0, 6))
+        while x < size - 4:
+            w = int(rng.integers(size // 64, size // 26))
+            top = y0 + int(rng.integers(0, row_h // 4))
+            if rng.random() < 0.08:  # gap or leaning book
+                x += w
+                continue
+            spine = palette[rng.integers(len(palette))] * (0.75 + 0.5 * rng.random())
+            image[top:y1, x:x + w - 1] = spine
+            band = top + (y1 - top) // 5
+            image[band:band + 2, x:x + w - 1] = spine * 1.6
+            x += w
+        image[row * row_h:row * row_h + board] = wood[row * row_h:row * row_h + board]
+    frame = (xx < 0.03) | (xx > 0.97)
+    return np.where(frame[..., None], wood, image)
+
+
+def tex_tiles(rng, size, color, count=6, grout=(0.30, 0.30, 0.28), grime=0.4):
+    """Square ceramic tiles with dark grout and grime running down."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    mottle = value_noise((size, size), rng, octaves=3, base_freq=4)
+    cell = (np.sin((np.floor(xx * count) * 7.1 + np.floor(yy * count) * 13.3) * 12.9898) * 43758.5453) % 1
+    level = 0.90 + 0.08 * cell + 0.06 * mottle
+    if grime:
+        streaks = value_noise((size, size), rng, octaves=3, base_freq=6)
+        drip = np.clip(value_noise((size, size), rng, octaves=2, base_freq=2) - 0.45, 0, 1) * (0.6 + 0.4 * streaks)
+        level -= grime * drip * 1.6
+    image = np.array(color)[None, None, :] * level[..., None]
+    lines = ((xx * count) % 1 < 0.035) | ((yy * count) % 1 < 0.035)
+    return tint(lines.astype(float) * 0.85, image, grout)
+
+
 # family -> (generator, default colour, default tile)
 FAMILIES = {
     "plaster": (tex_plaster, (0.70, 0.60, 0.46), (1400, 1400)),
@@ -428,6 +486,8 @@ FAMILIES = {
     "grating": (tex_grating, (0.50, 0.52, 0.52), (1200, 1200)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),
+    "books": (tex_books, (0.26, 0.15, 0.09), (1800, 2400)),
+    "tiles": (tex_tiles, (0.74, 0.74, 0.70), (1200, 1200)),
 }
 SOLIDS = {
     "glow": {"kd": (1.0, 0.96, 0.84), "emissive": True},
@@ -723,6 +783,16 @@ class Builder:
             return (line, y, along)
         return (along, y, line)
 
+    def _wall_box(self, side, line, u0, u1, v0, v1, out0, out1, material, along=0):
+        """Box on a wall: u along the wall, v heights, out = distance into the room."""
+        d = SIDES[side]
+        if side in ("west", "east"):
+            xa, xb = sorted((line + d[0] * out0, line + d[0] * out1))
+            self.mesh.box((xa, min(v0, v1), along + u0), (xb, max(v0, v1), along + u1), material)
+        else:
+            za, zb = sorted((line + d[2] * out0, line + d[2] * out1))
+            self.mesh.box((along + u0, min(v0, v1), za), (along + u1, max(v0, v1), zb), material)
+
     def _globes(self, ch):
         cx, cz = ch["at"]
         r, phase, n = ch.get("radius", 650), ch.get("phase", 0.0), ch.get("globes", 4)
@@ -895,6 +965,23 @@ class Builder:
                     eu = (1, 0, 0) if d[2] < 0 else (-1, 0, 0)
                     mesh.rect(origin, eu, (0, -1, 0), 2 * r + 300, r + 150, glass)
                     mesh.box((along - r - 150, sill, min(line, z) - 50), (along + r + 150, sill + 90, max(line, z)), self.use("wood"))
+            elif kind == "rect":  # square-headed window with mullions and a deep frame
+                glass = self.use(w.get("glass", "glass"))
+                frame = self.use(w.get("frame", "wood"))
+                half, sill, height = w.get("half", 1200), w["sill"], w.get("height", 2400)
+                top = sill - height
+                wall_rect(mesh, side, line + (d[0] + d[2]) * 30, along - half, along + half, sill, top, glass)
+                bar = w.get("bar", 110)
+                self._wall_box(side, line, -half - bar, half + bar, top - bar, top, 0, 160, frame, along=along)
+                self._wall_box(side, line, -half - bar - 60, half + bar + 60, sill, sill + 140, 0, 260, frame, along=along)
+                for u in (-half - bar, half):
+                    self._wall_box(side, line, u, u + bar, top, sill, 0, 160, frame, along=along)
+                panes = w.get("panes", 3)
+                for k in range(1, panes):
+                    u = -half + 2 * half * k / panes
+                    self._wall_box(side, line, u - 40, u + 40, top, sill, 0, 90, frame, along=along)
+                if w.get("transom"):
+                    self._wall_box(side, line, -half, half, w["transom"] - 40, w["transom"] + 40, 0, 90, frame, along=along)
             else:  # tall arched window
                 glass = self.use("glass")
                 half, sill, height = w.get("half", 1200), w["sill"], w.get("height", 4200)
@@ -1267,14 +1354,14 @@ class Builder:
                     mesh.box((x0 - 60 * (d[0] < 0), mantel - 150, a - 120), (x1 + 60 * (d[0] > 0), mantel, b + 120), stone)
                     cz = (a + b) / 2
                     fx = x1 if d[0] > 0 else x0
-                    mesh.box((min(fx, fx - d[0] * 300) , -oh, cz - ow / 2), (max(fx, fx - d[0] * 300) + 1, floor, cz + ow / 2), soot)
+                    mesh.box((min(fx, fx + d[0] * 8), -oh, cz - ow / 2), (max(fx, fx + d[0] * 8), floor, cz + ow / 2), soot)
                 else:
                     z0, z1 = (line, line + depth) if d[2] > 0 else (line - depth, line)
                     mesh.box((a, mantel, z0), (b, floor, z1), stone, omit=("bottom", side))
                     mesh.box((a - 120, mantel - 150, z0 - 60 * (d[2] < 0)), (b + 120, mantel, z1 + 60 * (d[2] > 0)), stone)
                     cx = (a + b) / 2
                     fz = z1 if d[2] > 0 else z0
-                    mesh.box((cx - ow / 2, -oh, min(fz, fz - d[2] * 300)), (cx + ow / 2, floor, max(fz, fz - d[2] * 300) + 1), soot)
+                    mesh.box((cx - ow / 2, -oh, min(fz, fz + d[2] * 8)), (cx + ow / 2, floor, max(fz, fz + d[2] * 8)), soot)
             elif kind == "urn":
                 x, z = o["at"]
                 r, top = o.get("radius", 500), o.get("top", -1600)
@@ -1373,6 +1460,63 @@ class Builder:
                 wood = self.use("wood")
                 mesh.box((x - 100, o.get("top", -1200), z - 100), (x + 100, floor, z + 100), wood, omit=("bottom",))
                 mesh.sphere((x, o.get("top", -1200) - 100, z), 110, wood, rings=4, segments=8)
+            elif kind == "bookcase":
+                # Wooden carcass whose open face shows shelves of books.
+                x0, z0, x1, z1 = o["box"]
+                fronts = o.get("front", "south")
+                fronts = [fronts] if isinstance(fronts, str) else list(fronts)
+                top, bottom = o.get("top", -2400), o.get("bottom", floor)
+                wood, books = self.use(o.get("material", "wood")), self.use(o.get("books", "books"))
+                mesh.box((x0, top, z0), (x1, bottom, z1), wood, omit=("bottom", *fronts))
+                faces = ("top", "bottom", "south", "north", "west", "east")
+                mesh.box((x0, top, z0), (x1, bottom, z1), books, omit=tuple(f for f in faces if f not in fronts))
+            elif kind == "ladder":
+                # Two rails along the footprint's long horizontal axis with rungs between.
+                x0, z0, x1, z1 = o["box"]
+                top, bottom = o["top"], o.get("bottom", floor)
+                metal = self.use(o.get("material", "rust"))
+                rail = o.get("rail", 70)
+                along_x = (x1 - x0) >= (z1 - z0)
+                mid = (z0 + z1) / 2 if along_x else (x0 + x1) / 2
+                if along_x:
+                    for rx in (x0, x1 - rail):
+                        mesh.box((rx, top, mid - rail / 2), (rx + rail, bottom, mid + rail / 2), metal, omit=("bottom",))
+                else:
+                    for rz in (z0, z1 - rail):
+                        mesh.box((mid - rail / 2, top, rz), (mid + rail / 2, bottom, rz + rail), metal, omit=("bottom",))
+                y = bottom - o.get("first", 300)
+                while y > top + 100:
+                    if along_x:
+                        mesh.box((x0 + rail, y - 40, mid - 25), (x1 - rail, y, mid + 25), metal)
+                    else:
+                        mesh.box((mid - 25, y - 40, z0 + rail), (mid + 25, y, z1 - rail), metal)
+                    y -= o.get("spacing", 330)
+            elif kind == "trophy":
+                # Mounted deer head: wooden plaque, head and neck, two antlers.
+                side = o["wall"]
+                y, along = o["at"]
+                d = SIDES[side]
+                wx, _, wz = self._wall_point(side, (y, along))
+                wood, fur, horn = self.use("wood"), self.use(o.get("material", "rust")), self.use("paper")
+
+                k = o.get("scale", 1.0)
+
+                def block(u0, u1, v0, v1, out0, out1, material):
+                    # u along the wall, v height offset from y, out = distance from the wall; all scaled by k
+                    u0, u1, out0, out1 = u0 * k, u1 * k, out0 * k, out1 * k
+                    v0, v1 = y + v0 * k, y + v1 * k
+                    if side in ("west", "east"):
+                        xa, xb = sorted((wx + d[0] * out0, wx + d[0] * out1))
+                        mesh.box((xa, v0, along + u0), (xb, v1, along + u1), material)
+                    else:
+                        za, zb = sorted((wz + d[2] * out0, wz + d[2] * out1))
+                        mesh.box((along + u0, v0, za), (along + u1, v1, zb), material)
+                block(-260, 260, -330, 330, 0, 60, wood)
+                block(-130, 130, -220, 160, 60, 360, fur)
+                block(-100, 100, -120, 60, 360, 620, fur)
+                for sgn in (-1, 1):
+                    block(sgn * 120 - 25, sgn * 120 + 25, -600, -220, 160, 210, horn)
+                    block(sgn * 120 + (0 if sgn > 0 else -160), sgn * 120 + (160 if sgn > 0 else 0), -520, -480, 160, 210, horn)
             else:
                 raise ValueError(f"unknown object kind {kind}")
             mesh.set_group(None)
@@ -1404,9 +1548,12 @@ class Builder:
         x, z = o["at"]
         r, top = o.get("radius", 450), o.get("top", -1550)
         wood = self.use("wood")
-        mesh.cylinder(x, z, 330, -110, floor, wood, segments=12)
-        mesh.cylinder(x, z, 60, top + 70, -110, wood, segments=8, caps=False)
-        mesh.cylinder(x, z, r, top, top + 70, wood, segments=14)
+        if o.get("cloth"):  # skirted table: the cloth falls to the floor
+            mesh.cylinder(x, z, r, top, floor, self.use(o["cloth"]), segments=16)
+        else:
+            mesh.cylinder(x, z, 330, -110, floor, wood, segments=12)
+            mesh.cylinder(x, z, 60, top + 70, -110, wood, segments=8, caps=False)
+            mesh.cylinder(x, z, r, top, top + 70, wood, segments=14)
         if o.get("with") == "typewriter":
             enamel, paper, iron = self.use("enamel"), self.use("paper"), self.use("iron")
             mesh.box((x - 300, top - 90, z - 260), (x + 290, top, z + 200), enamel)
@@ -1444,6 +1591,8 @@ class Builder:
         for h in self.reading.get("hide", []):
             for g in h["groups"]:
                 lines.append(f"hide {h['camera']} {g}")
+        # Cameras that keep the original background (cutscene/aerial views).
+        lines += [f"backdrop {c}" for c in self.reading.get("backdrop", [])]
         return "\n".join(lines) + ("\n" if lines else "")
 
     def build(self):

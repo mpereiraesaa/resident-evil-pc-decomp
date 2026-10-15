@@ -1,0 +1,60 @@
+# Mansion 2F closet study (return visit): dark streaked wood on every wall,
+# worn wide plank floor, a dark L-shaped desk in the west corner with a red
+# upholstered chair, a door at the east end. From ROOM7190.RDT collision and
+# its two backgrounds (ceiling height is a guess, neither camera sees it).
+room = "ROOM7190"
+title = "Closet study"
+seed = 7190
+
+[shell]
+floor = 0
+ceiling = -4000
+floor_material = "planks"
+wall_material = "wood.wall"
+ceiling_material = "wood.wall"
+skirting = 160
+cornice = 0
+cell = 600
+
+[materials]
+"wood.wall" = { color = [0.16, 0.10, 0.06], tile = [1200, 2400] }
+planks = { color = [0.34, 0.22, 0.13], tile = [1400, 1400] }
+wood = [0.26, 0.10, 0.07]
+door = [0.14, 0.09, 0.06]
+velvet = [0.50, 0.08, 0.16]
+
+[lighting]
+ambient = [0.18, 0.15, 0.12]
+
+[[zone]]
+box = [1210, 1836, 8118, 5004]
+floor_along = "x"
+
+[[door]]
+wall = "east"
+span = [2200, 3600]
+top = -3000
+material = "door"
+
+[[object]]          # desk, north arm
+kind = "box"
+box = [2598, 4212, 3978, 5004]
+top = -900
+material = "wood"
+omit = ["bottom", "north", "west"]
+[[object]]          # desk, long arm along the west wall
+kind = "box"
+box = [1210, 1950, 2598, 5004]
+top = -900
+material = "wood"
+omit = ["bottom", "west", "south"]
+[[object]]
+kind = "chair"
+at = [3000, 3300]
+facing = "west"
+
+[[light]]
+at = [4500, -3200, 3400]
+color = [1.0, 0.86, 0.66]
+strength = 0.5
+reach = 6000

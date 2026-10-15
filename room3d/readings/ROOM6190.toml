@@ -1,0 +1,143 @@
+# Mansion 1F study (return visit): navy and white striped wallpaper with torn
+# patches, red-brown planks, a cream patterned rug. A dark wardrobe in the
+# south-east corner beside the door, a bookcase along the west wall, a desk
+# under the north window (green-framed panes, cream curtains), small framed
+# pictures, a potted plant and red upholstered chairs. Cameras 0-1 show the
+# room lit and 2-3 dark; the mesh bakes the lit state.
+# From ROOM6190.RDT collision and its four backgrounds.
+room = "ROOM6190"
+title = "Study"
+seed = 6190
+
+[shell]
+floor = 0
+ceiling = -5400
+floor_material = "planks"
+wall_material = "stripes"
+ceiling_material = "plaster.ceiling"
+skirting = 200
+trim = "wood"
+cornice = 200
+cell = 600
+
+[materials]
+stripes = { color = [0.24, 0.26, 0.42], stripe = [0.62, 0.64, 0.74], count = 9 }
+"plaster.ceiling" = [0.20, 0.20, 0.22]
+planks = { color = [0.36, 0.14, 0.08], tile = [1400, 1400] }
+wood = [0.18, 0.10, 0.07]
+books = { color = [0.16, 0.10, 0.07], shelves = 5 }
+door = [0.16, 0.10, 0.07]
+"carpet.rug" = { color = [0.66, 0.60, 0.50], motif = [0.46, 0.36, 0.30], tile = [2400, 3000] }
+velvet = [0.62, 0.20, 0.08]
+night = [0.06, 0.14, 0.18]
+linen = [0.62, 0.58, 0.46]
+hedge = [0.16, 0.30, 0.12]
+
+[lighting]
+ambient = [0.18, 0.17, 0.16]
+
+[[zone]]
+box = [1836, 2216, 6822, 9126]
+
+[[door]]
+wall = "south"
+span = [5000, 6300]
+top = -3300
+material = "door"
+
+[[window]]
+kind = "rect"
+wall = "north"
+at = 3300
+half = 900
+sill = -1300
+height = 2600
+panes = 3
+transom = -2600
+glass = "night"
+frame = "hedge"
+
+[[window]]          # second narrow window behind the plant
+kind = "rect"
+wall = "north"
+at = 6350
+half = 380
+sill = -1300
+height = 2600
+panes = 1
+transom = -2600
+glass = "night"
+frame = "hedge"
+
+[[object]]          # curtains either side of the window
+kind = "box"
+box = [2100, 8900, 2400, 9126]
+top = -4200
+material = "linen"
+[[object]]
+kind = "box"
+box = [4200, 8900, 4500, 9126]
+top = -4200
+material = "linen"
+[[object]]          # wardrobe in the south-east corner
+kind = "box"
+box = [6000, 2216, 6822, 4400]
+top = -3000
+material = "wood"
+omit = ["bottom", "east", "south"]
+[[object]]          # bookcase along the west wall
+kind = "bookcase"
+box = [1836, 2800, 2500, 6400]
+top = -2800
+front = "east"
+[[object]]          # desk under the window
+kind = "table"
+box = [4600, 8100, 6600, 9126]
+top = -900
+thickness = 140
+[[object]]          # drawers under the desk
+kind = "box"
+box = [4700, 8300, 5300, 9000]
+top = -760
+material = "wood"
+[[object]]          # potted plant beside the desk
+kind = "cylinder"
+at = [6550, 8700]
+radius = 250
+top = -500
+material = "porcelain"
+[[object]]
+kind = "cylinder"
+at = [6550, 8700]
+radius = 380
+top = -1500
+bottom = -500
+material = "hedge"
+[[object]]
+kind = "rug"
+box = [3000, 3300, 5600, 7200]
+material = "carpet.rug"
+[[object]]
+kind = "chair"
+at = [5700, 6700]
+facing = "north"
+half = 320
+
+[[painting]]
+wall = "north"
+span = [5000, 5600]
+y = [-3500, -3000]
+[[painting]]
+wall = "north"
+span = [5900, 6500]
+y = [-3500, -3000]
+[[painting]]
+wall = "north"
+span = [5200, 6000]
+y = [-2800, -2300]
+
+[[light]]
+at = [4300, -4600, 5600]
+color = [1.0, 0.92, 0.78]
+strength = 0.45
+reach = 7000

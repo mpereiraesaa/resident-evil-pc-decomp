@@ -1,0 +1,128 @@
+# Mansion 2F library (return visit): pale stained marble-effect plaster walls
+# with thin dark pilasters, a dark beamed ceiling, large grey-green stone
+# tiles. Tall dark bookcases: a long double-sided island in the middle, one
+# along the west wall, two spurs off the west wall, one against the north
+# wall; a reading desk in the north-east corner, a small red stool and a side
+# table. Blue panelled door on the east wall, dark doors on the west wall
+# (south end) and the north wall. From ROOM7160.RDT collision and its seven
+# backgrounds.
+room = "ROOM7160"
+title = "Library"
+seed = 7160
+
+[shell]
+floor = 0
+ceiling = -5400
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "wood.ceiling"
+skirting = 160
+trim = "wood"
+cornice = 200
+cell = 800
+
+[materials]
+plaster = { color = [0.62, 0.58, 0.48], stains = 0.6 }
+"stone.floor" = { color = [0.30, 0.30, 0.24], tile = [2400, 2400] }
+"wood.ceiling" = [0.14, 0.11, 0.08]
+wood = [0.16, 0.10, 0.07]
+books = { color = [0.18, 0.11, 0.07], shelves = 5 }
+"door.blue" = [0.16, 0.24, 0.52]
+door = [0.22, 0.10, 0.07]
+velvet = [0.48, 0.10, 0.10]
+
+[lighting]
+ambient = [0.17, 0.16, 0.14]
+
+[[zone]]            # main hall
+box = [1962, 2592, 14112, 15804]
+[[zone]]            # south strip east of the jog
+box = [9072, 2052, 11196, 2592]
+
+[[beam]]
+box = [1962, 6000, 14112, 6300]
+top = -5400
+[[beam]]
+box = [1962, 10000, 14112, 10300]
+top = -5400
+[[beam]]
+box = [9800, 2592, 10100, 15804]
+top = -5400
+
+[[door]]
+wall = "east"
+span = [9500, 11400]
+top = -3500
+material = "door.blue"
+[[door]]
+wall = "west"
+span = [2900, 4200]
+top = -3200
+material = "door"
+[[door]]
+wall = "north"
+span = [4200, 5200]
+top = -3200
+material = "door"
+
+[[object]]          # south-east block (closet behind the wall)
+kind = "box"
+box = [11196, 2052, 14112, 6786]
+top = -5400
+material = "plaster"
+omit = ["bottom", "south", "east"]
+[[object]]          # long double-sided island bookcase
+kind = "bookcase"
+box = [5886, 4266, 7794, 13518]
+top = -2600
+front = ["west", "east"]
+[[object]]          # bookcase along the west wall
+kind = "bookcase"
+box = [1962, 4878, 2538, 12888]
+top = -2600
+front = "east"
+[[object]]          # spur off the west wall (north)
+kind = "bookcase"
+box = [1962, 11718, 4518, 13392]
+top = -2600
+front = ["south", "north", "east"]
+[[object]]          # spur off the west wall (south)
+kind = "bookcase"
+box = [1962, 4464, 4626, 6120]
+top = -2600
+front = ["south", "north", "east"]
+[[object]]          # low shelf across the west bay
+kind = "bookcase"
+box = [2538, 9090, 3816, 9882]
+top = -1200
+front = ["south", "north"]
+[[object]]          # bookcase against the north wall
+kind = "bookcase"
+box = [6354, 15336, 8316, 15804]
+top = -2600
+front = "south"
+[[object]]          # reading desk in the north-east corner
+kind = "table"
+box = [12366, 14436, 14112, 15804]
+top = -900
+thickness = 160
+[[object]]          # side table by the north wall
+kind = "table"
+box = [10500, 14900, 11600, 15700]
+top = -800
+[[object]]          # small red stool
+kind = "box"
+box = [4300, 8200, 4800, 8700]
+top = -450
+material = "velvet"
+
+[[light]]
+at = [10000, -4600, 9000]
+color = [1.0, 0.94, 0.82]
+strength = 0.4
+reach = 9000
+[[light]]
+at = [4000, -4600, 9000]
+color = [1.0, 0.94, 0.82]
+strength = 0.3
+reach = 7000

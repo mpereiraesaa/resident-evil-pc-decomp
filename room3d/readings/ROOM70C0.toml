@@ -1,0 +1,158 @@
+# Mansion piano room and the ruined passage behind it (return visit).
+# Piano room (cameras 0-3): beige panelled walls between dark wood pilasters
+# over a dark wood dado, a pale ornamented ceiling with a carved frieze and a
+# brass chandelier, a large green-black and white checker floor. Green marble
+# fireplace with brick interior on the east wall, a red door near the east
+# wall's north end, a black upright piano in the south-west corner, a small
+# table and chairs in the south-east corner, paintings and wall lamps.
+# Ruined passage (cameras 4-7): peeling plaster over ochre brick with ivy, a
+# mossy floor with a stone-lined hatch and ladder down.
+# From ROOM70C0.RDT collision and its eight backgrounds.
+room = "ROOM70C0"
+title = "Piano room"
+seed = 7012
+
+[shell]
+floor = 0
+ceiling = -5400
+floor_material = "checker.floor"
+wall_material = "plaster.wall"
+ceiling_material = "plaster.ceiling"
+dado = 900
+dado_material = "wood"
+chair_rail = true
+skirting = 160
+trim = "wood"
+cornice = 500
+cell = 800
+
+[materials]
+"checker.floor" = { color = [0.66, 0.70, 0.68], dark = [0.10, 0.16, 0.15], tile = [2400, 2400] }
+"plaster.wall" = { color = [0.50, 0.46, 0.36], stains = 0.2 }
+"plaster.dark" = [0.10, 0.09, 0.08]
+"concrete.moss" = { color = [0.22, 0.22, 0.12], stains = 0.8, panels = 1 }
+"plaster.ceiling" = { color = [0.60, 0.58, 0.54], stains = 0.3 }
+wood = [0.18, 0.12, 0.08]
+"door.red" = [0.52, 0.10, 0.08]
+"marble.green" = [0.26, 0.34, 0.30]
+"plaster.ruin" = { color = [0.40, 0.38, 0.33], stains = 0.6, peel = 0.6, ivy = 0.5, tile = [3000, 5600] }
+stone = [0.52, 0.50, 0.46]
+lacquer = [0.06, 0.07, 0.12]
+velvet = [0.46, 0.22, 0.12]
+
+[lighting]
+ambient = [0.20, 0.19, 0.16]
+
+[[zone]]            # piano room
+box = [2052, 2052, 10926, 20952]
+[[zone]]            # ruined passage
+box = [12402, 1800, 23940, 5346]
+floor_along = "x"
+floor_material = "concrete.moss"
+wall_material = "plaster.ruin"
+ceiling_material = "plaster.dark"
+ceiling = -7200
+
+[[door]]
+wall = "east"
+line = 10926
+span = [17600, 18900]
+top = -3600
+material = "door.red"
+
+[[object]]          # green marble fireplace
+kind = "fireplace"
+wall = "east"
+line = 10926
+span = [9342, 12510]
+depth = 1300
+mantel = -1900
+opening = [1600, 1300]
+material = "marble.green"
+[[object]]          # black upright piano
+kind = "box"
+box = [2400, 2052, 4500, 2900]
+top = -1500
+material = "lacquer"
+omit = ["bottom", "south"]
+[[object]]          # keyboard shelf
+kind = "box"
+box = [2550, 2900, 4350, 3200]
+top = -800
+bottom = -650
+material = "lacquer"
+[[object]]          # small table and chairs in the south-east corner
+kind = "table_round"
+at = [9800, 3200]
+radius = 420
+top = -800
+[[object]]
+kind = "chair"
+at = [9000, 3000]
+facing = "east"
+seat = "velvet"
+[[object]]
+kind = "chair"
+at = [10300, 2600]
+facing = "north"
+seat = "velvet"
+[[object]]          # stone-lined hatch with a ladder in the ruined passage
+kind = "box"
+box = [16542, 2808, 18684, 4446]
+top = -60
+material = "stone"
+[[object]]
+kind = "box"
+box = [16842, 3108, 18384, 4146]
+top = -62
+bottom = -60
+material = "soot"
+omit = ["bottom"]
+
+[[painting]]
+wall = "north"
+span = [3000, 4600]
+y = [-3400, -2300]
+[[painting]]
+wall = "north"
+span = [5400, 6200]
+y = [-3200, -2500]
+[[painting]]
+wall = "south"
+span = [6000, 7400]
+y = [-3400, -2300]
+
+[[chandelier]]
+at = [6500, 11500]
+y = -4300
+radius = 600
+globes = 6
+globe_radius = 110
+ceiling = -5400
+strength = 0.3
+reach = 9000
+
+[[sconce]]
+wall = "north"
+at = [-2800, 7400]
+candles = 1
+strength = 0.35
+reach = 5000
+[[sconce]]
+wall = "south"
+at = [-2800, 4800]
+candles = 1
+strength = 0.35
+reach = 5000
+[[sconce]]
+wall = "west"
+at = [-2800, 11500]
+candles = 1
+strength = 0.3
+reach = 5000
+
+[[light]]           # dim light leaking into the ruined passage
+at = [18000, -4000, 3500]
+color = [0.80, 0.74, 0.62]
+strength = 0.3
+reach = 7000

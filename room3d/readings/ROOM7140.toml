@@ -1,0 +1,125 @@
+# Mansion 2F east corridor (return visit): blue-grey plaster streaked dark,
+# tall dark wood skirting, a blue-grey carpeted floor, a pale blue-grey beamed
+# ceiling, glass-globe wall lamps. A long north-south leg (x 12816-16542)
+# broken by three pairs of plaster piers, a south room east of it with a door
+# on its east side, and a north leg running west to a door on its south wall.
+# From ROOM7140.RDT collision and its five backgrounds.
+room = "ROOM7140"
+title = "2F pier corridor"
+seed = 7140
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "concrete.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+skirting = 600
+trim = "wood"
+cornice = 220
+cell = 800
+
+[materials]
+plaster = { color = [0.40, 0.48, 0.50], stains = 0.5 }
+"plaster.ceiling" = [0.32, 0.38, 0.40]
+"concrete.floor" = { color = [0.30, 0.32, 0.40], stains = 0.15, panels = 1, tile = [2400, 2400] }
+wood = [0.10, 0.06, 0.05]
+door = [0.30, 0.18, 0.08]
+
+[lighting]
+ambient = [0.13, 0.15, 0.17]
+
+[[zone]]            # long north-south leg
+box = [12816, 5778, 16542, 29628]
+floor_along = "z"
+[[zone]]            # south room
+box = [17568, 1908, 23454, 7776]
+[[zone]]            # link between the leg and the south room
+box = [16542, 5778, 17568, 7776]
+[[zone]]            # north leg west
+box = [2106, 27216, 12816, 29628]
+floor_along = "x"
+
+[[door]]
+wall = "east"
+span = [5300, 6800]
+top = -3300
+material = "door"
+[[door]]
+wall = "south"
+span = [11000, 12400]
+top = -3300
+material = "door"
+
+[[object]]          # west piers
+kind = "box"
+box = [12816, 14310, 13500, 16992]
+top = -4400
+material = "plaster"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [12816, 18234, 13356, 20790]
+top = -4400
+material = "plaster"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [12816, 22338, 13536, 24696]
+top = -4400
+material = "plaster"
+omit = ["bottom", "west"]
+[[object]]          # east piers
+kind = "box"
+box = [16092, 14454, 16542, 16992]
+top = -4400
+material = "plaster"
+omit = ["bottom", "east"]
+[[object]]
+kind = "box"
+box = [16092, 18360, 16542, 20790]
+top = -4400
+material = "plaster"
+omit = ["bottom", "east"]
+[[object]]
+kind = "box"
+box = [15930, 22428, 16542, 24696]
+top = -4400
+material = "plaster"
+omit = ["bottom", "east"]
+
+[[beam]]
+box = [12816, 15500, 16542, 15800]
+top = -4400
+[[beam]]
+box = [12816, 19400, 16542, 19700]
+top = -4400
+
+[[wall_lamp]]
+wall = "west"
+at = [-2600, 12000]
+strength = 0.6
+[[wall_lamp]]
+wall = "east"
+at = [-2600, 12000]
+strength = 0.6
+[[wall_lamp]]
+wall = "west"
+at = [-2600, 26500]
+strength = 0.6
+[[wall_lamp]]
+wall = "east"
+at = [-2600, 21500]
+strength = 0.6
+[[wall_lamp]]
+wall = "north"
+at = [-2600, 9000]
+strength = 0.6
+[[wall_lamp]]
+wall = "north"
+at = [-2600, 5000]
+strength = 0.6
+[[wall_lamp]]
+wall = "south"
+at = [-2600, 20500]
+strength = 0.6

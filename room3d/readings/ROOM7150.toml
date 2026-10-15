@@ -1,0 +1,131 @@
+# Mansion trophy room (return visit): cream striped wallpaper over a dark
+# panelled dado, dark planks with a patterned rug, a dark ceiling with a
+# brass chandelier. Mounted deer heads on the north and east walls, stuffed
+# birds on a branch by the west wall, a low panelled fireplace in the middle
+# of the north wall, a wooden dresser in the north-west corner, a round table
+# with a white cloth and a plaid armchair. Cameras 0-3 show the room with the
+# lights off and 4-7 lit; the mesh bakes the lit state for all eight.
+# From ROOM7150.RDT collision and its eight backgrounds.
+room = "ROOM7150"
+title = "Trophy room"
+seed = 7150
+
+[shell]
+floor = 0
+ceiling = -5200
+floor_material = "planks"
+wall_material = "stripes"
+ceiling_material = "plaster.ceiling"
+dado = 1400
+dado_material = "panel"
+chair_rail = true
+skirting = 160
+cornice = 260
+cell = 700
+
+[materials]
+stripes = { color = [0.42, 0.34, 0.25], stripe = [0.48, 0.40, 0.30], count = 12 }
+panel = [0.20, 0.19, 0.16]
+"plaster.ceiling" = [0.16, 0.14, 0.12]
+planks = { color = [0.30, 0.17, 0.10], tile = [1600, 1600] }
+wood = [0.32, 0.18, 0.09]
+door = [0.16, 0.10, 0.07]
+"carpet.rug" = { color = [0.46, 0.26, 0.18], motif = [0.66, 0.50, 0.32], tile = [3000, 3000] }
+linen = [0.60, 0.60, 0.56]
+velvet = [0.42, 0.44, 0.50]
+stone = [0.24, 0.22, 0.18]
+rust = [0.36, 0.20, 0.10]
+
+[lighting]
+ambient = [0.17, 0.14, 0.11]
+
+[[zone]]
+box = [2020, 2088, 8676, 12258]
+
+[[door]]
+wall = "east"
+span = [3100, 4600]
+top = -3300
+material = "door"
+
+[[object]]          # low panelled fireplace in the north wall
+kind = "fireplace"
+wall = "north"
+span = [4428, 6516]
+depth = 800
+mantel = -1500
+opening = [900, 900]
+material = "stone"
+[[object]]          # dresser in the north-west corner
+kind = "box"
+box = [2020, 8316, 2628, 11466]
+top = -1300
+material = "wood"
+omit = ["bottom", "west"]
+[[object]]          # low cabinets along the north wall
+kind = "box"
+box = [2628, 11466, 4428, 12258]
+top = -1100
+material = "panel"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [6516, 11466, 8676, 12258]
+top = -1100
+material = "panel"
+omit = ["bottom", "north", "east"]
+[[object]]
+kind = "rug"
+box = [3500, 6400, 6800, 10300]
+material = "carpet.rug"
+[[object]]          # round table with a white cloth
+kind = "table_round"
+at = [4914, 8334]
+radius = 560
+top = -760
+cloth = "linen"
+[[object]]          # book on the table
+kind = "box"
+box = [4800, 8250, 5150, 8500]
+top = -840
+bottom = -760
+material = "rust"
+[[object]]          # plaid armchair
+kind = "chair"
+at = [6040, 6550]
+facing = "west"
+seat = "velvet"
+half = 330
+[[object]]          # birds on a branch by the west wall
+kind = "box"
+box = [2020, 9200, 2400, 9500]
+top = -3600
+bottom = -1300
+material = "wood"
+[[object]]
+kind = "trophy"
+scale = 1.4
+wall = "north"
+at = [-3200, 4700]
+[[object]]
+kind = "trophy"
+scale = 1.4
+wall = "east"
+at = [-3300, 10300]
+
+[[chandelier]]
+at = [5200, 7000]
+y = -4000
+radius = 320
+globes = 4
+globe_radius = 110
+ceiling = -5200
+strength = 0.32
+reach = 6000
+
+[[sconce]]
+wall = "west"
+at = [-2400, 4400]
+candles = 1
+strength = 0.4
+reach = 4500

@@ -1,0 +1,135 @@
+# Mansion stair passage (return visit): grey-green plaster streaked with dark
+# damp, dark wood trim, worn planks. A low west corridor ends at a door; a
+# narrow wooden stair climbs east along the corridor to an upper landing about
+# a storey higher (camera heights put that floor near -6600), where a carved
+# grandfather clock stands behind a wrought balustrade; the upper floor turns
+# south down an east leg and west to a panelled door. Upper floors are slabs
+# over open zones. From ROOM6100.RDT collision and its five backgrounds.
+room = "ROOM6100"
+title = "Clock stair passage"
+seed = 6100
+
+[shell]
+floor = 0
+ceiling = -4400
+floor_material = "planks"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+skirting = 260
+trim = "wood"
+cornice = 200
+cell = 800
+
+[materials]
+plaster = { color = [0.46, 0.48, 0.42], stains = 0.6 }
+"plaster.ceiling" = [0.30, 0.30, 0.27]
+planks = { color = [0.30, 0.20, 0.13], tile = [1400, 1400] }
+wood = [0.30, 0.16, 0.08]
+door = [0.24, 0.15, 0.09]
+porcelain = [0.70, 0.68, 0.56]
+
+[lighting]
+ambient = [0.13, 0.13, 0.12]
+
+[[zone]]            # low west corridor
+box = [2106, 9627, 6354, 11322]
+floor_along = "x"
+[[zone]]            # stair run
+box = [6354, 9627, 13266, 11322]
+floor_along = "x"
+ceiling = -10800
+[[zone]]            # upper landing
+box = [13266, 9627, 18252, 11322]
+open_floor = true
+ceiling = -10800
+[[zone]]            # upper east leg
+box = [16293, 2016, 18252, 9627]
+open_floor = true
+ceiling = -10800
+[[zone]]            # upper south passage
+box = [11952, 2016, 16293, 4484]
+open_floor = true
+ceiling = -10800
+
+[[slab]]
+box = [13266, 9627, 18252, 11322]
+top = -6600
+thickness = 300
+top_material = "planks"
+bottom_material = "plaster"
+edges = ["west"]
+edge_material = "wood"
+[[slab]]
+box = [16293, 2016, 18252, 9627]
+top = -6600
+thickness = 300
+top_material = "planks"
+bottom_material = "plaster"
+[[slab]]
+box = [11952, 2016, 16293, 4484]
+top = -6600
+thickness = 300
+top_material = "planks"
+bottom_material = "plaster"
+
+[[stair]]
+x = [6354, 13266]
+z = [9627, 11322]
+direction = "east"
+top = -6600
+steps = 22
+tread_material = "wood"
+rails = [{ side = "north" }]
+
+[[door]]
+wall = "west"
+span = [9800, 11200]
+top = -3300
+material = "door"
+[[door]]            # upper floor door at the west end of the south passage
+wall = "west"
+line = 11952
+span = [2200, 4300]
+bottom = -6600
+top = -9900
+material = "door"
+
+[[object]]          # grandfather clock on the landing
+kind = "box"
+box = [13400, 10500, 14300, 11322]
+top = -9600
+bottom = -6600
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "box"
+box = [13500, 10440, 14200, 10500]
+top = -9300
+bottom = -8600
+material = "porcelain"
+[[object]]          # wrought balustrade at the landing edge over the stair
+kind = "rail"
+from = [13300, 9700]
+to = [13300, 10450]
+y = -6600
+material = "iron"
+
+[[object]]          # wrought railing along the west side of the upper east leg
+kind = "rail"
+from = [16380, 4550]
+to = [16380, 9600]
+y = -6600
+material = "rust"
+
+[[wall_lamp]]
+wall = "east"
+at = [-9200, 6000]
+strength = 0.6
+[[wall_lamp]]
+wall = "south"
+at = [-9200, 14500]
+strength = 0.6
+[[wall_lamp]]
+wall = "north"
+at = [-2800, 3500]
+strength = 0.5

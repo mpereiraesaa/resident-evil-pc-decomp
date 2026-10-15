@@ -1,0 +1,24 @@
+# Guardhouse/B1 transition view: a single camera looking down a dark well
+# with a wooden ladder and a stone spiral stair. The RDT has one tiny
+# collision block and two scripted exits, so it is a cutscene-style
+# transition rather than a walkable room; the camera keeps its original
+# background. The mesh is a minimal floor so the room still loads.
+room = "ROOM3100"
+title = "Well transition"
+seed = 3100
+backdrop = [0]
+
+[shell]
+floor = 0
+ceiling = -4000
+floor_material = "stone"
+wall_material = "stone"
+ceiling_material = "stone"
+skirting = 0
+cornice = 0
+
+[materials]
+stone = [0.30, 0.28, 0.26]
+
+[[zone]]
+box = [10530, 13063, 11506, 14111]

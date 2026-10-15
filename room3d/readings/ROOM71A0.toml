@@ -1,0 +1,83 @@
+# Mansion B1 passage (return visit): blue-grey stained plaster, tall pale
+# skirting, grey stone-tile floor, dark ceiling with a pale cornice, single-bulb
+# wall lamps. U-shaped: the long south leg ends east at an iron ladder up to a
+# ceiling hatch and west at a wooden door; a cross leg runs north at x 20070-23148
+# and turns east. From ROOM71A0.RDT collision and its six backgrounds.
+room = "ROOM71A0"
+title = "B1 ladder passage"
+seed = 7110
+
+[shell]
+floor = 0
+ceiling = -3700
+floor_material = "stone.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.ceiling"
+skirting = 420
+trim = "plaster.trim"
+cornice = 120
+cell = 700
+
+[materials]
+plaster = { color = [0.24, 0.30, 0.38], stains = 0.55 }
+"plaster.ceiling" = [0.34, 0.34, 0.32]
+"plaster.trim" = [0.50, 0.52, 0.48]
+"stone.floor" = { color = [0.38, 0.42, 0.44], tile = [1500, 1500] }
+door = [0.44, 0.28, 0.13]
+wood = [0.40, 0.26, 0.13]
+rust = [0.30, 0.20, 0.14]
+
+[lighting]
+ambient = [0.10, 0.12, 0.14]
+
+[[zone]]            # long south leg, west part
+box = [1800, 1908, 20070, 5112]
+floor_along = "x"
+[[zone]]            # long south leg, east part to the ladder
+box = [20070, 1908, 29358, 5364]
+floor_along = "x"
+[[zone]]            # cross leg north
+box = [20070, 5364, 23148, 14508]
+floor_along = "z"
+[[zone]]            # north leg east
+box = [23148, 11142, 28512, 14508]
+floor_along = "x"
+
+[[door]]
+wall = "west"
+span = [2900, 4300]
+top = -3000
+material = "door"
+
+[[object]]          # iron ladder against the east end wall
+kind = "ladder"
+box = [29180, 3050, 29330, 4150]
+top = -3700
+[[object]]          # open hatch in the ceiling over the ladder
+kind = "box"
+box = [27900, 2700, 29358, 4500]
+top = -3720
+bottom = -3700
+material = "soot"
+omit = ["top"]
+
+[[wall_lamp]]
+strength = 0.6
+wall = "north"
+at = [-2500, 26500]
+[[wall_lamp]]
+strength = 0.6
+wall = "north"
+at = [-2500, 17000]
+[[wall_lamp]]
+strength = 0.6
+wall = "south"
+at = [-2500, 9500]
+[[wall_lamp]]
+strength = 0.6
+wall = "south"
+at = [-2500, 4200]
+[[wall_lamp]]
+strength = 0.6
+wall = "west"
+at = [-2500, 9500]

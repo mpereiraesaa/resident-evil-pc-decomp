@@ -166,7 +166,8 @@ class Mesh:
                  z + radius * math.sin(i * math.tau / segments)) for i in range(segments)]
         for i, (a, b) in enumerate(ring):
             c, d = ring[(i + 1) % segments]
-            self.poly([(a, bottom, b), (a, top, b), (c, top, d), (c, bottom, d)], material)
+            # side faces: normal flipped to point outward (the winding stays)
+            self.poly([(a, bottom, b), (a, top, b), (c, top, d), (c, bottom, d)], material, flip=True)
         if caps:
             self.poly([(a, top, b) for a, b in ring], material)
             self.poly([(a, bottom, b) for a, b in reversed(ring)], material)
@@ -189,7 +190,7 @@ class Mesh:
         angles = [i * math.tau / segments for i in range(segments)]
         for i, a in enumerate(angles):
             b = angles[(i + 1) % segments]
-            self.poly([at(start, a), at(end, a), at(end, b), at(start, b)], material)
+            self.poly([at(start, a), at(end, a), at(end, b), at(start, b)], material, flip=True)
         if caps:
             self.poly([at(start, a) for a in reversed(angles)], material)
             self.poly([at(end, a) for a in angles], material)

@@ -167,6 +167,20 @@ def load_reading_text(text):
 
 
 class TubeTests(unittest.TestCase):
+    def test_cylinder_and_tube_sides_face_outward(self):
+        from room3d_handmade import Mesh
+        for build, centre, axis in (
+            (lambda m: m.cylinder(0, 0, 100, -200, 0, 'steel', segments=8, caps=False), (0, -100, 0), 1),
+            (lambda m: m.tube((0, -500, 0), (1000, -500, 0), 100, 'steel', segments=8, caps=False), (500, -500, 0), 0),
+        ):
+            seen = []
+            mesh = Mesh('t', {'steel': {'kd': (0.5, 0.5, 0.5)}}, lambda p, n: seen.append((p, n)) or (1, 1, 1))
+            build(mesh)
+            for p, n in seen:
+                radial = [p[k] - centre[k] for k in range(3)]
+                radial[axis] = 0
+                self.assertGreater(sum(radial[k] * n[k] for k in range(3)), 0)
+
     def test_tube_vertices_lie_on_the_cylinder(self):
         from room3d_handmade import Mesh
         mesh = Mesh('t', {'steel': {'kd': (0.5, 0.5, 0.5)}}, lambda p, n: (1, 1, 1))

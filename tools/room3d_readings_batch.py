@@ -96,7 +96,15 @@ def main():
         try:
             evidence = args.out / "evidence" / stem.lower()
             if not (evidence / "camera0-original.png").exists():
-                survey_report(rdt, evidence)
+                if stage in (6, 7):
+                    # The return stages ship no backgrounds of their own; the
+                    # game reuses stage 1/2's, and their cameras are identical.
+                    twin = args.out / "evidence" / f"room{stage - 5}{stem[5:].lower()}"
+                    if not (twin / "camera0-original.png").exists():
+                        survey_report(usa / f"Stage{stage - 5}" / f"ROOM{stage - 5}{stem[5:]}.RDT", twin)
+                    shutil.copytree(twin, evidence, dirs_exist_ok=True)
+                else:
+                    survey_report(rdt, evidence)
             built = args.out / "built" / stem.lower()
             mesh = build_reading(reading, rdt, built, evidence)
             cameras = len(list(evidence.glob("camera*-original.png")))

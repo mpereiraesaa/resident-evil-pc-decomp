@@ -387,3 +387,24 @@ caves, flat stairs, wall-height slabs, close-ups — geometry work, not retouch.
   ROOM1060.RDT workaround copy was removed from mods/Stage1.
 - Not committed anywhere: the Room3D runtime lives only in the root checkout as
   an untracked file, so this change needs whoever owns that to commit it.
+
+== 2026-10-14/15: room readings for ALL rooms ==
+- Pipeline: room3d/readings/ROOMxxxx.toml (160 files, every non-empty RDT)
+  + tools/room3d_reading.py (build) + tools/room3d_readings_batch.py (build
+  all, score, install, in-engine load) + tools/room3d_evidence.py (collision
+  blocks drawn on the original views; floor point under a pixel). Worktree 31,
+  branch room3d/31-portable-overrides, not pushed.
+- Final batch 2026-10-15: 160/160 built, 160/160 loaded in the Wine build,
+  0 weak cameras. Output build/room3d-readings-final (report.md, compare
+  sheets in built/<room>/compare.png).
+- Installed in build/room3d-playtest/mods (Stage1-7, each mesh also under the
+  Jill name roomXXX1; all 160 Jill RDTs share cameras/collision) with the
+  current exe. Run build/room3d-playtest/run.sh.
+- Runtime (root checkout, committed f68fda0): ".cameras" line "backdrop N"
+  keeps the original background for camera N (keypads, drawer and painting
+  close-ups, cutscene shots, the two event rooms).
+- Smoke test (root, 8ba34b1): tools/check_room3d_runtime.py --character jill.
+- Known approximations: outdoor terrain, pipes and spiral stair (no
+  horizontal cylinders / spiral kind), lights-off camera sets bake the lit
+  state, a few steep top-down cameras. See docs/ROOM3D_FOUNDATION.md
+  "Readings for every room" in worktree 31.

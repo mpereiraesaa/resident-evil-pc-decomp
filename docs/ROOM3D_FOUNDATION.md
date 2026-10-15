@@ -1328,14 +1328,22 @@ room's own art instead (an exemplar):
   spots where the reading and the art disagree (ROOM1090's first wallpaper
   exemplar sat on a door painted where the mesh has wall).
 - The tiled vertices are lit from the art: each takes the colour of the
-  nearby projected pieces of its material (inverse square distance, 600-unit
-  softening), fading to the material's median 4000 units away, over the
-  exemplar's colour. These factors are baked into the split OBJ's vertex
-  colours, scaled into 0..1 by the patch's colour factor.
+  nearby projected pieces of its material on the same wall (inverse square
+  distance, 600-unit softening), fading to the material's median 4000 units
+  away, over the exemplar's colour. These factors are baked into the split
+  OBJ's vertex colours, scaled into 0..1 by the patch's colour factor.
+- Projected pieces that meet tiled ones on the same wall cross-fade into the
+  tile: their corners get an opacity growing from 0 where they touch a tiled
+  piece to 1 at 450 units in, and they carry the wall's tile (UVs and
+  art-lit vertex colours) as well. The modern camera draws the tile under
+  them in the opaque pass and the projected art over it in a second,
+  alpha-blended pass (depth test, no depth write), so the edge between art
+  and tile is a gradient instead of a stepped line with a brightness jump.
 
 `patch <index> <material> <camera> <side> <origin> <a> <b> <r g b>` lines
-record the exemplars (at most 62 per room) and `tiles <string>` the patch of
-every face (`0`-`9`, `a`-`z`, `A`-`Z`, `-` none). At load the game resamples
+record the exemplars (at most 62 per room), `tiles <string>` the patch of
+every face (`0`-`9`, `a`-`z`, `A`-`Z`, `-` none) and `fade <digits>` the
+opacity of every face corner in face order (`0`-`9`, 9 opaque). At load the game resamples
 each square from its camera's background as loaded (so from the HD image
 when a pack provides one), divides out its large-scale lighting, mirrors it
 into a seamless 2x2 tile and box-maps it over its faces with the bilinear

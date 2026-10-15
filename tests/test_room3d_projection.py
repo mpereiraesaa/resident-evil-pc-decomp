@@ -149,12 +149,14 @@ class SidecarTests(unittest.TestCase):
                          a=np.array([501.0, 2, 3]), b=np.array([1.0, -498, 3]),
                          tint=np.array([2.0, 2.5, 3.0]))
             write_proj(path, np.array([0, -1, 10, 31]), {'wallpaper': np.array([0.5, 0.25, 1.0])},
-                       [patch], np.array([-1, 0, -1, -1]))
+                       [patch], np.array([-1, 0, 0, -1]), {2: np.array([0.0, 0.5, 1.0])},
+                       [4, 4, 3, 3])
             self.assertEqual(path.read_text().splitlines(),
                              ['proj1 4', '0-av', 'tint wallpaper 0.500 0.250 1.000',
                               'patch 0 wallpaper 3 500 1.0 2.0 3.0 501.0 2.0 3.0 1.0 -498.0 3.0 '
                               '2.000 2.500 3.000',
-                              'tiles -0--'])
+                              'tiles -00-',
+                              'fade 99999999' + '059' + '999'])
 
 
 if __name__ == '__main__':

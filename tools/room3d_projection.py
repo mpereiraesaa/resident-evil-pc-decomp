@@ -463,7 +463,7 @@ def _weighted_median(values, weights):
 
 def material_patches(split, assignment, originals, min_unseen=0.05, candidates=40,
                      max_hue=0.08, max_brightness=2.0, spread=600.0, reach=4000.0,
-                     min_wall=1.0e6, max_patches=62):
+                     min_wall=1.0e6, max_patches=62, fade=450.0):
     """Tiles of the room's own art for the pieces no camera saw.
 
     Every unseen piece of a material that the cameras also show gets a
@@ -474,9 +474,15 @@ def material_patches(split, assignment, originals, min_unseen=0.05, candidates=4
     best square anywhere. The runtime cuts each square out of the camera's
     background as loaded (HD when a pack provides it).
 
-    Returns (patches, tiles, vertex_colours): the exemplars, the patch index
-    of every piece (-1 none), and new colours for the tiled vertices (their
-    lighting taken from the nearby projected art)."""
+    Projected pieces that meet the tiled ones on the same wall get the tile
+    as well and cross-fade into it, so the edge between art and tile is a
+    gradient rather than a stepped line.
+
+    Returns (patches, tiles, vertex_colours, fades): the exemplars, the patch
+    index of every piece (-1 none; projected pieces with one are drawn over
+    their tile), new colours for the tiled vertices (their lighting taken
+    from the nearby projected art), and per-corner alpha of the fading
+    projected pieces."""
     images = {}
     for k in split["views"]:
         path = Path(originals) / f"camera{k}-original.png"
@@ -492,7 +498,7 @@ def material_patches(split, assignment, originals, min_unseen=0.05, candidates=4
             unseen[name] = unseen.get(name, 0.0) + area
         elif camera in images:
             by_material.setdefault(name, []).append(index)
-    patches, keys, material_depths = [], {}, {}
+    patches, keys, material_depths, fades = [], {}, {}, {}
     tiles = np.full(len(pieces), -1, dtype=int)
     vertex_colours = {}
     grid = (np.arange(16) + 0.5) / 16
@@ -567,12 +573,15 @@ def material_patches(split, assignment, originals, min_unseen=0.05, candidates=4
         for i in tiled:
             walls.setdefault(_plane_key(planes[i]), []).append(i)
         for wall in sorted(walls.values(), key=lambda w: -sum(areas[i] for i in w)):
+            # The projected pieces of this material on the same wall: the
+            # exemplar's source when the wall is large, the lighting
+            # reference, and the pieces that fade into the tile at the edge.
+            same = [i for i in indices if _same_plane(planes[i], planes[wall[0]])]
             exemplar = None
             if sum(areas[i] for i in wall) >= min_wall:
                 # From the wall itself, even seen at a slant (as the projection
                 # beside it is): matching that part matters more than a
                 # square-on view.
-                same = [i for i in indices if _same_plane(planes[i], planes[wall[0]])]
                 exemplar = best_of(sorted(same, key=lambda i: -areas[i])[:12], name, art, 0.2)
             exemplar = exemplar or fallback
             if exemplar is None:
@@ -582,21 +591,36 @@ def material_patches(split, assignment, originals, min_unseen=0.05, candidates=4
                 index = add(fallback)
             if index < 0:
                 continue
-            # Light the tiled faces from the art itself: each vertex takes the
-            # colour of the nearby projected pieces of this material (inverse
-            # square distance), fading to the material's typical colour
-            # further away, over the exemplar's own colour.
-            records = [r for i in wall for r in split["vertex_records"][i]]
-            points = np.vstack([pieces[i][:, :3] for i in wall])
+            # Projected pieces near the tiled ones cross-fade into the tile:
+            # alpha 0 where they meet it, 1 a `fade` further in, with the
+            # tile drawn underneath.
+            tiled_points = np.vstack([pieces[i][:, :3] for i in wall])
+            blend = []
+            for i in same:
+                corners = pieces[i][:, :3]
+                d2 = ((corners[:, None, :] - tiled_points[None, :, :]) ** 2).sum(axis=2).min(axis=1)
+                alpha = np.clip(np.sqrt(d2) / fade, 0.0, 1.0)
+                if alpha.min() < 0.999:
+                    blend.append(i)
+                    fades[i] = alpha
+            # Light the tile from the art itself: each vertex takes the
+            # colour of the nearby projected pieces of this material on the
+            # same wall (inverse square distance), fading to the material's
+            # typical colour further away, over the exemplar's own colour.
+            near = [indices.index(i) for i in same] or list(range(len(indices)))
+            ref_centres, ref_colours = centres[near], piece_colours[near]
+            lit = wall + blend
+            records = [r for i in lit for r in split["vertex_records"][i]]
+            points = np.vstack([pieces[i][:, :3] for i in lit])
             light = np.zeros((len(points), 3))
             for start in range(0, len(points), 2048):
                 chunk = points[start:start + 2048]
-                d2 = ((chunk[:, None, :] - centres[None, :, :]) ** 2).sum(axis=2)
+                d2 = ((chunk[:, None, :] - ref_centres[None, :, :]) ** 2).sum(axis=2)
                 w = 1.0 / (d2 + spread ** 2)
                 w0 = 1.0 / reach ** 2
-                light[start:start + 2048] = (w @ piece_colours + w0 * art) / (w.sum(axis=1) + w0)[:, None]
-            factors = np.clip(light / np.maximum(patches[index]["exemplar"], 1e-3), 0.0, 8.0)
-            for i in wall:
+                light[start:start + 2048] = (w @ ref_colours + w0 * art) / (w.sum(axis=1) + w0)[:, None]
+            factors = _light_factors(light, patches[index]["exemplar"])
+            for i in lit:
                 tiles[i] = index
             for record, factor in zip(records, factors):
                 vertex_colours[record] = (index, factor)
@@ -605,7 +629,19 @@ def material_patches(split, assignment, originals, min_unseen=0.05, candidates=4
         mine = [f for (k, f) in vertex_colours.values() if k == index]
         patch["tint"] = np.maximum(np.max(mine, axis=0), 1e-3) if mine else np.ones(3)
     colours = {r: f / patches[k]["tint"] for r, (k, f) in vertex_colours.items()}
-    return patches, tiles, colours
+    return patches, tiles, colours, fades
+
+
+def _light_factors(light, exemplar, limits=(0.25, 8.0), hue=0.15):
+    """Per vertex, the colour to multiply the exemplar's tile by to get the
+    art's local colour: a brightness ratio and a hue correction bounded to
+    +-15% (per-channel ratios of differently lit art swing the hue wildly,
+    turning a beige wallpaper green and orange)."""
+    exemplar = np.maximum(np.asarray(exemplar, dtype=float), 1e-3)
+    light = np.maximum(light, 1e-4)
+    brightness = np.clip(light.mean(axis=1) / exemplar.mean(), *limits)
+    shift = (light / light.mean(axis=1, keepdims=True)) / (exemplar / exemplar.mean())
+    return brightness[:, None] * np.clip(shift, 1.0 - hue, 1.0 + hue)
 
 
 def _plane(xyz):
@@ -639,7 +675,7 @@ def _mean_colour(piece, view, image):
 TILE_DIGITS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 
-def write_proj(path, assignment, tints=None, patches=None, tiles=None):
+def write_proj(path, assignment, tints=None, patches=None, tiles=None, fades=None, corners=None):
     text = "".join(DIGITS[c] if 0 <= c < len(DIGITS) else "-" for c in assignment)
     lines = [f"proj1 {len(assignment)}", text]
     for name, tint in sorted((tints or {}).items()):
@@ -651,6 +687,11 @@ def write_proj(path, assignment, tints=None, patches=None, tiles=None):
             *patch["tint"]))
     if patches:
         lines.append("tiles " + "".join(TILE_DIGITS[t] if t >= 0 else "-" for t in tiles))
+    if fades:
+        # One digit per face corner, in face order: alpha 0-9 (9 = opaque).
+        lines.append("fade " + "".join(
+            "".join(str(int(a * 9 + 0.5)) for a in fades[i]) if i in fades else "9" * n
+            for i, n in enumerate(corners)))
     Path(path).write_text("\n".join(lines) + "\n")
 
 
@@ -735,7 +776,7 @@ def tint_mtl(path, tints):
 
 def split_and_assign(obj, rdt, originals=None, skip=(), min_density=0.000015):
     """Split the builder's mesh (kept as roomSRRV.base.obj, so a rerun starts
-    from it again) and assign cameras. Returns (OBJ lines, assignment, tints, (patches, tiles))."""
+    from it again) and assign cameras. Returns (OBJ lines, assignment, tints, (patches, tiles, fades, corners))."""
     obj = Path(obj)
     base = obj.with_suffix(".base.obj")
     if not obj.read_text().startswith(SPLIT_MARKER):
@@ -747,8 +788,8 @@ def split_and_assign(obj, rdt, originals=None, skip=(), min_density=0.000015):
     try:
         records, assignment, coverage, split = assign(work, rdt, skip, min_density)
         tints = material_tints(work, split, assignment, originals) if originals else {}
-        patches, tiles, colours = (material_patches(split, assignment, originals) if originals
-                                   else ([], None, {}))
+        patches, tiles, colours, fades = (material_patches(split, assignment, originals)
+                                          if originals else ([], None, {}, {}))
         for index, colour in colours.items():
             words = records[index].split()
             records[index] = "v %s %s %s %.4f %.4f %.4f" % (*words[1:4], *colour)
@@ -758,7 +799,8 @@ def split_and_assign(obj, rdt, originals=None, skip=(), min_density=0.000015):
     covered = int((assignment >= 0).sum())
     print(f"{obj.name}: {covered}/{len(assignment)} pieces projected, "
           f"{coverage:.0%} of the surface", flush=True)
-    return records, assignment, tints, (patches, tiles)
+    corners = [len(piece) for piece in split["pieces"]]
+    return records, assignment, tints, (patches, tiles, fades, corners)
 
 
 def project_room(obj, rdt, originals=None, skip=(), min_density=0.000015):

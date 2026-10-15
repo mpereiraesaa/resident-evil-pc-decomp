@@ -1,6 +1,7 @@
-# Control room: green plaster, the control console with its red valve wheel
-# along the east wall, a glass specimen case in the north-east, a cabinet
-# west, the door on the south-east wall.
+# Control room: green plaster over a darker dado, the control console with
+# gauges and its red valve wheel along the east wall, a wooden cabinet with a
+# glass display case on the west wall, a tall dark cabinet in the north-west
+# corner, a wall clock, the door at the north end of the east side.
 room = "ROOM4110"
 title = "Control room"
 seed = 4170
@@ -22,7 +23,10 @@ plaster = { color = [0.66, 0.70, 0.54], stains = 0.4 }
 "plaster.low" = [0.42, 0.48, 0.38]
 "plaster.dark" = [0.40, 0.42, 0.34]
 "stone.floor" = { color = [0.42, 0.44, 0.36], tile = [2000, 2000] }
-wood = [0.30, 0.22, 0.16]
+wood = [0.24, 0.13, 0.08]
+velvet = [0.60, 0.08, 0.06]
+steel = [0.46, 0.46, 0.42]
+glass_dark = [0.30, 0.38, 0.36]
 door = [0.56, 0.58, 0.54]
 
 [lighting]
@@ -30,45 +34,78 @@ ambient = [0.15, 0.16, 0.12]
 
 [[zone]]
 box = [2040, 2178, 8838, 12168]
-[[zone]]
-box = [8838, 7434, 10404, 12168]
+[[zone]]            # alcove holding the console (the block north of it is solid)
+box = [8838, 2178, 10404, 6408]
 
 [[door]]
 wall = "east"
-span = [8900, 12168]
+line = 8838
+span = [9000, 12000]
 top = -3300
 material = "door"
 
-[[object]]          # console
+[[object]]          # console along the east wall: desk part
 kind = "box"
-box = [8568, 846, 10422, 7434]
+box = [8568, 2178, 10404, 6408]
 top = -1300
 material = "iron"
-omit = ["bottom", "east", "south"]
-[[object]]
+omit = ["bottom", "east"]
+[[object]]          # raised instrument panel at the back of the console
 kind = "box"
-box = [9800, 846, 10422, 7434]
-top = -2400
+box = [9700, 2178, 10404, 6408]
+top = -2300
 bottom = -1300
-material = "iron"
-[[object]]          # specimen case
+material = "steel"
+omit = ["east"]
+[[object]]          # red valve wheel on the panel
 kind = "box"
-box = [936, 9738, 2700, 12906]
-top = -1200
-material = "iron"
+box = [9560, 4300, 9700, 4900]
+top = -2000
+bottom = -1500
+material = "velvet"
+[[object]]          # gauges
+kind = "box"
+box = [9640, 2600, 9700, 3800]
+top = -2100
+bottom = -1600
+material = "paper"
+[[object]]          # tall dark cabinet in the north-west corner
+kind = "box"
+box = [2040, 9738, 2700, 12168]
+top = -2600
+material = "wood"
 omit = ["bottom", "west", "north"]
+[[object]]          # low wooden cabinet on the west wall with a glass display case on it
+kind = "box"
+box = [2040, 2178, 3582, 7416]
+top = -1100
+material = "wood"
+omit = ["bottom", "west", "south"]
 [[object]]
 kind = "box"
-box = [1000, 9800, 2640, 12840]
+box = [2100, 2240, 3520, 7350]
 top = -2000
-bottom = -1200
+bottom = -1100
 material = "glass_dark"
-[[object]]          # cabinet west
+[[object]]          # display case frame top
 kind = "box"
-box = [864, 882, 3582, 7416]
-top = -1300
+box = [2040, 2178, 3582, 7416]
+top = -2060
+bottom = -2000
 material = "steel"
-omit = ["bottom", "west", "south"]
+[[object]]          # air vent under the ceiling on the south wall
+kind = "box"
+box = [4000, 2178, 6000, 2260]
+top = -3800
+bottom = -3500
+material = "grating"
+
+[[painting]]        # wall clock
+wall = "north"
+span = [7400, 8000]
+y = [-3300, -2700]
+material = "paper"
+frame = "iron"
 
 [[light]]
 at = [6000, -3600, 7000]

@@ -128,11 +128,11 @@ base = -1750
 kind = "lamp"
 at = [11800, 6100]
 base = -1750
-[[object]]          # tall display cabinet (block 3), shelves open to the south
+[[object]]          # tall display cabinet (block 3), shelves open to the room and the corridor
 kind = "bookcase"
 box = [1864, 9003, 10456, 10330]
 top = -4700
-front = "south"
+front = ["south", "north"]
 material = "wood.dark"
 books = "books.display"
 [[object]]          # small writing table at the corridor's west end (block 6)

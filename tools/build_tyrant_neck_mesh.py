@@ -54,6 +54,15 @@ def add_neck(data, placement="upper", lift_head=0.0):
                  (195.0, 150.0, 60.0, 76.0),
                  (245.0, 160.0, 54.0, 66.0),
                  (300.0, 170.0, 48.0, 58.0)]
+    elif placement == "bridge":
+        # Reach under the original flat jaw rim, then settle back into the
+        # chest. The slim surface stayed behind that rim and read as a block.
+        rings = [(45.0, 147.0, 78.0, 92.0),
+                 (95.0, 152.0, 84.0, 92.0),
+                 (145.0, 155.0, 82.0, 88.0),
+                 (195.0, 157.0, 73.0, 81.0),
+                 (245.0, 160.0, 66.0, 75.0),
+                 (305.0, 162.0, 61.0, 70.0)]
     elif placement == "forward":
         # Low local Y is below the jaw. Move the neck's front contour toward
         # the facial silhouette while leaving the root behind the collar.
@@ -87,8 +96,15 @@ def add_neck(data, placement="upper", lift_head=0.0):
             u = 0.225 + 0.018 * sine
             v = 1.0 - (0.687 + 0.030 * (y - rings[0][0]) /
                        (rings[-1][0] - rings[0][0]))
+            tone = 1.0
+            if placement == "bridge":
+                # Modulate the otherwise uniform cheek-UV sample to suggest
+                # two neck muscles and a darker insertion below the jaw.
+                root = (y - rings[0][0]) / (rings[-1][0] - rings[0][0])
+                tendon = math.exp(-0.5 * ((abs(sine) - 0.53) / 0.15) ** 2)
+                tone = 0.79 + 0.14 * tendon + 0.07 * root
             vertices += VERTEX.pack(x, y, z, nx, 0.0, nz,
-                                    1.0, 1.0, 1.0, u, v)
+                                    tone, tone * 0.98, tone * 0.99, u, v)
     for ring in range(len(rings) - 1):
         for i in range(sides):
             a = count + ring * sides + i
@@ -109,7 +125,7 @@ def main():
     parser.add_argument("--refined-dir", type=Path, required=True)
     parser.add_argument("--installed-dir", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
-    parser.add_argument("--placement", choices=("upper", "forward", "slim", "tapered"), default="upper")
+    parser.add_argument("--placement", choices=("upper", "forward", "slim", "tapered", "bridge"), default="upper")
     parser.add_argument("--lift-head", type=float, default=0.0)
     parser.add_argument("selectors", nargs="*", default=["16", "20", "j:16", "j:20"])
     options = parser.parse_args()

@@ -437,6 +437,13 @@ passed the static verifier, and the game log confirms the torso replacement
 loaded. Neither is installed. A believable neck needs the jaw, neck surface,
 and collar silhouette sculpted together; another simple head lift or collar
 drop will not suffice.
+The later `--placement bridge` trial moved the head-rigged tube forward under
+the flat jaw rim and darkened its vertex colours to suggest neck muscles.
+With the original collar it stayed almost completely hidden; combined with
+the 65-unit collar cut it still appeared as a separate grey block. Captures
+are in `build/model-viewer/entity-mesh/tyrant-neck-bridge-candidates/`.
+It is not installed; changing the head's lower topology is necessary to
+make the transition continuous.
 `tools/sculpt_tyrant_forearm_obj.py` rounds and tapers Tyrant's normal forearm
 (joint 4) while leaving both joint attachment rings fixed. Four replacements
 cover `em100c`, `em1010`, `em110c`, and `em1110`. The matched camera 4 crop is
@@ -610,6 +617,11 @@ camera comparison is
 `build/model-viewer/entity-mesh/adder-snout-candidates/adder-comparison.png`;
 the change is very subtle at game distance. Both models completed viewer runs,
 but bite contact and body motion still require gameplay inspection.
+`tools/sculpt_adder_body_obj.py` is an uninstalled trial for articulated
+body joints 2–10 in both scenario EMDs. Its 719-file combined candidate set
+passes source-hash/topology verification, but the main-hall viewer framing
+used so far does not show the whole adder reliably. The body profile and
+motion have not yet been visually accepted for installation.
 `tools/sculpt_yawn_snout_obj.py` narrows and slightly extends Yawn's upper
 head and animated lower jaw in shared rest-space, accounting for the jaw's
 +425 X offset. Both encounters in both scenarios have both parts installed;

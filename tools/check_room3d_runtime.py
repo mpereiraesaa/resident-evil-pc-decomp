@@ -43,6 +43,17 @@ def observations(log, room, stage=1):
     }
 
 
+# Room counts of the debug menu's room-change tables per stage (DebugMenu.cpp
+# s_dbgStageRooms) and the rooms DebugRoomSelectable refuses. Navigation must
+# mirror the menu, not the RDT files on disk.
+MENU_ROOM_COUNT = {1: 29, 2: 29, 3: 18, 4: 18, 5: 22, 6: 29, 7: 29}
+MENU_UNSELECTABLE = {1: {0x10, 0x19}, 2: {0x00, *range(0x13, 0x1D)}}
+
+
+def menu_rooms(stage):
+    return [r for r in range(MENU_ROOM_COUNT[stage]) if r not in MENU_UNSELECTABLE.get(stage, set())]
+
+
 def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1):
     """Load `mesh` for (stage, target_room) through the debug menu.
 
@@ -123,11 +134,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
         RE1_TEST_KEYS_FILE="test-keys.txt",
     )
     env.pop("RE1_TEST_KEYS", None)
-    valid_rooms = sorted(
-        int(p.stem[5:7], 16)
-        for p in (assets / "USA" / f"Stage{stage}").glob("ROOM*0.RDT")
-        if p.stat().st_size > 4
-    )
+    valid_rooms = menu_rooms(stage)
     phase = "boot"
 
     result = {}

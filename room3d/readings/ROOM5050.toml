@@ -93,9 +93,106 @@ z = [23184, 28242]
 direction = "north"
 top = -4800
 steps = 14
-tread_material = "steel"
+tread_material = "iron"   # dark risers; the lit steel tread plates below make the steps read
 under = false
 rails = []
+# Steel tread plates, one per step (open-tread look of the original).
+[[object]]
+kind = "box"
+box = [2328, 23184, 5004, 23485]
+top = -383
+bottom = -343
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 23545, 5004, 23847]
+top = -726
+bottom = -686
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 23907, 5004, 24208]
+top = -1069
+bottom = -1029
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 24268, 5004, 24569]
+top = -1411
+bottom = -1371
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 24629, 5004, 24930]
+top = -1754
+bottom = -1714
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 24990, 5004, 25292]
+top = -2097
+bottom = -2057
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 25352, 5004, 25653]
+top = -2440
+bottom = -2400
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 25713, 5004, 26014]
+top = -2783
+bottom = -2743
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 26074, 5004, 26376]
+top = -3126
+bottom = -3086
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 26436, 5004, 26737]
+top = -3469
+bottom = -3429
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 26797, 5004, 27098]
+top = -3811
+bottom = -3771
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 27158, 5004, 27459]
+top = -4154
+bottom = -4114
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 27519, 5004, 27821]
+top = -4497
+bottom = -4457
+material = "steel"
+[[object]]
+kind = "box"
+box = [2328, 27881, 5004, 28182]
+top = -4840
+bottom = -4800
+material = "steel"
+[[object]]          # sloped handrails on both sides of the flight
+kind = "pipe"
+from = [2420, -1000, 23184]
+to = [2420, -5800, 28242]
+radius = 45
+material = "steel"
+[[object]]
+kind = "pipe"
+from = [4910, -1000, 23184]
+to = [4910, -5800, 28242]
+radius = 45
+material = "steel"
 [[object]]
 kind = "rail"
 from = [4950, 20400]

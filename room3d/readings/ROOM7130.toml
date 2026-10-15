@@ -34,8 +34,9 @@ velvet = [0.44, 0.08, 0.07]
 [lighting]
 ambient = [0.15, 0.15, 0.15]
 
-[[zone]]            # long north-south leg
-box = [15498, 1998, 17532, 22428]
+[[zone]]            # long north-south leg; east wall set 470 behind collision (17532)
+                    # so cameras 0, 1 and 3 (x 17208-17388) do not near-clip it
+box = [15498, 1998, 18000, 22428]
 floor_along = "z"
 [[zone]]            # middle bay
 box = [12240, 9666, 15498, 12492]
@@ -73,13 +74,13 @@ material = "door.carved"
 
 [[object]]          # red curtains on the east wall
 kind = "box"
-box = [17300, 12600, 17532, 13300]
+box = [17770, 12600, 18000, 13300]
 top = -3800
 material = "velvet"
 omit = ["east"]
 [[object]]
 kind = "box"
-box = [17300, 14300, 17532, 15000]
+box = [17770, 14300, 18000, 15000]
 top = -3800
 material = "velvet"
 omit = ["east"]

@@ -1,17 +1,18 @@
 # Lift to the heliport: a small cage of
-# wire-mesh panels to shoulder height between steel posts, open above to the
-# dark shaft, a steel floor with a grated plate.
+# wire-mesh panels (3400 high, approximate) between steel posts, open above to
+# the shaft, whose concrete west wall catches the light; the other shaft walls
+# are left dark. A steel floor with a grated plate.
 room = "ROOM5150"
 title = "Heliport lift"
 seed = 5210
 
 [shell]
 floor = 0
-ceiling = -4000
+ceiling = -9000
 floor_material = "concrete.floor"
 wall_material = "soot"
 ceiling_material = "grating"
-dado = 2000
+dado = 3400
 dado_material = "grating"
 chair_rail = true
 skirting = 120
@@ -32,8 +33,10 @@ grating = [0.50, 0.52, 0.52]
 [lighting]
 ambient = [0.22, 0.21, 0.19]
 
-[[zone]]
+[[zone]]            # cage mesh (dado) to 3400; above it the shaft: lit concrete on the
+                    # west wall (left of camera 0, which hangs above the cage), dark elsewhere
 box = [2466, 1836, 6984, 7146]
+wall_materials = { west = "concrete" }
 
 [[column]]
 at = [2600, 2000]

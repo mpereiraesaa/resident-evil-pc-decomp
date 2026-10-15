@@ -104,11 +104,12 @@ kind = "box"
 box = [15986, 13000, 16272, 13400]
 top = -4000
 material = "iron"
-[[object]]
-kind = "box"
+[[object]]          # on the north wall camera 2 looks through: hidden there, where it
+kind = "box"        # would stand free as a black post across the view
 box = [11000, 19136, 11400, 19422]
 top = -4000
 material = "iron"
+group = "north_pilaster"
 [[object]]
 kind = "box"
 box = [11000, 16722, 11400, 17008]
@@ -136,6 +137,10 @@ box = [3500, 30250, 4200, 30402]
 top = -1900
 bottom = -1200
 material = "steel"
+
+[[hide]]            # camera 2 stands north of the cross passage, outside its north wall
+camera = 2
+groups = ["north_pilaster"]
 
 [[object]]
 kind = "strip"

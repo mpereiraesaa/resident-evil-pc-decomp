@@ -34,8 +34,15 @@ ambient = [0.13, 0.13, 0.12]
 [[zone]]            # low west corridor
 box = [2106, 9627, 6354, 11322]
 floor_along = "x"
-[[zone]]            # stair run
-box = [6354, 9627, 13266, 11322]
+[[zone]]            # stair run, foot: a flat ceiling close over camera 1, whose far
+                    # edge is the soffit line across the top of that view. South wall
+                    # 330 behind collision (9627) so camera 1 (z 9846) does not
+                    # near-clip it, and the stair centres in that view
+box = [6354, 9300, 9630, 11322]
+floor_along = "x"
+ceiling = -7000
+[[zone]]            # stair run, upper part open to the landing ceiling
+box = [9630, 9300, 13266, 11322]
 floor_along = "x"
 ceiling = -10800
 [[zone]]            # upper landing
@@ -74,12 +81,12 @@ bottom_material = "plaster"
 
 [[stair]]
 x = [6354, 13266]
-z = [9627, 11322]
+z = [9300, 11322]
 direction = "east"
 top = -6600
 steps = 22
 tread_material = "wood"
-rails = [{ side = "north" }]
+rails = []  # walled both sides in camera 1
 
 [[door]]
 wall = "west"
@@ -120,6 +127,12 @@ from = [16380, 4550]
 to = [16380, 9600]
 y = -6600
 material = "rust"
+
+[[light]]           # light over the stair (camera 1 sees the steps lit from above)
+at = [9500, -6400, 10300]
+color = [1.0, 0.92, 0.78]
+strength = 0.6
+reach = 6000
 
 [[wall_lamp]]
 wall = "east"

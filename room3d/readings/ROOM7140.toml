@@ -67,6 +67,7 @@ omit = ["bottom", "west"]
 kind = "box"
 box = [12816, 22338, 13536, 24696]
 top = -4400
+group = "north_piers"
 material = "plaster"
 omit = ["bottom", "west"]
 [[object]]          # east piers
@@ -85,8 +86,13 @@ omit = ["bottom", "east"]
 kind = "box"
 box = [15930, 22428, 16542, 24696]
 top = -4400
+group = "north_piers"
 material = "plaster"
 omit = ["bottom", "east"]
+
+[[hide]]            # camera 3 hangs above the ceiling (-6246) right over the north
+camera = 3          # pair: their tops read as slabs across its foreground, and the
+groups = ["north_piers"]  # original frames the floor between the corridor walls
 
 [[beam]]
 box = [12816, 15500, 16542, 15800]

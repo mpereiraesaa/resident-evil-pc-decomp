@@ -1,6 +1,8 @@
 # Beehive passage: plank corridors overgrown with vines; an L of the main
 # corridor west-east along the south, a leg north on the east, the small
-# west pocket, with the keypad, the wasp nest and several doors.
+# west pocket, with the keypad, the wasp nest and several doors. The north end
+# of the east leg is taller, with an alcove holding a pedestal table; the nest
+# is a stack of cylinders (no ovoid kind) placed by triangulating cameras 3/4.
 room = "ROOM4080"
 title = "Beehive passage"
 seed = 4080
@@ -26,6 +28,8 @@ cell = 800
 wood = [0.40, 0.26, 0.13]
 door = [0.36, 0.24, 0.12]
 "door.red" = [0.42, 0.10, 0.10]
+"planks.red" = { color = [0.20, 0.09, 0.06], count = 14 }
+"plaster.nest" = { color = [0.62, 0.60, 0.46], stains = 0.5 }
 
 [lighting]
 ambient = [0.20, 0.19, 0.13]
@@ -38,7 +42,16 @@ box = [2538, 6030, 14688, 8946]
 [[zone]]            # middle hall (camera 6 stands here)
 box = [7974, 8946, 14688, 14022]
 [[zone]]            # east leg north
-box = [14688, 6030, 18594, 22536]
+box = [14688, 6030, 18594, 17000]
+[[zone]]            # north end of the east leg: taller (camera 3 sees its end wall
+                    # and the alcove opening reach ~-5800), the wasp nest hangs here
+box = [14688, 17000, 18594, 22536]
+ceiling = -5800
+wall_materials = { east = "planks.red", north = "planks.red" }
+[[zone]]            # alcove at the north end (gap between collision 0 and 1) with
+                    # the lamp-lit pedestal table
+box = [14688, 22536, 16668, 23814]
+ceiling = -5800
 
 [[door]]
 wall = "west"
@@ -67,6 +80,59 @@ wall = "east"
 span = [2100, 6030]
 top = -3600
 material = "door"
+
+[[object]]          # pedestal table in the alcove (collision 3, low)
+kind = "table_round"
+at = [16060, 22900]
+radius = 450
+top = -1450
+[[light]]           # lamp light falling on the table
+at = [15900, -2600, 22900]
+color = [1.0, 0.86, 0.62]
+strength = 0.8
+reach = 2200
+
+# Wasp nest hanging at the north end, in front of the end wall.
+[[object]]
+kind = "cylinder"
+at = [17600, 21300]
+radius = 450
+top = -5800
+bottom = -5400
+material = "plaster.nest"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [17600, 21300]
+radius = 800
+top = -5400
+bottom = -4900
+material = "plaster.nest"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [17600, 21300]
+radius = 1000
+top = -4900
+bottom = -3800
+material = "plaster.nest"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [17600, 21300]
+radius = 850
+top = -3800
+bottom = -3250
+material = "plaster.nest"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [17600, 21300]
+radius = 500
+top = -3250
+bottom = -2900
+material = "plaster.nest"
+segments = 14
 
 [[sconce]]
 wall = "south"

@@ -96,6 +96,21 @@ kind = "chair"
 at = [10300, 2600]
 facing = "north"
 seat = "velvet"
+[[object]]          # south wall carried on east past the passage's end: camera 5
+                    # stands outside it (x 25128, z 2088) and its left edge looks
+                    # past the wall's end into black. Set back to z 1500 so the
+                    # face is not near-clipped; the east wall hides it from the
+                    # other cameras
+kind = "box"
+box = [23940, 1200, 25900, 1500]
+top = -7200
+material = "plaster.ruin"
+[[object]]          # return closing the step from z 1800 back to 1500
+kind = "box"
+box = [23700, 1500, 23940, 1800]
+top = -7200
+material = "plaster.ruin"
+omit = ["north"]
 [[object]]          # stone-lined hatch with a ladder in the ruined passage
 kind = "box"
 box = [16542, 2808, 18684, 4446]

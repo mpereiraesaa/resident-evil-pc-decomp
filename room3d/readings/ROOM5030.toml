@@ -43,7 +43,7 @@ floor_along = "x"
 [[zone]]            # walkway west of the stair rail
 box = [14778, 6750, 18198, 15858]
 [[zone]]            # corridor west (desk at its west end)
-box = [1400, 15858, 18198, 17964]
+box = [1400, 15858, 18198, 18400]  # north edge pushed out past camera 3 (collision 17964)
 floor_along = "x"
 [[zone]]            # stairwell
 box = [18198, 6750, 20304, 17964]

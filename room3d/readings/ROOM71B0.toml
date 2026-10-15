@@ -31,7 +31,11 @@ wood = [0.40, 0.26, 0.13]
 ambient = [0.10, 0.12, 0.14]
 
 [[zone]]            # long south leg, west part
-box = [1998, 1890, 19926, 5292]
+box = [1998, 1890, 11000, 5292]
+floor_along = "x"
+[[zone]]            # long south leg, middle: south wall set back 490 behind collision
+                    # (1890) so camera 2 (z 1944) does not near-clip it into a black band
+box = [11000, 1400, 19926, 5292]
 floor_along = "x"
 [[zone]]            # long south leg, east part (dead end)
 box = [19926, 1890, 29484, 5310]

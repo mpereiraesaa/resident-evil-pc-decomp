@@ -1,133 +1,279 @@
-# Morgue: concrete cells; the bunk room west with a row of beds and a desk,
-# the operating room east with the table, trolleys and green machines, the
-# double doors on the north wall of each.
+# Morgue: two separate cells in one file. West, the bunk room: stained
+# concrete with a green-black damp band, deep beams and vents overhead, a
+# row of five cots with dark mattresses and body bags along the north wall,
+# a metal desk with a chair in the south-west, open steel shelving on the
+# east wall, and the double door with its red lamp in the south alcove.
+# East, the operating room: white tiled walls over a dark stained floor, the
+# operating table with its lamp, two green machines on trolleys, a sink on
+# the south wall beside the double door with the green EXIT light, and a
+# cabinet in the north-west corner. Cot spacing cast from camera 1; door
+# spans cast from cameras 2 and 4.
 room = "ROOM5070"
 title = "Morgue"
 seed = 5070
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5000
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+dado = 2400
+dado_material = "concrete.damp"
+skirting = 140
+trim = "concrete.trim"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-"concrete.tiles" = { color = [0.56, 0.58, 0.56], stains = 0.2, panels = 8 }
-linen = [0.30, 0.32, 0.40]
-"hedge" = [0.22, 0.42, 0.36]
+concrete = { color = [0.46, 0.44, 0.38], stains = 0.5, panels = 1 }
+"concrete.damp" = { color = [0.34, 0.34, 0.28], stains = 0.9, panels = 1 }
+"concrete.trim" = { color = [0.26, 0.26, 0.24], stains = 0.2 }
+"concrete.floor" = { color = [0.42, 0.40, 0.36], stains = 0.7 }
+"concrete.ceiling" = { color = [0.30, 0.29, 0.26], stains = 0.3 }
+"concrete.beam" = { color = [0.38, 0.36, 0.32], stains = 0.4 }
+"double_door.lab" = [0.24, 0.26, 0.30]
+"double_door.op" = [0.26, 0.40, 0.36]
+"tiles.op" = { color = [0.62, 0.62, 0.60], count = 8, grout = [0.30, 0.30, 0.30], grime = 0.8, tile = [1600, 1600] }
+"books.shelf" = { color = [0.30, 0.30, 0.28], shelves = 4 }
+grating = { color = [0.50, 0.50, 0.48], tile = [800, 800] }
+linen = [0.24, 0.24, 0.22]
+velvet = [0.17, 0.16, 0.21]
+iron = [0.14, 0.14, 0.14]
+steel = [0.56, 0.58, 0.58]
+plastic = [0.80, 0.80, 0.78]
+statue = [0.28, 0.46, 0.38]
+porcelain = [0.76, 0.78, 0.76]
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.15, 0.15, 0.13]
 
 [[zone]]            # bunk room
-box = [1914, 1800, 14616, 13050]
+box = [1914, 5310, 14616, 13050]
+floor_along = "x"
+fixed_ceiling = true
+[[zone]]            # bunk room door alcove (south-east)
+box = [9612, 1800, 14616, 5310]
+fixed_ceiling = true
 [[zone]]            # operating room
 box = [16506, 2178, 26568, 13248]
-wall_material = "concrete.tiles"
-floor_material = "concrete.tiles"
-[[zone]]            # link
-box = [14616, 5310, 16506, 9432]
-floor_along = "x"
+wall_material = "tiles.op"
+dado = 0
+fixed_ceiling = true
 
-[[door]]
+[[door]]            # bunk room double door, red lamp over it
 wall = "south"
-span = [10800, 13000]
-top = -3600
+span = [10800, 13200]
+top = -3300
 material = "double_door.lab"
-frame = "steel"
-[[door]]
-wall = "south"
-span = [20000, 22600]
-top = -3600
-material = "double_door.lab"
-frame = "steel"
-
-# Beds along the north wall of the bunk room
+frame = "iron"
 [[object]]
-kind = "bed"
-box = [504, 9432, 2800, 11400]
-head = "west"
-top = -600
-[[object]]
-kind = "bed"
-box = [3200, 9432, 5500, 11400]
-head = "west"
-top = -600
-[[object]]
-kind = "bed"
-box = [5900, 9432, 8200, 11400]
-head = "west"
-top = -600
-[[object]]
-kind = "bed"
-box = [8600, 9432, 10998, 11400]
-head = "west"
-top = -600
-[[object]]          # desk
-kind = "table"
-box = [1422, 3762, 4464, 6462]
-top = -1400
-thickness = 100
-[[object]]          # locker
 kind = "box"
-box = [540, 144, 3000, 1800]
-top = -2800
-material = "steel"
-omit = ["bottom", "south", "west"]
-# Operating room
+box = [11500, 1800, 12500, 1880]
+top = -3900
+bottom = -3600
+material = "velvet"
+[[door]]            # operating room double door, green EXIT light over it
+wall = "south"
+span = [20000, 22400]
+top = -3300
+material = "double_door.op"
+frame = "iron"
 [[object]]
+kind = "box"
+box = [20700, 2178, 21700, 2260]
+top = -3900
+bottom = -3600
+material = "tank"
+
+# Bunk room ---------------------------------------------------------------
+[[object]]          # five cots along the north wall (collision block 7)
+kind = "bed"
+box = [9500, 10200, 10900, 12900]
+head = "north"
+top = -650
+headboard = -700
+[[object]]
+kind = "bed"
+box = [7650, 10200, 9050, 12900]
+head = "north"
+top = -650
+headboard = -700
+[[object]]
+kind = "bed"
+box = [5800, 10200, 7200, 12900]
+head = "north"
+top = -650
+headboard = -700
+[[object]]
+kind = "bed"
+box = [3950, 10200, 5350, 12900]
+head = "north"
+top = -650
+headboard = -700
+[[object]]
+kind = "bed"
+box = [2100, 10200, 3500, 12900]
+head = "north"
+top = -650
+headboard = -700
+[[object]]          # body bags on the cots
+kind = "box"
+box = [9700, 10500, 10700, 12600]
+top = -950
+bottom = -650
+material = "velvet"
+[[object]]
+kind = "box"
+box = [7850, 10500, 8850, 12600]
+top = -950
+bottom = -650
+material = "velvet"
+[[object]]
+kind = "box"
+box = [6000, 10500, 7000, 12600]
+top = -950
+bottom = -650
+material = "velvet"
+[[object]]
+kind = "box"
+box = [4150, 10500, 5150, 12600]
+top = -950
+bottom = -650
+material = "velvet"
+[[object]]
+kind = "box"
+box = [2300, 10500, 3300, 12600]
+top = -950
+bottom = -650
+material = "velvet"
+[[object]]          # metal desk in the south-west (collision block 16)
+kind = "box"
+box = [2000, 5310, 3800, 6300]
+top = -1000
+material = "plastic"
+[[object]]
+kind = "chair"
+at = [3300, 6800]
+facing = "south"
+seat = "iron"
+material = "iron"
+[[object]]          # open steel shelving on the east wall (collision block 2)
+kind = "bookcase"
+box = [13800, 9900, 14616, 12400]
+top = -2000
+front = "west"
+material = "steel"
+books = "books.shelf"
+[[object]]          # deep beams across the ceiling
+kind = "box"
+box = [1914, 7400, 14616, 8200]
+top = -5000
+bottom = -4300
+material = "concrete.beam"
+group = "beams"
+[[object]]
+kind = "box"
+box = [1914, 10000, 14616, 10800]
+top = -5000
+bottom = -4300
+material = "concrete.beam"
+group = "beams"
+[[object]]          # wall vents high on the north wall
+kind = "box"
+box = [6800, 12990, 8600, 13050]
+top = -4000
+bottom = -3400
+material = "grating"
+[[object]]
+kind = "strip"
+at = [8000, 9100]
+[[object]]
+kind = "strip"
+at = [8000, 6500]
+[[hide]]
+camera = 3
+groups = ["beams"]
+
+# Operating room ----------------------------------------------------------
+[[object]]          # operating table (collision block 11)
 kind = "table"
 box = [22950, 6102, 25182, 9648]
-top = -1100
-thickness = 120
-material = "steel"
+top = -1000
+thickness = 200
+material = "plastic"
 [[object]]
+kind = "box"
+box = [23500, 6800, 24600, 8900]
+top = -1000
+material = "iron"
+[[object]]          # operating lamp on its stand (block 13)
+kind = "cylinder"
+at = [24600, 5300]
+radius = 80
+top = -2600
+material = "steel"
+segments = 6
+[[object]]
+kind = "cylinder"
+at = [24200, 6200]
+radius = 550
+top = -2900
+bottom = -2600
+material = "statue"
+segments = 12
+[[object]]          # green machine on a trolley (block 12)
 kind = "box"
 box = [20430, 4104, 21834, 5616]
-top = -1400
-material = "hedge"
-omit = ["bottom"]
+top = -1500
+material = "statue"
 [[object]]
+kind = "box"
+box = [20600, 4300, 21600, 5400]
+top = -2100
+bottom = -1500
+material = "plastic"
+[[object]]          # green machine (block 14)
 kind = "box"
 box = [18144, 4086, 19476, 5616]
-top = -1400
-material = "hedge"
-omit = ["bottom"]
+top = -1700
+material = "statue"
+[[object]]          # sink counter on the south wall (block 10)
+kind = "box"
+box = [23832, 2178, 26568, 2898]
+top = -900
+material = "porcelain"
 [[object]]
 kind = "box"
-box = [23112, 5004, 24012, 9324]
-top = -1000
+box = [24000, 2178, 26400, 2400]
+top = -2300
+bottom = -2200
 material = "steel"
-omit = ["bottom"]
-[[object]]
+[[object]]          # cabinet in the north-west corner (block 5)
 kind = "box"
-box = [23832, 11000, 29520, 13248]
-top = -1000
+box = [16506, 12330, 18252, 13248]
+top = -2200
 material = "steel"
-omit = ["bottom", "north", "east"]
+[[object]]
+kind = "strip"
+at = [21500, 8000]
 
 [[light]]
-at = [8000, -3800, 7000]
+at = [8000, -3800, 8500]
 color = [0.95, 0.98, 1.0]
 strength = 0.45
-reach = 8000
+reach = 7000
+[[light]]
+at = [12000, -3000, 3200]
+color = [1.0, 0.75, 0.70]
+strength = 0.45
+reach = 4000
 [[light]]
 at = [21500, -3800, 7500]
-color = [0.70, 1.0, 0.80]
+color = [0.85, 1.0, 0.90]
 strength = 0.5
 reach = 8000
-
-[[object]]          # strip light
-kind = "strip"
-at = [8000, 7000]
+[[light]]
+at = [21200, -3200, 2800]
+color = [0.50, 1.0, 0.60]
+strength = 0.35
+reach = 4000

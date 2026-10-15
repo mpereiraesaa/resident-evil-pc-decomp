@@ -1,116 +1,269 @@
-# Power maze 2: the same mesh-caged walkways, with the yellow gas tank in
-# the north-west, pipes, the computer cabinet, and doors south.
+# Power maze 2: the same amber-lit walkways between machinery under dark
+# steel cages (fine diamond mesh). The south corridor runs east-west along
+# the south wall past the louvred machine housing of collision block 5; the
+# west leg turns north past the big yellow gas tank at the south end of
+# block 4; the
+# north corridor runs back east to the east leg, which climbs north to the
+# door at its end. A small bay at the east end of the south corridor holds a
+# desk with a clipboard and barrels (blocks 6/7). Yellow railings and hazard
+# stripes line the walkways; white-and-orange vertical pipes stand at the
+# corners. Machine detail (louvres, WARNING plates, gauges) is left out.
 room = "ROOM5100"
 title = "Power maze 2"
 seed = 5160
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5200
 floor_material = "concrete.floor"
-wall_material = "concrete"
-ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+wall_material = "grating.cage"
+ceiling_material = "grating.roof"
+skirting = 200
+trim = "iron"
 cell = 900
 
 [materials]
-concrete = { color = [0.46, 0.30, 0.16], stains = 0.5 }
-"concrete.floor" = { color = [0.46, 0.40, 0.30], stains = 0.4 }
-"concrete.ceiling" = { color = [0.22, 0.14, 0.08], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-"grating.cage" = { color = [0.80, 0.52, 0.22], tile = [2000, 2000] }
-wood = [0.70, 0.56, 0.14]
-"drum" = [0.80, 0.62, 0.14]
+"grating.cage" = { color = [0.42, 0.26, 0.11], tile = [1100, 1100] }
+"grating.roof" = { color = [0.24, 0.15, 0.07], tile = [1400, 1400] }
+"grating.floor" = { color = [0.38, 0.27, 0.15], tile = [900, 900] }
+"concrete.floor" = { color = [0.34, 0.24, 0.14], stains = 0.6, panels = 3 }
+"concrete.machine" = { color = [0.40, 0.25, 0.11], stains = 0.4, panels = 4, tile = [2600, 2600] }
+"stripes.hazard" = { color = [0.10, 0.08, 0.05], stripe = [0.70, 0.52, 0.12], count = 16 }
+"door.lab" = [0.40, 0.28, 0.16]
+brass = [0.72, 0.56, 0.12]
+drum = [0.80, 0.58, 0.12]
+iron = [0.10, 0.07, 0.05]
+plastic = [0.80, 0.74, 0.62]
+copper = [0.62, 0.30, 0.12]
+paper = [0.62, 0.58, 0.50]
 
 [lighting]
-ambient = [0.20, 0.13, 0.06]
+ambient = [0.19, 0.12, 0.06]
 
-[[zone]]            # south corridor west
+[[zone]]            # south corridor
 box = [1890, 2034, 14742, 4500]
 floor_along = "x"
-wall_material = "grating.cage"
 [[zone]]            # west leg
-box = [4680, 4500, 7380, 11214]
-wall_material = "grating.cage"
+box = [4680, 4500, 7380, 9306]
+[[zone]]            # gas tank bay west of the west leg
+box = [1890, 4500, 4680, 7600]
 [[zone]]            # north corridor
 box = [4680, 9306, 20736, 11214]
 floor_along = "x"
-wall_material = "grating.cage"
 [[zone]]            # east leg
-box = [20736, 2880, 23274, 17172]
-wall_material = "grating.cage"
-[[zone]]            # south corridor east
+box = [20736, 2034, 23274, 17172]
+[[zone]]            # east bay (desk and barrels)
 box = [18864, 2034, 20736, 4500]
-wall_material = "grating.cage"
 
-[[door]]
-wall = "south"
-span = [3200, 5600]
-top = -3400
+[[door]]            # door at the north end of the east leg
+wall = "north"
+span = [21400, 22700]
+top = -3300
 material = "door.lab"
-frame = "steel"
+frame = "iron"
 
-[[object]]          # gas tank
+# Machinery housings just proud of the block faces.
+[[object]]          # block 5 (between the south and north corridors)
+kind = "box"
+box = [7340, 4460, 20776, 9346]
+top = -2600
+material = "concrete.machine"
+[[object]]
+kind = "box"
+box = [9000, 5500, 19500, 8400]
+top = -4200
+bottom = -2600
+material = "concrete.machine"
+[[object]]          # block 4 (west of the west leg; the tank stands at its south end)
+kind = "box"
+box = [1890, 7600, 4720, 11214]
+top = -2400
+material = "concrete.machine"
+[[object]]          # block 6 (south-middle, between the corridor and the bay)
+kind = "box"
+box = [14702, 2034, 18904, 4500]
+top = -2800
+material = "concrete.machine"
+[[object]]          # yellow gas tank on block 4
 kind = "cylinder"
-at = [2800, 6000]
-radius = 1200
-top = -3200
+at = [3300, 6000]
+radius = 1300
+top = -3800
+bottom = -400
 material = "drum"
-segments = 14
+segments = 16
+hoops = [-2600, -1200]
+[[object]]          # base under the tank
+kind = "box"
+box = [1890, 4730, 4600, 7600]
+top = -400
+material = "concrete.machine"
+[[object]]
+kind = "cylinder"
+at = [3300, 6000]
+radius = 800
+top = -4300
+bottom = -3800
+material = "drum"
+segments = 12
+
+[[object]]          # desk with a clipboard and two barrels in the east bay (block 7)
+kind = "box"
+box = [19000, 2100, 20200, 2900]
+top = -900
+material = "concrete.machine"
+[[object]]
+kind = "box"
+box = [19300, 2300, 19800, 2700]
+top = -940
+bottom = -900
+material = "paper"
+[[object]]
+kind = "cylinder"
+at = [19300, 3600]
+radius = 380
+top = -1200
+material = "copper"
+segments = 10
+[[object]]
+kind = "cylinder"
+at = [20000, 3700]
+radius = 380
+top = -1200
+material = "copper"
+segments = 10
+
+[[object]]          # white-and-orange vertical pipes at the corners
+kind = "cylinder"
+at = [20500, 4300]
+radius = 170
+top = -5200
+material = "plastic"
+segments = 8
+hoops = [-1600, -1500]
+[[object]]
+kind = "cylinder"
+at = [7600, 4300]
+radius = 170
+top = -5200
+material = "plastic"
+segments = 8
+hoops = [-1600, -1500]
+[[object]]
+kind = "cylinder"
+at = [20500, 9500]
+radius = 200
+top = -5200
+material = "copper"
+segments = 8
+
+# Yellow railings along the walkways.
 [[object]]
 kind = "rail"
-from = [4800, 4600]
-to = [4800, 11000]
-height = 950
-spacing = 600
+from = [2200, 4250]
+to = [4500, 4250]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [7250, 4600]
-to = [7250, 9200]
-height = 950
-spacing = 600
+from = [7600, 4250]
+to = [14500, 4250]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [7400, 9400]
-to = [20600, 9400]
-height = 950
-spacing = 600
+from = [4950, 4800]
+to = [4950, 11000]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [20850, 3000]
-to = [20850, 9200]
-height = 950
-spacing = 600
+from = [7600, 9550]
+to = [20500, 9550]
+height = 1000
+spacing = 1800
+material = "brass"
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [20990, 2300]
+to = [20990, 9100]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 
+# Hazard stripes and grating panels on the floor.
+[[object]]
+kind = "rug"
+box = [21200, 2300, 21500, 16900]
+material = "stripes.hazard"
+[[object]]
+kind = "rug"
+box = [7600, 3700, 14500, 4000]
+material = "stripes.hazard"
+[[object]]
+kind = "rug"
+box = [7600, 9800, 20500, 10100]
+material = "stripes.hazard"
+[[object]]
+kind = "rug"
+box = [21500, 9600, 23000, 11000]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [21500, 15000, 23000, 16800]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [5000, 2400, 7200, 4200]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [5000, 9500, 7200, 11000]
+material = "grating.floor"
+
+[[object]]
+kind = "strip"
+at = [8000, 3300]
+[[object]]
+kind = "strip"
+at = [6000, 8000]
+[[object]]
+kind = "strip"
+at = [14000, 10200]
+[[object]]
+kind = "strip"
+at = [22000, 14000]
+
 [[light]]
-at = [8000, -3600, 3300]
+at = [8000, -3800, 3300]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 6000
 [[light]]
-at = [6000, -3600, 8000]
+at = [6000, -3800, 8000]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 6000
 [[light]]
-at = [14000, -3600, 10200]
+at = [14000, -3800, 10200]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 7000
 [[light]]
-at = [22000, -3600, 7000]
+at = [22000, -3800, 6000]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 6000
 [[light]]
-at = [22000, -3600, 14000]
+at = [22000, -3800, 14000]
 color = [1.0, 0.70, 0.30]
-strength = 0.5
+strength = 0.55
 reach = 6000

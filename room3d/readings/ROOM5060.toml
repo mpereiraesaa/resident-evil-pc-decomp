@@ -1,108 +1,298 @@
-# Small laboratory: green-tinted lab with the cylindrical centrifuge in
-# the middle, benches along the walls, the computer desk south-west, the
-# specimen fridge and tanks, the door on the north wall.
+# Small laboratory: green-grey walls over a grey tile floor. The white cryo
+# tube lies east-west in the middle on dark end stands (collision block 3).
+# West wall: a lit bottle fridge, a tall dark cabinet with a hazard plate,
+# and a dark counter with jars and boxes under a round white hood; the steel
+# drum stands in front of it. North wall: a white counter with a green-lit
+# glass display, a dark bench with a machine, a beige instrument box and the
+# black computer desk in the north-east corner with a blue chair. East wall:
+# a trolley of bottles beside a jut whose west face holds the double door
+# with the EXIT sign. South wall:
+# a long counter with a gas cylinder, and a thick wall jut further east.
+# The ceiling is high (cam0 shows wall far above the door). The visible walls stand a little outside the collision lines (floor picks
+# land ~500-800 beyond them), so the shell is widened accordingly.
 room = "ROOM5060"
 title = "Small laboratory"
 seed = 5060
+backdrop = [4, 5]  # cameras 4/5 are close-ups of the computer screen
 
 [shell]
 floor = 0
-ceiling = -4200
-floor_material = "concrete.floor"
+ceiling = -6500
+floor_material = "tiles.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 120
+trim = "concrete.trim"
 cell = 800
 
 [materials]
-concrete = { color = [0.48, 0.56, 0.50], stains = 0.5 }
-"concrete.floor" = { color = [0.42, 0.46, 0.42], stains = 0.4 }
-"concrete.ceiling" = { color = [0.28, 0.32, 0.30], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-"concrete.tiles" = { color = [0.42, 0.46, 0.42], stains = 0.2, panels = 6 }
+concrete = { color = [0.44, 0.52, 0.47], stains = 0.5, panels = 1 }
+"concrete.trim" = { color = [0.24, 0.28, 0.26], stains = 0.2 }
+"concrete.ceiling" = { color = [0.30, 0.34, 0.32], stains = 0.3 }
+"tiles.floor" = { color = [0.42, 0.46, 0.45], count = 2, grout = [0.24, 0.27, 0.26], grime = 0.5, tile = [2000, 2000] }
+"double_door.lab" = [0.18, 0.22, 0.21]
+"books.fridge" = { color = [0.70, 0.62, 0.52], shelves = 5 }
+"stripes.hazard" = { color = [0.10, 0.10, 0.09], stripe = [0.75, 0.62, 0.12], count = 8 }
+iron = [0.10, 0.13, 0.12]
+steel = [0.52, 0.58, 0.56]
+plastic = [0.80, 0.82, 0.76]
+enamel = [0.20, 0.24, 0.23]
+velvet = [0.16, 0.24, 0.48]
+statue = [0.20, 0.32, 0.26]
+paper = [0.80, 0.72, 0.52]
+glass_dark = [0.40, 0.54, 0.50]
+tank = [0.55, 0.95, 0.75]
 
 [lighting]
-ambient = [0.15, 0.17, 0.15]
+ambient = [0.15, 0.18, 0.16]
 
-[[zone]]
-box = [3096, 2736, 17640, 10188]
+[[zone]]            # north part, out to the east wall
+box = [2500, 5778, 18000, 10600]
 floor_along = "x"
-floor_material = "concrete.tiles"
+[[zone]]            # south part, closed east by the jut that holds the door
+box = [2500, 3402, 15000, 5778]
+floor_along = "x"
+[[zone]]            # south bay west of the wall jut
+box = [2500, 2200, 12078, 3402]
+floor_along = "x"
 
-[[door]]
-wall = "north"
-span = [13800, 17100]
-top = -3600
+[[door]]            # double door with the EXIT sign, west face of the south-east jut
+wall = "east"
+line = 15000
+span = [3600, 5500]
+top = -3900
 material = "double_door.lab"
-frame = "steel"
+frame = "iron"
+[[object]]
+kind = "box"
+box = [14930, 4250, 15000, 4850]
+top = -4500
+bottom = -4250
+material = "statue"
 
-[[object]]          # the cryo tube lying on its frame (block 3)
+# Cryo tube (collision block 3): dark stands and end rings, white tube.
+[[object]]
 kind = "box"
-box = [8352, 5166, 13140, 7434]
-top = -700
+box = [8352, 5450, 9200, 7150]
+top = -1000
 material = "iron"
-omit = ["bottom"]
 [[object]]
 kind = "box"
-box = [8500, 5400, 13000, 7200]
-top = -1900
-bottom = -700
-material = "steel"
-[[object]]          # computer on the east bench (cameras 4 and 5)
-kind = "box"
-box = [17000, 8200, 17700, 9000]
-top = -1700
-bottom = -1000
-material = "plastic"
+box = [12300, 5450, 13140, 7150]
+top = -1000
+material = "iron"
 [[object]]
 kind = "box"
-box = [16500, 8250, 16900, 8950]
-top = -1060
-bottom = -1000
-material = "plastic"
-[[object]]          # bench south
-kind = "box"
-box = [11772, 9234, 21852, 12366]
-top = -1000
-material = "steel"
-omit = ["bottom", "south"]
-[[object]]          # bench east
-kind = "box"
-box = [16326, 7128, 19422, 12384]
-top = -1000
-material = "steel"
-omit = ["bottom", "east"]
-[[object]]          # tanks on the east bench
-kind = "cylinder"
-at = [17800, 8200]
-radius = 400
-top = -2400
-bottom = -1000
-material = "glass_dark"
-segments = 10
-[[object]]          # computer desk south-west
-kind = "box"
-box = [10134, 9612, 13122, 11412]
+box = [9200, 5750, 12300, 6850]
 top = -1100
 material = "iron"
-omit = ["bottom"]
-[[object]]          # specimen fridge
+[[object]]
 kind = "box"
-box = [12078, 1098, 20052, 3402]
-top = -2800
+box = [8352, 5450, 13140, 7150]
+top = -2500
+bottom = -1100
+material = "plastic"
+[[object]]
+kind = "box"
+box = [8352, 5750, 13140, 6850]
+top = -2750
+bottom = -2500
+material = "plastic"
+[[object]]          # dark rings near the ends
+kind = "box"
+box = [8800, 5350, 9100, 7250]
+top = -2850
+bottom = -1000
+material = "iron"
+[[object]]
+kind = "box"
+box = [12400, 5350, 12700, 7250]
+top = -2850
+bottom = -1000
+material = "iron"
+[[object]]          # lit window along the tube's top
+kind = "box"
+box = [9200, 6050, 12300, 6750]
+top = -2770
+bottom = -2750
+material = "glow"
+
+# West wall.
+[[object]]          # lit bottle fridge
+kind = "bookcase"
+box = [2500, 3300, 3300, 4600]
+top = -2200
+front = "east"
+material = "plastic"
+books = "books.fridge"
+[[object]]          # tall dark cabinet with a hazard plate
+kind = "box"
+box = [2500, 4600, 3400, 6300]
+top = -3000
+material = "iron"
+[[object]]
+kind = "box"
+box = [3400, 5100, 3420, 5800]
+top = -2000
+bottom = -1600
+material = "stripes.hazard"
+[[object]]          # dark counter under the hood
+kind = "box"
+box = [2500, 6400, 3300, 10000]
+top = -1100
+material = "iron"
+[[object]]
+kind = "cylinder"
+at = [2950, 6900]
+radius = 260
+top = -1650
+bottom = -1100
+material = "glass_dark"
+segments = 10
+[[object]]
+kind = "cylinder"
+at = [2950, 7700]
+radius = 260
+top = -1650
+bottom = -1100
+material = "glass_dark"
+segments = 10
+[[object]]          # cardboard boxes on the counter
+kind = "box"
+box = [2600, 8600, 3200, 9700]
+top = -1600
+bottom = -1100
+material = "paper"
+[[object]]          # round white hood over the counter
+kind = "cylinder"
+at = [3000, 8100]
+radius = 1100
+top = -4200
+bottom = -3300
+material = "plastic"
+segments = 16
+[[object]]          # steel drum with its lid (collision circle 7)
+kind = "cylinder"
+at = [5600, 8150]
+radius = 600
+top = -1000
 material = "steel"
-omit = ["bottom", "south"]
+segments = 14
+hoops = [-900, -300]
+
+# North wall.
+[[object]]          # white counter with the green-lit glass display
+kind = "box"
+box = [5000, 9700, 9800, 10600]
+top = -1000
+material = "plastic"
+[[object]]
+kind = "box"
+box = [5200, 10000, 9600, 10600]
+top = -2700
+bottom = -1000
+material = "tank"
+[[object]]          # dark bench with a machine (collision block 5)
+kind = "box"
+box = [10134, 9612, 13122, 10600]
+top = -1000
+material = "iron"
+[[object]]
+kind = "box"
+box = [11000, 9800, 12300, 10500]
+top = -1900
+bottom = -1000
+material = "enamel"
+[[object]]          # beige instrument box (collision block 2)
+kind = "box"
+box = [13800, 9300, 15400, 10600]
+top = -1300
+material = "paper"
+[[object]]          # black computer desk in the north-east corner (block 4)
+kind = "table"
+box = [15400, 8000, 18000, 10600]
+top = -950
+thickness = 80
+material = "iron"
+[[object]]          # monitor and tower
+kind = "box"
+box = [17300, 8300, 17800, 9000]
+top = -1650
+bottom = -950
+material = "plastic"
+[[object]]
+kind = "box"
+box = [17300, 9200, 17900, 9800]
+top = -1550
+bottom = -950
+material = "plastic"
+[[object]]
+kind = "chair"
+at = [16300, 8700]
+facing = "west"
+seat = "velvet"
+material = "iron"
+
+# East wall: trolley of bottles (block 6).
+[[object]]
+kind = "table"
+box = [16812, 5900, 17900, 7400]
+top = -1000
+thickness = 60
+material = "steel"
+[[object]]
+kind = "cylinder"
+at = [17300, 6300]
+radius = 160
+top = -1500
+bottom = -1000
+material = "drum"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [17300, 6900]
+radius = 160
+top = -1500
+bottom = -1000
+material = "velvet"
+segments = 8
+
+# South wall: long counter and a gas cylinder.
+[[object]]
+kind = "box"
+box = [3300, 2200, 12078, 2900]
+top = -1000
+material = "steel"
+[[object]]
+kind = "cylinder"
+at = [11600, 3100]
+radius = 300
+top = -1900
+material = "statue"
+segments = 10
+hoops = [-1500, -1400]
+
+[[object]]          # hanging lamp over the tube
+kind = "cylinder"
+at = [11000, 6300]
+radius = 500
+top = -3300
+bottom = -3150
+material = "glow"
+segments = 12
 
 [[light]]
-at = [10000, -3800, 6500]
+at = [11000, -3000, 6300]
 color = [0.85, 1.0, 0.90]
-strength = 0.5
-reach = 8000
-
-[[object]]          # strip light
-kind = "strip"
-at = [10000, 6500]
+strength = 0.55
+reach = 7000
+[[light]]
+at = [6000, -3200, 7000]
+color = [0.85, 1.0, 0.90]
+strength = 0.35
+reach = 6000
+[[light]]
+at = [7400, -1800, 9600]
+color = [0.55, 1.0, 0.75]
+strength = 0.3
+reach = 3000

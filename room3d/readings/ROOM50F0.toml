@@ -1,124 +1,258 @@
-# Power maze 1: orange-lit mesh cages, grating walkways with yellow railings
-# and hazard stripes, machinery behind the mesh; doors on the north wall
-# (west end) and in the east.
+# Power maze 1: walkways threaded between big orange-brown generator
+# blocks, all under amber light. The outer walls are dark steel cages (a fine
+# diamond mesh over darkness); the machinery blocks (collision blocks 2, 3,
+# 5, 7) stand as riveted dark orange-brown housings about 2.6 m tall with
+# the cage rising above them, yellow railings along the walkways, hazard
+# stripes on the floor edges and grating panels at the corners. A computer
+# console hangs on the west wall of the south-west bay; a door in the north
+# wall of the north corridor and one at the south end of the east corridor
+# (on block 7). Pipes, gauges and signs on the machines are left out.
 room = "ROOM50F0"
 title = "Power maze 1"
 seed = 5150
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5200
 floor_material = "concrete.floor"
-wall_material = "concrete"
-ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+wall_material = "grating.cage"
+ceiling_material = "grating.roof"
+skirting = 200
+trim = "iron"
 cell = 900
 
 [materials]
-concrete = { color = [0.46, 0.30, 0.16], stains = 0.5 }
-"concrete.floor" = { color = [0.46, 0.40, 0.30], stains = 0.4 }
-"concrete.ceiling" = { color = [0.22, 0.14, 0.08], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-grating = [0.56, 0.40, 0.22]
-"grating.cage" = { color = [0.80, 0.52, 0.22], tile = [2000, 2000] }
-wood = [0.70, 0.56, 0.14]
+"grating.cage" = { color = [0.42, 0.26, 0.11], tile = [1100, 1100] }
+"grating.roof" = { color = [0.24, 0.15, 0.07], tile = [1400, 1400] }
+"grating.floor" = { color = [0.38, 0.27, 0.15], tile = [900, 900] }
+"concrete.floor" = { color = [0.32, 0.23, 0.13], stains = 0.6, panels = 3 }
+"concrete.machine" = { color = [0.40, 0.25, 0.11], stains = 0.4, panels = 4, tile = [2600, 2600] }
+"stripes.hazard" = { color = [0.10, 0.08, 0.05], stripe = [0.70, 0.52, 0.12], count = 16 }
+"door.lab" = [0.40, 0.28, 0.16]
+brass = [0.72, 0.56, 0.12]
+iron = [0.10, 0.07, 0.05]
+plastic = [0.66, 0.58, 0.44]
+glass_dark = [0.40, 0.40, 0.62]
 
 [lighting]
-ambient = [0.20, 0.13, 0.06]
+ambient = [0.19, 0.12, 0.06]
 
-[[zone]]            # south-west
+[[zone]]            # south-west bay
 box = [2124, 2034, 7470, 6408]
 floor_along = "x"
-wall_material = "grating.cage"
 [[zone]]            # west corridor
 box = [4788, 6408, 7470, 17640]
-wall_material = "grating.cage"
 [[zone]]            # north corridor
 box = [2124, 17640, 23274, 20898]
 floor_along = "x"
-wall_material = "grating.cage"
 [[zone]]            # middle corridor
-box = [14688, 2034, 17586, 17640]
-wall_material = "grating.cage"
+box = [14688, 2034, 17406, 17640]
+[[zone]]            # middle corridor, south-east nook
+box = [17406, 6876, 17586, 9000]
 [[zone]]            # east corridor
-box = [20790, 6876, 23274, 17640]
-wall_material = "grating.cage"
+box = [17586, 6876, 23274, 9000]
+floor_along = "x"
+[[zone]]
+box = [20790, 9000, 23274, 17640]
 
-[[door]]
+[[door]]            # door in the north wall of the north corridor
 wall = "north"
-span = [11100, 14300]
-top = -3600
+span = [11300, 12700]
+top = -3300
 material = "door.lab"
-frame = "steel"
-[[door]]
-wall = "east"
-span = [4800, 6900]
-top = -3400
+frame = "iron"
+[[door]]            # door at the south end of the east corridor, on block 7
+wall = "south"
+line = 6876
+span = [21300, 22700]
+top = -3300
 material = "door.lab"
-frame = "steel"
+frame = "iron"
 
-# Railings along the walkways
+# Machinery housings standing just proud of the block faces.
+[[object]]          # block 5 (west of the west corridor)
+kind = "box"
+box = [2124, 6408, 4830, 17640]
+top = -2600
+material = "concrete.machine"
+[[object]]          # block 2 (between the west and middle corridors)
+kind = "box"
+box = [7430, 2034, 14730, 17680]
+top = -2600
+material = "concrete.machine"
+[[object]]          # block 3 (between the middle and east corridors)
+kind = "box"
+box = [17546, 9000, 20830, 17680]
+top = -2800
+material = "concrete.machine"
+[[object]]          # block 7 (south-east)
+kind = "box"
+box = [17366, 2034, 23274, 6916]
+top = -2600
+material = "concrete.machine"
+omit = ["bottom"]
+[[object]]          # big housings rising higher on blocks 2 and 3
+kind = "box"
+box = [8500, 9000, 13600, 16600]
+top = -4200
+bottom = -2600
+material = "concrete.machine"
+[[object]]
+kind = "box"
+box = [18000, 10000, 20400, 16600]
+top = -4000
+bottom = -2800
+material = "concrete.machine"
+[[object]]          # yellow edge rails on top of the housings
+kind = "box"
+box = [17546, 9000, 20830, 9080]
+top = -2900
+bottom = -2800
+material = "brass"
+[[object]]
+kind = "box"
+box = [7430, 17600, 14730, 17680]
+top = -2700
+bottom = -2600
+material = "brass"
+
+# Yellow railings along the walkways.
 [[object]]
 kind = "rail"
-from = [4900, 6500]
-to = [4900, 17500]
-height = 950
-spacing = 600
+from = [5100, 6600]
+to = [5100, 17400]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [7350, 6500]
-to = [7350, 17500]
-height = 950
-spacing = 600
+from = [7150, 6600]
+to = [7150, 17400]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [14800, 2200]
-to = [14800, 17500]
-height = 950
-spacing = 600
+from = [15000, 2300]
+to = [15000, 17400]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [17470, 2200]
-to = [17470, 17500]
-height = 950
-spacing = 600
+from = [17250, 9200]
+to = [17250, 17400]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 [[object]]
 kind = "rail"
-from = [2200, 17750]
-to = [23200, 17750]
-height = 950
-spacing = 600
+from = [7600, 17950]
+to = [20600, 17950]
+height = 1000
+spacing = 1800
+material = "brass"
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [21100, 9200]
+to = [21100, 17400]
+height = 1000
+spacing = 1800
+material = "brass"
 newels = [false, false]
 
+# Hazard stripes and grating panels on the floor.
+[[object]]
+kind = "rug"
+box = [5300, 6600, 5600, 17400]
+material = "stripes.hazard"
+[[object]]
+kind = "rug"
+box = [15200, 2300, 15500, 17400]
+material = "stripes.hazard"
+[[object]]
+kind = "rug"
+box = [21300, 9200, 21600, 17400]
+material = "stripes.hazard"
+[[object]]
+kind = "rug"
+box = [2600, 2500, 5400, 5600]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [5300, 18200, 7200, 20400]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [15200, 18200, 17200, 20400]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [21000, 18200, 22900, 20400]
+material = "grating.floor"
+[[object]]
+kind = "rug"
+box = [15100, 3000, 17000, 5600]
+material = "grating.floor"
+
+[[object]]          # computer console on the west wall of the south-west bay
+kind = "box"
+box = [2124, 3900, 2700, 5300]
+top = -2700
+bottom = -1300
+material = "plastic"
+[[object]]
+kind = "box"
+box = [2700, 4000, 2720, 4700]
+top = -2600
+bottom = -2000
+material = "glass_dark"
+
+[[object]]
+kind = "strip"
+at = [6000, 12000]
+[[object]]
+kind = "strip"
+at = [12000, 19300]
+[[object]]
+kind = "strip"
+at = [16000, 10000]
+[[object]]
+kind = "strip"
+at = [22000, 13000]
+
 [[light]]
-at = [6000, -3600, 4000]
+at = [5000, -3800, 4200]
+color = [1.0, 0.70, 0.30]
+strength = 0.55
+reach = 6000
+[[light]]
+at = [6000, -3800, 12000]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 6000
 [[light]]
-at = [6000, -3600, 12000]
+at = [16000, -3800, 10000]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 6000
 [[light]]
-at = [16000, -3600, 10000]
+at = [12000, -3800, 19300]
+color = [1.0, 0.70, 0.30]
+strength = 0.55
+reach = 8000
+[[light]]
+at = [22000, -3800, 13000]
 color = [1.0, 0.70, 0.30]
 strength = 0.5
 reach = 6000
 [[light]]
-at = [12000, -3600, 19200]
+at = [20000, -3800, 8000]
 color = [1.0, 0.70, 0.30]
-strength = 0.5
-reach = 7000
-[[light]]
-at = [22000, -3600, 12000]
-color = [1.0, 0.70, 0.30]
-strength = 0.5
-reach = 6000
+strength = 0.45
+reach = 5000

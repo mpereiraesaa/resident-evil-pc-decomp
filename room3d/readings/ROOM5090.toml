@@ -1,104 +1,163 @@
-# Lab B3 room A: an office cell of grey concrete with bookshelves, a desk
-# with a lamp and chair in the north-east corner, cardboard boxes, the
-# pin-up poster; door on the west wall.
+# Lab B3 room A: a small office cell of stained ochre-grey concrete with a
+# thin rust-red skirting pipe. A tall free-standing bookcase juts north from
+# the south wall (collision block 8); a wall-hung bookshelf on the east wall
+# (block 6); the black desk with printer, lamp and green chair in the
+# south-east corner under a cork board (blocks 7, 9); cardboard boxes and a
+# dark crate along the north wall under the EXCITE pin-up poster (blocks 2,
+# 3); a dark wall vent with an electrical box on the west wall; the door in
+# the south wall west of the bookcase; a duct box under the ceiling in the
+# north-west. Ceiling pipes are left out.
 room = "ROOM5090"
 title = "Lab B3 room A"
 seed = 5090
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -4600
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 90
+trim = "rust"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-crate = [0.68, 0.52, 0.30]
-wood = [0.40, 0.26, 0.12]
+concrete = { color = [0.50, 0.47, 0.37], stains = 0.6, panels = 1, tile = [4000, 4600] }
+"concrete.floor" = { color = [0.42, 0.40, 0.34], stains = 0.6 }
+"concrete.ceiling" = { color = [0.26, 0.25, 0.22], stains = 0.3 }
+"door.lab" = [0.40, 0.38, 0.34]
+crate = [0.62, 0.46, 0.24]
+wood = [0.34, 0.20, 0.10]
+"wood.dark" = [0.10, 0.10, 0.10]
+books = { color = [0.30, 0.16, 0.10], shelves = 5 }
+"painting.poster" = [0.20, 0.30, 0.50]
+"plaster.cork" = { color = [0.62, 0.42, 0.22], stains = 0.2 }
+rust = [0.40, 0.16, 0.10]
+iron = [0.12, 0.12, 0.12]
+steel = [0.56, 0.58, 0.58]
+plastic = [0.70, 0.70, 0.72]
+statue = [0.24, 0.42, 0.40]
+soot = [0.05, 0.05, 0.05]
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.17, 0.16, 0.13]
 
 [[zone]]
 box = [1968, 2016, 12474, 10782]
 
-[[door]]
+[[door]]            # door in the south wall, west of the bookcase
 wall = "south"
-span = [3000, 4200]
-top = -3400
+span = [3000, 4400]
+top = -3300
 material = "door.lab"
-frame = "steel"
+frame = "iron"
 
-[[object]]          # bookshelf west
-kind = "box"
-box = [1968, 2232, 3200, 6336]
-top = -2600
-material = "steel"
-omit = ["bottom", "west"]
-[[object]]          # bookshelf north-east
-kind = "box"
-box = [10098, 396, 14616, 3204]
-top = -2600
+[[object]]          # tall free-standing bookcase off the south wall (block 8)
+kind = "bookcase"
+box = [6300, 2016, 7350, 5000]
+top = -3000
+front = ["west", "east"]
+material = "wood.dark"
+[[object]]          # wall-hung bookshelf on the east wall (block 6)
+kind = "bookcase"
+box = [12000, 4000, 12474, 6300]
+top = -3100
+bottom = -1400
+front = "west"
 material = "wood"
-omit = ["bottom", "south", "east"]
-[[object]]          # desk
+[[object]]          # black desk in the south-east corner (block 7)
 kind = "table"
-box = [7794, 9450, 10998, 12510]
-top = -1400
-thickness = 100
-[[object]]
-kind = "chair"
-at = [9400, 8600]
-facing = "north"
+box = [10100, 2016, 12474, 3200]
+top = -950
+thickness = 80
+material = "iron"
+[[object]]          # drawer pedestal
+kind = "box"
+box = [11600, 2100, 12400, 3100]
+top = -870
+material = "iron"
+[[object]]          # printer and lamp on the desk
+kind = "box"
+box = [10500, 2400, 11200, 2900]
+top = -1250
+bottom = -950
+material = "plastic"
 [[object]]
 kind = "lamp"
-at = [10200, 10400]
-base = -1400
-height = 650
-[[object]]          # cardboard boxes
-kind = "box"
-box = [6192, 144, 7452, 1500]
-top = -900
-material = "crate"
-omit = ["bottom"]
-[[object]]
-kind = "box"
-box = [11052, 738, 12150, 3600]
-top = -800
-material = "crate"
-omit = ["bottom"]
-[[object]]          # poster
+at = [11800, 2400]
+base = -950
+height = 600
+[[object]]          # green office chair (block 9)
+kind = "chair"
+at = [11300, 3700]
+facing = "north"
+seat = "statue"
+material = "iron"
+[[object]]          # cork board over the desk
 kind = "wall_band"
-wall = "east"
-span = [5000, 7400]
-y = [-3800, -2000]
-material = "painting"
+wall = "south"
+span = [10300, 11900]
+y = [-2900, -1500]
+material = "plaster.cork"
 rail = false
 
-[[light]]
-at = [7000, -3800, 6000]
-color = [0.95, 0.98, 1.0]
-strength = 0.45
-reach = 6000
-[[light]]
-at = [10200, -2000, 10400]
-color = [1.0, 0.95, 0.80]
-strength = 0.3
-reach = 3000
+[[object]]          # cardboard boxes along the north wall (block 2)
+kind = "box"
+box = [7900, 9500, 9200, 10782]
+top = -900
+material = "crate"
+[[object]]
+kind = "box"
+box = [9200, 9600, 10400, 10782]
+top = -1000
+material = "crate"
+[[object]]
+kind = "box"
+box = [8300, 9800, 9500, 10700]
+top = -1500
+bottom = -900
+material = "crate"
+[[object]]          # dark crate in the north-east (block 3)
+kind = "box"
+box = [10900, 9800, 12000, 10782]
+top = -900
+material = "wood"
+[[painting]]        # EXCITE pin-up poster on the north wall
+wall = "north"
+span = [8400, 10200]
+y = [-3900, -1000]
+material = "painting.poster"
 
-[[object]]          # strip light
+[[object]]          # dark wall vent and electrical box on the west wall
+kind = "box"
+box = [1968, 7300, 2010, 8300]
+top = -3000
+bottom = -1900
+material = "soot"
+[[object]]
+kind = "box"
+box = [1968, 8900, 2080, 9300]
+top = -2200
+bottom = -1700
+material = "steel"
+[[object]]          # duct box under the ceiling
+kind = "box"
+box = [2400, 8200, 4800, 10200]
+top = -4600
+bottom = -4100
+material = "iron"
+
+[[object]]
 kind = "strip"
 at = [7000, 6000]
 
-[[object]]          # strip light
-kind = "strip"
-at = [10200, 10400]
+[[light]]
+at = [7000, -4000, 6000]
+color = [1.0, 0.96, 0.85]
+strength = 0.5
+reach = 6500
+[[light]]
+at = [11800, -1500, 2600]
+color = [1.0, 0.95, 0.80]
+strength = 0.3
+reach = 3000

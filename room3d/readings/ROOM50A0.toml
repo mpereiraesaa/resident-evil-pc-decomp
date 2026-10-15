@@ -1,85 +1,145 @@
-# Lab B3 room B: a grey concrete bedroom with a sink and mirror on the west
-# wall, the desk and chair south-west, the framed picture puzzle on the
-# north wall, the door west.
+# Lab B3 room B: a bare cell of stained beige concrete under a ceiling beam
+# and a run of pipes. North wall: a wall basin with a mirror, a light bar
+# and a bottle shelf, a small crate beside it, and the door further east
+# with an electrical box over it. East wall: a black desk with a green
+# office chair under a wooden board. West wall: the large framed Adam-and-Eve
+# picture (the puzzle). Cameras 0-3 are the same views as 4-7 with the
+# lights out; cameras 3 and 7 are close-ups of the picture and keep the
+# original background.
 room = "ROOM50A0"
 title = "Lab B3 room B"
 seed = 5100
+backdrop = [3, 7]
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5200
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 90
+trim = "rust"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.30, 0.22, 0.16]
-glass = [0.70, 0.74, 0.76]
+concrete = { color = [0.50, 0.47, 0.40], stains = 0.6, panels = 1, tile = [4000, 5200] }
+"concrete.floor" = { color = [0.38, 0.36, 0.32], stains = 0.7 }
+"concrete.ceiling" = { color = [0.24, 0.23, 0.21], stains = 0.3 }
+"concrete.beam" = { color = [0.42, 0.40, 0.35], stains = 0.4 }
+"door.lab" = [0.36, 0.35, 0.32]
+"painting.eden" = [0.40, 0.48, 0.30]
+"plaster.board" = { color = [0.56, 0.38, 0.18], stains = 0.1 }
+crate = [0.36, 0.22, 0.14]
+rust = [0.36, 0.16, 0.10]
+iron = [0.10, 0.10, 0.10]
+steel = [0.50, 0.50, 0.48]
+statue = [0.20, 0.32, 0.30]
+porcelain = [0.80, 0.80, 0.78]
+mirror = [0.50, 0.54, 0.56]
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.15, 0.14, 0.12]
 
 [[zone]]
 box = [1878, 1944, 12582, 10836]
 
-[[door]]
-wall = "west"
-span = [3000, 4300]
+[[door]]            # door in the north wall, east of the basin
+wall = "north"
+span = [9900, 11300]
 top = -3400
 material = "door.lab"
-frame = "steel"
-
-[[object]]          # sink
+frame = "iron"
+[[object]]          # electrical box over the door
 kind = "box"
-box = [1878, 6000, 2600, 7200]
-top = -900
-material = "porcelain"
-omit = ["bottom", "west"]
-[[object]]          # mirror over it
-kind = "wall_band"
-wall = "west"
-span = [5800, 7400]
-y = [-2800, -1600]
-material = "mirror"
-rail = false
-[[object]]          # desk and chair
-kind = "table"
-box = [4770, 9846, 8208, 12006]
-top = -1400
-thickness = 100
-[[object]]
-kind = "chair"
-at = [6500, 9000]
-facing = "north"
-[[object]]          # locker
-kind = "box"
-box = [11196, 3060, 15138, 5814]
-top = -1200
+box = [10100, 10700, 11100, 10836]
+top = -4300
+bottom = -3700
 material = "steel"
-omit = ["bottom", "east"]
-[[object]]          # the picture
+
+[[object]]          # wall basin, mirror, light bar and bottle shelf
+kind = "sink"
+wall = "north"
+at = 7400
+[[object]]
 kind = "wall_band"
 wall = "north"
-span = [5200, 7600]
-y = [-3400, -1800]
-material = "painting"
+span = [6900, 7900]
+y = [-2700, -1800]
+material = "mirror"
+rail = false
+[[object]]
+kind = "box"
+box = [6800, 10700, 8000, 10836]
+top = -2950
+bottom = -2850
+material = "glow"
+[[object]]
+kind = "box"
+box = [6800, 10500, 8000, 10836]
+top = -1550
+bottom = -1480
+material = "porcelain"
+[[object]]          # small crate beside the basin
+kind = "box"
+box = [5200, 10000, 6000, 10836]
+top = -700
+material = "crate"
+
+[[painting]]        # the Adam-and-Eve picture on the west wall
+wall = "west"
+span = [5000, 7150]
+y = [-4100, -2300]
+material = "painting.eden"
+
+[[object]]          # black desk on the east wall (collision block 6)
+kind = "table"
+box = [11300, 3200, 12582, 5700]
+top = -1000
+thickness = 80
+material = "iron"
+[[object]]
+kind = "box"
+box = [11300, 3300, 12500, 4100]
+top = -920
+material = "iron"
+[[object]]          # green office chair (block 7)
+kind = "chair"
+at = [10900, 4600]
+facing = "west"
+seat = "statue"
+material = "iron"
+[[object]]          # wooden board over the desk
+kind = "wall_band"
+wall = "east"
+span = [4200, 5300]
+y = [-2900, -1700]
+material = "plaster.board"
 rail = false
 
-[[light]]
-at = [7000, -3800, 6000]
-color = [0.95, 0.98, 1.0]
-strength = 0.45
-reach = 6000
+[[object]]          # ceiling beam and pipe run
+kind = "box"
+box = [7600, 1944, 8400, 10836]
+top = -5200
+bottom = -4400
+material = "concrete.beam"
+[[object]]
+kind = "box"
+box = [1878, 9900, 12582, 10600]
+top = -5200
+bottom = -4700
+material = "steel"
 
-[[object]]          # strip light
+[[object]]
 kind = "strip"
-at = [7000, 6000]
+at = [5500, 6300]
+
+[[light]]
+at = [6000, -4200, 6300]
+color = [1.0, 0.96, 0.86]
+strength = 0.5
+reach = 6500
+[[light]]
+at = [7400, -2600, 10200]
+color = [1.0, 1.0, 0.92]
+strength = 0.3
+reach = 3500

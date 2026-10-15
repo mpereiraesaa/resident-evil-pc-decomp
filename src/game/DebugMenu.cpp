@@ -564,6 +564,15 @@ void DebugRoomChange_ApplyPendingPlacement(void)
         return;
     }
 
+    // Three passes over the room's doors: a door whose neighbour has a paired
+    // record (the arrival the game itself uses) landing at floor level, then
+    // any paired arrival, then - only when no door has one - the first door
+    // with the dir heuristic. Taking the first door alone sent ROOM3050
+    // (fountain) to its shed door, whose neighbour has no record back, and
+    // the heuristic stood the player inside the shed wall's collision box;
+    // its lift door arrives at y=4320, inside the basin, once it is drained.
+    // The door from ROOM30F0 arrives at (5950,0,13800).
+    for (int pass = 0; pass < 3; ++pass)
     for (unsigned char* entry = table; entry <= tail; entry += 12) {
         if (entry[0] != 1) {            // room_check_actions[1] = door
             continue;
@@ -679,6 +688,10 @@ void DebugRoomChange_ApplyPendingPlacement(void)
                     }
                 }
             }
+        }
+
+        if ((pass < 2 && !pairedArrival) || (pass == 0 && spotY != 0)) {
+            continue;
         }
 
         // Fallback: the dir heuristic (edge of this room's own zone). Verified

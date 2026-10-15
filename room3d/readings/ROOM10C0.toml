@@ -21,9 +21,9 @@ trim = "stone"
 cell = 700
 
 [materials]
-plaster = { color = [0.50, 0.40, 0.24], stains = 0.7, ivy = 0.9, tile = [2600, 4800] }
+plaster = { color = [0.46, 0.37, 0.22], stains = 0.7, ivy = 1.0, tile = [2600, 4800] }
 "plaster.ceiling" = { color = [0.26, 0.27, 0.18], ivy = 1.0, tile = [1500, 1500] }
-"stone.tiles" = { color = [0.46, 0.46, 0.36], tile = [1400, 1400] }
+"stone.tiles" = { color = [0.36, 0.37, 0.28], tile = [1400, 1400] }
 stone = [0.30, 0.34, 0.22]
 "stone.curb" = [0.24, 0.30, 0.18]
 wood = [0.40, 0.25, 0.14]
@@ -45,12 +45,12 @@ ambient = [0.24, 0.22, 0.14]
 [[light]]
 at = [10000, -3800, 5000]
 color = [1.0, 0.86, 0.60]
-strength = 0.55
+strength = 0.40
 reach = 9000
 [[light]]
 at = [16000, -3000, 4000]
 color = [1.0, 0.92, 0.70]
-strength = 0.45
+strength = 0.35
 reach = 6000
 
 [[zone]]            # main floor
@@ -212,14 +212,14 @@ material = "wood"
 
 [[object]]          # water pump in the corner by the windows: orange body
 kind = "box"
-box = [15000, 5350, 15900, 6300]
-top = -800
+box = [15470, 5400, 16050, 6100]
+top = -700
 material = "copper"
 omit = ["bottom"]
 [[object]]          # its steel tank
 kind = "box"
-box = [15900, 5400, 17000, 6450]
-top = -900
+box = [16060, 5660, 16850, 6200]
+top = -800
 material = "steel"
 omit = ["bottom"]
 

@@ -1,8 +1,12 @@
-# Guardhouse bar: a large L-shaped games room in plank walls; the bar with
-# its bottle shelf on the west, round tables with white cloths, stools, a
-# pool table in the east leg, the pinball machine, hanging lamps; red door.
+# Guardhouse bar: a large games room in plank walls around a solid core. The
+# bar counter with bottle shelves stands in the south-east, round tables with
+# white cloths and red stools across the bar hall, a potted plant and barrels
+# at its west end; the pool table in the west room, two small clothed tables
+# in the middle, the pinball machine in the north niche, a dartboard, hanging
+# lamps; red door on the core's east face. Placed from projected collision.
 room = "ROOM4040"
 title = "Guardhouse bar"
+backdrop = [6]  # camera 6 is a close-up of the pinball table
 seed = 4040
 
 [shell]
@@ -22,135 +26,162 @@ wood = [0.32, 0.20, 0.11]
 "door.red" = [0.46, 0.10, 0.10]
 linen = [0.86, 0.86, 0.82]
 velvet = [0.46, 0.16, 0.22]
+hedge = [0.10, 0.22, 0.16]
+"books.bottles" = { color = [0.30, 0.18, 0.10], shelves = 4 }
 
 [lighting]
 ambient = [0.17, 0.14, 0.10]
 
-[[zone]]            # bar hall along the south
-box = [1995, 2167, 20124, 10252]
+[[zone]]            # bar hall along the south (its west end, block 9, is solid)
+box = [6397, 2167, 20124, 10252]
 floor_along = "x"
-[[zone]]            # west room with the pinball machine
-box = [1995, 10252, 8341, 27468]
-[[zone]]            # middle, east of the pillar wall
+[[zone]]            # bar hall, north-west strip in front of the barrels
+box = [6397, 10252, 8341, 12928]
+[[zone]]            # west room with the pool table
+box = [1995, 15015, 8341, 27468]
+[[zone]]            # link from the bar hall to the west room is through the middle
 box = [10798, 10252, 20124, 20718]
-[[zone]]            # east leg with the pool table
+[[zone]]            # east leg
 box = [12816, 20718, 21970, 30751]
-[[zone]]            # opening between the west room and the pool table (camera 3)
+[[zone]]            # opening between the west room and the east leg
 box = [8341, 20718, 12816, 27468]
 [[zone]]            # niche with the pinball machine (camera 6)
 box = [10600, 27468, 12816, 30751]
 
 [[door]]
 wall = "west"
+line = 10798
 span = [10900, 15100]
 top = -3400
 material = "door.red"
 
-# Bar counter and bottle shelf on the west wall
+# Bar counter in the south-east (block 12) with bottle shelves on the walls behind it
 [[object]]
 kind = "box"
-box = [1995, 2167, 6397, 9180]
+box = [15020, 7900, 20124, 8700]
 top = -1100
 material = "wood"
-omit = ["bottom", "west", "south"]
+omit = ["bottom"]
 [[object]]
-kind = "wall_band"
-wall = "west"
-span = [2400, 9000]
-y = [-3400, -1400]
-material = "wood"
-rail = false
-# Round tables
+kind = "box"
+box = [15020, 7850, 20124, 8750]
+top = -1180
+bottom = -1100
+material = "marble_dark"
+[[object]]
+kind = "bookcase"
+box = [15500, 2167, 19500, 2800]
+top = -2600
+front = "north"
+books = "books.bottles"
+[[object]]          # bar stools in front of the counter
+kind = "cylinder"
+at = [15800, 9300]
+radius = 260
+top = -700
+bottom = -560
+material = "velvet"
+segments = 10
 [[object]]
 kind = "cylinder"
+at = [17400, 9300]
+radius = 260
+top = -700
+bottom = -560
+material = "velvet"
+segments = 10
+[[object]]
+kind = "cylinder"
+at = [19000, 9300]
+radius = 260
+top = -700
+bottom = -560
+material = "velvet"
+segments = 10
+# Round tables with white cloths (blocks 13, 4, 5)
+[[object]]
+kind = "table_round"
 at = [10703, 5568]
 radius = 1000
-top = -820
-bottom = -740
-material = "linen"
-segments = 14
+top = -780
+cloth = "linen"
 [[object]]
-kind = "cylinder"
-at = [10703, 5568]
-radius = 120
-top = -740
-material = "wood"
-segments = 8
+kind = "table_round"
+at = [17843, 27147]
+radius = 800
+top = -780
+cloth = "linen"
 [[object]]
+kind = "table_round"
+at = [14814, 21798]
+radius = 800
+top = -780
+cloth = "linen"
+[[object]]          # red stools round the bar-hall table
 kind = "cylinder"
-at = [17352, 10098]
-radius = 1400
-top = -820
-bottom = -740
-material = "linen"
-segments = 16
-[[object]]
-kind = "cylinder"
-at = [17352, 10098]
-radius = 140
-top = -740
-material = "wood"
-segments = 8
-[[object]]
-kind = "cylinder"
-at = [6147, 1863]
-radius = 1200
-top = -820
-bottom = -740
-material = "linen"
-segments = 14
-[[object]]
-kind = "cylinder"
-at = [6147, 1863]
-radius = 120
-top = -740
-material = "wood"
-segments = 8
-# Stools
-[[object]]
-kind = "cylinder"
-at = [8600, 7600]
-radius = 300
-top = -500
+at = [9300, 7000]
+radius = 280
+top = -560
 material = "velvet"
-segments = 8
+segments = 10
 [[object]]
 kind = "cylinder"
-at = [12800, 7600]
-radius = 300
-top = -500
+at = [12000, 7000]
+radius = 280
+top = -560
 material = "velvet"
-segments = 8
-# Barrel and plant by the south wall
+segments = 10
+[[object]]          # potted plant at the west end (block 16)
+kind = "cylinder"
+at = [6900, 2900]
+radius = 380
+top = -600
+material = "porcelain"
+segments = 10
 [[object]]
 kind = "cylinder"
-at = [4100, 9700]
-radius = 480
+at = [6900, 2900]
+radius = 700
+top = -1900
+bottom = -600
+material = "hedge"
+segments = 10
+[[object]]          # barrels (block 17)
+kind = "cylinder"
+at = [7000, 10400]
+radius = 520
 top = -1200
 material = "wood"
 segments = 12
-hoops = [-1050, -400]
+hoops = [-1050, -350]
 [[object]]
 kind = "cylinder"
-at = [9000, 9800]
-radius = 320
-top = -900
+at = [7900, 11300]
+radius = 520
+top = -1200
 material = "wood"
-segments = 10
-# Pool table
+segments = 12
+hoops = [-1050, -350]
+# Pool table in the west room (block 2)
 [[object]]
 kind = "box"
-box = [14814, 22698, 17843, 27147]
-top = -900
+box = [4187, 18910, 7064, 24851]
+top = -880
 material = "hedge"
 omit = ["bottom"]
 [[object]]
 kind = "box"
-box = [14614, 22498, 18043, 27347]
+box = [3987, 18710, 7264, 25051]
 top = -820
 bottom = -700
 material = "wood"
-# Pinball machine in its niche, and a couch in the west room
+[[object]]
+kind = "box"
+box = [4400, 19200, 6850, 24600]
+top = -700
+material = "wood"
+omit = ["bottom", "top"]
+# Pinball machine in its niche
 [[object]]
 kind = "box"
 box = [11000, 28200, 12400, 30751]
@@ -163,54 +194,55 @@ box = [11000, 30300, 12400, 30751]
 top = -2300
 bottom = -1100
 material = "iron"
-[[object]]
-kind = "sofa"
-box = [3987, 18710, 7264, 20888]
-back = "west"
+[[painting]]        # dartboard
+wall = "north"
+span = [14200, 15000]
+y = [-2600, -1800]
 material = "velvet"
+frame = "wood"
 
 [[chandelier]]
 at = [6000, 5500]
-y = -3600
-radius = 200
+y = -3900
+radius = 10
 globes = 1
-globe_radius = 200
+globe_radius = 110
 ceiling = -4800
 strength = 0.35
 reach = 6000
 [[chandelier]]
 at = [15000, 5500]
-y = -3600
-radius = 200
+y = -3900
+radius = 10
 globes = 1
-globe_radius = 200
+globe_radius = 110
 ceiling = -4800
 strength = 0.35
 reach = 6000
 [[chandelier]]
 at = [5000, 20000]
-y = -3600
-radius = 200
+y = -3900
+radius = 10
 globes = 1
-globe_radius = 200
+globe_radius = 110
 ceiling = -4800
 strength = 0.35
 reach = 6000
 [[chandelier]]
 at = [16000, 16000]
-y = -3600
-radius = 200
+y = -3900
+radius = 10
 globes = 1
-globe_radius = 200
+globe_radius = 110
 ceiling = -4800
 strength = 0.35
 reach = 6000
 [[chandelier]]
 at = [17000, 25000]
-y = -3600
-radius = 200
+y = -3900
+radius = 10
 globes = 1
-globe_radius = 200
+globe_radius = 110
 ceiling = -4800
 strength = 0.35
 reach = 6000

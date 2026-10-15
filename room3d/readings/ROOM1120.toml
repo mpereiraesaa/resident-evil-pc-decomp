@@ -1,5 +1,11 @@
-# Mansion wardrobe bedroom: stained plaster over a chair rail, green-grey
-# patterned tiles, canopy bed on the west wall, dark dressers.
+# Mansion bedroom off the wardrobe: stained olive plaster over a chair rail,
+# pale tiles with dark green blotches, a big olive-canopied bed with red
+# drapes in an alcove at the south end (collision block 5 covers it; the
+# alcove's back wall is found from the floor line beside it in camera 1),
+# a second curtained bed against the west wall (block 6), the door south-west
+# beside the alcove, another in the north-west corner, dark wardrobes along
+# the east recesses. The alcove depth and the bed's size are read off one
+# camera and are approximate.
 room = "ROOM1120"
 title = "Wardrobe bedroom"
 seed = 1800
@@ -7,7 +13,7 @@ seed = 1800
 [shell]
 floor = 0
 ceiling = -4800
-floor_material = "marble.green"
+floor_material = "carpet.tile"
 wall_material = "plaster"
 ceiling_material = "plaster.dark"
 chair_rail = true
@@ -17,19 +23,23 @@ skirting = 180
 cell = 700
 
 [materials]
-plaster = { color = [0.66, 0.64, 0.52], stains = 0.4 }
-"plaster.low" = [0.58, 0.56, 0.46]
-"plaster.dark" = [0.26, 0.26, 0.22]
-"marble.green" = { color = [0.56, 0.62, 0.50], tile = [1800, 1800] }
-wood = [0.28, 0.14, 0.08]
-velvet = [0.50, 0.10, 0.10]
-door = [0.28, 0.16, 0.09]
+plaster = { color = [0.70, 0.66, 0.44], stains = 0.5 }
+"plaster.low" = [0.56, 0.54, 0.38]
+"plaster.dark" = [0.26, 0.26, 0.20]
+"carpet.tile" = { color = [0.62, 0.60, 0.42], motif = [0.20, 0.27, 0.18], tile = [1400, 1400] }
+wood = [0.22, 0.10, 0.06]
+velvet = [0.46, 0.06, 0.07]
+linen = [0.40, 0.42, 0.16]
+hedge = [0.44, 0.46, 0.16]
+door = [0.28, 0.12, 0.08]
 
 [lighting]
-ambient = [0.13, 0.13, 0.10]
+ambient = [0.17, 0.17, 0.12]
 
 [[zone]]
 box = [1870, 6156, 11646, 16420]
+[[zone]]            # bed alcove
+box = [4300, 3400, 11646, 6156]
 [[zone]]
 box = [11646, 6156, 12657, 7686]
 [[zone]]
@@ -42,36 +52,47 @@ top = -3300
 material = "door"
 [[door]]
 wall = "south"
-span = [1870, 4300]
-top = -3300
+span = [1870, 3800]
+top = -3250
 material = "door"
 
-[[object]]
+[[object]]          # big canopy bed in the south alcove
+kind = "canopy_bed"
+box = [4500, 3500, 10100, 5700]
+top = -900
+canopy = -4350
+[[object]]          # its olive canopy top over the red drapes
+kind = "box"
+box = [4420, 3420, 10180, 5780]
+top = -4580
+bottom = -4330
+material = "hedge"
+omit = []
+[[object]]          # curtained bed on the west wall (block 6)
 kind = "canopy_bed"
 box = [1870, 8377, 3796, 11946]
-top = -700
+top = -800
 canopy = -3300
-[[object]]
-kind = "box"
-box = [1870, 12200, 2700, 14200]
-top = -1400
-material = "wood"
-omit = ["bottom", "west"]
-[[object]]
-kind = "box"
-box = [9000, 6156, 11646, 6900]
-top = -1800
-material = "wood"
-omit = ["bottom", "south"]
-[[object]]
+[[object]]          # wardrobe in the north-east recess
 kind = "box"
 box = [11646, 14490, 12657, 16420]
-top = -2000
+top = -2600
 material = "wood"
 omit = ["bottom", "east", "north"]
+[[object]]          # low dark cabinet along the east wall
+kind = "box"
+box = [11000, 7686, 11646, 14490]
+top = -900
+material = "wood"
+omit = ["bottom", "east"]
 
 [[light]]
 at = [6500, -3600, 11000]
-color = [1.0, 0.95, 0.80]
-strength = 0.4
-reach = 6000
+color = [1.0, 0.95, 0.75]
+strength = 0.5
+reach = 7000
+[[light]]
+at = [7300, -3800, 5000]
+color = [1.0, 0.95, 0.75]
+strength = 0.35
+reach = 5000

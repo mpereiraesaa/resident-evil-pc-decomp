@@ -1,6 +1,8 @@
-# Mansion 1F left stairs: panelled dado under pale plaster with a painted
-# border, dark red planks, a round column at the corner of the west leg and a
-# wooden stair climbing west along the south wall. From ROOM1010.RDT blocks.
+# Mansion 1F left stairs: panelled dado under dark olive wallpaper with a
+# pale frieze, dark red planks, a round column in the west leg, tall
+# deep-set windows down the west wall and a wooden stair climbing EAST along
+# the south wall (newel at the west foot, cam5 sees only its underside).
+# From ROOM1010.RDT blocks; window positions read from cam1/cam2 floor picks.
 room = "ROOM1010"
 title = "1F left stairs"
 seed = 1010
@@ -18,7 +20,7 @@ skirting = 200
 cell = 800
 
 [materials]
-wallpaper = { color = [0.56, 0.60, 0.54], motif = [0.46, 0.50, 0.44], repeats = 4 }
+wallpaper = { color = [0.50, 0.46, 0.31], motif = [0.40, 0.36, 0.23], repeats = 4 }
 panel = [0.30, 0.15, 0.09]
 planks = [0.36, 0.14, 0.09]
 wood = [0.26, 0.13, 0.08]
@@ -40,7 +42,7 @@ floor_along = "x"
 
 [[door]]
 wall = "north"
-span = [7600, 10000]
+span = [7300, 9500]
 top = -3400
 material = "door"
 [[door]]
@@ -62,17 +64,58 @@ radius = 520
 [[stair]]
 x = [4700, 11160]
 z = [2448, 5000]
-direction = "west"
+direction = "east"
 top = -3600
 steps = 12
 tread_material = "wood"
 string = true
 rails = [{ side = "north" }]
 
-[[painting]]
+[[window]]           # cam1 end window, cam2 nearest deep frame
 wall = "west"
-span = [8600, 9800]
-y = [-3600, -2700]
+kind = "rect"
+at = 17300
+half = 650
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+[[window]]
+wall = "west"
+kind = "rect"
+at = 11700
+half = 600
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+[[window]]
+wall = "west"
+kind = "rect"
+at = 8500
+half = 600
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+[[window]]
+wall = "west"
+kind = "rect"
+at = 4500
+half = 600
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+[[window]]           # cam0 left / cam1 right deep frame on the north wall
+wall = "north"
+kind = "rect"
+at = 11900
+half = 650
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
 
 [[sconce]]
 wall = "west"

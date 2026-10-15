@@ -184,6 +184,7 @@ struct MarniDX::Impl {
     ID3D11RasterizerState*   rasterScissor = nullptr;
     ID3D11BlendState*        blendAlpha    = nullptr;
     ID3D11BlendState*        blendAdd      = nullptr;
+    ID3D11BlendState*        blendDetail   = nullptr;
     ID3D11BlendState*        blendDisabled = nullptr;
     ID3D11SamplerState*      sampLinear    = nullptr;
     ID3D11SamplerState*      sampPoint     = nullptr;
@@ -855,6 +856,7 @@ void MarniDX::Impl::ReleaseAllState()
     if (rasterScissor) { rasterScissor->Release(); rasterScissor = nullptr; }
     if (blendAlpha)    { blendAlpha->Release();    blendAlpha    = nullptr; }
     if (blendAdd)      { blendAdd->Release();      blendAdd      = nullptr; }
+    if (blendDetail)   { blendDetail->Release();   blendDetail   = nullptr; }
     if (blendDisabled) { blendDisabled->Release(); blendDisabled = nullptr; }
     if (sampLinear)    { sampLinear->Release();    sampLinear    = nullptr; }
     if (sampPoint)     { sampPoint->Release();     sampPoint     = nullptr; }
@@ -996,6 +998,14 @@ BOOL MarniDX::Create(HWND hWnd, int width, int height, BOOL fullScreen,
     bd.RenderTarget[0].SrcBlend  = D3D11_BLEND_ONE;
     bd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
     p->device->CreateBlendState(&bd, &p->blendAdd);
+
+    // detail multiply (MARNI_BLEND_DETAIL): colour = dst * (src + 1 - srcA),
+    // destination alpha kept
+    bd.RenderTarget[0].SrcBlend       = D3D11_BLEND_DEST_COLOR;
+    bd.RenderTarget[0].DestBlend      = D3D11_BLEND_INV_SRC_ALPHA;
+    bd.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ZERO;
+    bd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+    p->device->CreateBlendState(&bd, &p->blendDetail);
 
     // disabled blend (straight overwrite)
     D3D11_BLEND_DESC bdOff = {};
@@ -1690,6 +1700,7 @@ static void DrawQuadInternal(MarniDX::Impl* p, const QuadVertex verts[6],
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1773,6 +1784,7 @@ void MarniDX::DrawTriangles(const float* verts, int triCount, MarniHandle tex,
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1830,6 +1842,7 @@ void MarniDX::DrawTriangles3D(const float* verts, int triCount, MarniHandle tex,
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1898,6 +1911,7 @@ void MarniDX::DrawTrianglesPersp(const float* verts, int triCount, MarniHandle t
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

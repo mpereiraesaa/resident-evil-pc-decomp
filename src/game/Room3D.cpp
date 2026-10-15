@@ -46,6 +46,8 @@ struct Vertex {
     float r, g, b;
     float a;        // opacity (projected faces fading into their tile)
     float tu, tv;   // tile UVs under a fading projected face
+    float density;  // texels of art per room unit (detail grain strength)
+    float du, dv;   // detail grain UVs
 };
 
 struct Triangle {
@@ -55,6 +57,7 @@ struct Triangle {
     bool shell;   // wall/floor/ceiling/door/gallery/stair geometry (camera collision)
     signed char projection;   // original camera whose background paints it, or -1
     signed char patch;        // else the tile of the room's art it repeats, or -1
+    signed char detail;       // detail grain class over magnified art, or -1
 };
 
 struct CameraVisibility {
@@ -108,6 +111,14 @@ bool s_hasProjection = false;
 const int kMaxPatches = 62;
 MarniHandle s_patchTextures[kMaxPatches];
 float s_patchSide[kMaxPatches];
+float s_patchDensity[kMaxPatches];   // tile texels per room unit
+float s_backgroundScale[32];         // loaded background width / 320
+// Detail grain multiplied over art that the camera magnifies (fine
+// wood grain, fabric weave, plaster speckle, brushed metal), box-mapped at
+// kDetailRepeat units per repeat; its strength follows the magnification.
+enum { kDetailGeneric, kDetailWood, kDetailFabric, kDetailMetal, kDetailClasses };
+MarniHandle s_detailTextures[kDetailClasses];
+const float kDetailRepeat = 1200.0f;
 
 void MaterialColor(const char* name, float* r, float* g, float* b)
 {
@@ -714,6 +725,93 @@ void TileUVs(Vertex t[3], float side, bool underlay)
     }
 }
 
+// Tileable value noise on a `cells` x `cells` lattice over a 256 texture
+// (smoothstep-interpolated, wrapping), in [0, 1].
+float DetailNoise(const std::vector<float>& lattice, int cells, float x, float y)
+{
+    const float fx = x * cells / 256.0f, fy = y * cells / 256.0f;
+    const int x0 = (int)fx, y0 = (int)fy;
+    const float tx = fx - x0, ty = fy - y0;
+    const float sx = tx * tx * (3.0f - 2.0f * tx), sy = ty * ty * (3.0f - 2.0f * ty);
+    const auto at = [&](int i, int j) {
+        return lattice[(size_t)((j % cells + cells) % cells) * cells + ((i % cells + cells) % cells)];
+    };
+    const float a = at(x0, y0) + (at(x0 + 1, y0) - at(x0, y0)) * sx;
+    const float b = at(x0, y0 + 1) + (at(x0 + 1, y0 + 1) - at(x0, y0 + 1)) * sx;
+    return a + (b - a) * sy;
+}
+
+// A 256x256 seamless grey detail texture, mean 0.5: fine plaster/stone
+// speckle, wood grain (streaks along u), fabric weave, brushed metal.
+MarniHandle MakeDetailTexture(int kind)
+{
+    const int n = 256;
+    unsigned int seed = 0x9E3779B9u * (unsigned int)(kind + 1);
+    const auto random = [&]() {
+        seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5;
+        return (seed & 0xFFFFFF) / 16777216.0f;
+    };
+    std::vector<float> lattices[4];
+    static const int kCells[4] = { 8, 16, 32, 64 };
+    for (int o = 0; o < 4; ++o) {
+        lattices[o].resize((size_t)kCells[o] * kCells[o]);
+        for (size_t k = 0; k < lattices[o].size(); ++k) lattices[o][k] = random();
+    }
+    std::vector<float> value((size_t)n * n);
+    double sum = 0.0, sum2 = 0.0;
+    for (int y = 0; y < n; ++y) {
+        for (int x = 0; x < n; ++x) {
+            float v = 0.0f;
+            if (kind == kDetailWood) {
+                // Long streaks along u: sample the lattice squashed along x.
+                v = 0.6f * DetailNoise(lattices[3], 64, x * 0.125f, (float)y) +
+                    0.4f * DetailNoise(lattices[2], 32, x * 0.25f, (float)y);
+            } else if (kind == kDetailFabric) {
+                const float weave = sinf(x * 6.2831853f / 4.0f) * sinf(y * 6.2831853f / 4.0f);
+                v = 0.5f + 0.35f * weave * 0.5f + 0.5f * (DetailNoise(lattices[3], 64, (float)x, (float)y) - 0.5f);
+            } else if (kind == kDetailMetal) {
+                v = 0.7f * DetailNoise(lattices[3], 64, (float)x, y * 0.0625f) +
+                    0.3f * DetailNoise(lattices[3], 64, (float)x, (float)y);
+            } else {
+                v = 0.15f * DetailNoise(lattices[0], 8, (float)x, (float)y) +
+                    0.25f * DetailNoise(lattices[1], 16, (float)x, (float)y) +
+                    0.3f * DetailNoise(lattices[2], 32, (float)x, (float)y) +
+                    0.3f * DetailNoise(lattices[3], 64, (float)x, (float)y);
+            }
+            value[(size_t)y * n + x] = v;
+            sum += v;
+            sum2 += (double)v * v;
+        }
+    }
+    // Normalise to mean 0.5, standard deviation 0.15.
+    const float mean = (float)(sum / value.size());
+    const float deviation = sqrtf((float)(sum2 / value.size()) - mean * mean);
+    std::vector<unsigned int> rgba((size_t)n * n);
+    for (size_t k = 0; k < rgba.size(); ++k) {
+        float v = 0.5f + (value[k] - mean) / (deviation > 1e-4f ? deviation : 1e-4f) * 0.15f;
+        if (v < 0.0f) v = 0.0f;
+        if (v > 1.0f) v = 1.0f;
+        const unsigned int g = (unsigned int)(v * 255.0f + 0.5f);
+        rgba[k] = 0xFF000000u | (g << 16) | (g << 8) | g;
+    }
+    return Marni_DX()->CreateTexture(n, n, 32, rgba.data(), NULL, NULL);
+}
+
+int DetailClass(const char* material)
+{
+    static const char* const kWood[] = { "wood", "plank", "door", "stair", "table", "book", "shelf", "frame" };
+    // Wallpaper reads as paper (the fine speckle), not woven cloth.
+    static const char* const kFabric[] = { "carpet", "rug", "velvet", "cloth", "curtain", "bed", "sofa" };
+    static const char* const kMetal[] = { "iron", "steel", "brass", "metal", "lift" };
+    for (size_t i = 0; i < sizeof(kWood) / sizeof(kWood[0]); ++i)
+        if (strstr(material, kWood[i]) != NULL) return kDetailWood;
+    for (size_t i = 0; i < sizeof(kFabric) / sizeof(kFabric[0]); ++i)
+        if (strstr(material, kFabric[i]) != NULL) return kDetailFabric;
+    for (size_t i = 0; i < sizeof(kMetal) / sizeof(kMetal[0]); ++i)
+        if (strstr(material, kMetal[i]) != NULL) return kDetailMetal;
+    return kDetailGeneric;
+}
+
 const MaterialPatch* FindPatch(const std::vector<MaterialPatch>& patches, int index)
 {
     for (size_t k = 0; index >= 0 && k < patches.size(); ++k)
@@ -727,7 +825,7 @@ const MaterialPatch* FindPatch(const std::vector<MaterialPatch>& patches, int in
 // its large-scale lighting is flattened (the faces' vertex colours light it
 // again), and it is mirrored into a 2x2 block so it repeats without seams.
 MarniHandle BuildPatchTexture(const MaterialPatch& patch, const std::vector<unsigned int>& image,
-                              int width, int height)
+                              int width, int height, float* density)
 {
     RoomCameraBasis basis;
     float focal = 0.0f;
@@ -832,6 +930,9 @@ MarniHandle BuildPatchTexture(const MaterialPatch& patch, const std::vector<unsi
             rgba[(size_t)j * 2 * n + i] = out;
         }
     }
+    // Texels per unit: n across the patch's side, but never more than the
+    // background itself had there.
+    *density = (sideA < sideB ? sideA : sideB) / patch.side;
     return Marni_DX()->CreateTexture(2 * n, 2 * n, 32, rgba.data(), NULL, NULL);
 }
 
@@ -860,6 +961,11 @@ bool LoadRoomMesh()
             if (previousDx != NULL && s_patchTextures[k] != MARNI_NULL_HANDLE)
                 previousDx->DestroyTexture(s_patchTextures[k]);
             s_patchTextures[k] = MARNI_NULL_HANDLE;
+        }
+        for (int k = 0; k < kDetailClasses; ++k) {
+            if (previousDx != NULL && s_detailTextures[k] != MARNI_NULL_HANDLE)
+                previousDx->DestroyTexture(s_detailTextures[k]);
+            s_detailTextures[k] = MARNI_NULL_HANDLE;
         }
         s_hasProjection = false;
         s_triangles.clear();
@@ -1048,6 +1154,7 @@ bool LoadRoomMesh()
                 tri.shell = currentShell;
                 tri.projection = (signed char)projectionCamera;
                 tri.patch = (signed char)tile;
+                tri.detail = -1;
                 const size_t corners[3] = { 0, i, i + 1 };
                 for (int v = 0; v < 3; ++v) {
                     const size_t k = cornerBase + corners[v];
@@ -1086,6 +1193,7 @@ bool LoadRoomMesh()
                 dbg_printf("[room3d] no background for camera %d\n", k);
                 continue;
             }
+            s_backgroundScale[k] = width / 320.0f;
             s_projectionTextures[k] = Marni_DX()->CreateTexture(width, height, 32, image.data(),
                                                                 NULL, NULL);
             // Tiles of this camera's art for the faces no camera saw.
@@ -1093,7 +1201,8 @@ bool LoadRoomMesh()
                 const int index = patches[i].index;
                 if (patches[i].camera != k || s_patchTextures[index] != MARNI_NULL_HANDLE)
                     continue;
-                s_patchTextures[index] = BuildPatchTexture(patches[i], image, width, height);
+                s_patchTextures[index] = BuildPatchTexture(patches[i], image, width, height,
+                                                           &s_patchDensity[index]);
                 s_patchSide[index] = patches[i].side;
             }
         }
@@ -1181,6 +1290,45 @@ bool LoadRoomMesh()
             triangles[i].v[v].r *= r;
             triangles[i].v[v].g *= g;
             triangles[i].v[v].b *= b;
+        }
+    }
+
+    // Detail grain over the art: how many texels of art cover a room unit
+    // at each corner (from its camera's distance, or the tile's), which
+    // grain suits the material, and box-mapped grain coordinates.
+    if (projectionValid) {
+        for (int k = 0; k < kDetailClasses; ++k)
+            if (s_detailTextures[k] == MARNI_NULL_HANDLE) s_detailTextures[k] = MakeDetailTexture(k);
+        for (size_t i = 0; i < triangles.size(); ++i) {
+            Triangle& tri = triangles[i];
+            tri.detail = -1;
+            RoomCameraBasis basis;
+            float focal = 0.0f;
+            if (tri.projection >= 0 && RdtCameraBasis(tri.projection, &basis, &focal)) {
+                for (int v = 0; v < 3; ++v) {
+                    float z = basis.forward[0] * (tri.v[v].x - basis.from[0]) +
+                              basis.forward[1] * (tri.v[v].y - basis.from[1]) +
+                              basis.forward[2] * (tri.v[v].z - basis.from[2]);
+                    if (z < 1.0f) z = 1.0f;
+                    tri.v[v].density = focal / z * s_backgroundScale[tri.projection];
+                }
+            } else if (tri.patch >= 0) {
+                for (int v = 0; v < 3; ++v) tri.v[v].density = s_patchDensity[tri.patch];
+            } else {
+                continue;
+            }
+            tri.detail = (signed char)DetailClass(materials[tri.material].name);
+            Vertex* t = tri.v;
+            const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
+            const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
+            const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2],
+                                 e1[0] * e2[1] - e1[1] * e2[0] };
+            float a[3], b[3];
+            BoxAxes(n, a, b);
+            for (int v = 0; v < 3; ++v) {
+                t[v].du = (t[v].x * a[0] + t[v].y * a[1] + t[v].z * a[2]) / kDetailRepeat;
+                t[v].dv = (t[v].x * b[0] + t[v].y * b[1] + t[v].z * b[2]) / kDetailRepeat;
+            }
         }
     }
 
@@ -1314,6 +1462,9 @@ Vertex InterpolateVertex(const Vertex& a, const Vertex& b, float t)
     result.a = a.a + (b.a - a.a) * t;
     result.tu = a.tu + (b.tu - a.tu) * t;
     result.tv = a.tv + (b.tv - a.tv) * t;
+    result.density = a.density + (b.density - a.density) * t;
+    result.du = a.du + (b.du - a.du) * t;
+    result.dv = a.dv + (b.dv - a.dv) * t;
     return result;
 }
 
@@ -1451,8 +1602,11 @@ void Room3D_Render(void)
             batchCount = 0;
         }
     };
+    // `adjust` (optional) rewrites a projected triangle's colours from its
+    // clipped corners; returning false drops it.
     const auto emit = [&](const Vertex source[3], MarniHandle texture, MarniSampler sampler,
-                          MarniBlend blend) {
+                          MarniBlend blend,
+                          bool (*adjust)(float*, const Vertex* const*, float) = NULL) {
         // The camera sits inside the room, so large floor/wall triangles
         // often cross its near plane. Clip them in room space before
         // perspective projection; dropping a triangle with one behind-camera
@@ -1471,6 +1625,7 @@ void Room3D_Render(void)
                 }
             }
             if (!visible) continue;
+            if (adjust != NULL && !adjust(vertices, triangle, focal * scaleY)) continue;
             if (fixedBackground != MARNI_NULL_HANDLE) {
                 for (int v = 0; v < 3; ++v) {
                     float* out = vertices + v * 10;
@@ -1490,7 +1645,9 @@ void Room3D_Render(void)
         }
     };
 
-    std::vector<size_t> fading;
+    std::vector<size_t> fading, detailed;
+    static const char* detailEnv = std::getenv("RE1_ROOM3D_DETAIL");   // 0 = no grain
+    static const bool detailOn = detailEnv == NULL || detailEnv[0] != '0';
     for (size_t i = 0; i < s_triangles.size(); ++i) {
         // Per-camera hides were authored for the fixed cameras; a free
         // camera sees the whole room.
@@ -1513,6 +1670,7 @@ void Room3D_Render(void)
         }
         const Triangle& tri = s_triangles[i];
         const int projection = tri.projection;
+        if (modern && detailOn && tri.detail >= 0) detailed.push_back(i);
         if (fixedBackground != MARNI_NULL_HANDLE) {
             emit(tri.v, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE);
         } else if (modern && projection >= 0 &&
@@ -1552,6 +1710,39 @@ void Room3D_Render(void)
         }
         emit(over, s_projectionTextures[tri.projection], MARNI_SAMPLER_LINEAR,
              MARNI_BLEND_ALPHA);
+    }
+    flush();
+
+    // Detail grain over magnified art: where the screen shows more pixels
+    // per room unit than the art has texels, multiply in the material's
+    // grain, from nothing at 1.5x magnification to full strength at 4.5x.
+    // Colour 2s and alpha s blend as dst * (1 - s + 2s * grain), so the
+    // grain's mean (0.5) leaves the art unchanged.
+    for (size_t k = 0; k < detailed.size(); ++k) {
+        const Triangle& tri = s_triangles[detailed[k]];
+        if (s_detailTextures[tri.detail] == MARNI_NULL_HANDLE) continue;
+        Vertex grain[3];
+        for (int v = 0; v < 3; ++v) {
+            grain[v] = tri.v[v];
+            grain[v].u = tri.v[v].du;
+            grain[v].v = tri.v[v].dv;
+        }
+        emit(grain, s_detailTextures[tri.detail], MARNI_SAMPLER_LINEAR_WRAP, MARNI_BLEND_DETAIL,
+             [](float* vertices, const Vertex* const* corners, float pixelsPerUnitAtOne) {
+                 static const float kStrength = 0.3f;
+                 bool any = false;
+                 for (int v = 0; v < 3; ++v) {
+                     float* out = vertices + v * 10;
+                     const float screen = pixelsPerUnitAtOne / (out[3] > 1.0f ? out[3] : 1.0f);
+                     const float art = corners[v]->density > 1e-4f ? corners[v]->density : 1e-4f;
+                     float s = (screen / art - 1.5f) / 3.0f;
+                     s = (s < 0.0f ? 0.0f : (s > 1.0f ? 1.0f : s)) * kStrength;
+                     out[6] = out[7] = out[8] = 2.0f * s;
+                     out[9] = s;
+                     if (s > 0.005f) any = true;
+                 }
+                 return any;
+             });
     }
     flush();
 }

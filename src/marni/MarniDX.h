@@ -45,6 +45,8 @@ typedef enum MarniBlend : DWORD32 {
     MARNI_BLEND_ALPHA    = 0,   // src*srcA + dst*(1-srcA) — standard alpha blend
     MARNI_BLEND_ADD      = 1,   // src + dst (light/flash effects)
     MARNI_BLEND_DISABLE = 2,   // no blending — straight overwrite
+    MARNI_BLEND_DETAIL  = 3,   // dst*(src + 1 - srcA): multiplies in a detail texture
+                               // centred on 0.5 (src = 2*s*d, srcA = s -> dst*(1-s+2sd))
 } MarniBlend;
 
 // ============================================================================

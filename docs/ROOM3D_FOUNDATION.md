@@ -1250,10 +1250,24 @@ variant digit, so the batch installs each mesh under both names (the Jill
 copy reuses the Chris material library). `tools/check_room3d_runtime.py
 --character jill` exercises that path.
 
-Caveats: outdoor terrain is approximate (the water garden, the falls pool
-courtyard and the heliport are open zones with water surfaces, walls and
-blocks as objects); lights-off camera sets (trophy room, 1F study, ROOM50A0)
-bake the lit state; there are no horizontal cylinders, spiral stairs, ring
-shapes or sloped rails, so pipes, the spiral stair and fountain rims are
-approximations; a few steep top-down cameras frame the floor smaller than
-the originals in the preview.
+Later kinds and options: `pipe` (cylinder between points, with `via`),
+`ring` (annular rim with an optional fill), `spiral_stair`, `globe` (sphere or
+egg via `stretch`), `tub`/`toilet`/`sink`, `plant`; zones take `open_sides`,
+`dado`, `dado_material` and `chair_rail`; the shell takes
+`skirting_material`. A reading's `[shade]` table ("camera" = factor) writes
+`shade N F` lines and the runtime scales the baked colours for those cameras,
+for lights-off camera sets over the same geometry (trophy room, 1F study, the
+B2 room, the small dining room).
+
+Review status 2026-10-15: every room was re-read against its originals with
+the evidence tool, the full batch rebuilt and loaded all 160 rooms, then two
+independent reviews of every compare sheet found 28 rooms with visible
+problems; all were fixed, rebuilt and loaded again (160/160 built and loaded,
+no weak cameras). 86 close-up or cutscene cameras keep their original
+backgrounds through `backdrop`.
+
+Caveats: outdoor terrain is simplified (open zones with water surfaces,
+walls, beds and blocks); painted lettering and stencils are not modelled;
+furniture is assembled from primitives; one steep camera in the closet study
+(ROOM7190 camera 1) disagrees with its own background, which was rendered
+from a slightly different viewpoint than the stored camera.

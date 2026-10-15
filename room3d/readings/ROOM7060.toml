@@ -1,7 +1,9 @@
 # Return-visit copy of ROOM2060.toml: stage 7 shares its collision and cameras exactly.
 # Small library: dark red damask over a brown dado, patterned rug on dark
-# planks, bookcases west and north, a desk with a lamp on the east wall, a
-# round table. From ROOM2060.RDT blocks and the circle.
+# planks, a tall double-sided bookcase standing out from the east wall (block
+# 8: books on its north and south faces, seen in cameras 0-3), a low dresser
+# with a wicker chair on the west wall, low cabinets north and south-east (the
+# latter with the lamp), a round table. From ROOM2060.RDT blocks and the circle.
 room = "ROOM7060"
 title = "Small library (return)"
 seed = 2060
@@ -25,6 +27,7 @@ panel = [0.26, 0.12, 0.08]
 planks = [0.26, 0.14, 0.09]
 wood = [0.22, 0.11, 0.07]
 door = [0.26, 0.14, 0.08]
+books = { color = [0.24, 0.14, 0.09], shelves = 6 }
 carpet = { color = [0.52, 0.30, 0.22], motif = [0.84, 0.78, 0.66] }
 
 [lighting]
@@ -44,7 +47,7 @@ span = [10700, 12300]
 top = -3300
 material = "door"
 
-[[object]]          # low west dresser (camera 3 stands inside its footprint)
+[[object]]          # low west dresser (blocks 6; camera 3 stands behind the west wall beside it)
 kind = "box"
 box = [2052, 7398, 2718, 11988]
 top = -1100
@@ -68,14 +71,15 @@ kind = "lamp"
 at = [8800, 2300]
 base = -1100
 height = 650
-[[object]]          # desk on the east wall
-kind = "table"
-box = [8400, 5166, 9954, 7128]
-top = -1400
-thickness = 100
-[[object]]
+[[object]]          # tall bookcase out from the east wall, books on both long faces
+kind = "bookcase"
+box = [7110, 5166, 9954, 7128]
+top = -3500
+front = ["north", "south"]
+books = "books"
+[[object]]          # wicker chair beside the west dresser
 kind = "chair"
-at = [6500, 6100]
+at = [2950, 6900]
 facing = "east"
 [[object]]          # round table
 kind = "cylinder"

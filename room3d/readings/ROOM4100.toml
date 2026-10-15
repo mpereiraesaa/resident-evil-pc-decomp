@@ -20,6 +20,8 @@ plaster = { color = [0.64, 0.68, 0.52], stains = 0.4 }
 wood = [0.42, 0.26, 0.12]
 door = [0.56, 0.58, 0.54]
 crate = [0.44, 0.30, 0.16]
+"crate.ammo" = [0.30, 0.32, 0.22]
+paper = [0.44, 0.44, 0.40]
 "panel.yellow" = [0.70, 0.60, 0.14]
 
 [lighting]
@@ -34,49 +36,311 @@ span = [1900, 4000]
 top = -3200
 material = "door"
 
-[[object]]          # rack along the north wall
+[[object]]          # shelves along the south wall
 kind = "box"
-box = [2556, 5832, 10008, 6716]
-top = -1200
+box = [2556, 2358, 6930, 2958]
+top = -120
 material = "wood"
-omit = ["bottom", "north"]
 [[object]]
 kind = "box"
-box = [2700, 5900, 4200, 6700]
-top = -1900
-bottom = -1200
+box = [2556, 2358, 6930, 2958]
+top = -1060
+bottom = -1000
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 2358, 6930, 2958]
+top = -1960
+bottom = -1900
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 2358, 2656, 2958]
+top = -2600
+material = "wood"
+[[object]]
+kind = "box"
+box = [6830, 2358, 6930, 2958]
+top = -2600
+material = "wood"
+[[object]]
+kind = "box"
+box = [2706, 2438, 3606, 2878]
+top = -720
+bottom = -120
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [3806, 2438, 4506, 2878]
+top = -920
+bottom = -120
 material = "crate"
 [[object]]
 kind = "box"
-box = [5652, 5832, 6696, 8010]
+box = [5666, 2398, 6366, 2918]
+top = -920
+bottom = -120
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [4006, 2438, 4706, 2878]
+top = -1660
+bottom = -1060
+material = "paper"
+[[object]]
+kind = "box"
+box = [4906, 2478, 5406, 2838]
+top = -1660
+bottom = -1060
+material = "crate"
+[[object]]
+kind = "box"
+box = [5526, 2398, 6026, 2918]
+top = -1510
+bottom = -1060
+material = "paper"
+[[object]]
+kind = "box"
+box = [2706, 2398, 3206, 2918]
+top = -2760
+bottom = -1960
+material = "crate"
+[[object]]
+kind = "box"
+box = [3266, 2438, 3766, 2878]
+top = -2760
+bottom = -1960
+material = "crate"
+[[object]]
+kind = "box"
+box = [3826, 2398, 4526, 2918]
+top = -2760
+bottom = -1960
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [4646, 2398, 5746, 2918]
+top = -2560
+bottom = -1960
+material = "paper"
+[[object]]          # shelves along the north wall
+kind = "box"
+box = [2556, 6116, 9400, 6716]
+top = -120
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 6116, 9400, 6716]
+top = -1060
+bottom = -1000
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 6116, 9400, 6716]
+top = -1960
+bottom = -1900
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 6116, 2656, 6716]
+top = -2600
+material = "wood"
+[[object]]
+kind = "box"
+box = [9300, 6116, 9400, 6716]
+top = -2600
+material = "wood"
+[[object]]
+kind = "box"
+box = [2706, 6196, 3406, 6636]
+top = -920
+bottom = -120
+material = "paper"
+[[object]]
+kind = "box"
+box = [3606, 6156, 4106, 6676]
+top = -820
+bottom = -120
+material = "crate"
+[[object]]
+kind = "box"
+box = [4166, 6236, 5266, 6596]
+top = -820
+bottom = -120
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [5386, 6236, 6086, 6596]
+top = -920
+bottom = -120
+material = "crate"
+[[object]]
+kind = "box"
+box = [6206, 6156, 7306, 6676]
+top = -720
+bottom = -120
+material = "paper"
+[[object]]
+kind = "box"
+box = [7426, 6236, 8326, 6596]
+top = -720
+bottom = -120
+material = "crate"
+[[object]]
+kind = "box"
+box = [8446, 6196, 9146, 6636]
+top = -820
+bottom = -120
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [4686, 6156, 5386, 6676]
+top = -1660
+bottom = -1060
+material = "crate"
+[[object]]
+kind = "box"
+box = [6666, 6236, 7366, 6596]
+top = -1510
+bottom = -1060
+material = "crate"
+[[object]]
+kind = "box"
+box = [7426, 6236, 8126, 6596]
+top = -1510
+bottom = -1060
+material = "paper"
+[[object]]
+kind = "box"
+box = [8246, 6196, 8746, 6636]
+top = -1760
+bottom = -1060
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [3866, 6236, 4566, 6596]
+top = -2660
+bottom = -1960
+material = "crate"
+[[object]]
+kind = "box"
+box = [5586, 6156, 6286, 6676]
+top = -2660
+bottom = -1960
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [6406, 6236, 7506, 6596]
+top = -2760
+bottom = -1960
+material = "paper"
+[[object]]          # shelves along the west wall
+kind = "box"
+box = [2556, 2958, 3156, 6116]
+top = -120
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 2958, 3156, 6116]
+top = -1060
+bottom = -1000
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 2958, 3156, 6116]
+top = -1960
+bottom = -1900
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 2958, 3156, 3058]
+top = -2600
+material = "wood"
+[[object]]
+kind = "box"
+box = [2556, 6016, 3156, 6116]
+top = -2600
+material = "wood"
+[[object]]
+kind = "box"
+box = [2596, 3108, 3116, 4008]
+top = -920
+bottom = -120
+material = "crate"
+[[object]]
+kind = "box"
+box = [2596, 3108, 3116, 4208]
+top = -1760
+bottom = -1060
+material = "crate.ammo"
+[[object]]
+kind = "box"
+box = [2676, 4408, 3036, 5308]
+top = -1660
+bottom = -1060
+material = "paper"
+[[object]]
+kind = "box"
+box = [2636, 5368, 3076, 5868]
+top = -1660
+bottom = -1060
+material = "crate"
+[[object]]
+kind = "box"
+box = [2676, 3108, 3036, 4208]
+top = -2760
+bottom = -1960
+material = "paper"
+[[object]]
+kind = "box"
+box = [2636, 4408, 3076, 5108]
+top = -2760
+bottom = -1960
+material = "crate.ammo"
+[[object]]          # crate stack by the north shelves
+kind = "box"
+box = [5652, 5832, 6696, 6116]
 top = -1800
 material = "crate"
-omit = ["bottom"]
-[[object]]          # rack along the west wall
+[[object]]          # low crates along the south wall by the door
 kind = "box"
-box = [2556, 2358, 3300, 5832]
-top = -1200
-material = "wood"
-omit = ["bottom", "west"]
-[[object]]
-kind = "box"
-box = [2556, 2500, 3300, 4200]
-top = -1800
-bottom = -1200
+box = [6800, 1854, 10008, 2358]
+top = -1100
 material = "crate"
-[[object]]          # rack along the south wall
-kind = "box"
-box = [6408, 1062, 10872, 1854]
-top = -1200
-material = "wood"
 omit = ["bottom", "south"]
+[[object]]          # post
+kind = "box"
+box = [2556, 2358, 2664, 2466]
+top = -4000
+material = "wood"
+[[object]]
+kind = "box"
+box = [6100, 2358, 6208, 2466]
+top = -4000
+material = "wood"
+[[object]]
+kind = "box"
+box = [9900, 2358, 10008, 2466]
+top = -4000
+material = "wood"
 [[object]]
 kind = "wall_band"
-wall = "west"
-span = [4300, 5500]
-y = [-3100, -2200]
+wall = "east"
+span = [4600, 5800]
+y = [-2900, -1800]
 material = "panel.yellow"
 rail = false
+
+[[beam]]
+box = [2556, 2358, 10008, 2600]
+top = -4000
+[[beam]]
+box = [6100, 2358, 6340, 6716]
+top = -4000
+[[object]]          # ceiling strip light
+kind = "strip"
+at = [6300, 4500]
+length = 1600
 
 [[light]]
 at = [6300, -3600, 4500]

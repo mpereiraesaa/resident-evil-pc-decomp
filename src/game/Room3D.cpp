@@ -21,15 +21,19 @@
 #include <string>
 #include <vector>
 
+bool ModernCamera_GetView(float from[3], float to[3]);   // ModernCamera.cpp
+bool ModernCamera_Active(void);                         // ModernCamera.cpp
+float ModernCamera_WallClipDepth(void);                 // ModernCamera.cpp
+
 namespace {
 
-const size_t kMaxObjBytes = 4 * 1024 * 1024;
+const size_t kMaxObjBytes = 16 * 1024 * 1024;
 const size_t kMaxMtlBytes = 1024 * 1024;
 const size_t kMaxPngBytes = 16 * 1024 * 1024;
 const size_t kMaxTexturePixels = 4096 * 4096;
-const size_t kMaxVertices = 100000;
-const size_t kMaxTexcoords = 100000;
-const size_t kMaxTriangles = 50000;
+const size_t kMaxVertices = 400000;
+const size_t kMaxTexcoords = 400000;
+const size_t kMaxTriangles = 200000;
 const size_t kMaxMaterials = 128;
 const size_t kMaxMaterialName = 64;
 const size_t kMaxMaterialPath = 256;
@@ -40,12 +44,20 @@ struct Vertex {
     float x, y, z;
     float u, v;
     float r, g, b;
+    float a;        // opacity (projected faces fading into their tile)
+    float tu, tv;   // tile UVs under a fading projected face
+    float density;  // texels of art per room unit (detail grain strength)
+    float du, dv;   // detail grain UVs
 };
 
 struct Triangle {
     Vertex v[3];
     int material;
     unsigned int hiddenCameras;
+    bool shell;   // wall/floor/ceiling/door/gallery/stair geometry (camera collision)
+    signed char projection;   // original camera whose background paints it, or -1
+    signed char patch;        // else the tile of the room's art it repeats, or -1
+    signed char detail;       // detail grain class over magnified art, or -1
 };
 
 struct CameraVisibility {
@@ -89,6 +101,25 @@ unsigned int s_backdropCameras = 0;
 float s_cameraShade[32];
 unsigned int s_shadedCameras = 0;
 float s_activeShade = 1.0f;
+// Original backgrounds projected onto the mesh (roomSRRV.proj sidecar, see
+// tools/room3d_projection.py). Loaded through the normal asset resolution, so
+// an HD pack's Stage1/RCxxxx.webp replaces the 320x240 PAK automatically.
+MarniHandle s_projectionTextures[32];
+bool s_hasProjection = false;
+// Seamless tiles of the room's own art for the faces no camera saw ("patch"
+// lines), box-mapped at 2 x side per mirrored repeat.
+const int kMaxPatches = 62;
+MarniHandle s_patchTextures[kMaxPatches];
+float s_patchSide[kMaxPatches];
+float s_patchDensity[kMaxPatches];   // tile texels per room unit
+float s_backgroundScale[32];         // loaded background width / 320
+// Detail grain multiplied over art that the camera magnifies (fine
+// wood grain, fabric weave, plaster speckle, brushed metal), box-mapped at
+// kDetailRepeat units per repeat; its strength follows the magnification.
+enum { kDetailGeneric, kDetailWood, kDetailFabric, kDetailMetal, kDetailClasses };
+MarniHandle s_detailTextures[kDetailClasses];
+const float kDetailRepeat = 1200.0f;
+float s_featherCenterX = 0.0f, s_featherScaleX = 1.0f;   // frame-edge blend (Room3D_Render)
 
 void MaterialColor(const char* name, float* r, float* g, float* b)
 {
@@ -454,6 +485,458 @@ void LoadMaterialTextures(const std::string& objDirectory,
     }
 }
 
+bool BasisFromPoints(RoomCameraBasis* basis, const float from[3], const float to[3]);
+
+// The basis of original RDT camera `index` (the fixed view its background
+// was rendered from) and its focal length.
+bool RdtCameraBasis(int index, RoomCameraBasis* basis, float* focal)
+{
+    if (g_RdtPointer == NULL || index < 0 ||
+        (unsigned int)index >= (unsigned int)g_RdtPointer->cameras_count)
+        return false;
+    const RDT_Camera& camera = ((RDT_Camera*)((char*)g_RdtPointer + sizeof(RDT)))[index];
+    if (camera.roll != 0 || camera.fov <= 0) return false;
+    const float from[3] = { (float)camera.cam_from_x, (float)camera.cam_from_y,
+                            (float)camera.cam_from_z };
+    const float to[3] = { (float)camera.cam_to_x, (float)camera.cam_to_y,
+                          (float)camera.cam_to_z };
+    *focal = (float)camera.fov;
+    return BasisFromPoints(basis, from, to);
+}
+
+struct MaterialTint {
+    std::string material;
+    float r, g, b;
+};
+
+// "patch <index> <material> <camera> <side> <origin xyz> <a xyz> <b xyz>
+// <r g b>": a square of the room's art (origin, origin->a, origin->b in room
+// space, `side` units across) that unprojected faces repeat, and the colour
+// scale of their vertex colours. "tiles" gives each face's patch.
+struct MaterialPatch {
+    int index;
+    std::string material;
+    int camera;
+    float side;
+    float origin[3], a[3], b[3];
+    float tint[3];
+};
+
+// "proj1 <faces>" then one character per OBJ face: '0'-'9', 'a'-'v' name the
+// camera, '-' keeps the procedural material. "tint <material> r g b" lines
+// shift a procedural material toward the art its projected faces show, so
+// the faces no camera saw match their neighbours.
+bool LoadProjection(const std::string& objPath, std::string* faces, size_t* faceCount,
+                    std::vector<MaterialTint>* tints, std::vector<MaterialPatch>* patches,
+                    std::string* tiles, std::string* fades)
+{
+    static const char* env = std::getenv("RE1_ROOM3D_PROJECTION");
+    if (env != NULL && env[0] == '0') return false;
+    std::string source;
+    if (!ReadTextFile(objPath.substr(0, objPath.size() - 4) + ".proj",
+                      16 * 1024 * 1024, &source))
+        return false;
+    size_t offset = 0, tokenOffset = 0;
+    TextToken header, magic, countToken, body;
+    float count = 0.0f;
+    if (!NextLine(source, &offset, &header) ||
+        !NextToken(header, &tokenOffset, &magic) || !TokenEquals(magic, "proj1") ||
+        !NextToken(header, &tokenOffset, &countToken) ||
+        !ParseFloatToken(countToken, &count) || count < 1.0f ||
+        !NextLine(source, &offset, &body))
+        return false;
+    tokenOffset = 0;
+    TextToken text;
+    if (!NextToken(body, &tokenOffset, &text) || (float)text.size != count) return false;
+    faces->assign(text.data, text.size);
+    *faceCount = text.size;
+    TextToken line;
+    while (NextLine(source, &offset, &line)) {
+        tokenOffset = 0;
+        TextToken command, name, r, g, b;
+        MaterialTint tint;
+        if (NextToken(line, &tokenOffset, &command) && TokenEquals(command, "tint") &&
+            NextToken(line, &tokenOffset, &name) && name.size < kMaxMaterialName &&
+            NextToken(line, &tokenOffset, &r) && ParseFloatToken(r, &tint.r) &&
+            NextToken(line, &tokenOffset, &g) && ParseFloatToken(g, &tint.g) &&
+            NextToken(line, &tokenOffset, &b) && ParseFloatToken(b, &tint.b) &&
+            tint.r >= 0.0f && tint.r <= 4.0f && tint.g >= 0.0f && tint.g <= 4.0f &&
+            tint.b >= 0.0f && tint.b <= 4.0f) {
+            tint.material = TokenString(name);
+            tints->push_back(tint);
+            continue;
+        }
+        tokenOffset = 0;
+        TextToken text;
+        if (NextToken(line, &tokenOffset, &command) && TokenEquals(command, "tiles") &&
+            NextToken(line, &tokenOffset, &text)) {
+            tiles->assign(text.data, text.size);
+            continue;
+        }
+        // "fade <digits>": per face corner, in face order, the opacity 0-9
+        // of projected faces that cross-fade into their tile.
+        if (TokenEquals(command, "fade") && NextToken(line, &tokenOffset, &text)) {
+            fades->assign(text.data, text.size);
+            continue;
+        }
+        tokenOffset = 0;
+        MaterialPatch patch;
+        float values[14], index = -1.0f;
+        TextToken indexToken;
+        bool ok = NextToken(line, &tokenOffset, &command) && TokenEquals(command, "patch") &&
+                  NextToken(line, &tokenOffset, &indexToken) &&
+                  ParseFloatToken(indexToken, &index) && index >= 0.0f &&
+                  index < (float)kMaxPatches &&
+                  NextToken(line, &tokenOffset, &name) && name.size < kMaxMaterialName;
+        for (int v = 0; ok && v < 14; ++v) {
+            TextToken value;
+            ok = NextToken(line, &tokenOffset, &value) && ParseFloatToken(value, &values[v]);
+        }
+        if (!ok || values[0] < 0.0f || values[0] >= 32.0f || values[1] < 10.0f) continue;
+        patch.index = (int)index;
+        patch.material = TokenString(name);
+        patch.camera = (int)values[0];
+        patch.side = values[1];
+        for (int axis = 0; axis < 3; ++axis) {
+            patch.origin[axis] = values[2 + axis];
+            patch.a[axis] = values[5 + axis];
+            patch.b[axis] = values[8 + axis];
+            patch.tint[axis] = values[11 + axis] < 0.0f ? 0.0f
+                : values[11 + axis] > 16.0f ? 16.0f : values[11 + axis];
+        }
+        patches->push_back(patch);
+    }
+    return true;
+}
+
+int TileIndex(char c)
+{
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'z') return c - 'a' + 10;
+    if (c >= 'A' && c <= 'Z') return c - 'A' + 36;
+    return -1;
+}
+
+int ProjectionCamera(char c)
+{
+    if (c >= '0' && c <= '9') return c - '0';
+    if (c >= 'a' && c <= 'v') return c - 'a' + 10;
+    return -1;
+}
+
+// One camera's background as RGBA: the pack's .webp when one resolves,
+// otherwise the original PAK's 16-bit TIM.
+bool DecodeBackground(int index, std::vector<unsigned int>* rgba, int* width, int* height)
+{
+    char path[sizeof(g_bgPathTemplate)];
+    memcpy(path, g_bgPathTemplate, sizeof(path));
+    // As load_room_bg: the revisit stages (and arrange STAGED/E) reuse the
+    // backgrounds of the stage they revisit.
+    const int fileStage = room_file_stage();
+    const int stageDigit = STAGE_DATA_ROW_OF(fileStage) > 4 ? fileStage - 5 + 1 : fileStage + 1;
+    path[GAME_DATA_PATH_IDX(0x0f)] = g_hexCharTable[stageDigit & 0xf];
+    path[GAME_DATA_PATH_IDX(0x0b)] = path[GAME_DATA_PATH_IDX(0x0f)];
+    path[GAME_DATA_PATH_IDX(0x10)] = g_hexCharTable[(g_roomId >> 4) & 0xf];
+    path[GAME_DATA_PATH_IDX(0x11)] = g_hexCharTable[g_roomId & 0xf];
+    path[GAME_DATA_PATH_IDX(0x12)] = g_hexCharTable[index & 0xf];
+
+    char webp[sizeof(path) + 8];
+    strcpy(webp, path);
+    char* extension = strrchr(webp, '.');
+    if (extension != NULL) {
+        strcpy(extension, ".webp");
+        char resolved[520];
+        const char* imagePath = ResolveAssetRoot(webp, resolved, sizeof(resolved));
+        size_t encodedSize = 0;
+        void* encoded = plat_file_read_all(imagePath, &encodedSize);
+        if (encoded != NULL) {
+            char libraryResolved[520];
+            const char* libraryPath = ResolveAssetRoot(
+                GAME_DATA_ROOT "libwebp.dll", libraryResolved, sizeof(libraryResolved));
+            int w = 0, h = 0;
+            void* pixels = plat_webp_decode_rgba(libraryPath, encoded, encodedSize, &w, &h);
+            free(encoded);
+            if (pixels != NULL && w > 0 && h > 0 && (size_t)w * h <= kMaxTexturePixels) {
+                rgba->assign((const unsigned int*)pixels, (const unsigned int*)pixels + (size_t)w * h);
+                plat_webp_free(pixels);
+                *width = w;
+                *height = h;
+                dbg_printf("[room3d] camera %d background %s (%dx%d)\n", index, imagePath, w, h);
+                return true;
+            }
+            plat_webp_free(pixels);
+        }
+    }
+
+    char resolved[520];
+    const char* pakPath = ResolveAssetRoot(path, resolved, sizeof(resolved));
+    size_t pakSize = 0;
+    void* pak = plat_file_read_all(pakPath, &pakSize);
+    if (pak == NULL) return false;
+    std::vector<unsigned char> tim(sizeof(g_TimImageBuffer));
+    unpack_pakfile_(pak, tim.data());
+    free(pak);
+    const int w = tim[16] | (tim[17] << 8);
+    const int h = tim[18] | (tim[19] << 8);
+    if (w <= 0 || h <= 0 || 20 + (size_t)w * h * 2 > tim.size()) return false;
+    rgba->resize((size_t)w * h);
+    for (size_t i = 0; i < rgba->size(); ++i) {
+        const unsigned int px = tim[20 + i * 2] | (tim[21 + i * 2] << 8);
+        const unsigned int r = (px & 0x1F) * 255 / 31;
+        const unsigned int g = ((px >> 5) & 0x1F) * 255 / 31;
+        const unsigned int b = ((px >> 10) & 0x1F) * 255 / 31;
+        (*rgba)[i] = 0xFF000000u | (b << 16) | (g << 8) | r;
+    }
+    *width = w;
+    *height = h;
+    return true;
+}
+
+// The axes a tiled (unprojected) face's texture runs along; the projection
+// tool's box_axes() picks the same: x/z on floors and ceilings, the wall's
+// horizontal axis and up on walls.
+void BoxAxes(const float normal[3], float a[3], float b[3])
+{
+    const float ax = fabsf(normal[0]), ay = fabsf(normal[1]), az = fabsf(normal[2]);
+    a[0] = a[1] = a[2] = b[0] = b[1] = b[2] = 0.0f;
+    if (ay >= 0.7071f * sqrtf(ax * ax + ay * ay + az * az)) {
+        a[0] = 1.0f; b[2] = 1.0f;
+    } else if (ax > az) {
+        a[2] = 1.0f; b[1] = -1.0f;
+    } else {
+        a[0] = 1.0f; b[1] = -1.0f;
+    }
+}
+
+// Box-mapped tile coordinates of a triangle's corners (2 x side per
+// mirrored repeat), written to u/v or, under a fading projected face, tu/tv.
+void TileUVs(Vertex t[3], float side, bool underlay)
+{
+    const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
+    const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
+    const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2],
+                         e1[0] * e2[1] - e1[1] * e2[0] };
+    float a[3], b[3];
+    BoxAxes(n, a, b);
+    const float scale = 1.0f / (2.0f * side);
+    for (int v = 0; v < 3; ++v) {
+        const float u = (t[v].x * a[0] + t[v].y * a[1] + t[v].z * a[2]) * scale;
+        const float w = 1.0f - (t[v].x * b[0] + t[v].y * b[1] + t[v].z * b[2]) * scale;
+        if (underlay) { t[v].tu = u; t[v].tv = w; } else { t[v].u = u; t[v].v = w; }
+    }
+}
+
+// Tileable value noise on a `cells` x `cells` lattice over a 256 texture
+// (smoothstep-interpolated, wrapping), in [0, 1].
+float DetailNoise(const std::vector<float>& lattice, int cells, float x, float y)
+{
+    const float fx = x * cells / 256.0f, fy = y * cells / 256.0f;
+    const int x0 = (int)fx, y0 = (int)fy;
+    const float tx = fx - x0, ty = fy - y0;
+    const float sx = tx * tx * (3.0f - 2.0f * tx), sy = ty * ty * (3.0f - 2.0f * ty);
+    const auto at = [&](int i, int j) {
+        return lattice[(size_t)((j % cells + cells) % cells) * cells + ((i % cells + cells) % cells)];
+    };
+    const float a = at(x0, y0) + (at(x0 + 1, y0) - at(x0, y0)) * sx;
+    const float b = at(x0, y0 + 1) + (at(x0 + 1, y0 + 1) - at(x0, y0 + 1)) * sx;
+    return a + (b - a) * sy;
+}
+
+// A 256x256 seamless grey detail texture, mean 0.5: fine plaster/stone
+// speckle, wood grain (streaks along u), fabric weave, brushed metal.
+MarniHandle MakeDetailTexture(int kind)
+{
+    const int n = 256;
+    unsigned int seed = 0x9E3779B9u * (unsigned int)(kind + 1);
+    const auto random = [&]() {
+        seed ^= seed << 13; seed ^= seed >> 17; seed ^= seed << 5;
+        return (seed & 0xFFFFFF) / 16777216.0f;
+    };
+    std::vector<float> lattices[4];
+    static const int kCells[4] = { 8, 16, 32, 64 };
+    for (int o = 0; o < 4; ++o) {
+        lattices[o].resize((size_t)kCells[o] * kCells[o]);
+        for (size_t k = 0; k < lattices[o].size(); ++k) lattices[o][k] = random();
+    }
+    std::vector<float> value((size_t)n * n);
+    double sum = 0.0, sum2 = 0.0;
+    for (int y = 0; y < n; ++y) {
+        for (int x = 0; x < n; ++x) {
+            float v = 0.0f;
+            if (kind == kDetailWood) {
+                // Long streaks along u: sample the lattice squashed along x.
+                v = 0.6f * DetailNoise(lattices[3], 64, x * 0.125f, (float)y) +
+                    0.4f * DetailNoise(lattices[2], 32, x * 0.25f, (float)y);
+            } else if (kind == kDetailFabric) {
+                const float weave = sinf(x * 6.2831853f / 4.0f) * sinf(y * 6.2831853f / 4.0f);
+                v = 0.5f + 0.35f * weave * 0.5f + 0.5f * (DetailNoise(lattices[3], 64, (float)x, (float)y) - 0.5f);
+            } else if (kind == kDetailMetal) {
+                v = 0.7f * DetailNoise(lattices[3], 64, (float)x, y * 0.0625f) +
+                    0.3f * DetailNoise(lattices[3], 64, (float)x, (float)y);
+            } else {
+                v = 0.15f * DetailNoise(lattices[0], 8, (float)x, (float)y) +
+                    0.25f * DetailNoise(lattices[1], 16, (float)x, (float)y) +
+                    0.3f * DetailNoise(lattices[2], 32, (float)x, (float)y) +
+                    0.3f * DetailNoise(lattices[3], 64, (float)x, (float)y);
+            }
+            value[(size_t)y * n + x] = v;
+            sum += v;
+            sum2 += (double)v * v;
+        }
+    }
+    // Normalise to mean 0.5, standard deviation 0.15.
+    const float mean = (float)(sum / value.size());
+    const float deviation = sqrtf((float)(sum2 / value.size()) - mean * mean);
+    std::vector<unsigned int> rgba((size_t)n * n);
+    for (size_t k = 0; k < rgba.size(); ++k) {
+        float v = 0.5f + (value[k] - mean) / (deviation > 1e-4f ? deviation : 1e-4f) * 0.15f;
+        if (v < 0.0f) v = 0.0f;
+        if (v > 1.0f) v = 1.0f;
+        const unsigned int g = (unsigned int)(v * 255.0f + 0.5f);
+        rgba[k] = 0xFF000000u | (g << 16) | (g << 8) | g;
+    }
+    return Marni_DX()->CreateTexture(n, n, 32, rgba.data(), NULL, NULL);
+}
+
+int DetailClass(const char* material)
+{
+    static const char* const kWood[] = { "wood", "plank", "door", "stair", "table", "book", "shelf", "frame" };
+    // Wallpaper reads as paper (the fine speckle), not woven cloth.
+    static const char* const kFabric[] = { "carpet", "rug", "velvet", "cloth", "curtain", "bed", "sofa" };
+    static const char* const kMetal[] = { "iron", "steel", "brass", "metal", "lift" };
+    for (size_t i = 0; i < sizeof(kWood) / sizeof(kWood[0]); ++i)
+        if (strstr(material, kWood[i]) != NULL) return kDetailWood;
+    for (size_t i = 0; i < sizeof(kFabric) / sizeof(kFabric[0]); ++i)
+        if (strstr(material, kFabric[i]) != NULL) return kDetailFabric;
+    for (size_t i = 0; i < sizeof(kMetal) / sizeof(kMetal[0]); ++i)
+        if (strstr(material, kMetal[i]) != NULL) return kDetailMetal;
+    return kDetailGeneric;
+}
+
+const MaterialPatch* FindPatch(const std::vector<MaterialPatch>& patches, int index)
+{
+    for (size_t k = 0; index >= 0 && k < patches.size(); ++k)
+        if (patches[k].index == index) return &patches[k];
+    return NULL;
+}
+
+// A seamless tile of the room's own art for one material: the square the
+// projection tool chose (where a camera sees the material squarely) is
+// resampled from that camera's background - HD when a pack provides it -
+// its large-scale lighting is flattened (the faces' vertex colours light it
+// again), and it is mirrored into a 2x2 block so it repeats without seams.
+MarniHandle BuildPatchTexture(const MaterialPatch& patch, const std::vector<unsigned int>& image,
+                              int width, int height, float* density)
+{
+    RoomCameraBasis basis;
+    float focal = 0.0f;
+    if (!RdtCameraBasis(patch.camera, &basis, &focal)) return MARNI_NULL_HANDLE;
+    const float scaleX = width / 320.0f, scaleY = height / 240.0f;
+    float corners[3][2];
+    const float* points[3] = { patch.origin, patch.a, patch.b };
+    for (int c = 0; c < 3; ++c) {
+        float view[3] = { 0, 0, 0 };
+        for (int axis = 0; axis < 3; ++axis) {
+            const float d = points[c][axis] - basis.from[axis];
+            view[0] += basis.right[axis] * d;
+            view[1] += basis.down[axis] * d;
+            view[2] += basis.forward[axis] * d;
+        }
+        if (view[2] < 1.0f) return MARNI_NULL_HANDLE;
+        corners[c][0] = (view[0] / view[2] * focal + 160.0f) * scaleX;
+        corners[c][1] = (view[1] / view[2] * focal + 120.0f) * scaleY;
+    }
+    const float sideA = hypotf(corners[1][0] - corners[0][0], corners[1][1] - corners[0][1]);
+    const float sideB = hypotf(corners[2][0] - corners[0][0], corners[2][1] - corners[0][1]);
+    int n = 32;
+    while (n < 512 && n < (int)(sideA > sideB ? sideA : sideB)) n *= 2;
+
+    // Resample through the camera's projection (bilinear).
+    std::vector<float> tile((size_t)n * n * 3);
+    for (int j = 0; j < n; ++j) {
+        for (int i = 0; i < n; ++i) {
+            const float s = (i + 0.5f) / n, t = (j + 0.5f) / n;
+            float p[3], view[3] = { 0, 0, 0 };
+            for (int axis = 0; axis < 3; ++axis) {
+                p[axis] = patch.origin[axis] + s * (patch.a[axis] - patch.origin[axis]) +
+                          t * (patch.b[axis] - patch.origin[axis]);
+            }
+            for (int axis = 0; axis < 3; ++axis) {
+                const float d = p[axis] - basis.from[axis];
+                view[0] += basis.right[axis] * d;
+                view[1] += basis.down[axis] * d;
+                view[2] += basis.forward[axis] * d;
+            }
+            float x = (view[0] / view[2] * focal + 160.0f) * scaleX - 0.5f;
+            float y = (view[1] / view[2] * focal + 120.0f) * scaleY - 0.5f;
+            if (x < 0.0f) x = 0.0f;
+            if (y < 0.0f) y = 0.0f;
+            if (x > width - 1.001f) x = width - 1.001f;
+            if (y > height - 1.001f) y = height - 1.001f;
+            const int x0 = (int)x, y0 = (int)y;
+            const float fx = x - x0, fy = y - y0;
+            for (int ch = 0; ch < 3; ++ch) {
+                const int shift = ch * 8;
+                const float c00 = (float)((image[(size_t)y0 * width + x0] >> shift) & 0xFF);
+                const float c10 = (float)((image[(size_t)y0 * width + x0 + 1] >> shift) & 0xFF);
+                const float c01 = (float)((image[(size_t)(y0 + 1) * width + x0] >> shift) & 0xFF);
+                const float c11 = (float)((image[(size_t)(y0 + 1) * width + x0 + 1] >> shift) & 0xFF);
+                tile[((size_t)j * n + i) * 3 + ch] =
+                    (c00 * (1 - fx) + c10 * fx) * (1 - fy) + (c01 * (1 - fx) + c11 * fx) * fy;
+            }
+        }
+    }
+
+    // Flatten lighting: divide by a wide box blur of the luminance (mirrored
+    // at the borders, as the tile will be) and restore the mean.
+    std::vector<float> lum((size_t)n * n), blur((size_t)n * n), row((size_t)n * n);
+    double total = 0.0;
+    for (size_t k = 0; k < lum.size(); ++k) {
+        lum[k] = 0.299f * tile[k * 3] + 0.587f * tile[k * 3 + 1] + 0.114f * tile[k * 3 + 2];
+        total += lum[k];
+    }
+    const float mean = (float)(total / lum.size());
+    const int radius = n / 4;
+    for (int pass = 0; pass < 2; ++pass) {
+        const std::vector<float>& src = pass == 0 ? lum : row;
+        std::vector<float>& dst = pass == 0 ? row : blur;
+        for (int j = 0; j < n; ++j) {
+            for (int i = 0; i < n; ++i) {
+                float sum = 0.0f;
+                for (int k = -radius; k <= radius; ++k) {
+                    int q = (pass == 0 ? i : j) + k;
+                    if (q < 0) q = -q - 1;
+                    if (q >= n) q = 2 * n - q - 1;
+                    sum += pass == 0 ? src[(size_t)j * n + q] : src[(size_t)q * n + i];
+                }
+                dst[(size_t)j * n + i] = sum / (2 * radius + 1);
+            }
+        }
+    }
+    std::vector<unsigned int> rgba((size_t)4 * n * n);
+    for (int j = 0; j < 2 * n; ++j) {
+        const int sj = j < n ? j : 2 * n - 1 - j;
+        for (int i = 0; i < 2 * n; ++i) {
+            const int si = i < n ? i : 2 * n - 1 - i;
+            const size_t k = (size_t)sj * n + si;
+            float factor = mean / (blur[k] > 1.0f ? blur[k] : 1.0f);
+            if (factor < 0.5f) factor = 0.5f;
+            if (factor > 2.0f) factor = 2.0f;
+            unsigned int out = 0xFF000000u;
+            for (int ch = 0; ch < 3; ++ch) {
+                float v = tile[k * 3 + ch] * factor;
+                if (v > 255.0f) v = 255.0f;
+                out |= (unsigned int)v << (ch * 8);
+            }
+            rgba[(size_t)j * 2 * n + i] = out;
+        }
+    }
+    // Texels per unit: n across the patch's side, but never more than the
+    // background itself had there.
+    *density = (sideA < sideB ? sideA : sideB) / patch.side;
+    return Marni_DX()->CreateTexture(2 * n, 2 * n, 32, rgba.data(), NULL, NULL);
+}
+
 bool LoadRoomMesh()
 {
     // Mesh assets follow the same file-stage and character-variant selectors
@@ -470,6 +953,22 @@ bool LoadRoomMesh()
                     previousDx->DestroyTexture(s_materials[i].texture);
             }
         }
+        for (int k = 0; k < 32; ++k) {
+            if (previousDx != NULL && s_projectionTextures[k] != MARNI_NULL_HANDLE)
+                previousDx->DestroyTexture(s_projectionTextures[k]);
+            s_projectionTextures[k] = MARNI_NULL_HANDLE;
+        }
+        for (int k = 0; k < kMaxPatches; ++k) {
+            if (previousDx != NULL && s_patchTextures[k] != MARNI_NULL_HANDLE)
+                previousDx->DestroyTexture(s_patchTextures[k]);
+            s_patchTextures[k] = MARNI_NULL_HANDLE;
+        }
+        for (int k = 0; k < kDetailClasses; ++k) {
+            if (previousDx != NULL && s_detailTextures[k] != MARNI_NULL_HANDLE)
+                previousDx->DestroyTexture(s_detailTextures[k]);
+            s_detailTextures[k] = MARNI_NULL_HANDLE;
+        }
+        s_hasProjection = false;
         s_triangles.clear();
         s_materials.clear();
         s_loaded = false;
@@ -523,7 +1022,17 @@ bool LoadRoomMesh()
     std::vector<Material> materials;
     std::vector<CameraVisibility> visibility;
     LoadCameraVisibility(path, &visibility, &s_backdropCameras);
+    std::string projection;
+    size_t projectionFaces = 0;
+    std::vector<MaterialTint> tints;
+    std::vector<MaterialPatch> patches;
+    std::string tiles, fades;
+    const bool hasProjection = LoadProjection(path, &projection, &projectionFaces, &tints,
+                                              &patches, &tiles, &fades);
+    size_t cornerBase = 0;
+    size_t faceIndex = 0;
     unsigned int hiddenCameras = 0;
+    bool currentShell = true;   // geometry before any group line is the shell
     static const char kDefaultMaterial[] = "default";
     TextToken currentMaterial = { kDefaultMaterial, sizeof(kDefaultMaterial) - 1 };
     size_t pathSep = std::string(path).find_last_of("/\\");
@@ -540,8 +1049,19 @@ bool LoadRoomMesh()
 
         if (TokenEquals(kind, "g")) {
             hiddenCameras = 0;
+            currentShell = false;
             TextToken group;
             while (NextToken(line, &tokenOffset, &group)) {
+                // Builder group names: walls, wall_N, floor_N, ceiling_N,
+                // door_N, gallery, stairs, shaft... are the room's shell;
+                // furniture is ungrouped or carries its own names.
+                static const char* const kShell[] = {
+                    "wall", "floor", "ceiling", "door", "gallery", "stair", "shaft", "solid" };
+                for (size_t k = 0; k < sizeof(kShell) / sizeof(kShell[0]); ++k) {
+                    const size_t n = strlen(kShell[k]);
+                    if (group.size >= n && strncmp(group.data, kShell[k], n) == 0)
+                        currentShell = true;
+                }
                 for (size_t i = 0; i < visibility.size(); ++i) {
                     if (TokenEquals(group, visibility[i].group.c_str()))
                         hiddenCameras |= visibility[i].hiddenCameras;
@@ -549,6 +1069,7 @@ bool LoadRoomMesh()
             }
         } else if (TokenEquals(kind, "v")) {
             Vertex v = {};
+            v.a = 1.0f;
             TextToken x, y, z;
             if (!NextToken(line, &tokenOffset, &x) ||
                 !NextToken(line, &tokenOffset, &y) ||
@@ -607,6 +1128,11 @@ bool LoadRoomMesh()
                 return false;
             }
 
+            const int projectionCamera = hasProjection && faceIndex < projection.size()
+                ? ProjectionCamera(projection[faceIndex]) : -1;
+            const int tile = hasProjection && faceIndex < tiles.size()
+                ? TileIndex(tiles[faceIndex]) : -1;
+            ++faceIndex;
             const int materialIndex = GetMaterialIndex(currentMaterial, &materials);
             if (materialIndex < 0 || (size_t)materialIndex >= materials.size()) return false;
             materials[materialIndex].used = true;
@@ -626,8 +1152,19 @@ bool LoadRoomMesh()
                 }
                 tri.material = materialIndex;
                 tri.hiddenCameras = hiddenCameras;
+                tri.shell = currentShell;
+                tri.projection = (signed char)projectionCamera;
+                tri.patch = (signed char)tile;
+                tri.detail = -1;
+                const size_t corners[3] = { 0, i, i + 1 };
+                for (int v = 0; v < 3; ++v) {
+                    const size_t k = cornerBase + corners[v];
+                    if (k < fades.size() && fades[k] >= '0' && fades[k] <= '9')
+                        tri.v[v].a = (fades[k] - '0') / 9.0f;
+                }
                 triangles.push_back(tri);
             }
+            cornerBase += face.size();
         }
     }
 
@@ -637,15 +1174,162 @@ bool LoadRoomMesh()
     }
 
     LoadMaterialTextures(objDirectory, &materials);
+
+    // Projected faces: UVs are where each corner lands in its camera's
+    // 320x240 frame (v flipped as Project flips it back); the lighting is in
+    // the image, so the vertex color stays white.
+    const bool projectionValid = hasProjection && faceIndex == projectionFaces;
+    if (hasProjection && !projectionValid)
+        dbg_printf("[room3d] %s.proj has %u faces, mesh has %u; ignoring it\n",
+                   path, (unsigned int)projectionFaces, (unsigned int)faceIndex);
+    if (projectionValid) {
+        // Every in-room camera is loaded: the fixed cameras draw their own
+        // background through the mesh, the free camera the assigned ones.
+        const int count = g_RdtPointer != NULL ? (int)g_RdtPointer->cameras_count : 0;
+        for (int k = 0; k < count && k < 32; ++k) {
+            if ((s_backdropCameras & (1u << k)) != 0) continue;
+            std::vector<unsigned int> image;
+            int width = 0, height = 0;
+            if (!DecodeBackground(k, &image, &width, &height)) {
+                dbg_printf("[room3d] no background for camera %d\n", k);
+                continue;
+            }
+            s_backgroundScale[k] = width / 320.0f;
+            s_projectionTextures[k] = Marni_DX()->CreateTexture(width, height, 32, image.data(),
+                                                                NULL, NULL);
+            // Tiles of this camera's art for the faces no camera saw.
+            for (size_t i = 0; i < patches.size(); ++i) {
+                const int index = patches[i].index;
+                if (patches[i].camera != k || s_patchTextures[index] != MARNI_NULL_HANDLE)
+                    continue;
+                s_patchTextures[index] = BuildPatchTexture(patches[i], image, width, height,
+                                                           &s_patchDensity[index]);
+                s_patchSide[index] = patches[i].side;
+            }
+        }
+        s_hasProjection = true;
+    }
+
+    unsigned int projectedCameras = 0;
+    size_t projectedTriangles = 0;
     for (size_t i = 0; i < triangles.size(); ++i) {
+        Triangle& tri = triangles[i];
+        RoomCameraBasis basis;
+        float focal = 0.0f;
+        if (!projectionValid || tri.projection < 0 ||
+            s_projectionTextures[tri.projection] == MARNI_NULL_HANDLE ||
+            !RdtCameraBasis(tri.projection, &basis, &focal)) {
+            tri.projection = -1;
+            continue;
+        }
+        for (int v = 0; v < 3; ++v) {
+            const float d[3] = { tri.v[v].x - basis.from[0], tri.v[v].y - basis.from[1],
+                                 tri.v[v].z - basis.from[2] };
+            const float x = basis.right[0] * d[0] + basis.right[1] * d[1] + basis.right[2] * d[2];
+            const float y = basis.down[0] * d[0] + basis.down[1] * d[1] + basis.down[2] * d[2];
+            float z = basis.forward[0] * d[0] + basis.forward[1] * d[1] + basis.forward[2] * d[2];
+            if (z < 1.0f) z = 1.0f;
+            tri.v[v].u = (x / z * focal + 160.0f) / 320.0f;
+            tri.v[v].v = 1.0f - (y / z * focal + 120.0f) / 240.0f;
+        }
+        // Near the edge with tiled faces of its wall, a projected face fades
+        // out over its tile (drawn underneath, lit by its vertex colours);
+        // elsewhere it is opaque and white (the lighting is in the image).
+        const MaterialPatch* patch = FindPatch(patches, tri.patch);
+        const bool fading = patch != NULL && s_patchTextures[tri.patch] != MARNI_NULL_HANDLE &&
+            (tri.v[0].a < 0.999f || tri.v[1].a < 0.999f || tri.v[2].a < 0.999f);
+        if (fading) {
+            TileUVs(tri.v, s_patchSide[tri.patch], true);
+            for (int v = 0; v < 3; ++v) {
+                tri.v[v].r *= patch->tint[0];
+                tri.v[v].g *= patch->tint[1];
+                tri.v[v].b *= patch->tint[2];
+            }
+        } else {
+            tri.patch = -1;
+            for (int v = 0; v < 3; ++v) {
+                tri.v[v].r = tri.v[v].g = tri.v[v].b = 1.0f;
+                tri.v[v].a = 1.0f;
+            }
+        }
+        projectedCameras |= 1u << tri.projection;
+        ++projectedTriangles;
+    }
+    if (projectionValid)
+        dbg_printf("[room3d] projection: %u of %u triangles from cameras 0x%x\n",
+                   (unsigned int)projectedTriangles, (unsigned int)triangles.size(),
+                   projectedCameras);
+    for (size_t i = 0; i < triangles.size(); ++i) {
+        if (triangles[i].projection >= 0) continue;
         Material& mat = materials[triangles[i].material];
         float r = mat.r, g = mat.g, b = mat.b;
         if (!mat.hasDiffuseColor && mat.texture == MARNI_NULL_HANDLE)
             MaterialColor(mat.name, &r, &g, &b);
+        const int tile = triangles[i].patch;
+        const MaterialPatch* patch = FindPatch(patches, tile);
+        for (int v = 0; v < 3; ++v) triangles[i].v[v].a = 1.0f;
+        if (!projectionValid || patch == NULL || s_patchTextures[tile] == MARNI_NULL_HANDLE) {
+            triangles[i].patch = -1;
+            patch = NULL;
+        }
+        if (patch != NULL) {
+            // Tiled art; the vertex colours carry the art's lighting, scaled
+            // by the patch's factor.
+            TileUVs(triangles[i].v, s_patchSide[tile], false);
+            r = patch->tint[0];
+            g = patch->tint[1];
+            b = patch->tint[2];
+        } else if (projectionValid) {
+            for (size_t t = 0; t < tints.size(); ++t) {
+                if (tints[t].material == mat.name) {
+                    r *= tints[t].r; g *= tints[t].g; b *= tints[t].b;
+                    break;
+                }
+            }
+        }
         for (int v = 0; v < 3; ++v) {
             triangles[i].v[v].r *= r;
             triangles[i].v[v].g *= g;
             triangles[i].v[v].b *= b;
+        }
+    }
+
+    // Detail grain over the art: how many texels of art cover a room unit
+    // at each corner (from its camera's distance, or the tile's), which
+    // grain suits the material, and box-mapped grain coordinates.
+    if (projectionValid) {
+        for (int k = 0; k < kDetailClasses; ++k)
+            if (s_detailTextures[k] == MARNI_NULL_HANDLE) s_detailTextures[k] = MakeDetailTexture(k);
+        for (size_t i = 0; i < triangles.size(); ++i) {
+            Triangle& tri = triangles[i];
+            tri.detail = -1;
+            RoomCameraBasis basis;
+            float focal = 0.0f;
+            if (tri.projection >= 0 && RdtCameraBasis(tri.projection, &basis, &focal)) {
+                for (int v = 0; v < 3; ++v) {
+                    float z = basis.forward[0] * (tri.v[v].x - basis.from[0]) +
+                              basis.forward[1] * (tri.v[v].y - basis.from[1]) +
+                              basis.forward[2] * (tri.v[v].z - basis.from[2]);
+                    if (z < 1.0f) z = 1.0f;
+                    tri.v[v].density = focal / z * s_backgroundScale[tri.projection];
+                }
+            } else if (tri.patch >= 0) {
+                for (int v = 0; v < 3; ++v) tri.v[v].density = s_patchDensity[tri.patch];
+            } else {
+                continue;
+            }
+            tri.detail = (signed char)DetailClass(materials[tri.material].name);
+            Vertex* t = tri.v;
+            const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
+            const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
+            const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2],
+                                 e1[0] * e2[1] - e1[1] * e2[0] };
+            float a[3], b[3];
+            BoxAxes(n, a, b);
+            for (int v = 0; v < 3; ++v) {
+                t[v].du = (t[v].x * a[0] + t[v].y * a[1] + t[v].z * a[2]) / kDetailRepeat;
+                t[v].dv = (t[v].x * b[0] + t[v].y * b[1] + t[v].z * b[2]) / kDetailRepeat;
+            }
         }
     }
 
@@ -662,8 +1346,33 @@ float DepthNdc(float z)
     return TmdViewZToNdc(z);
 }
 
+bool BasisFromPoints(RoomCameraBasis* basis, const float from[3], const float to[3])
+{
+    const float dx = to[0] - from[0], dy = to[1] - from[1], dz = to[2] - from[2];
+    const float length = sqrtf(dx * dx + dy * dy + dz * dz);
+    const float horizontal = sqrtf(dx * dx + dz * dz);
+    if (length < 1.0f || horizontal < 1.0f) return false;
+    for (int i = 0; i < 3; ++i) basis->from[i] = from[i];
+    basis->forward[0] = dx / length;
+    basis->forward[1] = dy / length;
+    basis->forward[2] = dz / length;
+    basis->right[0] = dz / horizontal;
+    basis->right[1] = 0.0f;
+    basis->right[2] = -dx / horizontal;
+    basis->down[0] = basis->forward[1] * basis->right[2];
+    basis->down[1] = basis->forward[2] * basis->right[0] -
+                     basis->forward[0] * basis->right[2];
+    basis->down[2] = -basis->forward[1] * basis->right[0];
+    return true;
+}
+
 bool BuildRoomCameraBasis(RoomCameraBasis* basis)
 {
+    // The modern follow camera, when it owns this tick, replaces the room's
+    // fixed camera for the mesh exactly as it does for the actors.
+    float modernFrom[3], modernTo[3];
+    if (basis != NULL && ModernCamera_GetView(modernFrom, modernTo))
+        return BasisFromPoints(basis, modernFrom, modernTo);
     if (basis == NULL || g_RdtPointer == NULL ||
         (unsigned int)g_roomCameraId >= (unsigned int)g_RdtPointer->cameras_count)
         return false;
@@ -729,7 +1438,7 @@ bool Project(const Vertex& v, const RoomCameraBasis& camera,
     out[6] = v.r * s_activeShade;
     out[7] = v.g * s_activeShade;
     out[8] = v.b * s_activeShade;
-    out[9] = 1.0f;
+    out[9] = v.a;
     return true;
 }
 
@@ -751,7 +1460,28 @@ Vertex InterpolateVertex(const Vertex& a, const Vertex& b, float t)
     result.r = a.r + (b.r - a.r) * t;
     result.g = a.g + (b.g - a.g) * t;
     result.b = a.b + (b.b - a.b) * t;
+    result.a = a.a + (b.a - a.a) * t;
+    result.tu = a.tu + (b.tu - a.tu) * t;
+    result.tv = a.tv + (b.tv - a.tv) * t;
+    result.density = a.density + (b.density - a.density) * t;
+    result.du = a.du + (b.du - a.du) * t;
+    result.dv = a.dv + (b.dv - a.dv) * t;
     return result;
+}
+
+// Clip a convex polygon (room space) to n . p + d >= 0; returns the count.
+int ClipPolygonToPlane(const Vertex* input, int count, const float n[3], float d, Vertex* output)
+{
+    int written = 0;
+    for (int i = 0; i < count; ++i) {
+        const Vertex& a = input[i];
+        const Vertex& b = input[(i + 1) % count];
+        const float da = n[0] * a.x + n[1] * a.y + n[2] * a.z + d;
+        const float db = n[0] * b.x + n[1] * b.y + n[2] * b.z + d;
+        if (da >= 0.0f) output[written++] = a;
+        if ((da >= 0.0f) != (db >= 0.0f)) output[written++] = InterpolateVertex(a, b, da / (da - db));
+    }
+    return written;
 }
 
 int ClipTriangleToNearPlane(const Vertex input[3], const RoomCameraBasis& camera,
@@ -819,7 +1549,8 @@ bool Room3D_IsActive(void)
                                MSF_SCREEN_STANDALONE)) != 0) return false;
     if (!LoadRoomMesh() || g_sceneRenderParam <= 0 || Marni_DX() == NULL)
         return false;
-    if (g_roomCameraId < 32 && (s_backdropCameras & (1u << g_roomCameraId)) != 0)
+    if (!ModernCamera_Active() && g_roomCameraId < 32 &&
+        (s_backdropCameras & (1u << g_roomCameraId)) != 0)
         return false;
     RoomCameraBasis camera;
     return BuildRoomCameraBasis(&camera);
@@ -849,6 +1580,7 @@ void Room3D_Render(void)
 
     RoomCameraBasis camera;
     if (!BuildRoomCameraBasis(&camera)) return;
+    const bool modern = ModernCamera_Active();
     s_activeShade = ((unsigned int)g_roomCameraId < 32 &&
                      (s_shadedCameras & (1u << g_roomCameraId)) != 0)
         ? s_cameraShade[g_roomCameraId] : 1.0f;
@@ -859,60 +1591,276 @@ void Room3D_Render(void)
     const float centerY = (float)g_SubpixelOffsetY * scaleY;
     const float focal = (float)g_sceneRenderParam;
     const float nearPlane = focal * 2.0f;
-    const float nearZ = nearPlane > kNearFloor ? nearPlane : kNearFloor;
+    float nearZ = nearPlane > kNearFloor ? nearPlane : kNearFloor;
+    // When the follow camera's boom passes through a wall, everything nearer
+    // than that wall is cut away so the shot always reaches the player.
+    const float wallClip = ModernCamera_WallClipDepth();
+    if (wallClip > nearZ) nearZ = wallClip;
+
+    // A fixed camera with its background loaded draws every face with that
+    // background, mapped by the face's own screen position: the original
+    // art (or its HD replacement) with the mesh's depth behind it. The free
+    // camera draws each assigned face from its own camera's background.
+    const MarniHandle fixedBackground =
+        (!modern && s_hasProjection && (unsigned int)g_roomCameraId < 32)
+        ? s_projectionTextures[g_roomCameraId] : MARNI_NULL_HANDLE;
 
     float batch[kTrianglesPerBatch * 30];
     int batchCount = 0;
     MarniHandle batchTexture = MARNI_NULL_HANDLE;
-    for (size_t i = 0; i < s_triangles.size(); ++i) {
-        if ((unsigned int)g_roomCameraId < 32 &&
-            (s_triangles[i].hiddenCameras & (1u << g_roomCameraId)) != 0)
-            continue;
-        const MarniHandle texture = s_materials[s_triangles[i].material].texture;
-        // The camera sits inside the room, so large floor/wall triangles often
-        // cross its near plane. Clip them in room space before perspective
-        // projection; dropping a triangle with one behind-camera corner erased
-        // the entire floor and left only distant wall fragments.
+    MarniSampler batchSampler = MARNI_SAMPLER_POINT;
+    MarniBlend batchBlend = MARNI_BLEND_DISABLE;
+    const auto flush = [&]() {
+        if (batchCount > 0) {
+            // Blended layers test depth but do not write it.
+            Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture, batchSampler,
+                                        batchBlend, batchBlend == MARNI_BLEND_DISABLE);
+            batchCount = 0;
+        }
+    };
+    // `adjust` (optional) rewrites a projected triangle's colours from its
+    // clipped corners; returning false drops it.
+    const auto emit = [&](const Vertex source[3], MarniHandle texture, MarniSampler sampler,
+                          MarniBlend blend,
+                          bool (*adjust)(float*, const Vertex* const*, float) = NULL) {
+        // The camera sits inside the room, so large floor/wall triangles
+        // often cross its near plane. Clip them in room space before
+        // perspective projection; dropping a triangle with one behind-camera
+        // corner erased the entire floor and left only distant wall fragments.
         Vertex clipped[4];
-        const int clippedCount = ClipTriangleToNearPlane(
-            s_triangles[i].v, camera, nearZ, clipped);
-
+        const int clippedCount = ClipTriangleToNearPlane(source, camera, nearZ, clipped);
         for (int fan = 1; fan + 1 < clippedCount; ++fan) {
-            const Vertex* triangle[3] = {
-                &clipped[0], &clipped[fan], &clipped[fan + 1]
-            };
+            const Vertex* triangle[3] = { &clipped[0], &clipped[fan], &clipped[fan + 1] };
             float vertices[30];
             bool visible = true;
             for (int v = 0; v < 3; ++v) {
-                if (!Project(*triangle[v], camera, scaleX, scaleY,
-                             centerX, centerY, focal, nearZ,
-                             vertices + v * 10)) {
+                if (!Project(*triangle[v], camera, scaleX, scaleY, centerX, centerY, focal,
+                             nearZ, vertices + v * 10)) {
                     visible = false;
                     break;
                 }
             }
             if (!visible) continue;
-
-            if (batchCount > 0 && texture != batchTexture) {
-                Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture,
-                                            MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE,
-                                            true);
-                batchCount = 0;
+            if (adjust != NULL && !adjust(vertices, triangle, focal * scaleY)) continue;
+            if (fixedBackground != MARNI_NULL_HANDLE && texture == fixedBackground) {
+                for (int v = 0; v < 3; ++v) {
+                    float* out = vertices + v * 10;
+                    out[4] = ((out[0] - centerX) / scaleX + 160.0f) / 320.0f;
+                    out[5] = ((out[1] - centerY) / scaleY + 120.0f) / 240.0f;
+                    out[6] = out[7] = out[8] = 1.0f;
+                }
             }
+            if (batchCount > 0 && (texture != batchTexture || sampler != batchSampler ||
+                                   blend != batchBlend))
+                flush();
             batchTexture = texture;
-
+            batchSampler = sampler;
+            batchBlend = blend;
             memcpy(batch + batchCount * 30, vertices, sizeof(vertices));
-            if (++batchCount == kTrianglesPerBatch) {
-                Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture,
-                                            MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE,
-                                            true);
-                batchCount = 0;
+            if (++batchCount == kTrianglesPerBatch) flush();
+        }
+    };
+
+    std::vector<size_t> fading, detailed, framed;
+    static const char* detailEnv = std::getenv("RE1_ROOM3D_DETAIL");   // 0 = no grain
+    static const bool detailOn = detailEnv == NULL || detailEnv[0] != '0';
+    for (size_t i = 0; i < s_triangles.size(); ++i) {
+        // Per-camera hides were authored for the fixed cameras; a free
+        // camera sees the whole room.
+        if (!modern && (unsigned int)g_roomCameraId < 32 &&
+            (s_triangles[i].hiddenCameras & (1u << g_roomCameraId)) != 0)
+            continue;
+        if (modern && s_triangles[i].shell) {
+            // A free camera can end up behind a wall; the shell faces into the
+            // room, so drop the faces turned away from the viewer rather than
+            // let a wall's back fill the screen.
+            const Vertex* t = s_triangles[i].v;
+            const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
+            const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
+            const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1],
+                                 e1[2] * e2[0] - e1[0] * e2[2],
+                                 e1[0] * e2[1] - e1[1] * e2[0] };
+            const float toEye[3] = { camera.from[0] - t[0].x, camera.from[1] - t[0].y,
+                                     camera.from[2] - t[0].z };
+            if (n[0] * toEye[0] + n[1] * toEye[1] + n[2] * toEye[2] < 0.0f) continue;
+        }
+        const Triangle& tri = s_triangles[i];
+        const int projection = tri.projection;
+        if (modern && detailOn && tri.detail >= 0) detailed.push_back(i);
+        // A fixed camera's own background covers its original frame (pass
+        // below); the sides of a wide display show the room as the free
+        // camera textures it.
+        if (fixedBackground != MARNI_NULL_HANDLE) framed.push_back(i);
+        const bool reconstructed = modern || fixedBackground != MARNI_NULL_HANDLE;
+        if (reconstructed && projection >= 0 &&
+                   s_projectionTextures[projection] != MARNI_NULL_HANDLE) {
+            if (tri.patch >= 0) {
+                // Fading into the wall's tile: the tile first, the art over
+                // it in the second pass.
+                Vertex under[3];
+                for (int v = 0; v < 3; ++v) {
+                    under[v] = tri.v[v];
+                    under[v].u = tri.v[v].tu;
+                    under[v].v = tri.v[v].tv;
+                }
+                emit(under, s_patchTextures[tri.patch], MARNI_SAMPLER_LINEAR_WRAP,
+                     MARNI_BLEND_DISABLE);
+                fading.push_back(i);
+            } else {
+                // Seen from a new angle the 320x240 art is magnified; filter it.
+                emit(tri.v, s_projectionTextures[projection], MARNI_SAMPLER_LINEAR,
+                     MARNI_BLEND_DISABLE);
             }
+        } else if (tri.patch >= 0) {
+            emit(tri.v, s_patchTextures[tri.patch], MARNI_SAMPLER_LINEAR_WRAP,
+                 MARNI_BLEND_DISABLE);
+        } else {
+            emit(tri.v, s_materials[tri.material].texture, MARNI_SAMPLER_POINT,
+                 MARNI_BLEND_DISABLE);
         }
     }
-    if (batchCount > 0) {
-        Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture,
-                                    MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE,
-                                    true);
+    flush();
+    for (size_t k = 0; k < fading.size(); ++k) {
+        const Triangle& tri = s_triangles[fading[k]];
+        Vertex over[3];
+        for (int v = 0; v < 3; ++v) {
+            over[v] = tri.v[v];
+            over[v].r = over[v].g = over[v].b = 1.0f;
+        }
+        emit(over, s_projectionTextures[tri.projection], MARNI_SAMPLER_LINEAR,
+             MARNI_BLEND_ALPHA);
     }
+    flush();
+
+    // The fixed camera's background, exactly as authored inside its 4:3 frame
+    // (UVs from screen position), over the reconstruction: clipped to the
+    // frame's left and right edges in room space, the outer kFeather pixels
+    // blended so the original art fades into the wide sides.
+    if (!framed.empty()) {
+        static const float kFeather = 12.0f;
+        struct Region { float lowEdge, highEdge; bool blend; };
+        // x in frame pixels from the centre: inner, left band, right band.
+        const Region regions[3] = {
+            { -(160.0f - kFeather), 160.0f - kFeather, false },
+            { -160.0f, -(160.0f - kFeather), true },
+            { 160.0f - kFeather, 160.0f, true },
+        };
+        s_featherCenterX = centerX;
+        s_featherScaleX = scaleX;
+        for (size_t k = 0; k < framed.size(); ++k) {
+            const Triangle& tri = s_triangles[framed[k]];
+            for (int r = 0; r < 3; ++r) {
+                Vertex polygon[9], scratch[9];
+                for (int v = 0; v < 3; ++v) { polygon[v] = tri.v[v]; polygon[v].a = 1.0f; }
+                int count = 3;
+                // sx >= low  <=>  focal * x - low * z >= 0;  sx <= high  <=>  -focal * x + high * z >= 0
+                const float planes[2][2] = { { focal, -regions[r].lowEdge },
+                                             { -focal, regions[r].highEdge } };
+                for (int q = 0; q < 2 && count >= 3; ++q) {
+                    float n[3];
+                    for (int axis = 0; axis < 3; ++axis)
+                        n[axis] = camera.right[axis] * planes[q][0] + camera.forward[axis] * planes[q][1];
+                    const float d = -(n[0] * camera.from[0] + n[1] * camera.from[1] + n[2] * camera.from[2]);
+                    count = ClipPolygonToPlane(polygon, count, n, d, scratch);
+                    for (int v = 0; v < count; ++v) polygon[v] = scratch[v];
+                }
+                for (int fan = 1; fan + 1 < count; ++fan) {
+                    const Vertex piece[3] = { polygon[0], polygon[fan], polygon[fan + 1] };
+                    if (regions[r].blend) {
+                        emit(piece, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_ALPHA,
+                             [](float* vertices, const Vertex* const*, float) {
+                                 for (int v = 0; v < 3; ++v) {
+                                     float* out = vertices + v * 10;
+                                     const float x = fabsf((out[0] - s_featherCenterX) / s_featherScaleX);
+                                     float alpha = (160.0f - x) / 12.0f;
+                                     out[9] = alpha < 0.0f ? 0.0f : (alpha > 1.0f ? 1.0f : alpha);
+                                 }
+                                 return true;
+                             });
+                    } else {
+                        emit(piece, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE);
+                    }
+                }
+            }
+        }
+        flush();
+    }
+
+    // Detail grain over magnified art: where the screen shows more pixels
+    // per room unit than the art has texels, multiply in the material's
+    // grain, from nothing at 1.5x magnification to full strength at 4.5x.
+    // Colour 2s and alpha s blend as dst * (1 - s + 2s * grain), so the
+    // grain's mean (0.5) leaves the art unchanged.
+    for (size_t k = 0; k < detailed.size(); ++k) {
+        const Triangle& tri = s_triangles[detailed[k]];
+        if (s_detailTextures[tri.detail] == MARNI_NULL_HANDLE) continue;
+        Vertex grain[3];
+        for (int v = 0; v < 3; ++v) {
+            grain[v] = tri.v[v];
+            grain[v].u = tri.v[v].du;
+            grain[v].v = tri.v[v].dv;
+        }
+        emit(grain, s_detailTextures[tri.detail], MARNI_SAMPLER_LINEAR_WRAP, MARNI_BLEND_DETAIL,
+             [](float* vertices, const Vertex* const* corners, float pixelsPerUnitAtOne) {
+                 static const float kStrength = 0.3f;
+                 bool any = false;
+                 for (int v = 0; v < 3; ++v) {
+                     float* out = vertices + v * 10;
+                     const float screen = pixelsPerUnitAtOne / (out[3] > 1.0f ? out[3] : 1.0f);
+                     const float art = corners[v]->density > 1e-4f ? corners[v]->density : 1e-4f;
+                     float s = (screen / art - 1.5f) / 3.0f;
+                     s = (s < 0.0f ? 0.0f : (s > 1.0f ? 1.0f : s)) * kStrength;
+                     out[6] = out[7] = out[8] = 2.0f * s;
+                     out[9] = s;
+                     if (s > 0.005f) any = true;
+                 }
+                 return any;
+             });
+    }
+    flush();
+}
+
+// ---------------------------------------------------------------------------
+// Queries for the modern follow camera (ModernCamera.cpp).
+
+// True when this room has a usable mesh and the frame is not owned by a door,
+// menu or standalone screen.
+bool Room3D_MeshAvailable(void)
+{
+    if ((g_main_state_flags & (MSF_ROOM_TRANSITION | MSF_MENU_ACTIVE |
+                               MSF_SCREEN_STANDALONE)) != 0) return false;
+    return LoadRoomMesh() && Marni_DX() != NULL;
+}
+
+// Distance along `dir` (unit) from `origin` to the nearest mesh triangle, or
+// `maxDistance` when nothing is hit first (two-sided Moller-Trumbore).
+// `which`: 0 = every triangle, 1 = the room shell only, 2 = props only.
+float Room3D_Raycast(const float origin[3], const float dir[3], float maxDistance,
+                     int which)
+{
+    float best = maxDistance;
+    for (size_t i = 0; i < s_triangles.size(); ++i) {
+        if (which == 1 && !s_triangles[i].shell) continue;
+        if (which == 2 && s_triangles[i].shell) continue;
+        const Vertex* v = s_triangles[i].v;
+        const float e1[3] = { v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z };
+        const float e2[3] = { v[2].x - v[0].x, v[2].y - v[0].y, v[2].z - v[0].z };
+        const float p[3] = { dir[1] * e2[2] - dir[2] * e2[1],
+                             dir[2] * e2[0] - dir[0] * e2[2],
+                             dir[0] * e2[1] - dir[1] * e2[0] };
+        const float det = e1[0] * p[0] + e1[1] * p[1] + e1[2] * p[2];
+        if (fabsf(det) < 1e-6f) continue;
+        const float inv = 1.0f / det;
+        const float t0[3] = { origin[0] - v[0].x, origin[1] - v[0].y, origin[2] - v[0].z };
+        const float u = (t0[0] * p[0] + t0[1] * p[1] + t0[2] * p[2]) * inv;
+        if (u < 0.0f || u > 1.0f) continue;
+        const float q[3] = { t0[1] * e1[2] - t0[2] * e1[1],
+                             t0[2] * e1[0] - t0[0] * e1[2],
+                             t0[0] * e1[1] - t0[1] * e1[0] };
+        const float w = (dir[0] * q[0] + dir[1] * q[1] + dir[2] * q[2]) * inv;
+        if (w < 0.0f || u + w > 1.0f) continue;
+        const float t = (e2[0] * q[0] + e2[1] * q[1] + e2[2] * q[2]) * inv;
+        if (t > 1.0f && t < best) best = t;
+    }
+    return best;
 }

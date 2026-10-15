@@ -3131,6 +3131,8 @@ static void player_door_open_sequence(void)      // 0x00457390
 // direction. The 0xC0 test accepts either 0x80 or 0xC0, i.e. action pressed with or
 // without the second modifier bit.
 // ============================================================================
+bool ModernCamera_Active(void);   // ModernCamera.cpp
+
 static bool s_alternateHeadingValid = false;
 static bool s_alternateMoving = false;
 static bool s_alternateRunning = false;
@@ -3160,7 +3162,9 @@ static void player_apply_alternate_controls(void)
     const float nx = x / length;
     const float ny = y / length;
 
-    if (!s_alternateHeadingValid ||
+    // With the modern follow camera the view turns continuously, so the basis
+    // follows it every tick instead of waiting for a fixed-camera cut.
+    if (!s_alternateHeadingValid || ModernCamera_Active() ||
         std::fabs(nx - s_alternateInputX) + std::fabs(ny - s_alternateInputY) > 0.2f) {
         float rightX = (float)g_RoomCameraData.m[0][0];
         float rightZ = (float)g_RoomCameraData.m[0][2];

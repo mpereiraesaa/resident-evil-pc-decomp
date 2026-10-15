@@ -19,6 +19,9 @@ enum MarniPresentationMode {
     MARNI_PRESENT_STRETCH = 0,
     MARNI_PRESENT_FIT_4_3,
     MARNI_PRESENT_CROP_16_9,
+    // The authored 4:3 frame at its real scale in the middle, as FIT_4_3, but
+    // not clipped to it: a 3D room (Room3D) fills the sides of a wide display.
+    MARNI_PRESENT_WIDE_4_3,
 };
 
 // ============================================================================
@@ -37,6 +40,7 @@ typedef DWORD32 MarniHandle;
 typedef enum MarniSampler : DWORD32 {
     MARNI_SAMPLER_LINEAR = 0,   // smooth bilinear (legacy default for fonts/UI)
     MARNI_SAMPLER_POINT  = 1,   // nearest-neighbour, matches original PSX pixel art
+    MARNI_SAMPLER_LINEAR_WRAP = 2,   // bilinear, repeating (tiled Room3D surfaces)
 } MarniSampler;
 
 // Per-sprite blend mode requested by callers (AddTintSprite/AddFadePoly/etc.).
@@ -44,6 +48,8 @@ typedef enum MarniBlend : DWORD32 {
     MARNI_BLEND_ALPHA    = 0,   // src*srcA + dst*(1-srcA) — standard alpha blend
     MARNI_BLEND_ADD      = 1,   // src + dst (light/flash effects)
     MARNI_BLEND_DISABLE = 2,   // no blending — straight overwrite
+    MARNI_BLEND_DETAIL  = 3,   // dst*(src + 1 - srcA): multiplies in a detail texture
+                               // centred on 0.5 (src = 2*s*d, srcA = s -> dst*(1-s+2sd))
 } MarniBlend;
 
 // ============================================================================

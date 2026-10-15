@@ -54,7 +54,8 @@ def menu_rooms(stage):
     return [r for r in range(MENU_ROOM_COUNT[stage]) if r not in MENU_UNSELECTABLE.get(stage, set())]
 
 
-def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1, character="chris"):
+def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1, character="chris",
+        extra_mods=()):
     """Load `mesh` for (stage, target_room) through the debug menu.
 
     The three original scenarios (stage 1 rooms 0x18, 0x0B, 0x06) also require
@@ -77,6 +78,9 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
     mod = output / "mods" / f"Stage{stage}"
     mod.mkdir(parents=True)
     shutil.copy2(mesh, mod / (mesh_name + ".obj"))
+    projection = mesh.with_suffix(".proj")
+    if projection.exists():
+        shutil.copy2(projection, mod / (mesh_name + ".proj"))
     sidecar = mesh.with_suffix(".cameras")
     if sidecar.exists():
         shutil.copy2(sidecar, mod / (mesh_name + ".cameras"))
@@ -98,8 +102,10 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
                 raise ValueError("Unsafe texture path")
             shutil.copy2(mesh.parent / texture, mod / texture)
     asset_win = "Z:" + str(assets.resolve()).replace("/", "\\")
+    # Further mod roots (an HD background pack, ...) rank after the mesh mod.
+    mods = ";".join(["mods"] + ["Z:" + str(Path(m).resolve()).replace("/", "\\") for m in extra_mods])
     (output / "config.ini").write_text(
-        f"[Display]\nFullScreen=0\nWidth=640\nHeight=480\nBitDepth=32\nVSync=1\n[Assets]\nPath={asset_win}\nVersion=USA\nMods=mods\n[Save]\nPath=saves\n[Game]\nMode=OG\nSkipUnskippableFmv=1\nSkipDoorAnimations=1\n[Debug]\nEnableDebug=1\n"
+        f"[Display]\nFullScreen=0\nWidth=854\nHeight=480\nBitDepth=32\nVSync=1\n[Assets]\nPath={asset_win}\nVersion=USA\nMods={mods}\n[Save]\nPath=saves\n[Game]\nMode=OG\nSkipUnskippableFmv=1\nSkipDoorAnimations=1\n[Debug]\nEnableDebug=1\n"
     )
     keys = [
         (13, 1000, 150),
@@ -247,6 +253,8 @@ if __name__ == "__main__":
     parser.add_argument("--exe", type=Path, required=True)
     parser.add_argument("--assets", type=Path, required=True)
     parser.add_argument("--mesh", type=Path, required=True)
+    parser.add_argument("--extra-mod", type=Path, action="append", default=[],
+                        help="another mod root searched after the mesh mod (e.g. an HD pack)")
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--room", type=lambda v: int(v, 16), default=0x18)
     parser.add_argument("--stage", type=int, default=1, help="RDT stage digit (ROOM<stage>xx0)")
@@ -254,6 +262,6 @@ if __name__ == "__main__":
                         help="new-game character; Jill loads the ROOMxxx1 variant mesh name")
     args = parser.parse_args()
     report = run(args.exe, args.assets, args.mesh, args.out, target_room=args.room, stage=args.stage,
-                 character=args.character)
+                 character=args.character, extra_mods=args.extra_mod)
     print(json.dumps(report, indent=2))
     raise SystemExit(0 if report["passed"] else 1)

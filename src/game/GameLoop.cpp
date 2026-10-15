@@ -23,6 +23,7 @@
 #include "../system/AssetPath.h"
 
 extern bool Room3D_SuppressRoomMasks(void);  // Room3D.cpp
+extern void ModernCamera_Update(void);        // ModernCamera.cpp
 
 // Forward declarations for functions only used within game_loop
 extern void FUN_00473f10(int* baseAddr, unsigned int bitIndex);
@@ -216,6 +217,9 @@ LAB_00480d7c:
                     g_main_state_flags &= ~MSF_CAMERA_REDRAW;
                     display_room_camera_bg();
                 }
+                // Port addition: the modern follow camera replaces the fixed
+                // camera for this tick when the room has a Room3D mesh.
+                ModernCamera_Update();
 
                 // 0x00480de8-0x00480e89: Menu button detection
                 WORD savedMsgFlags = g_message_flags;

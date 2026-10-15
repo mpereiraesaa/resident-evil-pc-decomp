@@ -11,6 +11,7 @@
 // raw COM pointers moved into a single private Impl. Behaviour is unchanged
 // from the previous working build — just re-encapsulated.
 #include "MarniDX.h"
+#include "../DebugPrint.h"
 
 #include <new>
 #include <d3d11.h>
@@ -183,9 +184,11 @@ struct MarniDX::Impl {
     ID3D11RasterizerState*   rasterScissor = nullptr;
     ID3D11BlendState*        blendAlpha    = nullptr;
     ID3D11BlendState*        blendAdd      = nullptr;
+    ID3D11BlendState*        blendDetail   = nullptr;
     ID3D11BlendState*        blendDisabled = nullptr;
     ID3D11SamplerState*      sampLinear    = nullptr;
     ID3D11SamplerState*      sampPoint     = nullptr;
+    ID3D11SamplerState*      sampLinearWrap = nullptr;   // tiled Room3D surfaces
     ID3D11DepthStencilState* depthDisabled = nullptr;
     ID3D11DepthStencilState* depthEnabled  = nullptr;
     // Test-only depth (write off) for the translucent ground-shadow / blood
@@ -287,7 +290,8 @@ static D3D11_RECT BuildPresentationScissor(MarniDX::Impl* p)
         (LONG)(p && p->width ? p->width : 640),
         (LONG)(p && p->height ? p->height : 480) };
     if (!p || !p->width || !p->height ||
-        p->presentation == MARNI_PRESENT_STRETCH)
+        p->presentation == MARNI_PRESENT_STRETCH ||
+        p->presentation == MARNI_PRESENT_WIDE_4_3)
         return rect;
 
     const float outputW = (float)p->width;
@@ -853,9 +857,11 @@ void MarniDX::Impl::ReleaseAllState()
     if (rasterScissor) { rasterScissor->Release(); rasterScissor = nullptr; }
     if (blendAlpha)    { blendAlpha->Release();    blendAlpha    = nullptr; }
     if (blendAdd)      { blendAdd->Release();      blendAdd      = nullptr; }
+    if (blendDetail)   { blendDetail->Release();   blendDetail   = nullptr; }
     if (blendDisabled) { blendDisabled->Release(); blendDisabled = nullptr; }
     if (sampLinear)    { sampLinear->Release();    sampLinear    = nullptr; }
     if (sampPoint)     { sampPoint->Release();     sampPoint     = nullptr; }
+    if (sampLinearWrap) { sampLinearWrap->Release(); sampLinearWrap = nullptr; }
     if (model3DLayout) { model3DLayout->Release(); model3DLayout = nullptr; }
     if (model3DVS)     { model3DVS->Release();     model3DVS     = nullptr; }
     if (model3DVB)     { model3DVB->Release();     model3DVB     = nullptr; }
@@ -994,6 +1000,14 @@ BOOL MarniDX::Create(HWND hWnd, int width, int height, BOOL fullScreen,
     bd.RenderTarget[0].DestBlend = D3D11_BLEND_ONE;
     p->device->CreateBlendState(&bd, &p->blendAdd);
 
+    // detail multiply (MARNI_BLEND_DETAIL): colour = dst * (src + 1 - srcA),
+    // destination alpha kept
+    bd.RenderTarget[0].SrcBlend       = D3D11_BLEND_DEST_COLOR;
+    bd.RenderTarget[0].DestBlend      = D3D11_BLEND_INV_SRC_ALPHA;
+    bd.RenderTarget[0].SrcBlendAlpha  = D3D11_BLEND_ZERO;
+    bd.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ONE;
+    p->device->CreateBlendState(&bd, &p->blendDetail);
+
     // disabled blend (straight overwrite)
     D3D11_BLEND_DESC bdOff = {};
     bdOff.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
@@ -1010,6 +1024,11 @@ BOOL MarniDX::Create(HWND hWnd, int width, int height, BOOL fullScreen,
     }
     ss.Filter = D3D11_FILTER_MIN_MAG_MIP_POINT;
     if (FAILED(p->device->CreateSamplerState(&ss, &p->sampPoint))) {
+        p->ReleaseAllState(); return FALSE;
+    }
+    ss.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    ss.AddressU = ss.AddressV = ss.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    if (FAILED(p->device->CreateSamplerState(&ss, &p->sampLinearWrap))) {
         p->ReleaseAllState(); return FALSE;
     }
 
@@ -1382,12 +1401,73 @@ void MarniDX::SetPresentation(MarniPresentationMode mode, float verticalPan)
     }
 }
 
+// Opt-in scripted-test hook (not in the original): RE1_TEST_SHOT_EVERY=N saves
+// every Nth presented frame as shotNNNN.ppm in the working directory, up to
+// RE1_TEST_SHOT_MAX (default 40). Scripted runs cannot press PrintScreen
+// because test keys bypass the window's message loop.
+extern char g_testShotName[64];   // ModernCamera.cpp: one named frame on request
+
+static void WriteTestShotPpm(MarniDX* dx, const char* name)
+{
+    void* pixels = nullptr;
+    DWORD w = 0, h = 0;
+    if (!dx->CaptureBackbufferToRGBA(&pixels, &w, &h) || !pixels) return;
+    if (FILE* f = fopen(name, "wb")) {
+        fprintf(f, "P6\n%lu %lu\n255\n", (unsigned long)w, (unsigned long)h);
+        const BYTE* px = (const BYTE*)pixels;
+        for (DWORD i = 0; i < w * h; ++i) fwrite(px + i * 4, 1, 3, f);
+        fclose(f);
+    }
+    free(pixels);
+}
+
+static void SaveTestShot(MarniDX* dx)
+{
+    if (g_testShotName[0] != 0) {
+        WriteTestShotPpm(dx, g_testShotName);
+        g_testShotName[0] = 0;
+    }
+    static const int every = std::getenv("RE1_TEST_SHOT_EVERY")
+        ? std::atoi(std::getenv("RE1_TEST_SHOT_EVERY")) : 0;
+    static const int maxShots = std::getenv("RE1_TEST_SHOT_MAX")
+        ? std::atoi(std::getenv("RE1_TEST_SHOT_MAX")) : 40;
+    static int frame = 0, saved = 0;
+    if (every <= 0 || saved >= maxShots || (++frame % every) != 0) return;
+    void* pixels = nullptr;
+    DWORD w = 0, h = 0;
+    if (!dx->CaptureBackbufferToRGBA(&pixels, &w, &h) || !pixels) return;
+    char name[32];
+    snprintf(name, sizeof(name), "shot%04d.ppm", saved++);
+    if (FILE* f = fopen(name, "wb")) {
+        fprintf(f, "P6\n%lu %lu\n255\n", (unsigned long)w, (unsigned long)h);
+        const BYTE* px = (const BYTE*)pixels;
+        for (DWORD i = 0; i < w * h; ++i) fwrite(px + i * 4, 1, 3, f);
+        fclose(f);
+    }
+    free(pixels);
+}
+
 void MarniDX::Present()
 {
     Impl* p = m_pImpl;
     if (!p || !p->swapChain) return;
 
     if (p->smaaEnabled) p->RenderSmaa();
+    SaveTestShot(this);
+    // Opt-in (RE1_TEST_FPS=1): log presented frames per second every 2 s.
+    static const bool fpsLog = std::getenv("RE1_TEST_FPS") != nullptr;
+    if (fpsLog) {
+        static DWORD start = 0;
+        static int frames = 0;
+        const DWORD now = GetTickCount();
+        if (start == 0) start = now;
+        ++frames;
+        if (now - start >= 2000) {
+            dbg_printf("[fps] %.1f presented/s\n", frames * 1000.0 / (double)(now - start));
+            start = now;
+            frames = 0;
+        }
+    }
 
     if (p->frameInterpolation) {
         // Pose interpolation renders two complete scene passes per 30 Hz
@@ -1614,12 +1694,14 @@ static void DrawQuadInternal(MarniDX::Impl* p, const QuadVertex verts[6],
     if (!srv) return; // no fallback at all -- skip
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1696,12 +1778,14 @@ void MarniDX::DrawTriangles(const float* verts, int triCount, MarniHandle tex,
     if (!srv) return;
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1752,12 +1836,14 @@ void MarniDX::DrawTriangles3D(const float* verts, int triCount, MarniHandle tex,
     if (!srv) return;
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
@@ -1819,12 +1905,14 @@ void MarniDX::DrawTrianglesPersp(const float* verts, int triCount, MarniHandle t
     if (!srv) return;
     p->context->PSSetShaderResources(0, 1, &srv);
 
-    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint : p->sampLinear;
+    ID3D11SamplerState* s = (sampler == MARNI_SAMPLER_POINT) ? p->sampPoint
+        : (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? p->sampLinearWrap : p->sampLinear;
     if (!s) s = p->sampLinear;
     p->context->PSSetSamplers(0, 1, &s);
 
     ID3D11BlendState* bs = p->blendAlpha;
     if (blend == MARNI_BLEND_ADD)       bs = p->blendAdd;
+    else if (blend == MARNI_BLEND_DETAIL) bs = p->blendDetail;
     else if (blend == MARNI_BLEND_DISABLE) bs = p->blendDisabled;
     if (!bs) bs = p->blendAlpha;
     float bf[4] = { 1.0f, 1.0f, 1.0f, 1.0f };

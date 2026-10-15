@@ -552,6 +552,8 @@ void TmdInterpolationEndFrame(void)
     g_tmdQueueCount = 0;
 }
 
+static int s_auditDraws = 0, s_auditMasks = 0, s_auditTranslucent = 0;
+
 void FlushTmdObjects(float poseAlpha)
 {
     // Port-only comparison switch. The original texture pages use point
@@ -1039,9 +1041,41 @@ void FlushTmdObjects(float poseAlpha)
         if (droppedTris > 0)
             dbg_printf("FlushTmdObjects: dropped %d triangles (out of memory)\n",
                        droppedTris);
-        if (getenv("RE1_TMD_TRI_AUDIT") != NULL && collected > 0)
-            fprintf(stderr, "RE1_TMD_TRI_AUDIT: %d triangles, %d overflow, %d dropped\n",
-                    collected, overflowCount, droppedTris);
+        static const bool triAudit = getenv("RE1_TMD_TRI_AUDIT") != NULL;
+        // Fast path (port addition): when every triangle is opaque the depth
+        // buffer decides visibility inside each band between two scene-sprite
+        // depths (the sprites themselves are painter-ordered), so triangles
+        // only need sorting by band, then texture. High-density (HD) models
+        // otherwise split into thousands of one-triangle draw calls as their
+        // texture pages alternate along the depth order.
+        int translucent = 0;
+        for (int i = 0; i < collected; ++i) {
+            const TmdTri& t = i < TMD_MAX_TRIS_COLLECT ?
+                              g_tmdTris[i] : overflowTris[i - TMD_MAX_TRIS_COLLECT];
+            if (t.alpha < 0.999f) ++translucent;
+        }
+        s_auditMasks = maskCount;
+        s_auditTranslucent = translucent;
+        if (translucent == 0) {
+            // maskDepths is descending; a triangle's band is the number of
+            // sprite depths strictly greater than its own depth, exactly the
+            // sprites the draw loop below flushes before it.
+            const auto band = [&](float depth) {
+                int n = 0;
+                while (n < maskCount && (float)maskDepths[n] > depth) ++n;
+                return n;
+            };
+            std::sort(order, order + collected, [overflowTris, &band](int a, int b) {
+                const TmdTri& ta = a < TMD_MAX_TRIS_COLLECT ?
+                                   g_tmdTris[a] : overflowTris[a - TMD_MAX_TRIS_COLLECT];
+                const TmdTri& tb = b < TMD_MAX_TRIS_COLLECT ?
+                                   g_tmdTris[b] : overflowTris[b - TMD_MAX_TRIS_COLLECT];
+                const int ba = band(ta.depth), bb = band(tb.depth);
+                if (ba != bb) return ba < bb;
+                if (ta.tex != tb.tex) return ta.tex < tb.tex;
+                return a < b;
+            });
+        } else
         std::sort(order, order + collected, [overflowTris](int a, int b) {
             const TmdTri& ta = a < TMD_MAX_TRIS_COLLECT ?
                                g_tmdTris[a] : overflowTris[a - TMD_MAX_TRIS_COLLECT];
@@ -1069,7 +1103,7 @@ void FlushTmdObjects(float poseAlpha)
             // goes down first.
             while (maskIdx < maskCount && (float)maskDepths[maskIdx] > t3->depth) {
                 if (triCount > 0) {
-                    Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
+                    ++s_auditDraws, Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
                                                 modelSampler, MARNI_BLEND_ALPHA,
                                                 triWrite);
                     triCount = 0;
@@ -1081,7 +1115,7 @@ void FlushTmdObjects(float poseAlpha)
 
             if ((triCount > 0 && (t3->tex != triTex || triWriteThis != triWrite)) ||
                 triCount >= TMD_MAX_TRIS_FLUSH) {
-                Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
+                ++s_auditDraws, Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
                                             modelSampler, MARNI_BLEND_ALPHA,
                                             triWrite);
                 triCount = 0;
@@ -1092,10 +1126,18 @@ void FlushTmdObjects(float poseAlpha)
             triCount++;
         }
         if (triCount > 0) {
-            Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
+            ++s_auditDraws, Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
                                         modelSampler, MARNI_BLEND_ALPHA,
                                         triWrite);
         }
+        if (triAudit && collected > 0) {
+            static int auditFrame = 0;
+            if ((++auditFrame % 60) == 0)
+                dbg_printf("[tmd-audit] %d triangles, %d draw calls, %d masks, %d translucent, %d overflow, %d dropped\n",
+                           collected, s_auditDraws, s_auditMasks, s_auditTranslucent,
+                           overflowCount, droppedTris);
+        }
+        s_auditDraws = 0;
         if (order != g_tmdTriOrder) free(order);
         free(overflowTris);
     }

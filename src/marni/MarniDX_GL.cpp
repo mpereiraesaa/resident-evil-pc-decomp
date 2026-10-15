@@ -205,6 +205,10 @@ static void ApplyBlend(MarniBlend blend)
     case MARNI_BLEND_DISABLE:
         glDisable(GL_BLEND);
         break;
+    case MARNI_BLEND_DETAIL:
+        glEnable(GL_BLEND);
+        glBlendFuncSeparate(GL_DST_COLOR, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE);
+        break;
     case MARNI_BLEND_ALPHA:
     default:
         glEnable(GL_BLEND);
@@ -218,6 +222,9 @@ static void ApplySampler(MarniSampler sampler)
     GLint filter = (sampler == MARNI_SAMPLER_POINT) ? GL_NEAREST : GL_LINEAR;
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+    const GLint wrap = (sampler == MARNI_SAMPLER_LINEAR_WRAP) ? GL_REPEAT : GL_CLAMP_TO_EDGE;
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
 }
 
 static void DrawBatch(MarniDX::Impl* p, const float* verts, int vertexCount,

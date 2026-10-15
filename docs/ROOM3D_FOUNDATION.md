@@ -1194,15 +1194,48 @@ the per-room build scripts remain as reference.
 
 ### Readings for every room
 
-`room3d/readings/` holds a reading for all 144 non-empty RDTs: stages 1 to 5
+`room3d/readings/` holds a reading for all 160 non-empty RDTs: stages 1 to 5
 read from their evidence (survey dump, gridded corrected views, collision,
-door records), and stages 6 and 7 cloned from 1 and 2 because their
-collision and cameras are identical. `tools/room3d_readings_batch.py` builds
-them all, scores each camera, installs the meshes into a mod tree with
-room-prefixed textures and, with `--runtime-exe`, loads every room in the
-Wine build through the generalised smoke test; it writes `report.md`.
-Caveats recorded while reading: ROOM30B0, ROOM30F0, ROOM50D0 and ROOM5150's
-backgrounds do not decode with the current PAK reader (their readings use the
-neighbouring rooms' finishes); single-view and lift rooms are shells only;
-the courtyard, falls and water gate are stone walks with water slabs rather
-than the original terrain.
+door records); stages 6 and 7 are cloned from 1 and 2 where the RDT exists in
+both (identical collision and cameras, regenerate with the clone script after
+editing a stage 1/2 reading), and the 16 return-visit rooms with no stage 1/2
+twin (ROOM6100, ROOM6190, ROOM7000, ROOM70C0, ROOM7130 to ROOM71C0) plus the
+event rooms ROOM3100 and ROOM3110 are read on their own. The return stages
+ship no backgrounds; the survey and the batch read stage 1/2's.
+`tools/room3d_readings_batch.py` builds them all, scores each camera, installs
+the meshes into a mod tree with room-prefixed textures and, with
+`--runtime-exe`, loads every room in the Wine build through the generalised
+smoke test; it writes `report.md` and `report.json`, and `--merge` keeps the
+entries of rooms not rebuilt in a partial rerun.
+
+Library additions made while reading the last rooms: `bookcase` (wooden
+carcass with book-spine faces on any sides), `ladder`, `trophy` (mounted deer
+head, scalable), rectangular `rect` windows with mullions and a transom,
+skirted round tables (`cloth`), `books` and ceramic `tiles` texture families,
+and `peel`/`ivy` options on plaster for the ruined rooms. Fireplaces on east
+and north walls used to draw their opening flush with the mantel face (hidden);
+it now sits just in front.
+
+A reading can inherit another one shifted vertically with
+`base = { reading = "ROOMxxxx", y = dy }`: the base's vertical keys (floors,
+ceilings, tops, sills, springs, light and sconce heights...) move by dy, its
+hides and backdrops are dropped, then the reading's own tables override and
+its lists extend the base. ROOM2030 (main hall 2F) inherits ROOM1060 moved
+down 6000, since both RDTs share one frame; its cameras now look into the real
+hall instead of a walled shaft.
+
+A reading's `backdrop = [N, ...]` writes `backdrop N` lines into the room's
+`.cameras` file and the runtime keeps the original pre-rendered background
+for those cameras (`Room3D_IsActive` returns false). It is used for close-ups
+and cutscene views that a room mesh cannot stand in for: the keypads in
+ROOM2010 camera 7 and ROOM4080 camera 5, the aerial shot in ROOM7180 camera 2,
+and the event rooms ROOM3100 and ROOM3110 (all cameras). The batch does not
+flag backdrop cameras as weak.
+
+Caveats: the outdoor water garden (ROOM3010) and the pool courtyard (ROOM3020)
+are one open zone each with water surfaces, low walls and blocks as objects,
+not the original terrain; the trophy room (ROOM7150) and the 1F study
+(ROOM6190) bake their lit state for both their lights-off and lights-on
+cameras; ROOM6100's narrow stairwell has no sloped soffit, so camera 1 sees
+past it; a few steep top-down cameras (ROOM7190 camera 1, ROOM7000,
+ROOM5150) frame the floor smaller than the originals in the preview.

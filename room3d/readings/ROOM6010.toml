@@ -1,7 +1,9 @@
 # Return-visit copy of ROOM1010.toml: stage 6 shares its collision and cameras exactly.
-# Mansion 1F left stairs: panelled dado under pale plaster with a painted
-# border, dark red planks, a round column at the corner of the west leg and a
-# wooden stair climbing west along the south wall. From ROOM1010.RDT blocks.
+# Mansion 1F left stairs: panelled dado under dark olive wallpaper with a
+# pale frieze, dark red planks, a round column in the west leg, tall
+# deep-set windows down the west wall and a wooden stair climbing EAST along
+# the south wall (newel at the west foot, cam5 sees only its underside).
+# From ROOM1010.RDT blocks; window positions read from cam1/cam2 floor picks.
 room = "ROOM6010"
 title = "1F left stairs (return)"
 seed = 1010
@@ -19,12 +21,13 @@ skirting = 200
 cell = 800
 
 [materials]
-wallpaper = { color = [0.56, 0.60, 0.54], motif = [0.46, 0.50, 0.44], repeats = 4 }
+wallpaper = { color = [0.44, 0.40, 0.22], motif = [0.33, 0.30, 0.15], repeats = 4 }
 panel = [0.30, 0.15, 0.09]
 planks = [0.36, 0.14, 0.09]
 wood = [0.26, 0.13, 0.08]
 coffer = [0.34, 0.22, 0.16]
-stone = [0.46, 0.44, 0.40]
+stone = [0.27, 0.26, 0.21]
+glass_dark = [0.05, 0.06, 0.07]
 door = [0.24, 0.14, 0.09]
 
 [lighting]
@@ -41,12 +44,18 @@ floor_along = "x"
 
 [[door]]
 wall = "north"
-span = [7600, 10000]
+span = [7300, 9500]
 top = -3400
 material = "door"
 [[door]]
 wall = "south"
 span = [14000, 16000]
+top = -3400
+material = "door"
+[[door]]             # cam4: tall door seen edge-on beside the passage corner
+wall = "north"
+line = 8424
+span = [6500, 7600]
 top = -3400
 material = "door"
 [[door]]
@@ -63,43 +72,83 @@ radius = 520
 [[stair]]
 x = [4700, 11160]
 z = [2448, 5000]
-direction = "west"
-top = -3600
-steps = 12
+direction = "east"
+top = -4600
+steps = 16
 tread_material = "wood"
 string = true
 rails = [{ side = "north" }]
 
-[[painting]]
+[[window]]           # cam1 end window, cam2 nearest deep frame
 wall = "west"
-span = [8600, 9800]
-y = [-3600, -2700]
+kind = "rect"
+at = 17300
+half = 650
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+glass = "glass_dark"
+[[window]]
+wall = "west"
+kind = "rect"
+at = 11700
+half = 600
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+glass = "glass_dark"
+[[window]]
+wall = "west"
+kind = "rect"
+at = 8500
+half = 600
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+glass = "glass_dark"
+[[window]]
+wall = "west"
+kind = "rect"
+at = 4500
+half = 600
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+glass = "glass_dark"
+[[window]]           # cam0 left / cam1 right deep frame on the north wall
+wall = "north"
+kind = "rect"
+at = 11900
+half = 650
+sill = -1500
+height = 2900
+panes = 2
+transom = -3700
+glass = "glass_dark"
 
-[[sconce]]
-wall = "west"
-at = [-3600, 5600]
+[[sconce]]           # cam2: two sconces on the west leg's east wall
+wall = "east"
+at = [-4000, 15800]
 candles = 1
 strength = 0.40
 reach = 3600
 [[sconce]]
-wall = "west"
-at = [-3600, 16000]
+wall = "east"
+at = [-4000, 12300]
 candles = 1
 strength = 0.40
 reach = 3600
-[[sconce]]
-wall = "north"
-at = [-3600, 9000]
+[[sconce]]           # cam0 right wall, near the end door
+wall = "south"
+at = [-3900, 16800]
 candles = 1
 strength = 0.40
 reach = 3600
-[[sconce]]
-wall = "north"
-at = [-3600, 16500]
-candles = 1
-strength = 0.40
-reach = 3600
-[[sconce]]
+[[sconce]]           # cam3/cam4 far wall of the stair passage
 wall = "south"
 at = [-3600, 12500]
 candles = 1

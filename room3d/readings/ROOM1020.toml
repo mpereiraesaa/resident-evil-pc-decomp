@@ -24,7 +24,7 @@ cell = 600
 [materials]
 plaster = [0.70, 0.70, 0.66]
 "plaster.ceiling" = [0.42, 0.42, 0.40]
-"carpet.floor" = { color = [0.24, 0.20, 0.16], motif = [0.32, 0.26, 0.19], tile = [2600, 2600] }
+"carpet.floor" = { color = [0.24, 0.20, 0.16], motif = [0.36, 0.28, 0.18], tile = [900, 900] }
 "books.sparse" = { color = [0.22, 0.12, 0.07], shelves = 4 }
 "marble.black" = [0.18, 0.18, 0.16]
 wood = [0.26, 0.15, 0.09]

@@ -1,6 +1,12 @@
 # Return-visit copy of ROOM1030.toml: stage 6 shares its collision and cameras exactly.
-# Mansion 1F "F passage": green damask corridor. West leg, a stub east, the
-# north passage and the pocket by the east wall, all from ROOM1030.RDT blocks.
+# Mansion 1F "F passage": green damask corridor. West leg, a stub east, a
+# wider hall at the north-west corner, the passage running east and the pocket
+# south off its end. The papered walls stand outside the RDT collision blocks
+# (by ~400-600 on the sides, more at some ends): walls were placed from floor
+# picks on the originals, so cameras disagree by a few hundred units here and
+# there. Doors: the far south end, two on the west wall (cam0, cam3), one on
+# the stub's north wall near its end (cam2) and one on the pocket's west wall
+# (cam6).
 room = "ROOM6030"
 title = "F passage (return)"
 seed = 1030
@@ -22,109 +28,112 @@ wood = [0.22, 0.13, 0.08]
 door = [0.26, 0.16, 0.10]
 
 [lighting]
-ambient = [0.075, 0.10, 0.08]
+ambient = [0.16, 0.20, 0.17]
 
 [[zone]]            # west leg
-box = [1944, 2176, 3996, 26676]
+box = [1550, 1250, 4450, 26850]
 [[zone]]            # stub east off the west leg
-box = [3996, 13266, 9648, 15462]
+box = [4450, 12950, 10100, 15750]
 floor_along = "x"
-[[zone]]            # north passage, west part
-box = [3996, 21294, 9504, 26676]
+[[zone]]            # north hall west of the oval-portrait wall
+box = [4450, 20900, 11500, 26850]
 floor_along = "x"
-[[zone]]            # north passage, east part
-box = [9504, 21294, 22896, 23598]
+[[zone]]            # north passage running east
+box = [11500, 20900, 23450, 23900]
 floor_along = "x"
-[[zone]]            # pocket by the east wall
-box = [21078, 17946, 22896, 21294]
+[[zone]]            # pocket south off the passage's east end
+box = [20850, 16300, 23450, 20900]
 
 [[beam]]
-box = [1944, 9000, 3996, 9140]
+box = [1550, 9000, 4450, 9140]
 top = -5000
 [[beam]]
-box = [1944, 18000, 3996, 18140]
-top = -5000
-[[beam]]
-box = [9504, 21294, 9644, 23598]
-top = -5000
-[[beam]]
-box = [16000, 21294, 16140, 23598]
+box = [1550, 18000, 4450, 18140]
 top = -5000
 
-[[door]]
+[[door]]            # end of the west leg (cam0 far door)
 wall = "south"
-span = [1944, 3996]
-top = -3400
+span = [1900, 4100]
+top = -4300
 material = "door"
-[[door]]
+[[door]]            # west wall, cam0 right
 wall = "west"
-span = [10100, 11700]
-top = -3400
+span = [7600, 10200]
+top = -4000
 material = "door"
-[[door]]
+[[door]]            # west wall at the north end, cam3 facing
 wall = "west"
-span = [23700, 25800]
-top = -3400
+span = [23800, 26300]
+top = -4400
 material = "door"
-[[door]]
-wall = "south"
-span = [7500, 9500]
-top = -3400
+[[door]]            # stub north wall near its end, cam2 left
+wall = "north"
+span = [8350, 9750]
+line = 15750
+top = -3800
 material = "door"
-[[door]]
-wall = "south"
-span = [21078, 22896]
-top = -3400
+[[door]]            # pocket west wall, cam6 right
+wall = "west"
+span = [16500, 19100]
+line = 20850
+top = -4600
 material = "door"
 
-[[painting]]
-wall = "west"
+[[painting]]        # cam0 left, east wall of the west leg
+wall = "east"
 span = [6200, 7400]
 y = [-3600, -2400]
-[[painting]]
-wall = "west"
-span = [23000, 23600]
-y = [-3700, -2700]
+[[object]]          # oval portrait on the north hall's east wall (cam4); a
+kind = "box"        # thin box so camera 5, which the floor picks put west of
+box = [11440, 24500, 11500, 25800]   # this wall, can hide it
+top = -4300
+bottom = -2600
+material = "painting"
+group = "portrait"
+
+[[hide]]
+camera = 5
+groups = ["portrait"]
 
 [[sconce]]
 wall = "west"
 at = [-3500, 5000]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500
 [[sconce]]
 wall = "east"
 at = [-3500, 12500]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500
 [[sconce]]
 wall = "west"
 at = [-3500, 20000]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500
 [[sconce]]
 wall = "north"
 at = [-3500, 6500]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500
 [[sconce]]
 wall = "south"
 at = [-3500, 14000]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500
 [[sconce]]
 wall = "north"
 at = [-3500, 19500]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500
 [[sconce]]
 wall = "east"
 at = [-3500, 19600]
 candles = 1
-strength = 0.36
-reach = 3200
+strength = 0.55
+reach = 4500

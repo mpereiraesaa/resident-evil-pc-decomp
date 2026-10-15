@@ -1,5 +1,10 @@
-# Mansion 1F corridor south of the right stairs: an L of wallpapered passage.
-# Shell from ROOM10A0.RDT blocks 0,1,2,3,5; doors from its door records.
+# Mansion 1F corridor south of the right stairs: an L of olive damask
+# wallpapered passage. Zones are the ROOM10A0.RDT collision gaps (blocks
+# 0,1,2,3,5) pushed out ~450 to the visual walls; cams 0-3 stand right
+# against the south wall, so the collision line would cut through them.
+# Doors and paintings placed by projecting them into the views: the dark
+# stairs door is the west one on the north wall (cam1), the pale one the
+# east one (cam0).
 room = "ROOM10A0"
 title = "1F east corridor"
 seed = 100
@@ -15,56 +20,52 @@ chair_rail = false
 cell = 700
 
 [materials]
-wallpaper = { color = [0.52, 0.49, 0.36], motif = [0.33, 0.31, 0.21], repeats = 4 }
-planks = [0.30, 0.20, 0.12]
-plaster = [0.40, 0.36, 0.28]
-wood = [0.28, 0.18, 0.11]
-door = [0.26, 0.17, 0.10]
-"door.pale" = { color = [0.62, 0.66, 0.70], rows = 3 }
+wallpaper = { color = [0.27, 0.28, 0.15], motif = [0.56, 0.42, 0.22], repeats = 2 }
+planks = [0.30, 0.17, 0.10]
+plaster = [0.30, 0.27, 0.18]
+wood = [0.24, 0.14, 0.09]
+door = [0.26, 0.15, 0.09]
+"door.pale" = { color = [0.50, 0.56, 0.58], rows = 3 }
 
 [lighting]
-ambient = [0.095, 0.085, 0.064]
+ambient = [0.13, 0.12, 0.08]
 
 [[zone]]            # east-west passage
-box = [1836, 1998, 16002, 5258]
+box = [1386, 1548, 16452, 5708]
 floor_along = "x"
 [[zone]]            # north leg
-box = [1836, 5258, 3591, 13248]
+box = [1386, 5708, 4041, 13698]
 
-[[door]]            # pale door, north wall, west of the stairs door
+[[door]]            # cam1 near right: dark door with a plaque, north wall
 wall = "north"
 span = [7800, 9300]
-top = -3300
-material = "door.pale"
-[[door]]            # to the right stairs
+top = -3800
+material = "door"
+[[door]]            # cam0 left: pale door, north wall
 wall = "north"
 span = [10600, 12600]
-top = -3300
-material = "door"
-[[door]]            # east end
+top = -3900
+material = "door.pale"
+[[door]]            # cam0 far end: east end
 wall = "east"
-span = [2400, 5000]
-top = -3400
+span = [2300, 4900]
+top = -3600
 material = "door"
-[[door]]            # south wall near the west end
+[[door]]            # cam2 left / cam1 far left: south wall near the west end
 wall = "south"
-span = [1800, 4200]
-top = -3300
+span = [1900, 4100]
+top = -3600
 material = "door"
-[[door]]            # west wall of the north leg
+[[door]]            # cam4 left / cam3 far left: west wall of the north leg
 wall = "west"
-span = [10700, 13000]
-top = -3300
+span = [10600, 12900]
+top = -3800
 material = "door"
 
-[[painting]]
-wall = "north"
-span = [4400, 6600]
-y = [-3900, -2300]
-[[painting]]
-wall = "west"
-span = [8600, 10400]
-y = [-3800, -2300]
+[[painting]]        # cam2: large painting on the south wall
+wall = "south"
+span = [4400, 6700]
+y = [-4300, -2200]
 
 [[sconce]]
 wall = "south"
@@ -72,15 +73,21 @@ at = [-3600, 9600]
 candles = 1
 strength = 0.42
 reach = 3200
-[[sconce]]
+[[sconce]]          # cam1: right of the far door
 wall = "north"
-at = [-3600, 9900]
+at = [-3600, 6800]
 candles = 1
 strength = 0.32
 reach = 3000
-[[sconce]]
+[[sconce]]          # cam0: right wall, near the camera's line
+wall = "south"
+at = [-3800, 12600]
+candles = 1
+strength = 0.36
+reach = 3000
+[[sconce]]          # cam3/cam4: north leg east wall
 wall = "east"
-at = [-3600, 11000]
+at = [-3800, 11000]
 candles = 1
 strength = 0.36
 reach = 3000

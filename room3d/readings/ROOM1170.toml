@@ -1,8 +1,20 @@
-# Large gallery: a loop around a central wall. Brown plaster over an
-# ornamented dado, red planks, paintings on every wall under spotlights.
+# Large gallery: a U-shaped loop round a central wall (block 4) that runs
+# from the west wall to the east connection. Brown plaster over an ornamented
+# olive dado, red planks. The paintings all hang on the central wall's two
+# faces (north face: the big angel canvas, two more further east; south
+# face: the deep-framed canvas, its neighbour and two ovals), placed from the
+# original views by projecting their corners onto the face planes. The
+# builder's [[painting]] always picks the outer wall when zones overlap
+# along a side, so these are thin boxes (canvas + brass frame) set on the
+# central wall faces. A small dark hatch sits high on the west wall. The
+# domed painted ceiling, the spotlight rails and the corner pilasters are
+# not modelled; ovals are drawn rectangular and the canvases are mottled
+# gold/brown plaster rather than pictures. Camera 7 is all angel canvas
+# and keeps the original background.
 room = "ROOM1170"
 title = "Large gallery"
 seed = 2300
+backdrop = [7]           # the angel canvas filling the frame: keep the original
 
 [shell]
 floor = 0
@@ -17,12 +29,15 @@ skirting = 160
 cell = 900
 
 [materials]
-plaster = [0.52, 0.42, 0.28]
+plaster = [0.50, 0.40, 0.26]
 "plaster.dark" = [0.30, 0.24, 0.16]
 "panel.olive" = [0.36, 0.34, 0.20]
 planks = [0.42, 0.18, 0.11]
 wood = [0.40, 0.36, 0.22]
 door = [0.30, 0.18, 0.10]
+"plaster.canvas" = { color = [0.82, 0.64, 0.26], stains = 0.6, tile = [2400, 1800] }
+"plaster.canvasdark" = { color = [0.36, 0.26, 0.14], stains = 0.8, tile = [1800, 1500] }
+soot = [0.08, 0.08, 0.06]
 
 [lighting]
 ambient = [0.13, 0.11, 0.08]
@@ -42,60 +57,159 @@ span = [2320, 4400]
 top = -3300
 material = "door"
 
-[[painting]]
-wall = "south"
-span = [5000, 8400]
-y = [-3800, -2000]
-[[painting]]
-wall = "south"
-span = [12000, 14600]
-y = [-3700, -2100]
-[[painting]]
-wall = "south"
-span = [19000, 22000]
-y = [-3800, -2000]
-[[painting]]
-wall = "north"
-span = [6000, 9000]
-y = [-3800, -2000]
-[[painting]]
-wall = "north"
-span = [13000, 15600]
-y = [-3700, -2100]
-[[painting]]
-wall = "north"
-span = [19500, 22500]
-y = [-3800, -2000]
-[[painting]]
-wall = "east"
-span = [5887, 7287]
-y = [-3600, -2200]
-[[painting]]            # the big canvas on the central wall's north face
-wall = "south"
-span = [7000, 11600]
-y = [-3900, -1900]
+[[object]]          # dark hatch high on the west wall of the south leg
+kind = "wall_band"
+wall = "west"
+span = [3500, 4200]
+y = [-3500, -2700]
+material = "soot"
+rail = false
+
+# Paintings on the central wall (north face z 7287, south face z 5887)
+[[object]]          # big angel canvas (camera 7 close-up, camera 0)
+kind = "box"
+box = [6990, 7287, 11410, 7347]
+top = -4060
+bottom = -2240
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [7100, 7347, 11300, 7387]
+top = -3950
+bottom = -2350
+material = "plaster.canvas"
+omit = []
+[[object]]          # lit canvas seen down the north leg (camera 1)
+kind = "box"
+box = [14390, 7287, 16410, 7347]
+top = -4010
+bottom = -1990
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [14500, 7347, 16300, 7387]
+top = -3900
+bottom = -2100
+material = "plaster.canvas"
+omit = []
+[[object]]          # small dark canvas (cameras 1, 2)
+kind = "box"
+box = [17590, 7287, 19510, 7347]
+top = -3910
+bottom = -2190
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [17700, 7347, 19400, 7387]
+top = -3800
+bottom = -2300
+material = "plaster.canvasdark"
+omit = []
+[[object]]          # deep-framed canvas (cameras 4, 5)
+kind = "box"
+box = [6390, 5827, 9710, 5887]
+top = -4210
+bottom = -1790
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [6500, 5787, 9600, 5827]
+top = -4100
+bottom = -1900
+material = "plaster.canvas"
+omit = []
+[[object]]          # its neighbour (camera 4)
+kind = "box"
+box = [10190, 5827, 12710, 5887]
+top = -3910
+bottom = -1990
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [10300, 5787, 12600, 5827]
+top = -3800
+bottom = -2100
+material = "plaster.canvasdark"
+omit = []
+[[object]]          # oval (camera 3)
+kind = "box"
+box = [14890, 5827, 16310, 5887]
+top = -3910
+bottom = -1990
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [15000, 5787, 16200, 5827]
+top = -3800
+bottom = -2100
+material = "plaster.canvas"
+omit = []
+[[object]]          # small oval (camera 3)
+kind = "box"
+box = [17890, 5827, 19310, 5887]
+top = -3710
+bottom = -2190
+material = "brass"
+omit = []
+[[object]]
+kind = "box"
+box = [18000, 5787, 19200, 5827]
+top = -3600
+bottom = -2300
+material = "plaster.canvasdark"
+omit = []
 
 [[light]]
-at = [8000, -4000, 3900]
-strength = 0.35
-reach = 5000
+at = [9200, -4300, 8887]
+color = [1.0, 0.92, 0.75]
+strength = 0.75
+reach = 3800
 [[light]]
-at = [17000, -4000, 3900]
-strength = 0.35
-reach = 5000
+at = [15400, -4300, 8887]
+color = [1.0, 0.92, 0.75]
+strength = 0.42
+reach = 3800
 [[light]]
-at = [8000, -4000, 9200]
-strength = 0.35
-reach = 5000
+at = [18550, -4300, 8887]
+color = [1.0, 0.92, 0.75]
+strength = 0.42
+reach = 3800
 [[light]]
-at = [17000, -4000, 9200]
-strength = 0.35
-reach = 5000
+at = [8050, -4300, 4287]
+color = [1.0, 0.92, 0.75]
+strength = 0.42
+reach = 3800
 [[light]]
-at = [9300, -3800, 8400]
-strength = 0.35
-reach = 4000
+at = [11450, -4300, 4287]
+color = [1.0, 0.92, 0.75]
+strength = 0.42
+reach = 3800
+[[light]]
+at = [15600, -4300, 4287]
+color = [1.0, 0.92, 0.75]
+strength = 0.42
+reach = 3800
+[[light]]
+at = [18600, -4300, 4287]
+color = [1.0, 0.92, 0.75]
+strength = 0.42
+reach = 3800
+
 [[light]]
 at = [24300, -4000, 6600]
 strength = 0.30
+reach = 4000
+[[light]]
+at = [4000, -4000, 3900]
+strength = 0.25
+reach = 4000
+[[light]]
+at = [4000, -4000, 9200]
+strength = 0.25
 reach = 4000

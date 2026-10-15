@@ -30,11 +30,13 @@ door = [0.46, 0.28, 0.14]
 [lighting]
 ambient = [0.12, 0.11, 0.09]
 
-[[zone]]            # south area
-box = [1932, 1944, 9990, 3978]
+[[zone]]            # south area (south wall set back from the collision line at 1944 so
+                    # camera 1, which stands against it, does not clip it at the near plane)
+box = [1932, 1300, 9990, 3978]
 floor_along = "x"
-[[zone]]            # narrow leg north
-box = [4428, 3978, 5724, 14526]
+[[zone]]            # narrow leg north (east wall widened past the collision line at 5724
+                    # for the same reason: camera 3 hugs it)
+box = [4428, 3978, 6000, 14526]
 
 [[door]]
 wall = "west"
@@ -55,7 +57,7 @@ material = "door"
 
 [[stair]]
 x = [7500, 9990]
-z = [1944, 3978]
+z = [1300, 3978]
 direction = "east"
 top = -1200
 steps = 4

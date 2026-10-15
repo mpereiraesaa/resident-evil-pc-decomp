@@ -1,7 +1,16 @@
 # Return-visit copy of ROOM10E0.toml: stage 6 shares its collision and cameras exactly.
-# Mansion 1F keeper's bedroom: fine wallpaper over a dark panelled dado,
-# planks and a rug, bed by the west wall, wardrobe and desk at the south end,
-# bookshelf and dresser at the north. From ROOM10E0.RDT blocks.
+# Mansion 1F keeper's bedroom: striped wallpaper over a dark panelled dado,
+# plank floor, dark plank ceiling. Long north-south room: the bed stands
+# against the west wall in the middle, a bookshelf further north on the west
+# wall, a dresser on the north wall, the door on the east wall. At the south
+# end the west wall opens into a walk-in closet (clothes on a rail, a shelf of
+# boxes over it), the desk with its lamp stands against the east wall
+# (block 7), and a patterned rug lies between them.
+# The west wall of the north part is block 4's face (x 3042); block 5 is the
+# furniture strip in front of it. From ROOM10E0.RDT blocks 0-12 (blocks 9-12
+# are the closet's solid floor),
+# camera masks and floor picks. The closet's broom, bucket and the desk chair
+# are left out.
 room = "ROOM60E0"
 title = "Keeper's bedroom (return)"
 seed = 1400
@@ -19,21 +28,31 @@ skirting = 160
 cell = 600
 
 [materials]
-wallpaper = { color = [0.62, 0.62, 0.52], motif = [0.50, 0.50, 0.42], repeats = 7 }
+wallpaper = { color = [0.56, 0.58, 0.48], motif = [0.46, 0.48, 0.40], repeats = 7 }
 panel = [0.24, 0.14, 0.08]
+"panel.dark" = [0.10, 0.07, 0.05]
 planks = [0.30, 0.19, 0.11]
-"planks.ceiling" = { color = [0.30, 0.18, 0.11], count = 10 }
+"planks.ceiling" = { color = [0.24, 0.14, 0.08], count = 10 }
 wood = [0.28, 0.16, 0.09]
+"wood.desk" = [0.50, 0.30, 0.14]
 door = [0.26, 0.15, 0.09]
-carpet = { color = [0.24, 0.22, 0.34], motif = [0.70, 0.40, 0.30] }
+carpet = { color = [0.20, 0.15, 0.10], motif = [0.52, 0.40, 0.24], tile = [2600, 2600] }
+border = [0.48, 0.36, 0.22]
+linen = [0.62, 0.62, 0.52]
+paper = [0.50, 0.54, 0.46]
+soot = [0.08, 0.08, 0.08]
 
 [lighting]
-ambient = [0.15, 0.15, 0.12]
+ambient = [0.19, 0.19, 0.15]
 
-[[zone]]
+[[zone]]            # south end, with the desk and rug
 box = [3348, 2032, 8190, 5850]
-[[zone]]
-box = [3924, 5850, 8190, 13212]
+[[zone]]            # main room north of the closet
+box = [3042, 5850, 8190, 13212]
+[[zone]]            # walk-in closet behind the west wall of the south end
+box = [1800, 2032, 3348, 5850]
+wall_material = "panel.dark"
+floor_material = "panel.dark"
 
 [[door]]
 wall = "east"
@@ -43,38 +62,73 @@ material = "door"
 
 [[object]]          # bed
 kind = "box"
-box = [3924, 6300, 7128, 8874]
+box = [3042, 6300, 7128, 8874]
 top = -700
 material = "linen"
 omit = ["bottom", "west"]
 [[object]]          # headboard
 kind = "box"
-box = [3924, 6300, 4000, 8874]
+box = [3042, 6300, 3140, 8874]
 top = -1500
 bottom = -700
 material = "wood"
-[[object]]          # wardrobe
-kind = "box"
-box = [7020, 2032, 8190, 4284]
-top = -2500
-material = "wood"
-omit = ["bottom", "east", "south"]
-[[object]]          # desk with lamp
+
+[[object]]          # desk against the east wall
 kind = "table"
-box = [3348, 2032, 5200, 3300]
-top = -1400
+box = [7080, 2032, 8190, 3780]
+top = -1000
 thickness = 100
+material = "wood.desk"
 [[object]]
 kind = "lamp"
-at = [4200, 2500]
-base = -1400
+at = [7600, 3050]
+base = -1000
 height = 650
-[[object]]          # bookshelf on the west wall
+
+[[object]]          # low bench along the south wall
 kind = "box"
-box = [3924, 9200, 4500, 12500]
-top = -2600
+box = [3600, 2032, 6900, 2600]
+top = -600
 material = "wood"
-omit = ["bottom", "west"]
+omit = ["bottom", "south"]
+
+# Closet: clothes rail, a shelf of boxes over it, two coats.
+[[object]]
+kind = "box"
+box = [1800, 2032, 3348, 5850]
+top = -4250
+bottom = -4150
+material = "wood"
+[[object]]
+kind = "box"
+box = [2550, 2032, 2610, 5850]
+top = -3560
+bottom = -3500
+material = "wood"
+[[object]]
+kind = "box"
+box = [2250, 2700, 2900, 3500]
+top = -3500
+bottom = -2200
+material = "paper"
+[[object]]
+kind = "box"
+box = [2250, 4300, 2900, 5000]
+top = -3500
+bottom = -2000
+material = "soot"
+[[object]]
+kind = "box"
+box = [2250, 5100, 2900, 5600]
+top = -3500
+bottom = -2300
+material = "paper"
+
+[[object]]          # open bookshelf against the west wall, shelves facing east
+kind = "bookcase"
+box = [3042, 9300, 3650, 10700]
+top = -3300
+front = "east"
 [[object]]          # dresser on the north wall
 kind = "box"
 box = [4230, 12654, 7146, 13212]
@@ -83,7 +137,8 @@ material = "wood"
 omit = ["bottom", "north"]
 [[object]]
 kind = "rug"
-box = [4600, 3400, 7800, 5800]
+box = [3800, 2700, 6400, 5100]
+border = 120
 
 [[painting]]
 wall = "north"
@@ -95,7 +150,12 @@ span = [6100, 6700]
 y = [-2500, -2000]
 
 [[light]]
-at = [4200, -2000, 2500]
-color = [1.0, 0.92, 0.75]
+at = [7600, -1900, 3050]
+color = [1.0, 0.86, 0.60]
 strength = 0.55
 reach = 4500
+[[light]]           # ceiling light over the bed end
+at = [5600, -4200, 10000]
+color = [1.0, 0.94, 0.80]
+strength = 0.35
+reach = 6000

@@ -217,9 +217,9 @@ def door(mesh, x0, x1, z, top, material, face, frame_depth=110, floor=0, frame="
     """Door panel recessed into a wall running along X; `face` is the room side."""
     inner = z + face * 70
     if face > 0:
-        mesh.rect((x1, floor, inner), (-1, 0, 0), (0, -1, 0), x1 - x0, -top, material)
+        mesh.rect((x1, floor, inner), (-1, 0, 0), (0, -1, 0), x1 - x0, floor - top, material)
     else:
-        mesh.rect((x0, floor, inner), (1, 0, 0), (0, -1, 0), x1 - x0, -top, material)
+        mesh.rect((x0, floor, inner), (1, 0, 0), (0, -1, 0), x1 - x0, floor - top, material)
     za, zb = (z, z + frame_depth) if face > 0 else (z - frame_depth, z)
     for xa in (x0 - 90, x1):
         mesh.box((xa, top - 110, za), (xa + 90, floor, zb), frame, omit=("bottom",))

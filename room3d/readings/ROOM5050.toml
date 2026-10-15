@@ -1,103 +1,217 @@
-# Lab B3 O passage: blue concrete corridors in a loop, with the stair up
-# at the north-west, strip lights, pipes, hazard stripes and several doors.
+# Lab B3 passage: blue-grey concrete corridors in a loop round a solid core.
+# The south corridor has a dark braced duct hung under its ceiling, a jutting
+# block whose south face carries the EXIT double door, and a double door in
+# the east wall at its end. The east leg (hazard stripes along its walls, a
+# pipe cluster overhead) ends at a double door north; the north passage runs
+# west to a double door in the west wall, beside the foot of the stair that
+# climbs north in the north-west. Doors cast from the views; ducts and pipes
+# are plain boxes.
 room = "ROOM5050"
 title = "Lab B3 passage"
 seed = 5050
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5000
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 120
+trim = "concrete.trim"
 cell = 900
 
 [materials]
-concrete = { color = [0.40, 0.48, 0.52], stains = 0.5 }
-"concrete.floor" = { color = [0.30, 0.36, 0.38], stains = 0.4 }
-"concrete.ceiling" = { color = [0.24, 0.28, 0.30], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
+concrete = { color = [0.38, 0.46, 0.52], stains = 0.7, panels = 1, tile = [3200, 4000] }
+"concrete.trim" = { color = [0.22, 0.26, 0.28], stains = 0.2 }
+"concrete.floor" = { color = [0.25, 0.29, 0.32], stains = 0.7 }
+"concrete.ceiling" = { color = [0.16, 0.18, 0.20], stains = 0.3 }
+"double_door.lab" = [0.36, 0.28, 0.20]
+iron = [0.12, 0.13, 0.14]
+steel = [0.62, 0.64, 0.66]
+grating = { color = [0.50, 0.54, 0.56], tile = [700, 700] }
+"stripes.hazard" = { color = [0.10, 0.10, 0.09], stripe = [0.70, 0.58, 0.12], count = 14 }
+velvet = [0.55, 0.08, 0.06]
 
 [lighting]
 ambient = [0.13, 0.15, 0.17]
 
-[[zone]]            # south corridor
-box = [2328, 2034, 23112, 7632]
+[[zone]]            # south corridor, west part
+box = [2328, 1800, 13536, 7632]
+floor_along = "x"
+[[zone]]            # south corridor, east part (south of the jutting block)
+box = [13536, 1800, 23400, 4374]
 floor_along = "x"
 [[zone]]            # west leg
-box = [2328, 7632, 5796, 20250]
+box = [2328, 7632, 6100, 17262]
 [[zone]]            # east leg
-box = [20574, 7632, 23112, 21672]
+box = [20574, 4374, 23400, 17262]
 [[zone]]            # north passage
-box = [6390, 17262, 20052, 20250]
+box = [2328, 17262, 23400, 20250]
 floor_along = "x"
-[[zone]]            # north-west landing
+[[zone]]            # north-east end
+box = [20052, 20250, 23400, 21672]
+[[zone]]            # stair bay, north-west
 box = [2328, 20250, 5004, 28242]
+ceiling = -7000
 
-[[door]]
-wall = "south"
-span = [15700, 18500]
-top = -3600
-material = "double_door.lab"
-frame = "steel"
-[[door]]
+[[door]]            # double door in the east wall at the end of the south corridor
 wall = "east"
-span = [21300, 23500]
-top = -3400
-material = "door.lab"
-frame = "steel"
-[[door]]
+span = [2300, 4300]
+top = -3300
+material = "double_door.lab"
+frame = "iron"
+[[door]]            # EXIT double door on the jutting block's south face
+wall = "north"
+line = 4374
+span = [15600, 17800]
+top = -3300
+material = "double_door.lab"
+frame = "iron"
+[[object]]          # green EXIT sign over it
+kind = "box"
+box = [16200, 4300, 17200, 4374]
+top = -3900
+bottom = -3550
+material = "statue"
+[[door]]            # double door at the north end of the east leg
+wall = "north"
+line = 21672
+span = [20800, 22700]
+top = -3300
+material = "double_door.lab"
+frame = "iron"
+[[door]]            # double door in the west wall at the end of the north passage
 wall = "west"
-span = [16100, 19500]
-top = -3600
+span = [17700, 19800]
+top = -3300
 material = "double_door.lab"
-frame = "steel"
-[[door]]
-wall = "east"
-span = [2200, 4500]
-top = -3400
-material = "door.lab"
-frame = "steel"
+frame = "iron"
 
-[[stair]]
+[[stair]]           # stair climbing north out of the north-west bay
 x = [2328, 5004]
-z = [20250, 24462]
+z = [23184, 28242]
 direction = "north"
-top = -3000
-steps = 10
+top = -4800
+steps = 14
 tread_material = "steel"
 under = false
 rails = []
+[[object]]
+kind = "rail"
+from = [4950, 20400]
+to = [4950, 23184]
+height = 1000
+spacing = 900
+material = "steel"
+newels = [false, false]
 
-[[column]]          # pillar in the south corridor
+[[column]]          # round pillar at the core's south-east corner (collision circle 10)
 at = [20160, 7758]
-top = -4200
+top = -5000
 radius = 756
 material = "concrete"
-square = true
+
+[[object]]          # braced duct hung under the south corridor ceiling
+kind = "box"
+box = [9800, 1800, 14400, 7632]
+top = -5000
+bottom = -4000
+material = "iron"
+[[object]]          # pipe cluster over the east leg
+kind = "box"
+box = [20574, 8500, 23400, 12500]
+top = -5000
+bottom = -4300
+material = "iron"
+[[object]]
+kind = "box"
+box = [21300, 8500, 21500, 12500]
+top = -4300
+bottom = -4150
+material = "velvet"
+[[object]]          # pipes along the west wall of the south corridor end
+kind = "box"
+box = [2328, 2600, 2500, 7000]
+top = -3500
+bottom = -3350
+material = "steel"
+[[object]]          # vents low on the west wall
+kind = "box"
+box = [2328, 12800, 2400, 13900]
+top = -900
+bottom = -250
+material = "grating"
+[[object]]
+kind = "box"
+box = [2328, 5600, 2400, 6600]
+top = -900
+bottom = -250
+material = "grating"
+
+[[object]]          # hazard stripes along the east leg and north passage walls
+kind = "box"
+box = [20574, 4374, 20600, 17262]
+top = -380
+material = "stripes.hazard"
+[[object]]
+kind = "box"
+box = [23374, 4374, 23400, 17262]
+top = -380
+material = "stripes.hazard"
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [5004, 20052]
+y = [-380, 0]
+material = "stripes.hazard"
+rail = false
+
+[[object]]
+kind = "strip"
+at = [6000, 4700]
+[[object]]
+kind = "strip"
+at = [18000, 3100]
+[[object]]
+kind = "strip"
+at = [4200, 12000]
+[[object]]
+kind = "strip"
+at = [22000, 14500]
+[[object]]
+kind = "strip"
+at = [12000, 18700]
+[[object]]
+kind = "strip"
+at = [3600, 21500]
 
 [[light]]
-at = [12000, -3800, 4800]
+at = [7000, -4400, 4800]
+color = [0.90, 0.96, 1.0]
+strength = 0.5
+reach = 7000
+[[light]]
+at = [18000, -4400, 3100]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 6000
+[[light]]
+at = [4200, -4400, 12500]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [22000, -4400, 14000]
+color = [0.90, 0.96, 1.0]
+strength = 0.45
+reach = 7000
+[[light]]
+at = [12000, -4400, 18700]
 color = [0.90, 0.96, 1.0]
 strength = 0.45
 reach = 8000
 [[light]]
-at = [4000, -3800, 14000]
+at = [3600, -4400, 21500]
 color = [0.90, 0.96, 1.0]
-strength = 0.45
-reach = 8000
-[[light]]
-at = [21800, -3800, 14000]
-color = [0.90, 0.96, 1.0]
-strength = 0.45
-reach = 8000
-[[light]]
-at = [13000, -3800, 18700]
-color = [0.90, 0.96, 1.0]
-strength = 0.45
-reach = 8000
+strength = 0.4
+reach = 6000

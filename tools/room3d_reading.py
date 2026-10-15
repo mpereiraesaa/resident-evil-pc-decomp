@@ -940,7 +940,7 @@ class Builder:
                 self.auto_hides += [(c, group) for c in behind]
             self.mesh.set_group(group)
             if side in ("south", "north"):
-                door(self.mesh, a, b, line, top, material, +1 if side == "south" else -1, frame_depth=d.get("frame_depth", 110), floor=self.floor, frame=frame)
+                door(self.mesh, a, b, line, top, material, +1 if side == "south" else -1, frame_depth=d.get("frame_depth", 110), floor=d.get("bottom", self.floor), frame=frame)
             else:
                 self._door_on_x_wall(side, line, a, b, top, material, frame, d.get("bottom", self.floor))
             self.mesh.set_group(None)
@@ -1751,8 +1751,65 @@ def survey_report(rdt, originals=None):
         print(f"originals and grids written to {originals}")
 
 
+# Vertical keys per section, for readings that inherit another reading
+# shifted up or down (a 2F room looking into a two-storey 1F hall).
+_Y_KEYS = {
+    "shell": ("floor", "ceiling"), "zone": ("ceiling", "depth"), "door": ("top", "bottom"),
+    "window": ("sill",), "chandelier": ("y", "ceiling"), "arcade": ("spring", "top"),
+    "column": ("top", "base"), "slab": ("top",), "stair": ("top", "base"), "beam": ("top",),
+    "lamp_post": ("top",),
+    "object": ("top", "bottom", "base", "y", "mantel", "seat_y", "back", "back_top",
+               "headboard", "canopy", "pedestal_top"),
+    "painting": ("y",),
+}
+_Y_AT_INDEX = {"sconce": 0, "wall_lamp": 0, "light": 1}
+
+
+def _shift_y(entry, keys, dy):
+    for key in keys:
+        value = entry.get(key)
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            entry[key] = value + dy
+        elif isinstance(value, list) and all(isinstance(v, (int, float)) for v in value):
+            entry[key] = [v + dy for v in value]
+
+
+def load_reading(path):
+    """Parse a reading; `base = { reading = "ROOMxxxx", y = dy }` inherits that
+    reading moved down by dy (its hides and backdrops are dropped), then this
+    reading's sections override (tables) or extend (lists) it."""
+    path = Path(path)
+    reading = tomllib.loads(path.read_text())
+    base_spec = reading.pop("base", None)
+    if not base_spec:
+        return reading
+    base = load_reading(path.with_name(f"{base_spec['reading']}.toml"))
+    dy = base_spec.get("y", 0)
+    for key in ("hide", "backdrop", "room", "title", "seed"):
+        base.pop(key, None)
+    for section, value in base.items():
+        if isinstance(value, dict) and section in _Y_KEYS:
+            _shift_y(value, _Y_KEYS[section], dy)
+        elif isinstance(value, list):
+            for entry in value:
+                if section in _Y_KEYS:
+                    _shift_y(entry, _Y_KEYS[section], dy)
+                if section in _Y_AT_INDEX and isinstance(entry.get("at"), list):
+                    entry["at"] = list(entry["at"])
+                    entry["at"][_Y_AT_INDEX[section]] += dy
+    merged = base
+    for section, value in reading.items():
+        if isinstance(value, dict) and isinstance(merged.get(section), dict):
+            merged[section] = {**merged[section], **value}
+        elif isinstance(value, list) and isinstance(merged.get(section), list):
+            merged[section] = merged[section] + value
+        else:
+            merged[section] = value
+    return merged
+
+
 def build_reading(path, rdt, out, originals=None):
-    reading = tomllib.loads(Path(path).read_text())
+    reading = load_reading(path)
     builder = Builder(reading, rdt)
     mesh = builder.build()
     out.mkdir(parents=True, exist_ok=True)

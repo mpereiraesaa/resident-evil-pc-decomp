@@ -1,159 +1,33 @@
-# Main hall 2F: the galleries around the hall's void and the top of the
-# central stair. Same finishes as ROOM1060; the hall floor is 6000 below.
+# Main hall 2F: the galleries around the two-storey main hall. The RDT shares
+# ROOM1060's frame (identical footprint, stair and gallery edges, the 1F floor
+# 6000 below this room's floor), so this reading inherits the 1F hall reading
+# moved down a storey: the cameras up here look over the balustrades into the
+# real hall, its arcades, rugs and stair, instead of a walled shaft. Only the
+# gallery-level doors are added here.
 room = "ROOM2030"
 title = "Main hall 2F"
 seed = 2030
+base = { reading = "ROOM1060", y = 6000 }
 
-[shell]
-floor = 0
-ceiling = -14000
-floor_material = "carpet"
-wall_material = "plaster"
-ceiling_material = "coffer"
-dado = 2400
-dado_material = "panel"
-chair_rail = true
-skirting = 240
-cell = 1800
-
-[materials]
-plaster = [0.70, 0.60, 0.46]
-marble = [0.80, 0.78, 0.75]
-stone = [0.70, 0.66, 0.58]
-panel = [0.26, 0.17, 0.10]
-wood = [0.30, 0.20, 0.13]
-carpet = [0.50, 0.12, 0.10]
-runner = [0.48, 0.11, 0.09]
-coffer = [0.22, 0.16, 0.10]
-door = [0.28, 0.19, 0.11]
-
-[lighting]
-ambient = [0.15, 0.125, 0.10]
-
-[[zone]]            # west gallery
-box = [2074, 2502, 4014, 26910]
-[[zone]]            # east gallery
-box = [30510, 2502, 32202, 26910]
-[[zone]]            # north gallery west of the well
-box = [4014, 14472, 14166, 26910]
-[[zone]]            # north gallery east of the well
-box = [19924, 14472, 30510, 26910]
-[[zone]]            # landing behind the stair top
-box = [14166, 23130, 19924, 26910]
-floor_along = "x"
-[[zone]]            # the void over the hall
-box = [4014, 2502, 30510, 14472]
-open_floor = true
-depth = 6000
-[[zone]]            # the stair well
-box = [14166, 14472, 19924, 23130]
-open_floor = true
-depth = 6000
-
-[[slab]]            # hall floor seen through the void
-box = [4014, 2502, 30510, 14472]
-top = 6000
-thickness = 200
-top_material = "marble"
-bottom_material = "marble"
-
-[[stair]]
-x = [15228, 18864]
-z = [16326, 23130]
-direction = "north"
-base = 6000
-top = 0
-steps = 20
-tread_material = "stone"
-runner = [15850, 18250]
-under = false
-rails = []
-[[object]]
-kind = "rail"
-from = [4100, 14560]
-to = [14100, 14560]
-[[object]]
-kind = "rail"
-from = [19990, 14560]
-to = [30420, 14560]
-[[object]]
-kind = "rail"
-from = [3920, 2600]
-to = [3920, 14400]
-newels = [true, false]
-[[object]]
-kind = "rail"
-from = [30600, 2600]
-to = [30600, 14400]
-newels = [true, false]
-[[object]]
-kind = "rail"
-from = [14100, 14560]
-to = [14100, 23000]
-newels = [false, true]
-[[object]]
-kind = "rail"
-from = [19990, 14560]
-to = [19990, 23000]
-newels = [false, true]
-
+# Gallery-level doors (door zones of ROOM2030.RDT)
 [[door]]
 wall = "east"
 span = [7000, 9000]
+bottom = 0
 top = -3300
 material = "door"
 [[door]]
 wall = "east"
 span = [19000, 22000]
+bottom = 0
 top = -3300
 material = "door"
 [[door]]
 wall = "west"
 span = [15000, 18800]
+bottom = 0
 top = -3300
 material = "door"
 
-[[window]]
-wall = "north"
-kind = "arch"
-at = 17098
-half = 1200
-sill = -1800
-height = 4200
-strength = 0.30
-reach = 9000
-
-[[sconce]]
-wall = "west"
-at = [-2800, 8300]
-strength = 0.30
-reach = 8000
-[[sconce]]
-wall = "west"
-at = [-2800, 17300]
-strength = 0.30
-reach = 8000
-[[sconce]]
-wall = "east"
-at = [-2800, 8300]
-strength = 0.30
-reach = 8000
-[[sconce]]
-wall = "east"
-at = [-2800, 17300]
-strength = 0.30
-reach = 8000
-[[sconce]]
-wall = "south"
-at = [-3000, 9000]
-strength = 0.30
-reach = 8000
-[[sconce]]
-wall = "south"
-at = [-3000, 25200]
-strength = 0.30
-reach = 8000
-[[light]]
-at = [17098, 3000, 8000]
-strength = 0.3
-reach = 12000
+[materials]         # the upper walls read paler cream than the hall below
+plaster = { color = [0.86, 0.80, 0.64], stains = 0.1 }

@@ -1,13 +1,20 @@
 # Return-visit copy of ROOM2100.toml: stage 7 shares its collision and cameras exactly.
-# Attic: a large dark loft of bare boards, square posts, barrels and crates,
-# a stair at the north end. Zones from ROOM2100.RDT walls and masses.
+# Attic: a large dark loft of weathered horizontal planks, square posts,
+# barrels and crates. The south-west corner is boxed in: the door sits on the
+# east face of that box (camera 0) with a low shelf of jars against its north
+# face. At the north end a stairwell drops through the floor (blocks 18/19):
+# brick shaft walls with wooden treads going down north, fenced on the south
+# by a low plank parapet (block 10). Zones from the RDT walls; door, shelf,
+# barrels, chest and crates placed by floor picking in cameras 0-6. The
+# sloping roof rafters are not modelled; the stairwell depth is a guess.
 room = "ROOM7100"
 title = "Attic (return)"
 seed = 2160
 
 [shell]
 floor = 0
-ceiling = -5200
+ceiling = -6000
+auto_ceiling = false   # camera 4 looks down from above the roof line; its ceiling is hidden instead
 floor_material = "planks"
 wall_material = "planks.wall"
 ceiling_material = "planks.ceiling"
@@ -16,47 +23,112 @@ trim = "wood"
 cell = 900
 
 [materials]
-planks = [0.30, 0.19, 0.12]
-"planks.wall" = { color = [0.40, 0.30, 0.24], count = 10 }
-"planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 12 }
-wood = [0.28, 0.16, 0.10]
-crate = [0.50, 0.36, 0.20]
-door = [0.30, 0.18, 0.10]
+planks = { color = [0.26, 0.20, 0.16], count = 10 }
+"planks.wall" = { color = [0.36, 0.29, 0.25], count = 8 }
+"planks.ceiling" = { color = [0.22, 0.15, 0.10], count = 12 }
+wood = [0.36, 0.17, 0.10]
+"wood.tread" = [0.40, 0.30, 0.22]
+crate = [0.62, 0.46, 0.26]
+door = [0.34, 0.22, 0.14]
+brick = { color = [0.46, 0.24, 0.16], rows = 10, per_row = 4 }
+"plaster.dark" = [0.06, 0.05, 0.04]
+books = [0.30, 0.42, 0.50]
 
 [lighting]
-ambient = [0.26, 0.20, 0.16]
+ambient = [0.24, 0.20, 0.17]
 
-[[zone]]            # south part
-box = [2412, 2178, 13698, 14670]
-[[zone]]            # north part
-box = [5202, 14670, 13698, 25758]
+[[zone]]            # south strip east of the boxed-in south-west corner
+box = [5004, 2178, 13698, 4950]
+[[zone]]            # main loft
+box = [2412, 4950, 13698, 14670]
+[[zone]]            # north part, south of the stairwell
+box = [5202, 14670, 13698, 19926]
+[[zone]]            # north-east bay beside the stairwell
+box = [9198, 19926, 13698, 25758]
+[[zone]]            # stairwell through the floor
+box = [5202, 19926, 9198, 25758]
+open_floor = true
+depth = 3200
+shaft_material = "brick"
 
-[[door]]
+[[door]]            # on the east face of the boxed-in corner
 wall = "west"
-span = [5000, 7000]
-top = -3300
+line = 5004
+span = [2350, 3700]
+top = -3500
 material = "door"
+
+[[stair]]           # treads going down north into the stairwell
+x = [5202, 9198]
+z = [19926, 25758]
+direction = "south"
+top = 0
+base = 3200
+steps = 9
+tread_material = "wood.tread"
+under = false
+rails = []
+[[slab]]            # landing at the foot of the stairwell
+box = [5202, 25000, 9198, 25758]
+top = 3200
+thickness = 100
+top_material = "brick"
 
 [[column]]
 at = [9594, 9666]
-top = -5200
-radius = 220
+top = -6000
+radius = 260
 material = "wood"
 square = true
 [[column]]
 at = [5031, 9621]
-top = -5200
-radius = 220
+top = -6000
+radius = 260
 material = "wood"
 square = true
 [[column]]
 at = [9630, 18378]
-top = -5200
-radius = 220
+top = -6000
+radius = 260
+material = "wood"
+square = true
+[[column]]          # corner post of the boxed-in corner
+at = [5004, 4950]
+top = -6000
+radius = 260
 material = "wood"
 square = true
 
+[[object]]          # low shelf of jars on the north face of the corner box (block 6)
+kind = "bookcase"
+box = [2600, 4950, 4446, 5650]
+top = -2100
+front = "north"
+[[object]]          # parapet along the south side of the stairwell (block 10)
+kind = "box"
+box = [5202, 19400, 9198, 19926]
+top = -1300
+material = "planks.wall"
+omit = ["bottom"]
+[[object]]          # parapet down the east side of the stairwell (block 11)
+kind = "box"
+box = [9198, 19926, 9600, 23300]
+top = -1000
+material = "planks.wall"
+omit = ["bottom"]
+[[object]]          # dark chest with its lid (block 5)
+kind = "box"
+box = [9684, 9900, 11412, 11790]
+top = -1200
+material = "plaster.dark"
+omit = ["bottom"]
 [[object]]
+kind = "box"
+box = [9684, 9900, 11412, 10100]
+top = -1900
+bottom = -1200
+material = "wood"
+[[object]]          # crates in the south-east corner (blocks 4, 8)
 kind = "box"
 box = [12114, 2178, 13698, 3546]
 top = -1100
@@ -68,64 +140,66 @@ box = [12798, 3546, 13698, 4644]
 top = -900
 material = "crate"
 omit = ["bottom"]
-[[object]]
-kind = "box"
-box = [2412, 3456, 4446, 5652]
-top = -1000
+[[object]]          # barrel on the south-east crates
+kind = "cylinder"
+at = [12700, 2800]
+radius = 420
+top = -2200
+bottom = -1100
+material = "wood"
+segments = 12
+hoops = [-2050, -1300]
+[[object]]          # two barrels in the west corner (block 7)
+kind = "cylinder"
+at = [3100, 14200]
+radius = 450
+top = -1300
 material = "crate"
-omit = ["bottom"]
+segments = 12
+hoops = [-1150, -400]
 [[object]]
 kind = "cylinder"
-at = [10500, 10800]
-radius = 500
-top = -1200
-material = "wood"
+at = [4150, 14250]
+radius = 450
+top = -1300
+material = "crate"
 segments = 12
-hoops = [-1050, -400]
-[[object]]
-kind = "cylinder"
-at = [2900, 14800]
-radius = 500
-top = -1200
-material = "wood"
-segments = 12
-hoops = [-1050, -400]
-[[object]]
+hoops = [-1150, -400]
+[[object]]          # big crate on the east side (block 9)
 kind = "box"
 box = [12474, 16290, 13698, 20340]
-top = -1000
+top = -1500
 material = "crate"
 omit = ["bottom"]
-[[object]]
-kind = "box"
-box = [12816, 23436, 13698, 25758]
-top = -2400
-material = "wood"
-omit = ["bottom"]
-[[object]]
-kind = "box"
-box = [8280, 18900, 9378, 21078]
-top = -900
+[[object]]          # two barrels in the north-east corner (block 12)
+kind = "cylinder"
+at = [13150, 24000]
+radius = 450
+top = -1300
 material = "crate"
-omit = ["bottom"]
-
-[[stair]]
-x = [4734, 9198]
-z = [19116, 25758]
-direction = "north"
-top = -2400
-steps = 8
-tread_material = "wood"
-under = false
-rails = []
+segments = 12
+hoops = [-1150, -400]
+[[object]]
+kind = "cylinder"
+at = [13150, 25150]
+radius = 450
+top = -1300
+material = "crate"
+segments = 12
+hoops = [-1150, -400]
 
 [[light]]
-at = [7000, -3800, 6000]
-color = [1.0, 0.90, 0.70]
-strength = 0.4
-reach = 6000
+at = [8000, -3800, 6000]
+color = [1.0, 0.90, 0.75]
+strength = 0.55
+reach = 7000
 [[light]]
-at = [9000, -3800, 20000]
-color = [1.0, 0.90, 0.70]
+at = [10500, -3800, 18000]
+color = [1.0, 0.90, 0.75]
+strength = 0.5
+reach = 7000
+[[light]]
+at = [7200, -1500, 22800]
+color = [1.0, 0.85, 0.70]
 strength = 0.35
-reach = 6000
+reach = 5000

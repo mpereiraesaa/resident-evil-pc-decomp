@@ -1,121 +1,231 @@
 # Return-visit copy of ROOM10C0.toml: stage 6 shares its collision and cameras exactly.
-# Mansion 1F greenhouse: ivy-stained plaster, stone tiles, a square pond with
-# a fountain, a planter bed, benches and a glass case on the west wall. From
-# ROOM10C0.RDT blocks 3,4,5,8 and the door record.
+# Mansion 1F greenhouse: ivy-hung ochre plaster, grimy stone tiles, a square
+# pond with a brass fountain, a planter bed of tall plants, slatted benches on
+# the south wall. The whole west wall is the dark aquarium window with the
+# shield hanging behind the glass. The north-east corner (block 0) juts out;
+# the door is on its west face, the two garden windows are on the east wall,
+# and the water pump (block 5) stands in the corner between them.
+# From ROOM10C0.RDT blocks 0-8, cameras 0-4 and the mask records; the plants,
+# hoses and the bust inside the aquarium are left out.
 room = "ROOM60C0"
 title = "Greenhouse (return)"
 seed = 1200
 
 [shell]
 floor = 0
-ceiling = -4400
+ceiling = -4800
 floor_material = "stone.tiles"
 wall_material = "plaster"
-ceiling_material = "plaster.dark"
+ceiling_material = "plaster.ceiling"
 skirting = 0
 trim = "stone"
 cell = 700
 
 [materials]
-plaster = { color = [0.56, 0.46, 0.28], stains = 0.7 }
-"plaster.dark" = [0.22, 0.24, 0.18]
-"stone.tiles" = { color = [0.56, 0.56, 0.48], tile = [1600, 1600] }
-stone = [0.50, 0.50, 0.42]
-wood = [0.34, 0.22, 0.12]
-door = [0.56, 0.60, 0.62]
-glass = [0.35, 0.45, 0.45]
+plaster = { color = [0.46, 0.37, 0.22], stains = 0.7, ivy = 1.0, tile = [2600, 4800] }
+"plaster.ceiling" = { color = [0.26, 0.27, 0.18], ivy = 1.0, tile = [1500, 1500] }
+"stone.tiles" = { color = [0.36, 0.37, 0.28], tile = [1400, 1400] }
+stone = [0.30, 0.34, 0.22]
+"stone.curb" = [0.24, 0.30, 0.18]
+wood = [0.40, 0.25, 0.14]
+"wood.frame" = [0.30, 0.17, 0.10]
+door = [0.50, 0.54, 0.58]
+glass = [0.42, 0.50, 0.30]
+glass_dark = [0.10, 0.11, 0.14]
+water = [0.16, 0.28, 0.24]
+brass = [0.72, 0.60, 0.22]
+iron = [0.12, 0.12, 0.10]
+steel = [0.30, 0.34, 0.36]
+copper = [0.56, 0.30, 0.18]
 "panel.shield" = [0.16, 0.30, 0.26]
+leaves = { color = [0.16, 0.30, 0.12] }
 
 [lighting]
-ambient = [0.20, 0.18, 0.12]
+ambient = [0.24, 0.22, 0.14]
+
+[[light]]
+at = [10000, -3800, 5000]
+color = [1.0, 0.86, 0.60]
+strength = 0.40
+reach = 9000
+[[light]]
+at = [16000, -3000, 4000]
+color = [1.0, 0.92, 0.70]
+strength = 0.35
+reach = 6000
 
 [[zone]]            # main floor
 box = [5634, 1978, 14670, 8766]
 floor_along = "x"
-[[zone]]            # east bay up to the north block
+[[zone]]            # east bay south of the jutting north-east block
 box = [14670, 1978, 17496, 6534]
 
-[[door]]
-wall = "north"
-span = [14700, 16000]
+[[door]]            # on the west face of the jutting block
+wall = "east"
+line = 14670
+span = [7150, 8550]
 top = -3300
 material = "door"
-[[door]]
-wall = "east"
-span = [2600, 4200]
-top = -3300
-material = "door"
-[[object]]          # glazed door beside it
-kind = "wall_band"
-wall = "east"
-span = [4600, 6200]
-y = [-3300, -300]
-material = "mirror"
-rail = false
 
-[[object]]          # pond
+[[window]]          # two garden windows on the east wall
+kind = "rect"
+wall = "east"
+at = 5100
+half = 800
+sill = -1000
+height = 2400
+panes = 2
+transom = -2600
+frame = "wood.frame"
+glass = "leaves"
+[[window]]
+kind = "rect"
+wall = "east"
+at = 2950
+half = 800
+sill = -1000
+height = 2400
+panes = 2
+transom = -2600
+frame = "wood.frame"
+glass = "leaves"
+
+# The aquarium window fills the west wall: a dark wood frame round dark glass.
+[[object]]
+kind = "wall_band"
+wall = "west"
+group = "aquarium"
+span = [2150, 8600]
+y = [-4500, -150]
+material = "wood.frame"
+rail = false
+inset = 15
+[[object]]
+kind = "wall_band"
+wall = "west"
+group = "aquarium"
+span = [2500, 8250]
+y = [-4250, -400]
+material = "glass_dark"
+rail = false
+inset = 30
+[[object]]          # the shield hanging behind the glass
+kind = "wall_band"
+wall = "west"
+group = "aquarium"
+span = [5050, 5950]
+y = [-3700, -2350]
+material = "panel.shield"
+rail = false
+inset = 45
+
+[[object]]          # pond: low ivy-stone curb round the water
 kind = "box"
-box = [6912, 3960, 8964, 6912]
-top = -500
-material = "stone"
+box = [6912, 3960, 8964, 4260]
+top = -600
+material = "stone.curb"
 omit = ["bottom"]
 [[object]]
 kind = "box"
-box = [7100, 4150, 8780, 6720]
+box = [6912, 6612, 8964, 6912]
+top = -600
+material = "stone.curb"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [6912, 4260, 7212, 6612]
+top = -600
+material = "stone.curb"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [8664, 4260, 8964, 6612]
+top = -600
+material = "stone.curb"
+omit = ["bottom"]
+[[object]]
+kind = "box"
+box = [7212, 4260, 8664, 6612]
 top = -420
-bottom = -400
 material = "water"
-[[object]]          # fountain
-kind = "urn"
+omit = ["bottom"]
+
+# Brass fountain: ringed base, slim stem, wide shallow basin.
+[[object]]
+kind = "cylinder"
 at = [7938, 5436]
-radius = 620
-top = -1900
-pedestal = 500
-pedestal_top = -1100
+radius = 420
+top = -1200
+bottom = -420
 material = "brass"
-[[object]]          # planter bed
+hoops = [-800, -1150]
+hoop_material = "iron"
+[[object]]
+kind = "cylinder"
+at = [7938, 5436]
+radius = 160
+top = -1850
+bottom = -1200
+material = "iron"
+[[object]]
+kind = "cylinder"
+at = [7938, 5436]
+radius = 280
+top = -1600
+bottom = -1450
+material = "brass"
+[[object]]
+kind = "cylinder"
+at = [7938, 5436]
+radius = 330
+top = -1950
+bottom = -1850
+material = "brass"
+[[object]]
+kind = "cylinder"
+at = [7938, 5436]
+radius = 650
+top = -2150
+bottom = -1950
+material = "brass"
+segments = 18
+
+[[object]]          # planter bed with the tall plants
 kind = "box"
 box = [10782, 3168, 12222, 6966]
 top = -520
-material = "stone"
+material = "stone.curb"
 omit = ["bottom"]
-[[object]]          # bench along the south wall
+[[object]]
 kind = "box"
+box = [10900, 3300, 12100, 6830]
+top = -900
+bottom = -520
+material = "leaves"
+omit = ["bottom"]
+
+[[object]]          # slatted bench along the south wall
+kind = "table"
 box = [4806, 1978, 9792, 2682]
 top = -520
+thickness = 100
 material = "wood"
-omit = ["bottom", "south"]
-[[object]]          # glass case in the east bay
+
+[[object]]          # water pump in the corner by the windows: orange body
 kind = "box"
-box = [14958, 5364, 17496, 6534]
-top = -2400
-material = "wood"
-omit = ["bottom", "east", "north"]
+box = [15470, 5400, 16050, 6100]
+top = -700
+material = "copper"
+omit = ["bottom"]
+[[object]]          # its steel tank
+kind = "box"
+box = [16060, 5660, 16850, 6200]
+top = -800
+material = "steel"
+omit = ["bottom"]
 
-[[object]]          # the big dark window onto the aquarium, with its shield
-kind = "wall_band"
-wall = "north"
-span = [6800, 11800]
-y = [-3800, -800]
-material = "glass_dark"
-rail = false
-[[object]]
-kind = "wall_band"
-wall = "north"
-span = [8700, 9500]
-y = [-3200, -2200]
-material = "panel.shield"
-rail = false
-
-[[sconce]]
-wall = "north"
-at = [-3300, 8000]
-candles = 1
-strength = 0.42
-reach = 4200
-[[sconce]]
-wall = "south"
-at = [-3300, 12500]
-candles = 1
-strength = 0.36
-reach = 4000
+# Camera 1 looks in from behind the aquarium glass (it stands west of the
+# west wall), so the window frame and glass are dropped for it.
+[[hide]]
+camera = 1
+groups = ["aquarium"]

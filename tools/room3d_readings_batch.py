@@ -26,6 +26,7 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from room3d_handmade import edge_agreement  # noqa: E402
+from room3d_projection import project_room  # noqa: E402
 from room3d_reading import build_reading, survey_report  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -48,6 +49,9 @@ def install(built_dir, name, mods_root, stage):
     (dst / f"{name}.mtl").write_text("\n".join(mtl_lines) + "\n")
     (dst / f"{name}.obj").write_text(obj)
     shutil.copy2(built_dir / f"{name}.cameras", dst / f"{name}.cameras")
+    projection = built_dir / f"{name}.proj"
+    if projection.exists():
+        shutil.copy2(projection, dst / f"{name}.proj")
     # The trailing digit is the character variant (0 Chris, 1 Jill). Every
     # ROOMxxx1.RDT has the same cameras and collision as its ROOMxxx0, so the
     # Jill name gets the same mesh; its mtllib still names the shared library.
@@ -57,6 +61,8 @@ def install(built_dir, name, mods_root, stage):
             stale.unlink()
         (dst / f"{jill}.obj").write_text(obj)
         shutil.copy2(built_dir / f"{name}.cameras", dst / f"{jill}.cameras")
+        if projection.exists():
+            shutil.copy2(projection, dst / f"{jill}.proj")
 
 
 def runtime_check(exe, assets, mesh, out, stage, room, checker):
@@ -84,6 +90,8 @@ def main():
     parser.add_argument("--siblings", type=Path, help="room3d_rooms.py catalog JSON to copy identical layouts")
     parser.add_argument("--merge", action="store_true",
                         help="keep entries already in report.json for rooms not rebuilt this run")
+    parser.add_argument("--no-projection", action="store_true",
+                        help="keep the builder's mesh; no background projection sidecar")
     args = parser.parse_args()
     usa = args.assets / "USA" if (args.assets / "USA").is_dir() else args.assets
     args.out.mkdir(parents=True, exist_ok=True)
@@ -142,6 +150,10 @@ def main():
                 if coverage < 0.6 or (mean < 12 and index not in shaded):
                     weak.append((index, round(coverage, 2), round(mean, 1)))
             entry["weak_cameras"] = weak
+            if not args.no_projection:
+                # The original backgrounds painted onto the mesh (see
+                # room3d_projection.py); an HD pack's images replace them in game.
+                project_room(mesh, rdt, evidence)
             entry["bytes"] = mesh.stat().st_size
             install(built, stem.lower(), args.out / "mods", stage)
             for sibling in siblings.get(stem, []):

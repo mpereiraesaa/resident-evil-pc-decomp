@@ -1271,3 +1271,38 @@ walls, beds and blocks); painted lettering and stencils are not modelled;
 furniture is assembled from primitives; one steep camera in the closet study
 (ROOM7190 camera 1) disagrees with its own background, which was rendered
 from a slightly different viewpoint than the stored camera.
+
+### Original backgrounds projected onto the mesh
+
+The procedural materials only approximate the rooms; the fixed-camera
+backgrounds are the real art, and HD or AI-upscaled packs replace exactly
+those images. `tools/room3d_projection.py` paints the mesh with them:
+
+- Every face is clipped against the frames of the room's cameras (backdrop
+  and `shade` cameras excluded) and halved where something occludes part of
+  it, down to pieces of about 150 units. Each piece takes the camera that
+  sees all of it, unhidden in that camera's depth map, at the highest texel
+  density; pieces seen nearly edge-on (|cos| < 0.2) by every camera, and
+  surfaces no camera saw (most ceilings, the walls behind the cameras), keep
+  the procedural material.
+- The split mesh replaces `roomSRRV.obj`; the builder's output stays as
+  `roomSRRV.base.obj` (the split file starts with a marker line, so a rerun
+  splits the base again). `roomSRRV.proj` holds `proj1 <faces>`, one
+  character per OBJ face (`0`-`9`, `a`-`v` the camera, `-` none), and
+  `tint <material> r g b` lines: per material, the art's colour over the
+  procedural colour on its projected pieces (a brightness factor with a
+  bounded hue shift), applied to the unprojected pieces so they do not stand
+  out as a different wallpaper or floor.
+- The batch runs it after scoring each room (`--no-projection` skips it) and
+  installs the `.proj` under both character names.
+
+At runtime (`Room3D.cpp`) a room with a valid `.proj` loads every in-room
+camera's background through the normal asset resolution: the mod's
+`StageN/RCSRRC.webp` when one resolves (any installed pack, e.g. the HD
+backgrounds), otherwise the original PAK's TIM, with the same revisit-stage
+fold as `load_room_bg`. Projected triangles get UVs from where their corners
+land in that camera's 320x240 frame and white vertex colour (the lighting is
+in the image). The modern camera draws them with bilinear filtering; a fixed
+camera draws every face with its own background, mapped by screen position,
+so it shows the original image exactly, with the mesh's depth behind the
+actors. `RE1_ROOM3D_PROJECTION=0` ignores the sidecars.

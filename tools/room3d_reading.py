@@ -1310,7 +1310,14 @@ class Builder:
         mesh, floor = self.mesh, self.floor
         for o in self.reading.get("object", []):
             kind = o["kind"]
-            mesh.set_group(o.get("group"))
+            group = o.get("group")
+            if group is None and kind in ("box", "bookcase") and \
+                    o.get("bottom", floor) - o.get("top", 0) >= 2400:
+                # Tall solid blocks (lift shafts, building blocks, wardrobes)
+                # behave like walls for the modern camera: it collides with
+                # them and culls their faces from inside (Room3D "solid").
+                group = "solid"
+            mesh.set_group(group)
             if kind == "box":
                 x0, z0, x1, z1 = o["box"]
                 mesh.box((x0, o["top"], z0), (x1, o.get("bottom", floor), z1), self.use(o.get("material", "crate")), omit=tuple(o.get("omit", ("bottom",))))

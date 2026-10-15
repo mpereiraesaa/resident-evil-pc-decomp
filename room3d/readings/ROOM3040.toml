@@ -1,5 +1,5 @@
-# Guardhouse gate: a U of grey brick passages between high walls, planted
-# beds against the walls, open to the sky; the courtyard door at the east
+# Guardhouse gate: a U of narrow grey brick passages between walls that rise
+# past the top of every view, planted beds against the walls; the courtyard door at the east
 # end and the guardhouse door at the north end of the west leg.
 room = "ROOM3040"
 title = "Guardhouse gate"
@@ -7,19 +7,17 @@ seed = 3040
 
 [shell]
 floor = 0
-ceiling = -12000
+ceiling = -14000
 floor_material = "rock.flag"
-wall_material = "forest"
-dado = 7000
-dado_material = "stone.brick"
+wall_material = "brick.grey"
 ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1200
 
 [materials]
-"rock.flag" = { color = [0.28, 0.29, 0.27], tile = [2000, 2000] }
-"stone.brick" = { color = [0.667, 0.696, 0.609], tile = [1200, 1200] }
+"rock.flag" = { color = [0.36, 0.37, 0.34], tile = [2000, 2000], moss = 0.4 }
+"brick.grey" = { color = [0.36, 0.37, 0.33], rows = 6, per_row = 3, ivy = 0.15, stains = 0.5, tile = [2400, 1600] }
 stone = [0.667, 0.696, 0.638]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]

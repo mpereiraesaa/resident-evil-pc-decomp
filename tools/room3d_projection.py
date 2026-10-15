@@ -366,11 +366,157 @@ def material_tints(obj_path, split, assignment, originals, min_share=0.05, limit
     return tints
 
 
-def write_proj(path, assignment, tints=None):
+def box_axes(normal):
+    """The two world axes a surface's tiled texture runs along (the runtime
+    maps unprojected faces the same way): x/z on floors and ceilings, the
+    wall's horizontal axis and up on walls."""
+    if abs(normal[1]) >= 0.7071:
+        return np.array([1.0, 0, 0]), np.array([0, 0, 1.0])
+    if abs(normal[0]) > abs(normal[2]):
+        return np.array([0, 0, 1.0]), np.array([0, -1.0, 0])
+    return np.array([1.0, 0, 0]), np.array([0, -1.0, 0])
+
+
+def inside_polygon(points, polygon):
+    """Even-odd test of (k, 2) points against a (n, 2) polygon."""
+    x, y = points[:, 0][:, None], points[:, 1][:, None]
+    x0, y0 = polygon[:, 0][None], polygon[:, 1][None]
+    x1, y1 = np.roll(polygon[:, 0], -1)[None], np.roll(polygon[:, 1], -1)[None]
+    crosses = ((y0 > y) != (y1 > y)) & \
+        (x < x0 + (y - y0) * (x1 - x0) / np.where(y1 != y0, y1 - y0, 1e-9))
+    return crosses.sum(axis=1) % 2 == 1
+
+
+def fit_square(xyz, normal, sizes=(1600, 1200, 900, 700, 500, 350)):
+    """The largest box-axis-aligned square (side, origin, corner a, corner b
+    in room space) that lies inside the planar polygon `xyz`."""
+    a, b = box_axes(normal)
+    c = np.cross(a, b)
+    c /= np.linalg.norm(c)
+    if abs(normal @ c) < 0.3:
+        return None
+    flat = np.stack([xyz @ a, xyz @ b], axis=1)
+    offset = normal @ xyz[0]
+    area = polygon_area(flat)
+    lo, hi = flat.min(axis=0), flat.max(axis=0)
+
+    def lift(u, v):
+        point = u * a + v * b
+        return point + c * (offset - normal @ point) / (normal @ c)
+
+    for side in sizes:
+        if side * side > area:
+            continue
+        inset = side * 0.02
+        for u in np.arange(lo[0] + inset, hi[0] - side - inset + 1e-6, side / 4):
+            for v in np.arange(lo[1] + inset, hi[1] - side - inset + 1e-6, side / 4):
+                square = np.array([[u, v], [u + side, v], [u + side, v + side], [u, v + side],
+                                   [u + side / 2, v + side / 2]])
+                if inside_polygon(square, flat).all():
+                    return side, lift(u, v), lift(u + side, v), lift(u, v + side)
+    return None
+
+
+def material_patches(split, assignment, originals, min_unseen=0.05, candidates=40):
+    """Per material with both projected and unprojected pieces, a square of
+    the original art (where a camera sees that material most squarely and
+    sharply) for the runtime to cut out of the camera's background - HD when
+    a pack is installed - and tile over the pieces no camera saw, plus the
+    colour factor that brings the tiled art to the brightness of the
+    projected pieces."""
+    images = {}
+    for k in split["views"]:
+        path = Path(originals) / f"camera{k}-original.png"
+        if path.exists():
+            images[k] = np.asarray(Image.open(path).convert("RGB"), dtype=float) / 255.0
+    by_material, unseen, total = {}, {}, {}
+    for index, (name, area, camera) in enumerate(zip(split["materials"], split["areas"], assignment)):
+        if name is None:
+            continue
+        total[name] = total.get(name, 0.0) + area
+        if camera < 0:
+            unseen[name] = unseen.get(name, 0.0) + area
+        elif camera in images:
+            by_material.setdefault(name, []).append(index)
+    patches = {}
+    grid = (np.arange(16) + 0.5) / 16
+    for name, indices in by_material.items():
+        if unseen.get(name, 0.0) < min_unseen * total[name]:
+            continue
+        pieces = split["pieces"]
+        art = sum(_mean_colour(pieces[i], split["views"][assignment[i]], images[assignment[i]])
+                  * split["areas"][i] for i in indices)
+        lighting = sum(pieces[i][:, 3:6].mean(axis=0) * split["areas"][i] for i in indices)
+        weight = sum(split["areas"][i] for i in indices)
+        art, lighting = art / weight, lighting / weight
+        indices = sorted(indices, key=lambda i: -split["areas"][i])[:candidates]
+        best, best_score = None, 0.0
+        for i in indices:
+            view = split["views"][assignment[i]]
+            xyz = pieces[i][:, :3]
+            normal = face_normal(xyz)
+            ray = xyz.mean(axis=0) - view.origin
+            facing = abs(ray @ normal) / max(np.linalg.norm(ray), 1e-9)
+            if facing < 0.5:
+                continue
+            fit = fit_square(xyz, normal)
+            if fit is None:
+                continue
+            side, origin, corner_a, corner_b = fit
+            screen = view.screen(view.view(np.array([origin, corner_a, corner_b])))
+            texels = min(np.linalg.norm(screen[1] - screen[0]), np.linalg.norm(screen[2] - screen[0]))
+            # Sample the square: its mean colour, and how much its 4x4 block
+            # means vary (a lamp, a painting or a hard shadow inside it would
+            # repeat across every tile).
+            uu, vv = np.meshgrid(grid, grid)
+            points = origin + uu.reshape(-1, 1) * (corner_a - origin) + \
+                vv.reshape(-1, 1) * (corner_b - origin)
+            image = images[assignment[i]]
+            sx, sy = _pixels(view, points, image)
+            colours = image[sy, sx].reshape(16, 16, 3)
+            blocks = colours.reshape(4, 4, 4, 4, 3).mean(axis=(1, 3)).mean(axis=2)
+            variation = blocks.std() / max(blocks.mean(), 1e-3)
+            score = texels * np.sqrt(side / 1000.0) / (1.0 + 4.0 * variation)
+            if score > best_score:
+                best_score = score
+                best = (assignment[i], side, origin, corner_a, corner_b, colours.reshape(-1, 3).mean(axis=0))
+        if best is None:
+            continue
+        camera, side, origin, corner_a, corner_b, exemplar = best
+        # The exemplar carries the room's real lighting and the procedural
+        # vertex colours multiply it again, so this factor is typically 2-5.
+        ratio = art / np.maximum(exemplar * lighting, 1e-6)
+        brightness = float(np.clip(ratio.mean(), 0.3, 8.0))
+        tint = brightness * np.clip(ratio / max(ratio.mean(), 1e-6), 0.85, 1.15)
+        patches[name] = dict(camera=int(camera), side=float(side), origin=origin, a=corner_a,
+                             b=corner_b, tint=tint)
+    return patches
+
+
+def _pixels(view, points, image):
+    screen = view.screen(view.view(points))
+    sx = np.clip((screen[:, 0] * image.shape[1] / 320).astype(int), 0, image.shape[1] - 1)
+    sy = np.clip((screen[:, 1] * image.shape[0] / 240).astype(int), 0, image.shape[0] - 1)
+    return sx, sy
+
+
+def _mean_colour(piece, view, image):
+    xyz = piece[:, :3]
+    centre = xyz.mean(axis=0)
+    sx, sy = _pixels(view, np.vstack([centre[None], centre + (xyz - centre) * 0.7]), image)
+    return image[sy, sx].mean(axis=0)
+
+
+def write_proj(path, assignment, tints=None, patches=None):
     text = "".join(DIGITS[c] if 0 <= c < len(DIGITS) else "-" for c in assignment)
     lines = [f"proj1 {len(assignment)}", text]
     for name, tint in sorted((tints or {}).items()):
         lines.append("tint %s %.3f %.3f %.3f" % (name, *tint))
+    for name, patch in sorted((patches or {}).items()):
+        lines.append("patch %s %d %.0f %s %s %s %.3f %.3f %.3f" % (
+            name, patch["camera"], patch["side"],
+            *(" ".join("%.1f" % x for x in patch[key]) for key in ("origin", "a", "b")),
+            *patch["tint"]))
     Path(path).write_text("\n".join(lines) + "\n")
 
 
@@ -455,7 +601,7 @@ def tint_mtl(path, tints):
 
 def split_and_assign(obj, rdt, originals=None, skip=(), min_density=0.000015):
     """Split the builder's mesh (kept as roomSRRV.base.obj, so a rerun starts
-    from it again) and assign cameras. Returns (OBJ lines, assignment, tints)."""
+    from it again) and assign cameras. Returns (OBJ lines, assignment, tints, patches)."""
     obj = Path(obj)
     base = obj.with_suffix(".base.obj")
     if not obj.read_text().startswith(SPLIT_MARKER):
@@ -467,21 +613,22 @@ def split_and_assign(obj, rdt, originals=None, skip=(), min_density=0.000015):
     try:
         records, assignment, coverage, split = assign(work, rdt, skip, min_density)
         tints = material_tints(work, split, assignment, originals) if originals else {}
+        patches = material_patches(split, assignment, originals) if originals else {}
     finally:
         for suffix in (".obj", ".cameras"):
             work.with_suffix(suffix).unlink(missing_ok=True)
     covered = int((assignment >= 0).sum())
     print(f"{obj.name}: {covered}/{len(assignment)} pieces projected, "
           f"{coverage:.0%} of the surface", flush=True)
-    return records, assignment, tints
+    return records, assignment, tints, patches
 
 
 def project_room(obj, rdt, originals=None, skip=(), min_density=0.000015):
     """Replace the built mesh with its split version and write the .proj."""
     obj = Path(obj)
-    records, assignment, tints = split_and_assign(obj, rdt, originals, skip, min_density)
+    records, assignment, tints, patches = split_and_assign(obj, rdt, originals, skip, min_density)
     obj.write_text("\n".join([SPLIT_MARKER] + records) + "\n")
-    write_proj(obj.with_suffix(".proj"), assignment, tints)
+    write_proj(obj.with_suffix(".proj"), assignment, tints, patches)
     return obj.with_suffix(".proj")
 
 
@@ -502,7 +649,7 @@ def main():
     if args.command == "assign":
         project_room(args.obj, args.rdt, args.originals, args.skip, args.min_density)
         return
-    records, assignment, tints = split_and_assign(args.obj, args.rdt, args.originals,
+    records, assignment, tints, _ = split_and_assign(args.obj, args.rdt, args.originals,
                                                   args.skip, args.min_density)
     out = args.out / args.obj.name
     args.out.mkdir(parents=True, exist_ok=True)

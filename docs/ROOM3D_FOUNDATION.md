@@ -1306,3 +1306,20 @@ in the image). The modern camera draws them with bilinear filtering; a fixed
 camera draws every face with its own background, mapped by screen position,
 so it shows the original image exactly, with the mesh's depth behind the
 actors. `RE1_ROOM3D_PROJECTION=0` ignores the sidecars.
+
+The faces no camera saw would otherwise keep the generic procedural
+textures next to sharp original (or HD) art. For every material that has
+both, the tool also picks an exemplar: the largest square (350 to 1600
+units, aligned to the wall's horizontal axis and up, or x/z on floors) inside
+a projected piece that a camera sees squarely and sharply, penalising
+squares whose block means vary (a lamp or painting inside would repeat).
+`patch <material> <camera> <side> <origin> <a> <b> <r g b>` records it. At
+load the game resamples that square from the camera's background as loaded
+(so from the HD image when a pack provides one), divides out its
+large-scale lighting, mirrors it into a seamless 2x2 tile and box-maps it
+over the material's unprojected faces with the bilinear wrapping sampler
+(`MARNI_SAMPLER_LINEAR_WRAP`); the colour factor scales it so that, under
+the faces' procedural vertex lighting, it matches the projected pieces.
+Unseen walls then show the room's own wallpaper or plaster rather than a
+procedural stand-in. Materials no camera shows at all (most ceilings) still
+use the procedural texture and tint.

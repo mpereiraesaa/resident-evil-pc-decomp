@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from room3d_projection import (View, assign_polygon, clip_polygon, polygon_area,  # noqa: E402
-                               write_proj)
+from room3d_projection import (View, assign_polygon, box_axes, clip_polygon,  # noqa: E402
+                               fit_square, polygon_area, write_proj)
 
 SETTINGS = dict(min_density=0.000015, depth_slack=0.03, min_facing=0.2, max_depth=6,
                 min_piece=150.0 ** 2)
@@ -93,13 +93,44 @@ class AssignTests(unittest.TestCase):
         self.assertEqual([c for _, c in pieces], [1])
 
 
+class PatchTests(unittest.TestCase):
+    def test_box_axes_follow_floors_and_wall_orientation(self):
+        a, b = box_axes(np.array([0, -1.0, 0]))
+        np.testing.assert_array_equal(a, [1, 0, 0])
+        np.testing.assert_array_equal(b, [0, 0, 1])
+        a, b = box_axes(np.array([1.0, 0, 0.2]))
+        np.testing.assert_array_equal(a, [0, 0, 1])
+        np.testing.assert_array_equal(b, [0, -1, 0])
+        a, b = box_axes(np.array([0.1, 0, -1.0]))
+        np.testing.assert_array_equal(a, [1, 0, 0])
+        np.testing.assert_array_equal(b, [0, -1, 0])
+
+    def test_fit_square_takes_the_largest_square_inside_the_face(self):
+        face = wall(0, 2000, 0, -1000)[:, :3]  # 2000 wide, 1000 tall, facing -z
+        side, origin, corner_a, corner_b = fit_square(face, np.array([0, 0, -1.0]))
+        self.assertEqual(side, 900)
+        for point in (origin, corner_a, corner_b):
+            self.assertAlmostEqual(point[2], 0.0)
+            self.assertTrue(0 <= point[0] <= 2000 and -1000 <= point[1] <= 0)
+        np.testing.assert_allclose(corner_a - origin, [900, 0, 0])
+        np.testing.assert_allclose(corner_b - origin, [0, -900, 0])
+
+    def test_fit_square_rejects_faces_smaller_than_any_size(self):
+        self.assertIsNone(fit_square(wall(0, 200, 0, -200)[:, :3], np.array([0, 0, -1.0])))
+
+
 class SidecarTests(unittest.TestCase):
     def test_proj_lists_one_character_per_face_then_tints(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'room1000.proj'
-            write_proj(path, np.array([0, -1, 10, 31]), {'wallpaper': np.array([0.5, 0.25, 1.0])})
+            patch = dict(camera=3, side=500.0, origin=np.array([1.0, 2, 3]), a=np.array([501.0, 2, 3]),
+                         b=np.array([1.0, -498, 3]), tint=np.array([2.0, 2.5, 3.0]))
+            write_proj(path, np.array([0, -1, 10, 31]), {'wallpaper': np.array([0.5, 0.25, 1.0])},
+                       {'wallpaper': patch})
             self.assertEqual(path.read_text().splitlines(),
-                             ['proj1 4', '0-av', 'tint wallpaper 0.500 0.250 1.000'])
+                             ['proj1 4', '0-av', 'tint wallpaper 0.500 0.250 1.000',
+                              'patch wallpaper 3 500 1.0 2.0 3.0 501.0 2.0 3.0 1.0 -498.0 3.0 '
+                              '2.000 2.500 3.000'])
 
 
 if __name__ == '__main__':

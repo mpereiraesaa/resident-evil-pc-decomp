@@ -1,6 +1,9 @@
 # Return-visit copy of ROOM11C0.toml: stage 6 shares its collision and cameras exactly.
-# Wardrobe closet: grimy plaster, a long cabinet of drawers and two clothes
-# racks in a narrow room; door at the west end of the north wall.
+# Wardrobe closet: grimy plaster, a long wall cabinet with shelves of folded
+# clothes under it on the north side, low dressers with clothes rails along
+# the south side; door at the west end of the north wall. The cameras hang
+# over the dressers, so the south wall stands behind them (collision block 0
+# is the dresser run, not the wall).
 room = "ROOM61C0"
 title = "Wardrobe closet (return)"
 seed = 2800
@@ -20,15 +23,14 @@ plaster = { color = [0.58, 0.58, 0.50], stains = 0.5 }
 planks = [0.26, 0.20, 0.14]
 wood = [0.26, 0.14, 0.08]
 door = [0.30, 0.18, 0.10]
-linen = [0.52, 0.48, 0.52]
+"books.clothes" = { color = [0.30, 0.16, 0.10], shelves = 3 }
+linen = [0.42, 0.36, 0.40]
 
 [lighting]
 ambient = [0.13, 0.13, 0.11]
 
-[[zone]]
-box = [1924, 3110, 4224, 5472]
-[[zone]]
-box = [4224, 3110, 12657, 4240]
+[[zone]]            # the closet; the south wall stands behind the dressers (cameras hang over them)
+box = [1924, 1700, 12657, 5472]
 floor_along = "x"
 
 [[door]]
@@ -37,40 +39,59 @@ span = [1924, 4100]
 top = -3200
 material = "door"
 
-[[object]]          # cabinet along the south wall
+[[object]]          # long wall cabinet on the north side (collision block 2), shelves of clothes under it
 kind = "box"
-box = [4600, 3110, 12657, 3650]
-top = -1700
+box = [4224, 4240, 12657, 5472]
+top = -2200
+bottom = -1200
+material = "wood"
+omit = ["north"]
+[[object]]
+kind = "bookcase"
+box = [4224, 4700, 12657, 5472]
+top = -1200
+front = "south"
+books = "books.clothes"
+[[object]]          # low dressers along the south side (block 0) with clothes rails above
+kind = "box"
+box = [4600, 1700, 12657, 3110]
+top = -900
 material = "wood"
 omit = ["bottom", "south"]
-[[object]]          # clothes racks
+[[object]]
 kind = "box"
-box = [5000, 3900, 8000, 4240]
-top = -1200
+box = [4800, 2300, 12400, 2420]
+top = -1950
+bottom = -1850
+material = "brass"
+[[object]]          # hanging clothes
+kind = "box"
+box = [5000, 2000, 7800, 2750]
+top = -1850
+bottom = -1000
 material = "linen"
-omit = ["bottom"]
 [[object]]
 kind = "box"
-box = [5000, 4000, 8000, 4040]
-top = -1700
-bottom = -1200
-material = "iron"
-[[object]]
-kind = "box"
-box = [9000, 3900, 12400, 4240]
-top = -1200
+box = [8600, 2000, 12200, 2750]
+top = -1850
+bottom = -1000
 material = "linen"
-omit = ["bottom"]
+[[object]]          # rail posts
+kind = "box"
+box = [4800, 2310, 4900, 2410]
+top = -1950
+bottom = -900
+material = "brass"
 [[object]]
 kind = "box"
-box = [9000, 4000, 12400, 4040]
-top = -1700
-bottom = -1200
-material = "iron"
+box = [12300, 2310, 12400, 2410]
+top = -1950
+bottom = -900
+material = "brass"
 
 [[chandelier]]
-at = [7000, 3700]
-y = -3400
+at = [10500, 3500]
+y = -3950
 radius = 260
 globes = 3
 globe_radius = 80

@@ -130,6 +130,22 @@ int DirectSound::GetStatus(int bank)
             XAUDIO2_VOICE_STATE state = {};
             g_BankVoices[bank]->GetState(&state);
             if (state.BuffersQueued > 0) {
+                // Port-only stall guard: event scripts wait on this status
+                // (voice lines gate cutscenes), so a voice whose playback
+                // position stops advancing - no audio device, a stalled
+                // mixer - would freeze the game. Treat 3 s without progress
+                // as finished.
+                static UINT64 lastSamples[256];
+                static DWORD lastChange[256];
+                const int slot = bank & 0xff;
+                const DWORD now = GetTickCount();
+                if (state.SamplesPlayed != lastSamples[slot] || lastChange[slot] == 0) {
+                    lastSamples[slot] = state.SamplesPlayed;
+                    lastChange[slot] = now;
+                } else if (now - lastChange[slot] > 3000) {
+                    BANK_STATUS(bank) = 0;
+                    return 0;
+                }
                 BANK_STATUS(bank) = 1;
                 return 1;
             }

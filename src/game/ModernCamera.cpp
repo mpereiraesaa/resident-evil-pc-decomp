@@ -13,32 +13,41 @@
 // frame, when the player is dead, and while a script holds the camera
 // (MSF_CAMERA_LOCK), so scripted cutscenes keep their authored shots.
 //
+// Framing follows Resident Evil 5: a nearly level camera at head height just
+// behind the right shoulder, the player standing in the left third.
+//
 // Controls: the right stick orbits (X) and tilts (Y). With tank controls
 // (keyboard / D-pad) the camera eases back behind the player while moving.
-// When a wall stands between the player and the camera, the camera keeps its
-// distance and the room renderer clips away everything nearer than that wall,
-// so the shot always reaches the player.
+// Walls pull the camera in, down to a minimum distance that keeps the player
+// framed. A wall the camera still ends up behind (right after a door) faces
+// away from it and is culled; furniture and door frames in the way are cut
+// away by the room renderer's near plane, so the shot always reaches the
+// player.
 //
 // Enabled by [Game] ModernCamera=1 or RE1_MODERN_CAMERA=1.
 #include "../Globals.h"
 #include "../DebugPrint.h"
 #include "../marni/MarniXInput.h"
 #include <cmath>
+#include <cstdio>
 #include <cstdlib>
 
 bool  Room3D_MeshAvailable(void);                                       // Room3D.cpp
-float Room3D_Raycast(const float origin[3], const float dir[3], float maxDistance); // Room3D.cpp
+float Room3D_Raycast(const float origin[3], const float dir[3], float maxDistance,
+                     int which);   // 0 all, 1 shell, 2 props                                    // Room3D.cpp
 
 bool g_bModernCamera = false;   // [Game] ModernCamera
+char g_testShotName[64] = "";   // set to request one saved frame (MarniDX.cpp)
 
 namespace {
 
 const float kPi = 3.14159265358979f;
-const float kEyeHeight = 1650.0f;      // pivot above the player's feet (room units, -Y up)
-const float kShoulder = 380.0f;        // over-the-right-shoulder offset
-const float kDistance = 2700.0f;       // boom length
+const float kEyeHeight = 2700.0f;      // pivot at eye level (RE1 doors ~3300 tall, Chris ~2900; -Y up)
+const float kShoulder = 620.0f;        // over-the-right-shoulder offset (player sits left of centre)
+const float kDistance = 2400.0f;       // boom length
 const float kWallMargin = 220.0f;
-const float kDefaultPitch = 0.20f;     // radians, positive looks down
+const float kMinDistance = 800.0f;     // tight over-the-shoulder; closer would be inside the player
+const float kDefaultPitch = 0.12f;     // radians, positive looks down (nearly level, RE5-like)
 const float kMinPitch = -0.45f;
 const float kMaxPitch = 0.95f;
 const float kYawSpeed = 3.0f / 30.0f;  // radians per tick at full stick
@@ -55,11 +64,14 @@ float s_from[3], s_to[3];
 int   s_lastStage = -1, s_lastRoom = -1;
 bool  s_justEntered = true;
 float s_wallClip = 0.0f;
+float s_lastShoulder = 0.0f;
+int   s_entryTick = 0;
 int   s_lastLoggedRoom = -1;
 
 bool Enabled(void)
 {
-    static const bool env = std::getenv("RE1_MODERN_CAMERA") != NULL;
+    static const char* value = std::getenv("RE1_MODERN_CAMERA");
+    static const bool env = value != NULL && value[0] == '1';
     return g_bModernCamera || env;
 }
 
@@ -83,6 +95,10 @@ bool Allowed(void)
                                MSF_CAMERA_LOCK | MSF_MENU_ACTIVE |
                                MSF_SCREEN_STANDALONE | MSF_PLAYER_DEAD)) != 0)
         return false;
+    // Player state 8 = the room script is driving the player (cutscenes and
+    // scripted walks, e.g. the opening in the main hall before its camera
+    // lock is set): keep the authored fixed shots.
+    if (g_playerEntity.animationId == 8) return false;
     return Room3D_MeshAvailable();
 }
 
@@ -103,6 +119,16 @@ bool ModernCamera_GetView(float from[3], float to[3])
 // actors are transformed.
 void ModernCamera_Update(void)
 {
+    static const bool trace = std::getenv("RE1_MODERN_CAMERA_TRACE") != NULL;
+    static int traceTick = 0;
+    if (trace && (++traceTick % 10) == 0)
+        dbg_printf("[modern-trace] room=%02X cam=%u anim=%u beh=%u msg=%04X lock=%d evt=%08X\n",
+                   (unsigned int)g_roomId, (unsigned int)g_roomCameraId,
+                   (unsigned int)g_playerEntity.animationId,
+                   (unsigned int)g_playerEntity.action_behavior,
+                   (unsigned int)g_message_flags,
+                   (g_main_state_flags & MSF_CAMERA_LOCK) ? 1 : 0,
+                   (unsigned int)g_main_state_flags);
     s_active = Allowed();
     if (!s_active) {
         if (s_wasActive) {
@@ -123,6 +149,7 @@ void ModernCamera_Update(void)
         s_pitch = kDefaultPitch;
         s_distance = kDistance;
         s_justEntered = true;
+        s_entryTick = 0;
         s_lastStage = g_stageId;
         s_lastRoom = g_roomId;
         dbg_printf("[modern-camera] active in stage %u room %02X\n",
@@ -150,34 +177,101 @@ void ModernCamera_Update(void)
         s_pitch += (kDefaultPitch - s_pitch) * 0.05f;
     }
 
-    // Boom along (yaw, pitch). When the room shell cuts it short, the camera
-    // keeps its distance (it may sit behind a wall) and the room renderer
-    // clips away everything nearer than that wall.
+    // Boom along (yaw, pitch).
+    const float head[3] = {
+        (float)g_playerEntity.position.x,
+        (float)g_playerEntity.position.y - kEyeHeight,
+        (float)g_playerEntity.position.z,
+    };
     const float pitch = s_pitch;
     const float cosP = cosf(pitch), sinP = sinf(pitch);
-    const float fwd[3] = { cosP * cosf(s_yaw), sinP, -cosP * sinf(s_yaw) };
+    const float viewYaw = s_yaw;
+    const float fwd[3] = { cosP * cosf(viewYaw), sinP, -cosP * sinf(viewYaw) };
     const float h = sqrtf(fwd[0] * fwd[0] + fwd[2] * fwd[2]);
     const float right[3] = { fwd[2] / h, 0.0f, -fwd[0] / h };
+    // Over-the-shoulder offset, shortened when a wall stands close to the
+    // player's right so the pivot never ends up inside or behind it.
+    // On a short boom (tight spots) the offset shrinks with it, so the player
+    // is not pushed off the left edge of the frame.
+    const float shoulderMax = kShoulder * (s_distance < kDistance ? 0.35f + 0.65f * s_distance / kDistance : 1.0f);
+    float shoulder = Room3D_Raycast(head, right, kShoulder + kWallMargin, 1) - kWallMargin;
+    if (shoulder > shoulderMax) shoulder = shoulderMax;
+    if (shoulder < 0.0f) shoulder = 0.0f;
+    s_lastShoulder = shoulder;
     const float pivot[3] = {
-        (float)g_playerEntity.position.x + right[0] * kShoulder,
-        (float)g_playerEntity.position.y - kEyeHeight,
-        (float)g_playerEntity.position.z + right[2] * kShoulder,
+        head[0] + right[0] * shoulder,
+        head[1],
+        head[2] + right[2] * shoulder,
     };
     const float back[3] = { -fwd[0], -fwd[1], -fwd[2] };
-    const float hit = Room3D_Raycast(pivot, back, kDistance);
-    if (s_justEntered) s_distance = kDistance;
-    else s_distance += (kDistance - s_distance) * 0.15f;
-    // Depth (along the view) of the blocking wall from the camera, plus a
-    // margin so the wall itself is cut too.
-    s_wallClip = hit < s_distance ? (s_distance - hit) + kWallMargin : 0.0f;
+
+    // Boom length: walls, floors and ceilings pull the camera in (tight
+    // corridors give a close over-the-shoulder view, and the camera stays
+    // inside the room so its own walls are never culled away), but never
+    // closer than kMinDistance - inside the player.
+    const float shellHit = Room3D_Raycast(pivot, back, kDistance + kWallMargin, 1);
+    float wanted = shellHit - kWallMargin;
+    if (wanted > kDistance) wanted = kDistance;
+    if (wanted < kMinDistance) wanted = kMinDistance;
+    if (wanted < s_distance || s_justEntered) s_distance = wanted;
+    else s_distance += (wanted - s_distance) * 0.12f;
+    s_justEntered = false;
+
+    const float camera[3] = {
+        pivot[0] + back[0] * s_distance,
+        pivot[1] + back[1] * s_distance,
+        pivot[2] + back[2] * s_distance,
+    };
+    // When even the shortest boom is outside the room (a door just walked
+    // through), the wall behind faces away from the camera and the room
+    // renderer culls it. Furniture and door frames between the camera and
+    // the player are cut away by the near plane instead; walls never are, so
+    // the room's sides stay whole. Probe from the shoulder pivot, the head
+    // and the chest.
+    s_wallClip = 0.0f;
+    const float targets[3][3] = {
+        { pivot[0], pivot[1], pivot[2] },
+        { head[0], head[1], head[2] },
+        { head[0], head[1] + kEyeHeight * 0.45f, head[2] },
+    };
+    for (int t = 0; t < 3; ++t) {
+        float dir[3] = { camera[0] - targets[t][0], camera[1] - targets[t][1],
+                         camera[2] - targets[t][2] };
+        const float len = sqrtf(dir[0] * dir[0] + dir[1] * dir[1] + dir[2] * dir[2]);
+        if (len < 1.0f) continue;
+        for (int i = 0; i < 3; ++i) dir[i] /= len;
+        const float hit = Room3D_Raycast(targets[t], dir, len, 2);
+        if (hit < len) {
+            // Depth of the obstruction from the camera along the view.
+            const float depth = (len - hit) * (fwd[0] * -dir[0] + fwd[1] * -dir[1] + fwd[2] * -dir[2]);
+            if (depth + kWallMargin > s_wallClip) s_wallClip = depth + kWallMargin;
+        }
+    }
+    const float hit = shellHit;
+    if (s_wallClip > s_distance - 200.0f) s_wallClip = s_distance - 200.0f;   // never past the player
+    if (s_wallClip < 0.0f) s_wallClip = 0.0f;
+
+    // Scripted visual checks (RE1_TEST_SHOT_ENTRY=1): ask the renderer for a
+    // frame on fixed ticks after each room entry, named after the room.
+    static const bool entryShots = std::getenv("RE1_TEST_SHOT_ENTRY") != NULL;
+    if (entryShots) {
+        static const int kTicks[] = { 1, 4, 10, 25, 50, 90 };
+        ++s_entryTick;
+        for (size_t k = 0; k < sizeof(kTicks) / sizeof(kTicks[0]); ++k) {
+            if (s_entryTick == kTicks[k]) {
+                snprintf(g_testShotName, sizeof(g_testShotName), "entry-s%u-r%02X-t%03d.ppm",
+                         (unsigned int)g_stageId + 1, (unsigned int)g_roomId, s_entryTick);
+            }
+        }
+    }
     s_justEntered = false;
     static int s_traceTicks = 0;
     if (s_lastLoggedRoom != (int)g_roomId) { s_traceTicks = 12; s_lastLoggedRoom = g_roomId; }
     if (s_traceTicks > 0) {
         --s_traceTicks;
-        dbg_printf("[modern-camera] tick player=(%d,%d,%d) yaw=%.2f pitch=%.2f hit=%.0f dist=%.0f clip=%.0f\n",
+        dbg_printf("[modern-camera] tick player=(%d,%d,%d) yaw=%.2f pitch=%.2f hit=%.0f dist=%.0f clip=%.0f shoulder=%.0f right=(%.2f,%.2f)\n",
                    (int)g_playerEntity.position.x, (int)g_playerEntity.position.y,
-                   (int)g_playerEntity.position.z, s_yaw, pitch, hit, s_distance, s_wallClip);
+                   (int)g_playerEntity.position.z, s_yaw, pitch, hit, s_distance, s_wallClip, s_lastShoulder, right[0], right[2]);
     }
 
     for (int i = 0; i < 3; ++i) {

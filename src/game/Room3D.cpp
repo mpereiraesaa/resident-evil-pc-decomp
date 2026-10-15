@@ -553,7 +553,7 @@ bool LoadRoomMesh()
                 // door_N, gallery, stairs, shaft... are the room's shell;
                 // furniture is ungrouped or carries its own names.
                 static const char* const kShell[] = {
-                    "wall", "floor", "ceiling", "door", "gallery", "stair", "shaft" };
+                    "wall", "floor", "ceiling", "door", "gallery", "stair", "shaft", "solid" };
                 for (size_t k = 0; k < sizeof(kShell) / sizeof(kShell[0]); ++k) {
                     const size_t n = strlen(kShell[k]);
                     if (group.size >= n && strncmp(group.data, kShell[k], n) == 0)
@@ -996,11 +996,14 @@ bool Room3D_MeshAvailable(void)
 
 // Distance along `dir` (unit) from `origin` to the nearest mesh triangle, or
 // `maxDistance` when nothing is hit first (two-sided Moller-Trumbore).
-float Room3D_Raycast(const float origin[3], const float dir[3], float maxDistance)
+// `which`: 0 = every triangle, 1 = the room shell only, 2 = props only.
+float Room3D_Raycast(const float origin[3], const float dir[3], float maxDistance,
+                     int which)
 {
     float best = maxDistance;
     for (size_t i = 0; i < s_triangles.size(); ++i) {
-        if (!s_triangles[i].shell) continue;   // props never push the camera in
+        if (which == 1 && !s_triangles[i].shell) continue;
+        if (which == 2 && s_triangles[i].shell) continue;
         const Vertex* v = s_triangles[i].v;
         const float e1[3] = { v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z };
         const float e2[3] = { v[2].x - v[0].x, v[2].y - v[0].y, v[2].z - v[0].z };

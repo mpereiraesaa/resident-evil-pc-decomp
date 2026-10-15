@@ -11,6 +11,7 @@
 // raw COM pointers moved into a single private Impl. Behaviour is unchanged
 // from the previous working build — just re-encapsulated.
 #include "MarniDX.h"
+#include "../DebugPrint.h"
 
 #include <new>
 #include <d3d11.h>
@@ -1386,8 +1387,28 @@ void MarniDX::SetPresentation(MarniPresentationMode mode, float verticalPan)
 // every Nth presented frame as shotNNNN.ppm in the working directory, up to
 // RE1_TEST_SHOT_MAX (default 40). Scripted runs cannot press PrintScreen
 // because test keys bypass the window's message loop.
+extern char g_testShotName[64];   // ModernCamera.cpp: one named frame on request
+
+static void WriteTestShotPpm(MarniDX* dx, const char* name)
+{
+    void* pixels = nullptr;
+    DWORD w = 0, h = 0;
+    if (!dx->CaptureBackbufferToRGBA(&pixels, &w, &h) || !pixels) return;
+    if (FILE* f = fopen(name, "wb")) {
+        fprintf(f, "P6\n%lu %lu\n255\n", (unsigned long)w, (unsigned long)h);
+        const BYTE* px = (const BYTE*)pixels;
+        for (DWORD i = 0; i < w * h; ++i) fwrite(px + i * 4, 1, 3, f);
+        fclose(f);
+    }
+    free(pixels);
+}
+
 static void SaveTestShot(MarniDX* dx)
 {
+    if (g_testShotName[0] != 0) {
+        WriteTestShotPpm(dx, g_testShotName);
+        g_testShotName[0] = 0;
+    }
     static const int every = std::getenv("RE1_TEST_SHOT_EVERY")
         ? std::atoi(std::getenv("RE1_TEST_SHOT_EVERY")) : 0;
     static const int maxShots = std::getenv("RE1_TEST_SHOT_MAX")
@@ -1415,6 +1436,20 @@ void MarniDX::Present()
 
     if (p->smaaEnabled) p->RenderSmaa();
     SaveTestShot(this);
+    // Opt-in (RE1_TEST_FPS=1): log presented frames per second every 2 s.
+    static const bool fpsLog = std::getenv("RE1_TEST_FPS") != nullptr;
+    if (fpsLog) {
+        static DWORD start = 0;
+        static int frames = 0;
+        const DWORD now = GetTickCount();
+        if (start == 0) start = now;
+        ++frames;
+        if (now - start >= 2000) {
+            dbg_printf("[fps] %.1f presented/s\n", frames * 1000.0 / (double)(now - start));
+            start = now;
+            frames = 0;
+        }
+    }
 
     if (p->frameInterpolation) {
         // Pose interpolation renders two complete scene passes per 30 Hz

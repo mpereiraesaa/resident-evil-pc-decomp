@@ -77,6 +77,8 @@ void RestoreRoomCamera(void) // 0x00462940
 // a negative coordinate does NOT behave as negative here. That is the original's
 // behaviour and is reproduced deliberately; do not "fix" it to a signed read.
 // ============================================================================
+bool ModernCamera_Active(void);   // ModernCamera.cpp
+
 int is_entity_in_switch_zone(VECTOR* position, void* zoneData) // 0x00462d90
 {
     CAM_SWITCH_ZONE* zone = (CAM_SWITCH_ZONE*)zoneData;
@@ -84,6 +86,14 @@ int is_entity_in_switch_zone(VECTOR* position, void* zoneData) // 0x00462d90
     // Port-only guard: the original has no NULL check, but the port calls this
     // from the options-menu entity preview, where there is no RDT zone table.
     if (zone == NULL) return 1;
+
+    // Port addition: a test against the CURRENT camera's own zone record is a
+    // visibility test ("is this inside the fixed camera's shot?") - room
+    // object models, enemy shadows and joint effects are culled with it.
+    // Under the modern follow camera there is no fixed shot, so everything
+    // in the room is in view. Camera switching passes the zones after the
+    // current record and is unaffected.
+    if (zoneData == g_CurrentRdtDataTypePtr && ModernCamera_Active()) return 1;
 
     // 0x00462d9a-0x00462da2: pivot on corner 0, zero-extended
     int x0 = (int)(unsigned short)zone->x0;

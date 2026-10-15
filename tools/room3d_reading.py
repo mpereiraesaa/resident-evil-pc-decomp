@@ -1013,8 +1013,8 @@ class Builder:
                     self._wall_box(side, line, u - 40, u + 40, top, sill, 0, 90, frame, along=along)
                 if w.get("transom"):
                     self._wall_box(side, line, -half, half, w["transom"] - 40, w["transom"] + 40, 0, 90, frame, along=along)
-            else:  # tall arched window
-                glass = self.use("glass")
+            else:  # tall arched window (glass: any material, e.g. "night" for a dark arch)
+                glass = self.use(w.get("glass", "glass"))
                 half, sill, height = w.get("half", 1200), w["sill"], w.get("height", 4200)
                 top = sill - height
                 z = line + d[2] * 50 if side in ("north", "south") else None

@@ -77,20 +77,14 @@ material = "carpet.tapestry"
 rail = false
 
 [[object]]          # potted palm in the north-west corner (circle 6)
-kind = "cylinder"
+kind = "plant"
 at = [2600, 10300]
-radius = 300
-top = -700
-material = "stone"
-segments = 10
-[[object]]
-kind = "cylinder"
-at = [2600, 10300]
-radius = 450
-top = -2300
-bottom = -700
-material = "hedge"
-segments = 7
+pot_radius = 300
+pot_height = 650
+height = 1700
+spread = 800
+clumps = 8
+pot = "stone"
 
 # Low oval coffee table: two half-round ends on circles 8 and 3 joined by
 # the middle span, on a dark plinth.

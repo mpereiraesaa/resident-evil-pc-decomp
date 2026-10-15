@@ -1,8 +1,12 @@
 # Mansion 1F vacant room: grey plaster over a black marble dado, patterned
-# brown carpet, bookshelf by the door, desk with a lamp. From ROOM1020.RDT.
+# brown carpet, bookshelf standing in the recess beside the door alcove
+# (collision block 2; cam1 stands inside it, so it is hidden there), desk
+# with a lamp against the south wall. cam3 is the drawer close-up and keeps
+# the original background. From ROOM1020.RDT.
 room = "ROOM1020"
 title = "Vacant room"
 seed = 1020
+backdrop = [3]
 
 [shell]
 floor = 0
@@ -20,7 +24,8 @@ cell = 600
 [materials]
 plaster = [0.70, 0.70, 0.66]
 "plaster.ceiling" = [0.42, 0.42, 0.40]
-"carpet.floor" = { color = [0.30, 0.22, 0.16], motif = [0.48, 0.38, 0.26], tile = [2600, 2600] }
+"carpet.floor" = { color = [0.24, 0.20, 0.16], motif = [0.32, 0.26, 0.19], tile = [2600, 2600] }
+"books.sparse" = { color = [0.22, 0.12, 0.07], shelves = 4 }
 "marble.black" = [0.18, 0.18, 0.16]
 wood = [0.26, 0.15, 0.09]
 door = [0.30, 0.18, 0.10]
@@ -39,12 +44,13 @@ span = [2500, 4200]
 top = -3300
 material = "door"
 
-[[object]]          # bookshelf beside the door
-kind = "box"
-box = [4600, 8700, 6500, 9234]
-top = -2800
-material = "wood"
-omit = ["bottom", "north"]
+[[object]]          # bookshelf beside the door, just proud of block 2
+kind = "bookcase"
+box = [4480, 9150, 7050, 9864]
+top = -2900
+front = "south"
+books = "books.sparse"
+group = "bookcase"
 [[object]]          # desk with a lamp
 kind = "table"
 box = [2142, 1764, 4032, 3078]
@@ -59,6 +65,10 @@ height = 650
 kind = "chair"
 at = [3100, 3700]
 facing = "south"
+
+[[hide]]            # cam1 stands inside the bookshelf footprint
+camera = 1
+groups = ["bookcase"]
 
 [[light]]
 at = [3300, -2100, 2300]

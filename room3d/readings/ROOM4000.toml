@@ -18,51 +18,55 @@ skirting = 160
 cell = 800
 
 [materials]
-"planks.floor" = { color = [0.56, 0.34, 0.16], count = 8 }
+"planks.floor" = { color = [0.36, 0.20, 0.10], count = 8 }
 "planks.wall" = { color = [0.30, 0.20, 0.13], count = 14 }
 "planks.dado" = { color = [0.26, 0.17, 0.11], count = 14 }
 "planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
 wood = [0.50, 0.32, 0.16]
 door = [0.34, 0.22, 0.12]
 "double_door.red" = [0.46, 0.08, 0.08]
-"door.green" = [0.26, 0.34, 0.26]
+
+"door.cream" = [0.60, 0.56, 0.44]
 
 [lighting]
 ambient = [0.169, 0.143, 0.104]
 
-[[zone]]            # north corridor from the main door
-box = [1968, 10944, 5094, 17928]
+[[zone]]            # north-south corridor from the entrance (block 8 closes its south end)
+box = [1968, 9180, 5094, 17928]
 [[zone]]            # east-west corridor
 box = [5094, 10926, 21366, 14328]
 floor_along = "x"
-[[zone]]            # leg down to the lift cabinet
+[[zone]]            # leg down to the south door
 box = [14724, 2034, 17604, 10926]
 
-[[door]]
-wall = "west"
-span = [14400, 17600]
+# Doors from the RDT's door trigger zones.
+[[door]]            # entrance, south end of the north-south corridor
+wall = "south"
+span = [2300, 4800]
 top = -3400
 material = "door"
-[[door]]
-wall = "north"
-span = [11300, 14800]
+[[door]]            # red double door at the east end
+wall = "east"
+span = [11100, 14300]
 top = -3600
 material = "double_door.red"
 frame_depth = 160
-[[door]]
+[[door]]            # north wall of the east-west corridor
 wall = "north"
-span = [1968, 5094]
-top = -3400
-material = "door.green"
-[[door]]
-wall = "east"
-span = [11100, 14300]
+line = 14328
+span = [11500, 13500]
 top = -3400
 material = "door"
-[[door]]
+[[door]]            # south wall of the east-west corridor (cream door)
 wall = "south"
-span = [14724, 17604]
-top = -3600
+line = 10926
+span = [10900, 12700]
+top = -3400
+material = "door.cream"
+[[door]]            # south end of the leg
+wall = "south"
+span = [15200, 17200]
+top = -3400
 material = "door"
 
 [[object]]          # bench in the north corridor

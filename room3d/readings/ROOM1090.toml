@@ -1,5 +1,11 @@
-# Wallpapered U-shaped corridor east of ROOM10A0. Legs from ROOM1090.RDT
-# blocks 0-7 around the central block 2. Doors from the door records.
+# Wallpapered corridor loop east of ROOM10A0: a west leg with the NW corner
+# taken by solid block 3 (a narrow gap runs north past it), a north passage,
+# an east riser between blocks 2 and 0, a south passage and an east leg
+# running south to a door. Zones are the ROOM1090.RDT collision gaps pushed
+# out ~450 to the visual walls (floor picks in cams 5/6 put the walls there).
+# Doors and paintings placed by projecting them into the views. The original
+# far walls of cams 3/4 sit higher in frame than the projection allows, so
+# the far ends of those two views stay approximate.
 room = "ROOM1090"
 title = "1F east passage"
 seed = 1090
@@ -10,7 +16,7 @@ ceiling = -5000
 floor_material = "planks"
 wall_material = "wallpaper"
 ceiling_material = "plaster"
-skirting = 240
+skirting = 300
 cell = 700
 
 [materials]
@@ -21,91 +27,102 @@ wood = [0.26, 0.16, 0.10]
 door = [0.28, 0.17, 0.10]
 
 [lighting]
-ambient = [0.12, 0.115, 0.09]
+ambient = [0.40, 0.39, 0.31]
 
-[[zone]]            # west leg
-box = [2088, 6732, 7182, 13392]
+[[zone]]            # west leg (south of block 3)
+box = [1500, 6280, 7630, 10900]
+[[zone]]            # gap north past block 3
+box = [5350, 10900, 7630, 12940]
 [[zone]]            # north passage
-box = [2088, 13392, 16224, 14850]
+box = [5350, 12940, 16674, 15300]
 floor_along = "x"
-[[zone]]            # east riser between the blocks
-box = [14760, 8339, 16224, 13392]
+[[zone]]            # east riser between blocks 2 and 0
+box = [14310, 8790, 16674, 12940]
 [[zone]]            # south passage
-box = [14760, 6732, 25290, 8339]
+box = [14310, 6280, 25740, 8790]
 floor_along = "x"
-[[zone]]            # east leg
-box = [21546, 1998, 25290, 6732]
+[[zone]]            # east leg; tall ceiling so cam1 (above the 5000 line) sees walls
+box = [21100, 1300, 25740, 6280]
+ceiling = -7900
 
-[[door]]
+[[door]]            # cam0: end of the east leg
 wall = "south"
-span = [23400, 25290]
+span = [23300, 25450]
 top = -3400
 material = "door"
-[[door]]
+[[door]]            # cam1: east wall of the south passage
 wall = "east"
-span = [6800, 8339]
+span = [6700, 8600]
 top = -3400
 material = "door"
-[[door]]
+[[door]]            # cams 6/7: block 2's west face, facing the west leg
 wall = "east"
-span = [8500, 11000]
+line = 7630
+span = [8400, 10500]
 top = -3400
 material = "door"
-[[door]]
+[[door]]            # cam6: west wall of the west leg
 wall = "west"
-span = [7300, 9800]
+span = [8000, 10400]
 top = -3400
 material = "door"
-[[door]]
-wall = "south"
-span = [17000, 18600]
+[[door]]            # cam3: block 0's south face, beside the riser
+wall = "north"
+span = [17200, 18600]
 top = -3400
 material = "door"
 
-[[painting]]
-wall = "north"
-span = [4000, 7000]
-y = [-4000, -2400]
-[[painting]]
-wall = "north"
-span = [11000, 13200]
-y = [-3900, -2500]
-[[painting]]
-wall = "east"
-span = [11600, 13000]
-y = [-3700, -2700]
-[[painting]]
+[[painting]]        # cam5/cam4: pink sunset on the west end of the north passage
+wall = "west"
+span = [11800, 14400]
+y = [-4100, -2300]
+[[painting]]        # cam2/cam0 far end: small painting on the south passage
 wall = "south"
-span = [18800, 21200]
+span = [18800, 21000]
 y = [-4000, -2600]
 
-[[sconce]]
-wall = "west"
-at = [-3500, 11500]
+[[sconce]]          # cam4: right wall near
+wall = "north"
+at = [-3800, 15600]
+candles = 1
+strength = 0.40
+reach = 3200
+[[sconce]]          # cam3/cam7 far: north passage north wall
+wall = "north"
+at = [-3800, 8500]
 candles = 1
 strength = 0.40
 reach = 3200
 [[sconce]]
 wall = "north"
-at = [-3500, 9000]
+at = [-3800, 12000]
 candles = 1
 strength = 0.40
 reach = 3200
-[[sconce]]
-wall = "east"
-at = [-3500, 10500]
-candles = 1
-strength = 0.40
-reach = 3200
-[[sconce]]
-wall = "south"
-at = [-3500, 19800]
-candles = 1
-strength = 0.40
-reach = 3200
-[[sconce]]
+[[sconce]]          # cam1: east leg east wall
 wall = "east"
 at = [-3500, 4200]
 candles = 1
 strength = 0.40
 reach = 3200
+[[sconce]]          # cam6: south passage
+wall = "south"
+at = [-3500, 17000]
+candles = 1
+strength = 0.40
+reach = 3200
+
+# The landscape on the riser's west wall (block 2's east face): painting
+# entries take their wall from the widest zone, so it is a framed canvas box.
+[[object]]
+kind = "box"
+box = [14310, 9900, 14370, 12300]
+top = -4000
+bottom = -2200
+material = "wood"
+[[object]]
+kind = "box"
+box = [14370, 10000, 14400, 12200]
+top = -3900
+bottom = -2300
+material = "painting"

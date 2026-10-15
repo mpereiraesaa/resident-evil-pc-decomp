@@ -39,7 +39,6 @@ ambient = [0.12, 0.13, 0.13]
 box = [3478, 5130, 11736, 12168]
 [[zone]]            # passage through the south doorway
 box = [7344, 3834, 8676, 5130]
-ceiling = -3400
 [[zone]]            # side alcove
 box = [4446, 1926, 8676, 3834]
 
@@ -91,30 +90,40 @@ box = [3478, 8500, 3560, 12000]
 top = -5300
 bottom = -3600
 material = "wood"
+omit = ["west"]
+group = "shelf"
 [[object]]
 kind = "box"
 box = [3478, 8400, 3900, 12100]
 top = -3700
 bottom = -3600
 material = "panel"
+omit = ["west"]
+group = "shelf"
 [[object]]
 kind = "box"
 box = [3478, 8400, 3900, 12100]
 top = -4550
 bottom = -4450
 material = "panel"
+omit = ["west"]
+group = "shelf"
 [[object]]
 kind = "box"
 box = [3478, 8400, 3900, 8500]
 top = -5300
 bottom = -3600
 material = "panel"
+omit = ["west"]
+group = "shelf"
 [[object]]
 kind = "box"
 box = [3478, 12000, 3900, 12100]
 top = -5300
 bottom = -3600
 material = "panel"
+omit = ["west"]
+group = "shelf"
 
 [[painting]]        # plates and the clock on the east wall
 wall = "east"
@@ -151,6 +160,18 @@ wall = "east"
 span = [6000, 6500]
 y = [-3900, -3100]
 
+[[hide]]            # cameras 1 and 4 stand behind the west wall: the shelf would block them
+camera = 1
+groups = ["shelf"]
+[[hide]]
+camera = 4
+groups = ["shelf"]
+
+[[light]]
+at = [6500, -4000, 2900]
+color = [0.95, 1.0, 1.0]
+strength = 0.3
+reach = 4000
 [[light]]
 at = [7400, -4400, 8500]
 color = [0.95, 1.0, 1.0]

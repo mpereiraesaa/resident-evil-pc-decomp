@@ -25,14 +25,14 @@ cell = 800
 concrete = { color = [0.40, 0.39, 0.36], stains = 0.7, panels = 1, tile = [3200, 4000] }
 "concrete.trim" = { color = [0.26, 0.26, 0.25], stains = 0.2 }
 "concrete.floor" = { color = [0.34, 0.33, 0.30], stains = 0.6 }
-"concrete.ceiling" = { color = [0.22, 0.22, 0.21], stains = 0.3 }
+"concrete.ceiling" = { color = [0.34, 0.33, 0.31], stains = 0.3 }
 "door.lab" = [0.46, 0.45, 0.42]
 "double_door.lab" = [0.44, 0.44, 0.42]
 steel = [0.70, 0.72, 0.74]
-iron = [0.20, 0.21, 0.22]
+iron = [0.27, 0.28, 0.29]
 wood = [0.52, 0.52, 0.48]
-grating = { color = [0.30, 0.31, 0.32], tile = [500, 500] }
-"grating.stair" = { color = [0.30, 0.31, 0.32], tile = [400, 400] }
+grating = { color = [0.34, 0.35, 0.36], tile = [1400, 1400] }
+"grating.stair" = { color = [0.44, 0.45, 0.46], tile = [1000, 1000] }
 
 [lighting]
 ambient = [0.13, 0.13, 0.12]
@@ -40,30 +40,33 @@ ambient = [0.13, 0.13, 0.12]
 [[zone]]            # landing along the south wall
 box = [14778, 2070, 30834, 6750]
 floor_along = "x"
-[[zone]]            # head of the stair
-box = [18198, 6750, 20304, 9432]
-floor_material = "grating.stair"
 [[zone]]            # walkway west of the stair rail
 box = [14778, 6750, 18198, 15858]
 [[zone]]            # corridor west (desk at its west end)
 box = [1400, 15858, 18198, 17964]
 floor_along = "x"
 [[zone]]            # stairwell
-box = [18198, 9432, 20304, 17964]
+box = [18198, 6750, 20304, 17964]
 open_floor = true
-depth = 4000
+depth = 3000
 shaft_material = "concrete"
 
 [[stair]]           # steel stair dropping north into the well
 x = [18198, 20304]
-z = [9432, 17964]
+z = [6800, 15900]
 direction = "south"
-base = 4000
+base = 3000
 top = 0
 steps = 16
-tread_material = "grating.stair"
+tread_material = "iron"
 under = false
 rails = []
+[[slab]]            # landing at the foot of the stair
+box = [18198, 15900, 20304, 17964]
+top = 3000
+thickness = 200
+top_material = "grating.stair"
+bottom_material = "concrete.ceiling"
 
 [[object]]          # rail along the head of the stair (south edge)
 kind = "rail"
@@ -72,7 +75,7 @@ to = [20304, 6800]
 height = 1000
 spacing = 2100
 material = "steel"
-newels = [true, true]
+newels = [false, false]
 [[object]]          # rail between the walkway and the stair (collision block 1)
 kind = "rail"
 from = [18150, 6800]
@@ -80,6 +83,15 @@ to = [18150, 15800]
 height = 1000
 spacing = 1500
 material = "steel"
+newels = [false, false]
+[[object]]          # rail on the east side of the stair head
+kind = "rail"
+from = [20250, 6800]
+to = [20250, 9500]
+height = 1000
+spacing = 1350
+material = "steel"
+newels = [false, false]
 [[object]]          # low curb under the walkway rail
 kind = "box"
 box = [17900, 6750, 18198, 16560]
@@ -155,6 +167,11 @@ at = [21000, -4200, 4000]
 color = [0.95, 0.98, 1.0]
 strength = 0.5
 reach = 7000
+[[light]]
+at = [19300, -3000, 10000]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 5000
 [[light]]
 at = [16400, -4200, 12000]
 color = [0.95, 0.98, 1.0]

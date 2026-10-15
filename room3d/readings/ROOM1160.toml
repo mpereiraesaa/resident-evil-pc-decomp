@@ -1,6 +1,12 @@
-# Mansion living room: green damask over a green marble dado, patterned
-# carpet, fireplace on the north wall with a tapestry over it, oval desk, sofa,
-# pedestal lamp, chandelier. From ROOM1160.RDT circles and blocks.
+# Mansion living room: green damask over a green marble dado, dark boards
+# with a big brown patterned rug, the dark chimney piece on the west wall
+# (block 2) with the red tapestry hung over it, a potted palm in the
+# north-west corner (circle 6), the door at the west end of the north wall,
+# the low oval coffee table (three overlapping circles 3/7/8), the long
+# grey-purple sofa backed to the south (block 4), a pedestal lamp stand in
+# the south-east corner (circle 5), paintings on the east and north walls
+# and the white-globed chandelier. Rug extent and the table height are
+# read off camera 0 and are approximate.
 room = "ROOM1160"
 title = "Living room"
 seed = 2200
@@ -8,7 +14,7 @@ seed = 2200
 [shell]
 floor = 0
 ceiling = -4800
-floor_material = "carpet.floor"
+floor_material = "planks"
 wall_material = "wallpaper"
 ceiling_material = "plaster.dark"
 dado = 1300
@@ -19,14 +25,21 @@ trim = "marble_dark"
 cell = 700
 
 [materials]
-wallpaper = { color = [0.58, 0.62, 0.50], motif = [0.44, 0.50, 0.38], repeats = 5 }
-"marble.green" = [0.30, 0.42, 0.30]
-"carpet.floor" = { color = [0.34, 0.20, 0.12], motif = [0.56, 0.40, 0.22], tile = [3200, 3200] }
+wallpaper = { color = [0.50, 0.52, 0.44], motif = [0.34, 0.37, 0.29], repeats = 5 }
+"marble.green" = [0.26, 0.34, 0.24]
+planks = [0.24, 0.12, 0.08]
+"carpet.rug" = { color = [0.34, 0.18, 0.08], motif = [0.58, 0.40, 0.20], tile = [2400, 2400] }
+"carpet.tapestry" = { color = [0.40, 0.08, 0.08], motif = [0.80, 0.74, 0.62], tile = [3300, 1750] }
 "plaster.dark" = [0.30, 0.28, 0.24]
-wood = [0.28, 0.16, 0.09]
-velvet = [0.42, 0.08, 0.08]
-stone = [0.36, 0.34, 0.30]
-door = [0.30, 0.18, 0.10]
+"border.rug" = { color = [0.24, 0.10, 0.05], motif = [0.50, 0.32, 0.16] }
+wood = [0.20, 0.13, 0.10]
+"wood.table" = [0.17, 0.12, 0.10]
+"wood.panel" = [0.50, 0.30, 0.17]
+hedge = [0.26, 0.42, 0.18]
+linen = [0.46, 0.43, 0.50]
+marble_dark = [0.14, 0.13, 0.12]
+stone = [0.62, 0.62, 0.58]
+door = [0.30, 0.14, 0.08]
 
 [lighting]
 ambient = [0.13, 0.14, 0.11]
@@ -36,80 +49,123 @@ box = [1840, 1877, 10713, 10827]
 
 [[door]]
 wall = "north"
-span = [3800, 6300]
-top = -3300
+span = [3800, 5800]
+top = -3500
 material = "door"
 
 [[object]]
+kind = "rug"
+box = [2900, 3400, 9300, 10300]
+material = "carpet.rug"
+border = 250
+border_material = "border.rug"
+
+[[object]]          # dark chimney piece on the west wall (block 2)
 kind = "fireplace"
-wall = "north"
-span = [1840, 3400]
-depth = 500
-mantel = -1500
-opening = [900, 900]
-[[object]]
+wall = "west"
+span = [5119, 7616]
+depth = 1150
+mantel = -2000
+opening = [1000, 1050]
+material = "marble_dark"
+[[object]]          # red tapestry with its cream pattern above it
 kind = "wall_band"
-wall = "north"
-span = [1900, 3300]
-y = [-3300, -1700]
-material = "velvet"
+wall = "west"
+span = [4750, 7950]
+y = [-4050, -2300]
+material = "carpet.tapestry"
 rail = false
-[[object]]          # oval desk from the three circles
-kind = "table"
-box = [5000, 6050, 8600, 8300]
-top = -1500
-thickness = 120
+
+[[object]]          # potted palm in the north-west corner (circle 6)
+kind = "cylinder"
+at = [2600, 10300]
+radius = 300
+top = -700
+material = "stone"
+segments = 10
 [[object]]
+kind = "cylinder"
+at = [2600, 10300]
+radius = 450
+top = -2300
+bottom = -700
+material = "hedge"
+segments = 7
+
+# Low oval coffee table: two half-round ends on circles 8 and 3 joined by
+# the middle span, on a dark plinth.
+[[object]]
+kind = "box"
+box = [5500, 6500, 8000, 7860]
+top = -480
+material = "wood"
+[[object]]
+kind = "cylinder"
+at = [6120, 7182]
+radius = 1120
+top = -600
+bottom = -480
+material = "wood.table"
+segments = 18
+[[object]]
+kind = "cylinder"
+at = [7441, 7182]
+radius = 1120
+top = -600
+bottom = -480
+material = "wood.table"
+segments = 18
+[[object]]
+kind = "box"
+box = [6120, 6062, 7441, 8302]
+top = -600
+bottom = -480
+material = "wood.table"
+
+[[object]]          # long sofa backed to the south (block 4)
 kind = "sofa"
 box = [4545, 3664, 8448, 5179]
 back = "south"
 material = "linen"
-[[object]]          # cabinet on the west wall
-kind = "box"
-box = [1840, 5119, 3177, 7616]
-top = -1500
-material = "wood"
-omit = ["bottom", "west"]
-[[object]]          # pedestal lamp in the south-east corner
+back_top = -1150
+[[object]]          # lamp stand in the south-east corner (circle 5)
 kind = "cylinder"
-at = [10100, 2500]
-radius = 260
-top = -1300
+at = [10350, 2400]
+radius = 180
+top = -1100
 material = "stone"
 segments = 10
 [[object]]
 kind = "lamp"
-at = [10100, 2500]
-base = -1300
+at = [10350, 2400]
+base = -1100
 height = 550
-[[object]]          # plant by the fireplace
-kind = "cylinder"
-at = [3900, 9900]
-radius = 300
-top = -900
-material = "stone"
-segments = 10
 
-[[painting]]
+[[painting]]        # brown panel in its frame, east wall (camera 2 close-up)
 wall = "east"
-span = [5500, 7500]
-y = [-3500, -2300]
+span = [5150, 7300]
+y = [-3750, -2650]
+material = "wood.panel"
+[[painting]]        # two small pictures near the north-east corner
+wall = "north"
+span = [7850, 8400]
+y = [-4100, -3500]
 [[painting]]
-wall = "west"
-span = [8000, 9000]
-y = [-3400, -2700]
+wall = "north"
+span = [8700, 9600]
+y = [-3950, -2750]
 
 [[chandelier]]
 at = [6300, 6300]
-y = -3600
-radius = 420
-globes = 4
-globe_radius = 120
+y = -4000
+radius = 520
+globes = 5
+globe_radius = 180
 ceiling = -4800
 strength = 0.30
 reach = 5500
 [[light]]
-at = [10100, -1700, 2500]
+at = [10350, -1500, 2400]
 color = [1.0, 0.92, 0.75]
 strength = 0.3
 reach = 4000

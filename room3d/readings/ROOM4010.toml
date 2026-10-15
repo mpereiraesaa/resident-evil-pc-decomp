@@ -18,7 +18,7 @@ skirting = 160
 cell = 700
 
 [materials]
-"planks.floor" = { color = [0.50, 0.32, 0.16], count = 8 }
+"planks.floor" = { color = [0.34, 0.20, 0.10], count = 8 }
 "planks.wall" = { color = [0.30, 0.20, 0.13], count = 14 }
 "planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
 wood = [0.40, 0.26, 0.13]

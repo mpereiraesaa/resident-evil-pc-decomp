@@ -1,6 +1,7 @@
-# Drug storehouse: a small plank room with a shelf unit of bottles along the
-# west wall, a double sink on a steel frame south, a cabinet north-east and
-# the door on the east wall.
+# Drug storehouse: a small plank room with tall shelves of jars and bottles
+# along the north wall, a smaller shelf unit and a little table on the west
+# side, a white double sink on a steel frame against the south wall and the
+# door on the east wall. Placed from projected collision and floor picks.
 room = "ROOM4090"
 title = "Drug storehouse"
 seed = 4090
@@ -21,6 +22,9 @@ cell = 600
 wood = [0.44, 0.30, 0.15]
 door = [0.36, 0.24, 0.12]
 
+"books.bottles" = { color = [0.30, 0.17, 0.09], shelves = 4 }
+paper = [0.80, 0.78, 0.72]
+
 [lighting]
 ambient = [0.156, 0.132, 0.096]
 
@@ -33,30 +37,36 @@ span = [2300, 4000]
 top = -3200
 material = "door"
 
-[[object]]          # shelves of bottles on the west wall
-kind = "box"
-box = [1098, 1098, 3024, 7308]
+# Objects placed by projecting the collision blocks into the three views.
+[[object]]          # bottle shelves along the north wall (blocks 0, 1)
+kind = "bookcase"
+box = [2736, 6000, 10044, 6786]
 top = -2600
-material = "wood"
-omit = ["bottom", "west"]
-[[object]]          # double sink
-kind = "box"
-box = [4302, 1188, 7542, 2862]
+front = "south"
+books = "books.bottles"
+[[object]]          # glazed shelf unit with bottles on the west wall (block 3)
+kind = "bookcase"
+box = [2736, 3546, 3300, 6000]
+top = -2400
+front = "east"
+books = "books.bottles"
+[[object]]          # small wooden table in front of it (block 4)
+kind = "table"
+box = [2736, 2300, 3700, 3500]
 top = -1000
-material = "steel"
-omit = ["bottom", "south"]
+thickness = 120
+[[object]]          # white enamel double sink on legs against the south wall (block 7)
+kind = "table"
+box = [4302, 1944, 7542, 2862]
+top = -1000
+thickness = 260
+material = "paper"
 [[object]]
 kind = "box"
-box = [4400, 1300, 7440, 2760]
-top = -1150
+box = [4600, 2050, 5900, 2700]
+top = -1002
 bottom = -1000
-material = "paper"
-[[object]]          # cabinet north-east
-kind = "box"
-box = [4554, 6264, 10548, 8082]
-top = -1300
-material = "wood"
-omit = ["bottom", "north"]
+material = "steel"
 
 [[light]]
 at = [6000, -3200, 4200]

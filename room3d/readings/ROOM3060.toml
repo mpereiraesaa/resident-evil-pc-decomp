@@ -1,5 +1,6 @@
 # Item chamber: a small cell of dark green mossy stone with a red iron door
-# on the east wall and the plaque; the pedestal block in the north-east.
+# on the east wall with a dark framed panel beside it and the plaque on the
+# north wall; the collision pedestal block in the north-east is not visible.
 room = "ROOM3060"
 title = "Item chamber"
 seed = 3060
@@ -37,10 +38,22 @@ frame = "stone"
 [[object]]          # plaque on the north wall
 kind = "wall_band"
 wall = "north"
-span = [4200, 5400]
-y = [-2800, -2000]
+span = [5450, 6100]
+y = [-2500, -1800]
 material = "panel.red"
 rail = false
+
+[[painting]]        # dark red-framed panel south of the door
+wall = "east"
+span = [3400, 4300]
+y = [-3150, -2150]
+material = "soot"
+frame = "door.red"
+group = "panel"
+
+[[hide]]            # camera 3 stands behind the east wall
+camera = 3
+groups = ["panel"]
 
 [[light]]
 at = [6000, -3200, 6000]

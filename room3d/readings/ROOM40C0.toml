@@ -1,14 +1,18 @@
-# Plant 42 room: a panelled hall with square relief tiles on every wall, a
-# fireplace on the north wall, a big patterned rug on dark planks, roots
-# across the ceiling, doors south-west and north-east; the 003 corridor
-# camera looks in from the east.
+# Plant 42 room: a tall hall (walls ~8600 high) lined with square relief
+# panels, a stone fireplace on the north wall (block 2) with a dark chimney
+# breast up to the ceiling, a big Persian rug on dark planks, Plant 42's
+# roots spread across the ceiling, a double door and a single door on the
+# west wall. Camera 7 is the vine-grown 003 corridor east of the hall: a
+# room of its own reached past the east wall, door 003 on its north side
+# (its vine-covered vertical boards are drawn as dark horizontal planks)
+# and a dark passage beyond. Root shapes and the vine growth are approximate.
 room = "ROOM40C0"
 title = "Plant 42 room"
 seed = 4120
 
 [shell]
 floor = 0
-ceiling = -5200
+ceiling = -8600
 floor_material = "planks.floor"
 wall_material = "coffer.wall"
 ceiling_material = "plaster.dark"
@@ -17,13 +21,18 @@ cell = 800
 
 [materials]
 "planks.floor" = { color = [0.30, 0.19, 0.11], count = 8 }
-"coffer.wall" = { color = [0.56, 0.54, 0.46], tile = [1200, 1200] }
-"plaster.dark" = [0.18, 0.14, 0.11]
+"coffer.wall" = { color = [0.33, 0.31, 0.27], tile = [1460, 1460] }
+"plaster.dark" = [0.16, 0.12, 0.10]
 wood = [0.30, 0.19, 0.10]
-door = [0.34, 0.22, 0.12]
-stone = [0.40, 0.36, 0.30]
-carpet = { color = [0.36, 0.12, 0.12], motif = [0.60, 0.42, 0.36] }
-"planks.vine" = { color = [0.22, 0.20, 0.12], count = 14 }
+door = [0.28, 0.16, 0.10]
+"double_door.dark" = [0.26, 0.15, 0.09]
+stone = [0.36, 0.35, 0.32]
+"stone.chimney" = { color = [0.20, 0.20, 0.16], tile = [1200, 1200] }
+carpet = { color = [0.34, 0.14, 0.12], motif = [0.52, 0.34, 0.28], tile = [2700, 3050] }
+border = [0.30, 0.16, 0.12]
+"iron.root" = [0.13, 0.10, 0.07]
+"planks.vine" = { color = [0.26, 0.28, 0.26], count = 10 }
+"planks.wall" = { color = [0.21, 0.20, 0.12], count = 14 }
 
 [lighting]
 ambient = [0.12, 0.11, 0.09]
@@ -31,64 +40,112 @@ ambient = [0.12, 0.11, 0.09]
 [[zone]]
 box = [1998, 1998, 19584, 19314]
 
-[[zone]]            # vine corridor east of the wall, seen from camera 7 (door 003)
-box = [21384, 6000, 24600, 20970]
+[[zone]]            # 003 corridor east of the hall, seen only by camera 7
+box = [21384, 6000, 30100, 17000]
 floor_material = "planks.vine"
-wall_material = "planks.vine"
-ceiling = -4400
+wall_material = "planks.wall"
+ceiling = -4800
+fixed_ceiling = true
+[[zone]]            # dark passage beyond door 003
+box = [25100, 17000, 30100, 24000]
+floor_material = "planks.vine"
+wall_material = "planks.wall"
+ceiling = -4800
 fixed_ceiling = true
 
-[[door]]
-wall = "east"
-span = [16400, 18400]
-top = -3300
-material = "door"
-line = 24600
-
-[[door]]
-wall = "west"
-span = [8000, 11900]
-top = -3600
-material = "door"
-frame_depth = 160
-[[door]]
+[[door]]            # door 003
 wall = "north"
-span = [9162, 12474]
-top = -3600
+line = 17000
+span = [23200, 25000]
+top = -3750
+material = "door"
+
+[[door]]            # west double door
+wall = "west"
+span = [8700, 12500]
+top = -4050
+material = "double_door.dark"
+frame_depth = 160
+[[door]]            # west single door
+wall = "west"
+span = [13300, 14900]
+top = -3200
 material = "door"
 frame_depth = 160
 
-[[object]]
+[[object]]          # fireplace (block 2) and its chimney breast
 kind = "fireplace"
 wall = "north"
-span = [5000, 7200]
-depth = 700
-mantel = -2200
-opening = [1000, 1200]
+span = [8700, 12480]
+depth = 1150
+mantel = -3100
+opening = [1400, 1900]
+[[object]]
+kind = "box"
+box = [9300, 18450, 11700, 19314]
+top = -8600
+bottom = -3250
+material = "stone.chimney"
+omit = ["north"]
 [[object]]
 kind = "rug"
-box = [4000, 5000, 17500, 16500]
+box = [6800, 4200, 17500, 16400]
+border = 250
 
-[[sconce]]
-wall = "east"
-at = [-3400, 6000]
-candles = 1
-strength = 0.4
-reach = 4000
-[[sconce]]
-wall = "east"
-at = [-3400, 14000]
-candles = 1
-strength = 0.4
-reach = 4000
-[[sconce]]
-wall = "west"
-at = [-3400, 15000]
-candles = 1
-strength = 0.4
-reach = 4000
+# Plant 42's roots across the ceiling
+[[object]]
+kind = "pipe"
+from = [10500, -8450, 18600]
+via = [[10800, -8350, 14500]]
+to = [11000, -8400, 11000]
+radius = 220
+material = "iron.root"
+[[object]]
+kind = "pipe"
+from = [11000, -8400, 11000]
+via = [[9000, -8300, 8500]]
+to = [7000, -8450, 5500]
+radius = 160
+material = "iron.root"
+[[object]]
+kind = "pipe"
+from = [11000, -8400, 11000]
+via = [[13500, -8350, 10000]]
+to = [16500, -8450, 8000]
+radius = 160
+material = "iron.root"
+[[object]]
+kind = "pipe"
+from = [10800, -8350, 14500]
+via = [[7500, -8300, 13500]]
+to = [4500, -8450, 14500]
+radius = 140
+material = "iron.root"
+[[object]]
+kind = "pipe"
+from = [10800, -8350, 14500]
+via = [[14000, -8300, 15500]]
+to = [17000, -8450, 17500]
+radius = 140
+material = "iron.root"
+
 [[light]]
-at = [10000, -4200, 10000]
-color = [0.95, 0.95, 0.85]
+at = [10000, -6500, 10000]
+color = [0.95, 0.92, 0.85]
+strength = 0.45
+reach = 12000
+[[light]]
+at = [10500, -3500, 9000]
+color = [0.95, 0.90, 0.80]
 strength = 0.3
+reach = 8000
+[[light]]           # lamp deep in the 003 passage
+at = [29500, -3500, 19000]
+color = [0.95, 0.95, 0.85]
+strength = 0.4
+reach = 9000
+[[light]]
+at = [26000, -3800, 11000]
+color = [0.95, 0.95, 0.85]
+strength = 0.45
 reach = 9000

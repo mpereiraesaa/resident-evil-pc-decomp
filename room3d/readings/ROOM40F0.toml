@@ -1,29 +1,39 @@
-# Security room: green-painted plaster over a darker lower band, a long
-# wooden table with chairs, a crate, a hanging lamp; the door on the west wall.
+# Security room: pale green cloudy plaster over a darker green lower band,
+# a long dark wooden table with three chairs, a crate in the south-east
+# corner, a heavy beam across the ceiling, a conical hanging lamp, a grey
+# door with a light over it in the north-west corner of the west wall, a
+# wall rack on the north wall, a board on the west wall and a bag hanging on
+# the east wall. The rack, board and bag are flat stand-ins.
 room = "ROOM40F0"
 title = "Security room"
 seed = 4150
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -5300
 floor_material = "stone.floor"
 wall_material = "plaster"
 ceiling_material = "plaster.dark"
-dado = 1400
+dado = 2000
 dado_material = "plaster.low"
 chair_rail = false
+cornice = 200
 skirting = 120
 cell = 700
 
 [materials]
-plaster = { color = [0.66, 0.70, 0.54], stains = 0.4 }
-"plaster.low" = [0.40, 0.46, 0.36]
-"plaster.dark" = [0.40, 0.42, 0.34]
-"stone.floor" = { color = [0.40, 0.42, 0.36], tile = [2000, 2000] }
-wood = [0.42, 0.26, 0.12]
-door = [0.56, 0.58, 0.54]
+plaster = { color = [0.62, 0.66, 0.52], stains = 0.5 }
+"plaster.low" = { color = [0.36, 0.42, 0.33], stains = 0.6 }
+"plaster.dark" = [0.36, 0.38, 0.32]
+"plaster.beam" = [0.24, 0.25, 0.22]
+"stone.floor" = { color = [0.30, 0.33, 0.29], tile = [2000, 2000] }
+wood = [0.30, 0.16, 0.09]
+"planks.table" = { color = [0.24, 0.14, 0.08], count = 6 }
+door = [0.60, 0.62, 0.58]
 crate = [0.44, 0.30, 0.16]
+"iron.shade" = [0.12, 0.13, 0.12]
+"wood.board" = [0.26, 0.13, 0.08]
+"velvet.bag" = [0.50, 0.46, 0.38]
 
 [lighting]
 ambient = [0.15, 0.16, 0.12]
@@ -33,15 +43,16 @@ box = [2004, 2052, 10170, 14022]
 
 [[door]]
 wall = "west"
-span = [11300, 13600]
-top = -3300
+span = [11500, 13600]
+top = -4000
 material = "door"
 
-[[object]]
+[[object]]          # long table (block 2)
 kind = "table"
 box = [6390, 5796, 8604, 12726]
 top = -1500
-thickness = 120
+thickness = 150
+material = "planks.table"
 [[object]]
 kind = "chair"
 at = [6408, 6894]
@@ -54,26 +65,84 @@ facing = "east"
 kind = "chair"
 at = [8433, 9387]
 facing = "west"
-[[object]]
+[[object]]          # crate (block 8)
 kind = "box"
-box = [8964, 1098, 11178, 3204]
-top = -900
+box = [8964, 2052, 10170, 3204]
+top = -1000
 material = "crate"
 omit = ["bottom", "south", "east"]
-[[object]]          # shelf on the east wall
-kind = "wall_band"
-wall = "east"
-span = [6000, 8500]
-y = [-2900, -2600]
-material = "wood"
-rail = false
+[[object]]          # ceiling beam (cameras 1 and 2)
+kind = "box"
+box = [2004, 8300, 10170, 9500]
+top = -5300
+bottom = -4750
+material = "plaster.beam"
+omit = ["top"]
 
-[[chandelier]]
-at = [6000, 8000]
-y = -3300
-radius = 200
-globes = 1
-globe_radius = 180
-ceiling = -4200
-strength = 0.45
-reach = 6000
+# hanging lamp, triangulated from all three cameras: cord, conical shade, bulb
+[[object]]
+kind = "cylinder"
+at = [6127, 8062]
+radius = 20
+top = -5300
+bottom = -4250
+material = "iron.shade"
+segments = 6
+[[object]]
+kind = "cylinder"
+at = [6127, 8062]
+radius = 160
+top = -4300
+bottom = -4130
+material = "iron.shade"
+segments = 10
+[[object]]
+kind = "cylinder"
+at = [6127, 8062]
+radius = 420
+top = -4130
+bottom = -4020
+material = "iron.shade"
+segments = 14
+[[object]]
+kind = "cylinder"
+at = [6127, 8062]
+radius = 130
+top = -4030
+bottom = -3880
+material = "glow"
+segments = 10
+[[light]]
+at = [6127, -3800, 8062]
+color = [1.0, 0.96, 0.85]
+strength = 0.55
+reach = 7000
+
+[[object]]          # light fitting over the door
+kind = "box"
+box = [2004, 12000, 2150, 13300]
+top = -4350
+bottom = -4180
+material = "glow"
+
+[[painting]]        # rack with hanging gear on the north wall
+wall = "north"
+span = [5560, 6850]
+y = [-4450, -3950]
+material = "iron.shade"
+frame = "iron"
+[[object]]          # board on the west wall
+kind = "wall_band"
+wall = "west"
+span = [5400, 7850]
+y = [-3200, -2850]
+material = "wood.board"
+rail = false
+[[object]]          # bag hanging on the east wall
+kind = "cylinder"
+at = [10000, 5950]
+radius = 170
+top = -3100
+bottom = -2300
+material = "velvet.bag"
+segments = 8

@@ -1,14 +1,17 @@
 # Branched passage: a long cave corridor north-south with a branch west and
-# a pocket east near the north end; grey mossy stone, doors at both branch
-# ends and at the south-east.
+# a pocket east near the north end; mossy yellow-green rock lit by three
+# lanterns, a red plaque in the west branch, red doors at both branch ends
+# (each on a rubble threshold: the originals show the door sills ~800 above
+# the floor) and on the east wall at the south end. The irregular rock
+# outline and the rubble are approximated by flat walls and boxes.
 room = "ROOM3080"
 title = "Branched passage"
 seed = 3080
 
 [shell]
 floor = 0
-ceiling = -4200
-floor_material = "rock.cave"
+ceiling = -5400
+floor_material = "rock.floor"
 wall_material = "rock.cave"
 ceiling_material = "rock.cave"
 skirting = 0
@@ -16,13 +19,15 @@ trim = "stone"
 cell = 800
 
 [materials]
-"rock.cave" = { color = [0.446, 0.446, 0.317], tile = [2200, 2200] }
-stone = [0.58, 0.638, 0.522]
-"door.red" = [0.48, 0.12, 0.08]
+"rock.cave" = { color = [0.42, 0.40, 0.22], tile = [2200, 2200], slabs = 60, moss = 1.0 }
+"rock.floor" = { color = [0.46, 0.44, 0.24], tile = [1800, 1800], slabs = 60, moss = 1.0 }
+stone = [0.46, 0.46, 0.30]
+"door.red" = [0.46, 0.14, 0.12]
+"panel.red" = [0.46, 0.16, 0.12]
 wood = [0.26, 0.14, 0.10]
 
 [lighting]
-ambient = [0.168, 0.189, 0.147]
+ambient = [0.08, 0.085, 0.05]
 
 [[zone]]            # main corridor
 box = [7920, 3276, 11574, 29648]
@@ -32,46 +37,111 @@ floor_along = "x"
 [[zone]]            # east pocket
 box = [11574, 24894, 13194, 29648]
 
-[[door]]
+[[door]]            # west branch end, raised sill
 wall = "west"
-span = [15900, 17400]
-top = -3300
+span = [15350, 17900]
+bottom = -800
+top = -4200
 material = "door.red"
 frame = "stone"
-[[door]]
+[[door]]            # east pocket end, raised sill
 wall = "east"
-span = [26400, 28100]
-top = -3300
+span = [26750, 28600]
+bottom = -750
+top = -3950
 material = "door.red"
 frame = "stone"
-[[door]]
+[[door]]            # south-east door
 wall = "east"
-span = [2800, 4300]
-top = -3300
+span = [2800, 4450]
+top = -3800
 material = "door.red"
 frame = "stone"
 
-[[sconce]]
-wall = "east"
-at = [-3200, 8000]
-candles = 1
-strength = 0.5
-reach = 3600
-[[sconce]]
-wall = "west"
-at = [-3200, 12000]
-candles = 1
-strength = 0.5
-reach = 3600
-[[sconce]]
-wall = "east"
-at = [-3200, 20000]
-candles = 1
-strength = 0.5
-reach = 3600
-[[sconce]]
-wall = "south"
-at = [-3200, 4500]
-candles = 1
-strength = 0.5
-reach = 3600
+# rubble thresholds under the raised doors
+[[object]]
+kind = "box"
+box = [1800, 15000, 2500, 18200]
+top = -800
+material = "rock.floor"
+omit = ["bottom", "west"]
+[[object]]
+kind = "box"
+box = [12500, 26400, 13194, 28950]
+top = -750
+material = "rock.floor"
+omit = ["bottom", "east"]
+
+[[painting]]        # red plaque on the branch's north wall
+wall = "north"
+line = 18594
+span = [5150, 6100]
+y = [-2600, -1850]
+material = "panel.red"
+frame = "iron"
+
+# lanterns (triangulated from camera pairs 4/5, 2/3 and 0/1): a glowing
+# glass body under an iron cap, each a point light
+[[object]]
+kind = "cylinder"
+at = [11400, 6200]
+radius = 150
+top = -4650
+bottom = -4200
+material = "glow"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [11400, 6200]
+radius = 190
+top = -4750
+bottom = -4650
+material = "iron"
+segments = 8
+[[light]]
+at = [11400, -4450, 6200]
+color = [1.0, 0.92, 0.65]
+strength = 1.0
+reach = 6000
+[[object]]
+kind = "cylinder"
+at = [12334, 29420]
+radius = 150
+top = -4560
+bottom = -4110
+material = "glow"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [12334, 29420]
+radius = 190
+top = -4660
+bottom = -4560
+material = "iron"
+segments = 8
+[[light]]
+at = [12334, -4360, 29420]
+color = [1.0, 0.92, 0.65]
+strength = 1.0
+reach = 6000
+[[object]]
+kind = "cylinder"
+at = [6376, 18420]
+radius = 150
+top = -4650
+bottom = -4200
+material = "glow"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [6376, 18420]
+radius = 190
+top = -4750
+bottom = -4650
+material = "iron"
+segments = 8
+[[light]]
+at = [6376, -4450, 18420]
+color = [1.0, 0.92, 0.65]
+strength = 1.0
+reach = 6000

@@ -1,13 +1,20 @@
-# Laboratory entry: the lift cage arrives in a concrete cell with X-braced
-# steel framing, the big B.1 tank pipe, mesh doors at the north and the
-# emergency exit sign on the west mesh.
+# Laboratory entry: a tall concrete hall (ceiling ~6000) where the lift
+# arrives. The lift bay is the south-east corner (grated floor plate, rust
+# cage side on its west); the big rusty XD-R B.1 tank stands against the
+# south wall with a grey cabinet and a hand truck west of it. The east wall
+# and the lift bay walls carry rust posts with X-braced steel, a pipe runs
+# along the top of the east wall; the west wall has the grey double door
+# between two orange mesh panels (emergency exit sign on the north one) under
+# a red rail. Camera 4 is a close-up of the exit sign and keeps the original
+# background. The tank lettering and the hand truck's shape are approximate.
 room = "ROOM5000"
 title = "Laboratory entry"
 seed = 5000
+backdrop = [4]
 
 [shell]
 floor = 0
-ceiling = -4800
+ceiling = -6000
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
@@ -16,80 +23,274 @@ trim = "steel"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-rust = [0.52, 0.28, 0.14]
-grating = [0.50, 0.52, 0.52]
+concrete = { color = [0.62, 0.62, 0.60], stains = 0.5 }
+"concrete.floor" = { color = [0.52, 0.52, 0.50], stains = 0.5 }
+"concrete.ceiling" = { color = [0.36, 0.36, 0.34], stains = 0.3 }
+"double_door.lab" = [0.46, 0.42, 0.40]
+"grating.mesh" = [0.66, 0.32, 0.10]
+"grating.plate" = [0.58, 0.58, 0.56]
+steel = [0.56, 0.58, 0.60]
+"steel.dark" = [0.22, 0.22, 0.22]
+rust = [0.48, 0.24, 0.12]
+"rust.tank" = [0.56, 0.26, 0.12]
+"rust.red" = [0.50, 0.12, 0.08]
+"iron.brace" = [0.20, 0.16, 0.14]
+paper = [0.80, 0.78, 0.70]
+brass = [0.70, 0.56, 0.12]
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.17, 0.17, 0.16]
 
-[[zone]]
-box = [2188, 2030, 11046, 13714]
+[[zone]]            # hall
+box = [2188, 5454, 11046, 13714]
+[[zone]]            # lift bay
+box = [8676, 2030, 11046, 5454]
+wall_materials = { west = "rust" }
 
-[[door]]
+[[door]]            # grey double door
 wall = "west"
-span = [8000, 10500]
-top = -3600
-material = "grating"
-frame = "rust"
-[[door]]
-wall = "south"
-span = [3200, 5300]
-top = -3400
-material = "door.lab"
+span = [8670, 11280]
+top = -4300
+material = "double_door.lab"
 frame = "steel"
+[[door]]            # orange mesh panel (XD-R B.1 plaque)
+wall = "west"
+span = [6480, 8560]
+top = -4600
+material = "grating.mesh"
+frame = "rust"
+[[door]]            # orange mesh panel (emergency exit)
+wall = "west"
+span = [11490, 13450]
+top = -4600
+material = "grating.mesh"
+frame = "rust"
 
-[[object]]          # lift cage
-kind = "box"
-box = [4446, 36, 8676, 5454]
-top = -4800
-material = "grating"
-omit = ["bottom", "top", "south"]
-[[object]]          # the B.1 tank pipe (collision circle 5)
+[[painting]]        # EMERGENCY EXIT sign
+wall = "west"
+span = [11750, 12450]
+y = [-2500, -1750]
+material = "paper"
+frame = "brass"
+[[painting]]        # XD-R B.1 plaque
+wall = "west"
+span = [7100, 7900]
+y = [-2900, -2300]
+material = "rust.red"
+frame = "rust"
+
+[[object]]          # red rail along the west and south walls
+kind = "wall_band"
+wall = "west"
+span = [5454, 13714]
+y = [-4450, -4330]
+material = "rust.red"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "south"
+line = 5454
+span = [2188, 8676]
+y = [-4450, -4330]
+material = "rust.red"
+rail = false
+
+[[object]]          # the XD-R B.1 tank (collision circle 5)
 kind = "cylinder"
 at = [6652, 4400]
 radius = 1708
-top = -4800
-material = "rust"
-segments = 16
-# X-braced framing: rust posts along the walls
-[[column]]
-at = [2188, 7000]
-top = -4800
-radius = 120
-material = "rust"
-square = true
-[[column]]
-at = [2188, 11000]
-top = -4800
-radius = 120
-material = "rust"
-square = true
-[[column]]
-at = [11046, 7000]
-top = -4800
-radius = 120
-material = "rust"
-square = true
-[[column]]
-at = [11046, 11000]
-top = -4800
-radius = 120
-material = "rust"
-square = true
+top = -6000
+material = "rust.tank"
+segments = 20
+hoops = [-3900, -1200]
+[[object]]          # grey cabinet west of the tank (placed from cameras 2 and 3)
+kind = "box"
+box = [2900, 5454, 3900, 6100]
+top = -2800
+material = "steel.dark"
+omit = ["bottom", "south"]
+[[object]]          # hand truck (blocks 10/11): base plate and two handles
+kind = "box"
+box = [3800, 6650, 4800, 6950]
+top = -120
+material = "steel"
+[[object]]
+kind = "pipe"
+from = [3900, -120, 6800]
+to = [3900, -2100, 6450]
+radius = 60
+material = "steel"
+[[object]]
+kind = "pipe"
+from = [4700, -120, 6800]
+to = [4700, -2100, 6450]
+radius = 60
+material = "steel"
+[[object]]
+kind = "cylinder"
+at = [4300, 6700]
+radius = 220
+top = -900
+bottom = -100
+material = "steel.dark"
+segments = 8
 
-[[light]]
-at = [6600, -4200, 9500]
-color = [0.95, 0.98, 1.0]
-strength = 0.5
-reach = 7000
+[[object]]          # grated floor plate of the lift
+kind = "rug"
+box = [8800, 2150, 10950, 4450]
+material = "grating.plate"
+[[object]]          # pipe along the top of the east wall
+kind = "pipe"
+from = [10850, -5650, 13714]
+to = [10850, -5650, 3600]
+radius = 160
+material = "steel"
+[[column]]
+at = [10930, 2150]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[column]]
+at = [10930, 4800]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[column]]
+at = [10930, 6900]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[column]]
+at = [10930, 9400]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[column]]
+at = [10930, 11600]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[column]]
+at = [10930, 13600]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[object]]
+kind = "pipe"
+from = [10990, 0, 2030]
+to = [10990, -5500, 4800]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 4800]
+to = [10990, -5500, 2030]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 4800]
+to = [10990, -5500, 6900]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 6900]
+to = [10990, -5500, 4800]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 6900]
+to = [10990, -5500, 9400]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 9400]
+to = [10990, -5500, 6900]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 9400]
+to = [10990, -5500, 11600]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 11600]
+to = [10990, -5500, 9400]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 11600]
+to = [10990, -5500, 13714]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [10990, 0, 13714]
+to = [10990, -5500, 11600]
+radius = 45
+material = "iron.brace"
+[[column]]
+at = [8796, 2150]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[column]]
+at = [9980, 2150]
+top = -6000
+radius = 220
+material = "rust"
+square = true
+[[object]]
+kind = "pipe"
+from = [8676, 0, 2090]
+to = [9860, -5500, 2090]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [9860, 0, 2090]
+to = [8676, -5500, 2090]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [9860, 0, 2090]
+to = [11046, -5500, 2090]
+radius = 45
+material = "iron.brace"
+[[object]]
+kind = "pipe"
+from = [11046, 0, 2090]
+to = [9860, -5500, 2090]
+radius = 45
+material = "iron.brace"
 
-[[object]]          # strip light
+[[object]]          # fluorescent strip lights
 kind = "strip"
 at = [6600, 9500]
+[[object]]
+kind = "strip"
+at = [9800, 3800]
+[[light]]
+at = [6600, -5000, 9500]
+color = [0.95, 0.98, 1.0]
+strength = 0.5
+reach = 9000
+[[light]]
+at = [9800, -5000, 3800]
+color = [0.95, 0.98, 1.0]
+strength = 0.4
+reach = 6000

@@ -1,5 +1,7 @@
-# Black tiger room: a cobwebbed cave hall with red doors at the north and
-# south ends, barrels against the east wall, a crate by the west.
+# Black tiger room: a cobwebbed cave hall with red double doors in the north
+# and south walls, barrels in the north-east, south-east and north-west
+# corners. The web drapes over floor, walls and ceiling are only suggested by
+# the pale stone ceiling; there is no web material.
 room = "ROOM30C0"
 title = "Black tiger room"
 seed = 3120
@@ -7,7 +9,7 @@ seed = 3120
 [shell]
 floor = 0
 ceiling = -4800
-floor_material = "rock.cave"
+floor_material = "rock.floor"
 wall_material = "rock.cave"
 ceiling_material = "stone.web"
 skirting = 0
@@ -19,11 +21,12 @@ cell = 900
 "stone.web" = { color = [0.58, 0.58, 0.464], tile = [1400, 1400] }
 stone = [0.522, 0.522, 0.406]
 "door.red" = [0.48, 0.12, 0.08]
-wood = [0.30, 0.16, 0.10]
-crate = [0.40, 0.28, 0.16]
+wood = [0.36, 0.16, 0.10]
+"double_door.red" = [0.40, 0.14, 0.10]
+"rock.floor" = { color = [0.58, 0.56, 0.42], tile = [1800, 1800], slabs = 60 }
 
 [lighting]
-ambient = [0.198, 0.198, 0.148]
+ambient = [0.22, 0.22, 0.165]
 
 [[zone]]
 box = [3029, 2281, 20065, 13758]
@@ -31,45 +34,51 @@ floor_along = "x"
 
 [[door]]
 wall = "north"
-span = [9500, 12200]
-top = -3400
-material = "door.red"
+span = [8500, 12500]
+top = -4300
+material = "double_door.red"
 frame = "stone"
-[[door]]
+[[door]]            # big double door (camera 3)
 wall = "south"
-span = [10300, 12900]
-top = -3400
-material = "door.red"
+span = [9100, 13000]
+top = -4250
+material = "double_door.red"
 frame = "stone"
 
+# barrels: two in the north-east corner (block 2), one south-east (block 6),
+# one north-west (block 4), placed from the top-down camera 1 and camera 2
 [[object]]
 kind = "cylinder"
-at = [19500, 2500]
-radius = 500
-top = -1200
-material = "wood"
-segments = 12
-hoops = [-1050, -400]
-[[object]]
-kind = "cylinder"
-at = [19300, 3600]
-radius = 450
-top = -1100
-material = "wood"
-segments = 12
-hoops = [-950, -400]
-[[object]]
-kind = "box"
-box = [3029, 13014, 5472, 13758]
-top = -900
-material = "crate"
-omit = ["bottom", "west", "north"]
-[[object]]
-kind = "box"
-box = [18936, 11646, 20065, 13758]
+at = [19450, 13250]
+radius = 330
 top = -1000
-material = "crate"
-omit = ["bottom", "east", "north"]
+material = "wood"
+segments = 12
+hoops = [-850, -300]
+[[object]]
+kind = "cylinder"
+at = [19500, 12300]
+radius = 330
+top = -1000
+material = "wood"
+segments = 12
+hoops = [-850, -300]
+[[object]]
+kind = "cylinder"
+at = [19700, 2650]
+radius = 330
+top = -1000
+material = "wood"
+segments = 12
+hoops = [-850, -300]
+[[object]]
+kind = "cylinder"
+at = [3500, 13250]
+radius = 330
+top = -1000
+material = "wood"
+segments = 12
+hoops = [-850, -300]
 
 [[light]]
 at = [11500, -3400, 8000]

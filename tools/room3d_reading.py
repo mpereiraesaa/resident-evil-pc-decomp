@@ -1460,6 +1460,39 @@ class Builder:
                 wood = self.use("wood")
                 mesh.box((x - 100, o.get("top", -1200), z - 100), (x + 100, floor, z + 100), wood, omit=("bottom",))
                 mesh.sphere((x, o.get("top", -1200) - 100, z), 110, wood, rings=4, segments=8)
+            elif kind == "tub":
+                # Free-standing roll-top bath: hollow basin on a dark plinth.
+                x0, z0, x1, z1 = o["box"]
+                top = o.get("top", -750)
+                shell_m, water = self.use(o.get("material", "porcelain")), self.use(o.get("inside", "water"))
+                rim = o.get("rim", 90)
+                mesh.box((x0 + 80, -160, z0 + 80), (x1 - 80, floor, z1 - 80), self.use("iron"), omit=("bottom", "top"))
+                mesh.box((x0, top, z0), (x1, -160, z1), shell_m, omit=("top",))
+                for bx in ((x0, z0, x1, z0 + rim), (x0, z1 - rim, x1, z1), (x0, z0, x0 + rim, z1), (x1 - rim, z0, x1, z1)):
+                    mesh.box((bx[0], top - 20, bx[1]), (bx[2], top, bx[3]), shell_m, omit=("bottom",))
+                mesh.box((x0 + rim, top + 260, z0 + rim), (x1 - rim, top + 280, z1 - rim), water, omit=("bottom",))
+            elif kind == "toilet":
+                x, z = o["at"]
+                back = o.get("back", "north")
+                d = SIDES[back]  # points into the room from that wall
+                p = self.use(o.get("material", "porcelain"))
+                mesh.cylinder(x, z, 230, -420, floor, p, segments=10)
+                mesh.cylinder(x, z, 280, -460, -420, self.use(o.get("seat", "wood")), segments=12)
+                tx, tz = x - d[0] * 300, z - d[2] * 300
+                hw = 300
+                if back in ("north", "south"):
+                    mesh.box((tx - hw, -1000, tz - 100), (tx + hw, -460, tz + 100), p)
+                else:
+                    mesh.box((tx - 100, -1000, tz - hw), (tx + 100, -460, tz + hw), p)
+            elif kind == "sink":
+                # Wall basin on a bracket.
+                side = o["wall"]
+                along = o["at"]
+                top = o.get("top", -850)
+                line = o.get("line", self._wall_line(side, along))
+                p = self.use(o.get("material", "porcelain"))
+                self._wall_box(side, line, -330, 330, top, top + 220, 0, 480, p, along=along)
+                self._wall_box(side, line, -60, 60, top + 220, top + 600, 0, 200, self.use("iron"), along=along)
             elif kind == "bookcase":
                 # Wooden carcass whose open face shows shelves of books.
                 x0, z0, x1, z1 = o["box"]

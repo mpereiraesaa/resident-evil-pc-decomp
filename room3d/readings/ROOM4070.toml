@@ -1,5 +1,7 @@
-# 002 bathroom: same as 001; tub along the south, toilet north-east, a
-# rug, shelves; door at the north end of the west wall.
+# 002 bathroom: plank walls over a stained dado; a roll-top tub on the north
+# wall, a toilet in the north-east, a wall basin on the east wall, a rug, a
+# shelf; door at the west end of the south wall. Objects placed by projecting
+# collision blocks into both views.
 room = "ROOM4070"
 title = "002 bathroom"
 seed = 4070
@@ -25,45 +27,54 @@ wood = [0.32, 0.20, 0.11]
 door = [0.36, 0.24, 0.12]
 carpet = { color = [0.44, 0.30, 0.20], motif = [0.56, 0.46, 0.30] }
 
+linen = [0.56, 0.52, 0.44]
+
+porcelain = [0.42, 0.48, 0.36]
+
 [lighting]
 ambient = [0.144, 0.132, 0.096]
 
 [[zone]]
 box = [1872, 5454, 8298, 10818]
 
-[[door]]
-wall = "west"
-span = [5454, 7000]
+[[door]]            # south wall, west end (door zone at x 1600-4000)
+wall = "south"
+span = [1900, 3700]
 top = -3200
 material = "door"
 
-[[object]]          # tub
-kind = "box"
-box = [1872, 9072, 5202, 11124]
-top = -700
-material = "porcelain"
-omit = ["bottom", "north", "west"]
+[[object]]          # roll-top tub on the north wall (collision block 4), towel on its rim
+kind = "tub"
+box = [1900, 9200, 5100, 10818]
 [[object]]
 kind = "box"
-box = [7542, 4086, 9468, 6984]
-top = -600
-material = "porcelain"
-omit = ["bottom", "east", "south"]
-[[object]]          # toilet
+box = [2800, 9050, 4200, 9200]
+top = -700
+bottom = -150
+material = "linen"
+[[object]]          # toilet in the north-east (block 7)
+kind = "toilet"
+at = [7600, 10300]
+back = "north"
+[[object]]          # wall basin in the south-east (block 5)
+kind = "sink"
+wall = "east"
+at = 6000
+[[object]]          # radiator on the west wall
 kind = "box"
-box = [6660, 9072, 8298, 10818]
-top = -500
-material = "porcelain"
-omit = ["bottom", "east", "north"]
+box = [1872, 9800, 2050, 10700]
+top = -900
+bottom = -150
+material = "linen"
 [[object]]
 kind = "rug"
-box = [3000, 6400, 6200, 8600]
-[[object]]
+box = [3600, 7000, 5800, 8300]
+[[object]]          # shelf with bottles on the north wall above the tub
 kind = "wall_band"
-wall = "east"
-span = [7200, 8800]
-y = [-2400, -2200]
-material = "wood"
+wall = "north"
+span = [2400, 4200]
+y = [-2300, -2200]
+material = "porcelain"
 rail = false
 
 [[light]]

@@ -86,35 +86,32 @@ kind = "box"
 box = [9200, 5750, 12300, 6850]
 top = -1100
 material = "iron"
-[[object]]
-kind = "box"
-box = [8352, 5450, 13140, 7150]
-top = -2500
-bottom = -1100
+[[object]]          # the white tube itself, lying east-west
+kind = "pipe"
+from = [8352, -1850, 6300]
+to = [13140, -1850, 6300]
+radius = 820
+segments = 16
 material = "plastic"
-[[object]]
-kind = "box"
-box = [8352, 5750, 13140, 6850]
-top = -2750
-bottom = -2500
-material = "plastic"
-[[object]]          # dark rings near the ends
-kind = "box"
-box = [8800, 5350, 9100, 7250]
-top = -2850
-bottom = -1000
+[[object]]          # dark collars near the ends
+kind = "pipe"
+from = [8800, -1850, 6300]
+to = [9100, -1850, 6300]
+radius = 920
+segments = 16
 material = "iron"
 [[object]]
-kind = "box"
-box = [12400, 5350, 12700, 7250]
-top = -2850
-bottom = -1000
+kind = "pipe"
+from = [12400, -1850, 6300]
+to = [12700, -1850, 6300]
+radius = 920
+segments = 16
 material = "iron"
 [[object]]          # lit window along the tube's top
 kind = "box"
-box = [9200, 6050, 12300, 6750]
-top = -2770
-bottom = -2750
+box = [9200, 6050, 12300, 6550]
+top = -2690
+bottom = -2660
 material = "glow"
 
 # West wall.

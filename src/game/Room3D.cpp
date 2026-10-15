@@ -81,6 +81,9 @@ bool s_loaded = false;
 int s_loadedFileStage = -1;
 int s_loadedRoomId = -1;
 int s_loadedVariant = -1;
+// Cameras whose original pre-rendered background is kept (cutscene and
+// aerial views placed outside the room); set by "backdrop N" lines.
+unsigned int s_backdropCameras = 0;
 
 void MaterialColor(const char* name, float* r, float* g, float* b)
 {
@@ -250,7 +253,8 @@ bool ReadTextFile(const std::string& path, size_t maxBytes, std::string* out)
 }
 
 void LoadCameraVisibility(const std::string& objPath,
-                          std::vector<CameraVisibility>* groups)
+                          std::vector<CameraVisibility>* groups,
+                          unsigned int* backdropCameras)
 {
     const std::string path = objPath.substr(0, objPath.size() - 4) + ".cameras";
     std::string source;
@@ -262,6 +266,14 @@ void LoadCameraVisibility(const std::string& objPath,
         TextToken command, indexToken, groupToken, extra;
         if (!NextToken(line, &tokenOffset, &command)) continue;
         float index = 0.0f;
+        if (TokenEquals(command, "backdrop") &&
+            NextToken(line, &tokenOffset, &indexToken) &&
+            !NextToken(line, &tokenOffset, &extra) &&
+            ParseFloatToken(indexToken, &index) &&
+            index >= 0.0f && index < 32.0f && index == floorf(index)) {
+            *backdropCameras |= 1u << (unsigned int)index;
+            continue;
+        }
         if (!TokenEquals(command, "hide") ||
             !NextToken(line, &tokenOffset, &indexToken) ||
             !NextToken(line, &tokenOffset, &groupToken) ||
@@ -443,6 +455,7 @@ bool LoadRoomMesh()
         s_materials.clear();
         s_loaded = false;
         s_loadAttempted = false;
+        s_backdropCameras = 0;
         s_loadedFileStage = fileStage;
         s_loadedRoomId = roomId;
         s_loadedVariant = variant;
@@ -489,7 +502,7 @@ bool LoadRoomMesh()
     std::vector<Triangle> triangles;
     std::vector<Material> materials;
     std::vector<CameraVisibility> visibility;
-    LoadCameraVisibility(path, &visibility);
+    LoadCameraVisibility(path, &visibility, &s_backdropCameras);
     unsigned int hiddenCameras = 0;
     static const char kDefaultMaterial[] = "default";
     TextToken currentMaterial = { kDefaultMaterial, sizeof(kDefaultMaterial) - 1 };
@@ -785,6 +798,8 @@ bool Room3D_IsActive(void)
     if ((g_main_state_flags & (MSF_ROOM_TRANSITION | MSF_MENU_ACTIVE |
                                MSF_SCREEN_STANDALONE)) != 0) return false;
     if (!LoadRoomMesh() || g_sceneRenderParam <= 0 || Marni_DX() == NULL)
+        return false;
+    if (g_roomCameraId < 32 && (s_backdropCameras & (1u << g_roomCameraId)) != 0)
         return false;
     RoomCameraBasis camera;
     return BuildRoomCameraBasis(&camera);

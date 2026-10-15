@@ -1,8 +1,15 @@
-# Lab B2 stairway: concrete landing with a railed grating platform over
-# the stairwell, the B.2 stencil, the corridor west to the visual data room.
+# Lab B2 stairway: dark stained concrete. A landing runs east-west along
+# the south wall with three grating panels let into its floor and a metal
+# door at its east end (north wall). North of the landing a railed steel
+# stair drops north into the well; west of the rail a walkway leads north
+# past the XD-R B.2 stencil to a corridor running west, with the double door
+# to the visual data room in its south wall and a desk with a phone closing
+# its west end. Pipes along the south wall under the ceiling. Door spans and
+# grating panels are cast from the views and approximate.
 room = "ROOM5030"
 title = "Lab B2 stairway"
 seed = 5030
+backdrop = [4]  # camera 4 is a close-up of the VISUAL DATA ROOM plate
 
 [shell]
 floor = 0
@@ -10,115 +17,151 @@ ceiling = -4800
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 140
+trim = "concrete.trim"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-grating = [0.50, 0.52, 0.52]
+concrete = { color = [0.40, 0.39, 0.36], stains = 0.7, panels = 1, tile = [3200, 4000] }
+"concrete.trim" = { color = [0.26, 0.26, 0.25], stains = 0.2 }
+"concrete.floor" = { color = [0.34, 0.33, 0.30], stains = 0.6 }
+"concrete.ceiling" = { color = [0.22, 0.22, 0.21], stains = 0.3 }
+"door.lab" = [0.46, 0.45, 0.42]
+"double_door.lab" = [0.44, 0.44, 0.42]
+steel = [0.70, 0.72, 0.74]
+iron = [0.20, 0.21, 0.22]
+wood = [0.52, 0.52, 0.48]
+grating = { color = [0.30, 0.31, 0.32], tile = [500, 500] }
+"grating.stair" = { color = [0.30, 0.31, 0.32], tile = [400, 400] }
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.13, 0.13, 0.12]
 
-[[zone]]            # platform
+[[zone]]            # landing along the south wall
 box = [14778, 2070, 30834, 6750]
 floor_along = "x"
-floor_material = "grating"
-[[zone]]            # east strip beside the well
-box = [25038, 6750, 30834, 9270]
+[[zone]]            # head of the stair
+box = [18198, 6750, 20304, 9432]
+floor_material = "grating.stair"
+[[zone]]            # walkway west of the stair rail
+box = [14778, 6750, 18198, 15858]
+[[zone]]            # corridor west (desk at its west end)
+box = [1400, 15858, 18198, 17964]
 floor_along = "x"
-[[zone]]            # west corridor
-box = [3060, 15858, 14328, 17964]
-floor_along = "x"
-[[zone]]            # link
-box = [14328, 9306, 17316, 17964]
 [[zone]]            # stairwell
-box = [17316, 6876, 25038, 17964]
+box = [18198, 9432, 20304, 17964]
 open_floor = true
 depth = 4000
+shaft_material = "concrete"
 
-[[stair]]
-x = [18198, 22932]
+[[stair]]           # steel stair dropping north into the well
+x = [18198, 20304]
 z = [9432, 17964]
 direction = "south"
 base = 4000
 top = 0
-steps = 14
-tread_material = "grating"
+steps = 16
+tread_material = "grating.stair"
 under = false
 rails = []
-[[object]]
-kind = "rail"
-from = [17400, 6900]
-to = [18100, 6900]
-height = 1000
-spacing = 700
-material = "steel"
-[[object]]
-kind = "rail"
-from = [23000, 6900]
-to = [25000, 6900]
-height = 1000
-spacing = 700
-material = "steel"
-[[object]]
-kind = "rail"
-from = [17400, 6900]
-to = [17400, 17900]
-height = 1000
-spacing = 700
-material = "steel"
-newels = [false, false]
-[[object]]
-kind = "rail"
-from = [25000, 9300]
-to = [25000, 17900]
-height = 1000
-spacing = 700
-material = "steel"
-newels = [false, false]
 
-[[door]]
+[[object]]          # rail along the head of the stair (south edge)
+kind = "rail"
+from = [18198, 6800]
+to = [20304, 6800]
+height = 1000
+spacing = 2100
+material = "steel"
+newels = [true, true]
+[[object]]          # rail between the walkway and the stair (collision block 1)
+kind = "rail"
+from = [18150, 6800]
+to = [18150, 15800]
+height = 1000
+spacing = 1500
+material = "steel"
+[[object]]          # low curb under the walkway rail
+kind = "box"
+box = [17900, 6750, 18198, 16560]
+top = -150
+material = "concrete.trim"
+
+[[object]]          # grating panels let into the landing floor
+kind = "rug"
+box = [18400, 2400, 21800, 3700]
+material = "grating"
+[[object]]
+kind = "rug"
+box = [18400, 3900, 21800, 5150]
+material = "grating"
+[[object]]
+kind = "rug"
+box = [18400, 5350, 21800, 6550]
+material = "grating"
+
+[[object]]          # pipes along the south wall under the ceiling
+kind = "box"
+box = [14778, 2070, 30834, 2400]
+top = -4800
+bottom = -4400
+material = "iron"
+
+[[door]]            # metal door at the east end of the landing
 wall = "north"
-span = [26000, 27800]
-top = -3400
+span = [28800, 30300]
+line = 6750
+top = -3300
 material = "door.lab"
-frame = "steel"
-[[door]]
-wall = "north"
-span = [6600, 10400]
-top = -3600
+frame = "iron"
+[[door]]            # double door to the visual data room
+wall = "south"
+span = [7600, 9800]
+top = -3500
 material = "double_door.lab"
-frame = "steel"
-[[door]]
-wall = "west"
-span = [16000, 17964]
-top = -3400
-material = "door.lab"
-frame = "steel"
+frame = "iron"
+
+[[object]]          # desk with the phone at the corridor's west end (collision block 5)
+kind = "table"
+box = [1500, 16000, 2900, 17800]
+top = -900
+material = "wood"
+[[object]]          # drawer pedestal under the desk
+kind = "box"
+box = [1600, 16000, 2800, 16700]
+top = -780
+material = "wood"
+[[object]]          # phone
+kind = "box"
+box = [1900, 16200, 2300, 16600]
+top = -1050
+bottom = -900
+material = "plastic"
+
+[[object]]
+kind = "strip"
+at = [19500, 3800]
+[[object]]
+kind = "strip"
+at = [24500, 4500]
+[[object]]
+kind = "strip"
+at = [16400, 11000]
+[[object]]
+kind = "strip"
+at = [9000, 16900]
 
 [[light]]
-at = [22000, -4200, 4000]
+at = [21000, -4200, 4000]
 color = [0.95, 0.98, 1.0]
 strength = 0.5
-reach = 8000
+reach = 7000
+[[light]]
+at = [16400, -4200, 12000]
+color = [0.95, 0.98, 1.0]
+strength = 0.45
+reach = 6000
 [[light]]
 at = [8000, -4200, 16800]
 color = [0.95, 0.98, 1.0]
 strength = 0.45
 reach = 7000
-
-[[object]]          # strip light
-kind = "strip"
-at = [22000, 4000]
-
-[[object]]          # strip light
-kind = "strip"
-at = [8000, 16800]

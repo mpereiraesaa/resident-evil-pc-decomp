@@ -1,13 +1,17 @@
 # Small dining room: grey-blue painted plank walls over a brown dado, dark
-# planks with a patterned rug, a long table with chairs, plates and a clock
-# on the north wall, a red glazed cabinet in the south alcove.
+# planks with a patterned rug, a long table with chairs along x, plates and a
+# clock on the east wall, a tall cabinet in the north-east corner, an open
+# wall shelf high on the west wall. A doorway in the south wall leads into a
+# side alcove with a red glazed cabinet at its west end. Table, rug, ceiling
+# height and the doorway cast from cameras 0, 1 and 2 with floor picking;
+# the plates are approximated as small square porcelain panels.
 room = "ROOM20F0"
 title = "Small dining room"
 seed = 2150
 
 [shell]
 floor = 0
-ceiling = -4400
+ceiling = -5700
 floor_material = "planks"
 wall_material = "planks.wall"
 ceiling_material = "plaster.dark"
@@ -33,69 +37,122 @@ ambient = [0.12, 0.13, 0.13]
 
 [[zone]]            # main room
 box = [3478, 5130, 11736, 12168]
-[[zone]]            # south alcove
-box = [4446, 1926, 8676, 5130]
+[[zone]]            # passage through the south doorway
+box = [7344, 3834, 8676, 5130]
+ceiling = -3400
+[[zone]]            # side alcove
+box = [4446, 1926, 8676, 3834]
 
-[[door]]
+[[door]]            # the room's door, north wall near the west corner
 wall = "north"
-span = [4000, 5300]
-top = -3300
-material = "door"
-[[door]]
-wall = "east"
-span = [8000, 9600]
-top = -3300
+span = [3700, 5000]
+top = -3700
 material = "door"
 
 [[object]]
 kind = "rug"
-box = [4200, 6200, 10800, 11200]
-[[object]]
+box = [4200, 6400, 10900, 10780]
+[[object]]          # long table along x (block 2 also covers the chairs)
 kind = "table"
-box = [5130, 7020, 9630, 9990]
-top = -1500
+box = [5500, 7900, 9400, 9600]
+top = -1300
 thickness = 120
 [[object]]
 kind = "chair"
-at = [6000, 6500]
-facing = "south"
-[[object]]
-kind = "chair"
-at = [8700, 6500]
-facing = "south"
-[[object]]
-kind = "chair"
-at = [6000, 10500]
+at = [6500, 7400]
 facing = "north"
 [[object]]
 kind = "chair"
-at = [8700, 10500]
+at = [8500, 7400]
 facing = "north"
-[[object]]          # red glazed cabinet in the alcove
+[[object]]
+kind = "chair"
+at = [6500, 10100]
+facing = "south"
+[[object]]
+kind = "chair"
+at = [8500, 10100]
+facing = "south"
+[[object]]          # tall cabinet in the north-east corner (block 3)
 kind = "box"
-box = [4600, 1926, 8500, 2700]
-top = -2600
+box = [10300, 11300, 11736, 12168]
+top = -3800
+material = "wood"
+omit = ["bottom", "north", "east"]
+[[object]]          # red glazed cabinet at the west end of the alcove
+kind = "box"
+box = [4446, 2100, 5050, 3650]
+top = -3200
 material = "wood.red"
-omit = ["bottom", "south"]
-[[object]]          # wall shelf, north wall
-kind = "wall_band"
-wall = "north"
-span = [9000, 11500]
-y = [-3400, -3000]
+omit = ["bottom", "west"]
+[[object]]          # open wall shelf high on the west wall: dark back box and two ledges
+kind = "box"
+box = [3478, 8500, 3560, 12000]
+top = -5300
+bottom = -3600
+material = "wood"
+[[object]]
+kind = "box"
+box = [3478, 8400, 3900, 12100]
+top = -3700
+bottom = -3600
 material = "panel"
-rail = false
+[[object]]
+kind = "box"
+box = [3478, 8400, 3900, 12100]
+top = -4550
+bottom = -4450
+material = "panel"
+[[object]]
+kind = "box"
+box = [3478, 8400, 3900, 8500]
+top = -5300
+bottom = -3600
+material = "panel"
+[[object]]
+kind = "box"
+box = [3478, 12000, 3900, 12100]
+top = -5300
+bottom = -3600
+material = "panel"
 
+[[painting]]        # plates and the clock on the east wall
+wall = "east"
+span = [10200, 10700]
+y = [-2900, -2400]
+material = "porcelain"
+frame = "porcelain"
 [[painting]]
-wall = "north"
-span = [6000, 6600]
-y = [-3000, -2400]
+wall = "east"
+span = [9300, 9800]
+y = [-3300, -2800]
+material = "porcelain"
+frame = "porcelain"
 [[painting]]
-wall = "north"
-span = [7200, 7800]
-y = [-3100, -2500]
+wall = "east"
+span = [8000, 8600]
+y = [-3200, -2600]
+material = "porcelain"
+frame = "porcelain"
+[[painting]]
+wall = "east"
+span = [7000, 7600]
+y = [-3600, -3000]
+material = "porcelain"
+frame = "porcelain"
+[[painting]]
+wall = "east"
+span = [6900, 7400]
+y = [-2800, -2300]
+material = "porcelain"
+frame = "porcelain"
+[[painting]]        # clock
+wall = "east"
+span = [6000, 6500]
+y = [-3900, -3100]
 
 [[light]]
-at = [7400, -3400, 8500]
+at = [7400, -4400, 8500]
 color = [0.95, 1.0, 1.0]
 strength = 0.4
-reach = 6000
+reach = 7000

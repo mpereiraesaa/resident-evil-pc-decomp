@@ -1,7 +1,11 @@
-# Room 003: plank bedroom; bed on the north wall with a desk beside it, a
-# bookshelf east, the 003 door west and the bathroom door south-west.
+# Room 003: plank bedroom off a corridor (the north-west quarter is solid):
+# an iron bed in the middle with its head north, a bookcase on drawers and a
+# nightstand against the north wall, a desk with a lamp in the south, framed
+# prints; doors at the corridor's west end, on its north wall, and on the
+# bedroom's east wall. Furniture placed from projected collision.
 room = "ROOM40A0"
 title = "Room 003"
+backdrop = [6]  # camera 6 is a close-up of the desk drawer
 seed = 4100
 
 [shell]
@@ -22,6 +26,10 @@ door = [0.36, 0.24, 0.12]
 linen = [0.52, 0.44, 0.32]
 carpet = { color = [0.50, 0.36, 0.24], motif = [0.64, 0.50, 0.32] }
 
+"carpet.plain" = { color = [0.34, 0.22, 0.12], motif = [0.34, 0.22, 0.12] }
+"border.plain" = { color = [0.24, 0.15, 0.08], motif = [0.24, 0.15, 0.08] }
+paper = [0.66, 0.64, 0.56]
+
 [lighting]
 ambient = [0.28, 0.24, 0.17]
 
@@ -31,54 +39,71 @@ floor_along = "x"
 [[zone]]
 box = [9324, 4194, 14958, 10944]
 
-[[door]]
+[[door]]            # end of the corridor (west)
 wall = "west"
 span = [2100, 3700]
 top = -3300
 material = "door"
-[[door]]
-wall = "south"
-span = [2300, 4300]
+[[door]]            # corridor's north wall
+wall = "north"
+line = 4194
+span = [2400, 4200]
+top = -3300
+material = "door"
+[[door]]            # east wall of the bedroom
+wall = "east"
+span = [4600, 6200]
 top = -3300
 material = "door"
 
-[[object]]
+# Furniture placed by projecting the collision blocks into the seven views.
+[[object]]          # iron bed (block 1), head to the north
 kind = "bed"
 box = [8118, 4572, 11592, 8442]
-head = "west"
-[[object]]
-kind = "table"
-box = [9900, 576, 11898, 2790]
-top = -1400
-thickness = 100
-[[object]]
-kind = "chair"
-at = [10900, 3500]
-facing = "south"
-[[object]]          # bookshelf on the east wall
+head = "north"
+[[object]]          # bookcase against the north wall (block 3)
+kind = "bookcase"
+box = [11070, 9864, 13600, 10944]
+top = -2700
+front = "south"
+[[object]]          # nightstand east of it (block 4)
 kind = "box"
-box = [14000, 6000, 14958, 9800]
-top = -2600
-material = "wood"
-omit = ["bottom", "east"]
-[[object]]          # cabinet north-east
-kind = "box"
-box = [11070, 9864, 16038, 11862]
-top = -1200
+box = [13600, 9864, 14958, 10944]
+top = -900
 material = "wood"
 omit = ["bottom", "north", "east"]
+[[object]]          # desk with a lamp in the south (block 7)
+kind = "table"
+box = [9900, 1962, 11898, 2790]
+top = -1300
+thickness = 100
+[[object]]
+kind = "lamp"
+at = [11300, 2300]
+base = -1300
+height = 600
+[[object]]
+kind = "chair"
+at = [10900, 3300]
+facing = "south"
 [[object]]
 kind = "rug"
-box = [9800, 4800, 14400, 9600]
+box = [10200, 5200, 14200, 9200]
+material = "carpet.plain"
+border = 200
+border_material = "border.plain"
 
-[[painting]]
+[[painting]]        # framed print on the north wall
 wall = "north"
-span = [12600, 13400]
-y = [-3200, -2600]
-[[painting]]
-wall = "south"
-span = [6000, 6800]
-y = [-3200, -2600]
+line = 9864
+span = [13900, 14700]
+y = [-3100, -2300]
+material = "paper"
+[[painting]]        # framed print on the east wall
+wall = "east"
+span = [7000, 8000]
+y = [-3000, -2200]
+material = "paper"
 
 [[light]]
 at = [11000, -3200, 6500]

@@ -112,9 +112,15 @@ def main():
                     # The return stages ship no backgrounds of their own; the
                     # game reuses stage 1/2's, and their cameras are identical.
                     twin = args.out / "evidence" / f"room{stage - 5}{stem[5:].lower()}"
-                    if not (twin / "camera0-original.png").exists():
-                        survey_report(usa / f"Stage{stage - 5}" / f"ROOM{stage - 5}{stem[5:]}.RDT", twin)
-                    shutil.copytree(twin, evidence, dirs_exist_ok=True)
+                    try:
+                        if not (twin / "camera0-original.png").exists():
+                            survey_report(usa / f"Stage{stage - 5}" / f"ROOM{stage - 5}{stem[5:]}.RDT", twin)
+                        shutil.copytree(twin, evidence, dirs_exist_ok=True)
+                    except ValueError:
+                        # Return-only room: its stage 1/2 twin is an empty RDT.
+                        # The survey reads its own cameras and finds the
+                        # stage 1/2 backgrounds by itself.
+                        survey_report(rdt, evidence)
                 else:
                     survey_report(rdt, evidence)
             built = args.out / "built" / stem.lower()

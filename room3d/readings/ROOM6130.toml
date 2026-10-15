@@ -25,11 +25,13 @@ panel = [0.34, 0.12, 0.10]
 planks = [0.42, 0.26, 0.15]
 wood = [0.30, 0.17, 0.10]
 door = [0.26, 0.16, 0.10]
-carpet = { color = [0.36, 0.26, 0.30], motif = [0.75, 0.45, 0.30] }
+carpet = { color = [0.56, 0.26, 0.14], motif = [0.36, 0.30, 0.34] }
 glass = [0.55, 0.60, 0.62]
 
+linen = [0.70, 0.62, 0.44]
+
 [lighting]
-ambient = [0.14, 0.11, 0.07]
+ambient = [0.20, 0.16, 0.10]
 
 [[zone]]
 box = [1697, 1867, 10417, 7782]
@@ -40,53 +42,71 @@ span = [1700, 3700]
 top = -3300
 material = "door"
 
-# Tub, curtain rail and the half-height partition beside it
-[[object]]
-kind = "box"
-box = [4471, 1101, 9025, 3052]
-top = -700
+# Fixtures placed by projecting the collision blocks into the four views.
+[[object]]          # clawfoot tub on the north side (block 2) with its curtain
+kind = "tub"
+box = [4260, 6547, 8085, 7782]
 material = "paper"
-omit = ["bottom"]
+[[object]]          # curtain hanging round the tub's south and west sides
+kind = "box"
+box = [4260, 6500, 8085, 6600]
+top = -2900
+bottom = -800
+material = "linen"
 [[object]]
 kind = "box"
-box = [4471, 1867, 9025, 1900]
+box = [4200, 6500, 4300, 7782]
 top = -2900
-bottom = -2850
-material = "iron"
+bottom = -800
+material = "linen"
+[[object]]          # towel rail west of the tub (block 4)
+kind = "box"
+box = [2760, 7300, 4300, 7400]
+top = -1200
+bottom = -400
+material = "linen"
+[[object]]          # vanity along the south wall (block 7) with its basin and mirror
+kind = "box"
+box = [4471, 1867, 7578, 3052]
+top = -900
+material = "wood"
+omit = ["bottom", "south"]
 [[object]]
+kind = "box"
+box = [4471, 1867, 7578, 3052]
+top = -960
+bottom = -900
+material = "marble"
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [5000, 7000]
+y = [-3000, -1600]
+material = "mirror"
+rail = false
+[[object]]          # wooden partition beside the toilet (block 8)
 kind = "box"
 box = [7578, 1867, 8538, 4449]
 top = -2200
 material = "panel"
 omit = ["bottom"]
-# Vanity against the north wall, with a mirror above
-[[object]]
-kind = "box"
-box = [4260, 6547, 8085, 7782]
-top = -900
-material = "wood"
-omit = ["bottom", "north"]
-[[object]]
-kind = "wall_band"
-wall = "north"
-span = [5000, 7400]
-y = [-2900, -1500]
-material = "mirror"
-rail = false
-# Toilet and the closet block in the north-east corner
-[[object]]
+[[object]]          # toilet in the south-east corner (block 9)
+kind = "toilet"
+at = [9500, 2300]
+back = "south"
+[[object]]          # pot by the partition (block 10)
 kind = "cylinder"
-at = [3600, 7400]
-radius = 320
-top = -520
-material = "paper"
+at = [7624, 3234]
+radius = 300
+top = -500
+material = "brass"
 segments = 10
-[[object]]
+[[object]]          # low cabinet in the north-east (block 3)
 kind = "box"
 box = [7773, 6303, 10417, 7782]
-top = -4400
-material = "plaster"
-omit = ["bottom", "top", "north", "east"]
+top = -1000
+material = "wood"
+omit = ["bottom", "north", "east"]
 [[object]]
 kind = "rug"
 box = [3000, 3600, 8300, 6200]

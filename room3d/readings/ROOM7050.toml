@@ -1,5 +1,5 @@
 # Return-visit copy of ROOM2050.toml: stage 7 shares its collision and cameras exactly.
-# Armor room: pale brick walls, grey stone tiles, suits of armour on stone
+# Armor room: dark grey-green brick walls, grey stone tiles, suits of armour on stone
 # plinths along both long walls (the armours are game sprites), a chest at the
 # west end, a small chandelier. From ROOM2050.RDT blocks.
 room = "ROOM7050"
@@ -10,15 +10,15 @@ seed = 2050
 floor = 0
 ceiling = -4800
 floor_material = "stone.tiles"
-wall_material = "stone.brick"
+wall_material = "brick.grey"
 ceiling_material = "planks.ceiling"
 skirting = 200
 trim = "stone"
 cell = 700
 
 [materials]
-"stone.brick" = { color = [0.62, 0.64, 0.52], tile = [1200, 1200] }
-"stone.tiles" = { color = [0.52, 0.54, 0.48], tile = [1600, 1600] }
+"brick.grey" = { color = [0.34, 0.38, 0.30], rows = 10, per_row = 4, stains = 0.4, tile = [2000, 1400] }
+"stone.tiles" = { color = [0.30, 0.32, 0.30], tile = [1600, 1600] }
 "planks.ceiling" = { color = [0.30, 0.20, 0.12], count = 10 }
 stone = [0.58, 0.58, 0.52]
 wood = [0.22, 0.12, 0.07]

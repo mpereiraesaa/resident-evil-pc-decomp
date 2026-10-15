@@ -153,6 +153,7 @@
     <ClCompile Include="src\game\RoomInit.cpp" />
     <ClCompile Include="src\game\EffectSprites.cpp" />
     <ClCompile Include="src\game\Room.cpp" />
+    <ClCompile Include="src\game\ModernCamera.cpp" />
     <ClCompile Include="src\game\Room3D.cpp" />
     <ClCompile Include="src\game\RoomEvents.cpp" />
     <ClCompile Include="src\game\CmdFunctions.cpp" />

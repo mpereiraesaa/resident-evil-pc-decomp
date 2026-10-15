@@ -60,6 +60,10 @@ Ps1EndingCredits=0
 SkipUnskippableFmv=1
 ; 1 = allow skipping door animations after the initial 10 frames.
 SkipDoorAnimations=1
+; 1 = modern third-person follow camera in rooms that have a Room3D mesh
+; (right stick orbits, keyboard/D-pad eases it behind the player);
+; 0 = the original fixed cameras.
+ModernCamera=0
 
 [Debug]
 ; Master switch for the port-added debug features: F1 debug menu, F6

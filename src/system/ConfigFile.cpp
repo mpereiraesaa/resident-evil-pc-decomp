@@ -435,6 +435,9 @@ void ConfigFile_EnsureExists(void)
         "SkipUnskippableFmv=%d\n"
         "; 1 = allow the normal button skip after the first 10 frames of door animations.\n"
         "SkipDoorAnimations=%d\n"
+        "; 1 = modern third-person follow camera in rooms that have a Room3D mesh\n"
+        "; (right stick orbits); 0 = the original fixed cameras.\n"
+        "ModernCamera=%d\n"
         "\n"
         "[Debug]\n"
         "; Master switch for the port-added debug features: F1 debug menu, F6\n"
@@ -462,6 +465,7 @@ void ConfigFile_EnsureExists(void)
         g_bPs1FmvSubtitles ? 1 : 0,
         g_bSkipUnskippableFmv ? 1 : 0,
         g_bSkipDoorAnimations ? 1 : 0,
+        g_bModernCamera ? 1 : 0,
 #ifdef _DEBUG
         1,
 #else
@@ -578,6 +582,7 @@ BOOL ConfigFile_Load(void)
     // Camera-relative analogue movement is the modern baseline. The keyboard
     // and D-pad keep tank controls regardless of this setting.
     g_bAlternateControls = ReadInt(path, "Input", "AlternateControls", 1) != 0;
+    g_bModernCamera = ReadInt(path, "Game", "ModernCamera", 0) != 0;
     dbg_printf("[CONFIG] mode=%s overlay=%s ps1_credits=%d\n", GameModeName(g_GameMode),
                GetAssetModeName()[0] ? GetAssetModeName() : "(none)",
                g_bPs1EndingCredits ? 1 : 0);

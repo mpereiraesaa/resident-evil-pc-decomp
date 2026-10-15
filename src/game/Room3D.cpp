@@ -21,6 +21,10 @@
 #include <string>
 #include <vector>
 
+bool ModernCamera_GetView(float from[3], float to[3]);   // ModernCamera.cpp
+bool ModernCamera_Active(void);                         // ModernCamera.cpp
+float ModernCamera_WallClipDepth(void);                 // ModernCamera.cpp
+
 namespace {
 
 const size_t kMaxObjBytes = 4 * 1024 * 1024;
@@ -46,6 +50,7 @@ struct Triangle {
     Vertex v[3];
     int material;
     unsigned int hiddenCameras;
+    bool shell;   // wall/floor/ceiling/door/gallery/stair geometry (camera collision)
 };
 
 struct CameraVisibility {
@@ -524,6 +529,7 @@ bool LoadRoomMesh()
     std::vector<CameraVisibility> visibility;
     LoadCameraVisibility(path, &visibility, &s_backdropCameras);
     unsigned int hiddenCameras = 0;
+    bool currentShell = true;   // geometry before any group line is the shell
     static const char kDefaultMaterial[] = "default";
     TextToken currentMaterial = { kDefaultMaterial, sizeof(kDefaultMaterial) - 1 };
     size_t pathSep = std::string(path).find_last_of("/\\");
@@ -540,8 +546,19 @@ bool LoadRoomMesh()
 
         if (TokenEquals(kind, "g")) {
             hiddenCameras = 0;
+            currentShell = false;
             TextToken group;
             while (NextToken(line, &tokenOffset, &group)) {
+                // Builder group names: walls, wall_N, floor_N, ceiling_N,
+                // door_N, gallery, stairs, shaft... are the room's shell;
+                // furniture is ungrouped or carries its own names.
+                static const char* const kShell[] = {
+                    "wall", "floor", "ceiling", "door", "gallery", "stair", "shaft" };
+                for (size_t k = 0; k < sizeof(kShell) / sizeof(kShell[0]); ++k) {
+                    const size_t n = strlen(kShell[k]);
+                    if (group.size >= n && strncmp(group.data, kShell[k], n) == 0)
+                        currentShell = true;
+                }
                 for (size_t i = 0; i < visibility.size(); ++i) {
                     if (TokenEquals(group, visibility[i].group.c_str()))
                         hiddenCameras |= visibility[i].hiddenCameras;
@@ -626,6 +643,7 @@ bool LoadRoomMesh()
                 }
                 tri.material = materialIndex;
                 tri.hiddenCameras = hiddenCameras;
+                tri.shell = currentShell;
                 triangles.push_back(tri);
             }
         }
@@ -662,8 +680,33 @@ float DepthNdc(float z)
     return TmdViewZToNdc(z);
 }
 
+bool BasisFromPoints(RoomCameraBasis* basis, const float from[3], const float to[3])
+{
+    const float dx = to[0] - from[0], dy = to[1] - from[1], dz = to[2] - from[2];
+    const float length = sqrtf(dx * dx + dy * dy + dz * dz);
+    const float horizontal = sqrtf(dx * dx + dz * dz);
+    if (length < 1.0f || horizontal < 1.0f) return false;
+    for (int i = 0; i < 3; ++i) basis->from[i] = from[i];
+    basis->forward[0] = dx / length;
+    basis->forward[1] = dy / length;
+    basis->forward[2] = dz / length;
+    basis->right[0] = dz / horizontal;
+    basis->right[1] = 0.0f;
+    basis->right[2] = -dx / horizontal;
+    basis->down[0] = basis->forward[1] * basis->right[2];
+    basis->down[1] = basis->forward[2] * basis->right[0] -
+                     basis->forward[0] * basis->right[2];
+    basis->down[2] = -basis->forward[1] * basis->right[0];
+    return true;
+}
+
 bool BuildRoomCameraBasis(RoomCameraBasis* basis)
 {
+    // The modern follow camera, when it owns this tick, replaces the room's
+    // fixed camera for the mesh exactly as it does for the actors.
+    float modernFrom[3], modernTo[3];
+    if (basis != NULL && ModernCamera_GetView(modernFrom, modernTo))
+        return BasisFromPoints(basis, modernFrom, modernTo);
     if (basis == NULL || g_RdtPointer == NULL ||
         (unsigned int)g_roomCameraId >= (unsigned int)g_RdtPointer->cameras_count)
         return false;
@@ -819,7 +862,8 @@ bool Room3D_IsActive(void)
                                MSF_SCREEN_STANDALONE)) != 0) return false;
     if (!LoadRoomMesh() || g_sceneRenderParam <= 0 || Marni_DX() == NULL)
         return false;
-    if (g_roomCameraId < 32 && (s_backdropCameras & (1u << g_roomCameraId)) != 0)
+    if (!ModernCamera_Active() && g_roomCameraId < 32 &&
+        (s_backdropCameras & (1u << g_roomCameraId)) != 0)
         return false;
     RoomCameraBasis camera;
     return BuildRoomCameraBasis(&camera);
@@ -849,6 +893,7 @@ void Room3D_Render(void)
 
     RoomCameraBasis camera;
     if (!BuildRoomCameraBasis(&camera)) return;
+    const bool modern = ModernCamera_Active();
     s_activeShade = ((unsigned int)g_roomCameraId < 32 &&
                      (s_shadedCameras & (1u << g_roomCameraId)) != 0)
         ? s_cameraShade[g_roomCameraId] : 1.0f;
@@ -859,15 +904,35 @@ void Room3D_Render(void)
     const float centerY = (float)g_SubpixelOffsetY * scaleY;
     const float focal = (float)g_sceneRenderParam;
     const float nearPlane = focal * 2.0f;
-    const float nearZ = nearPlane > kNearFloor ? nearPlane : kNearFloor;
+    float nearZ = nearPlane > kNearFloor ? nearPlane : kNearFloor;
+    // When the follow camera's boom passes through a wall, everything nearer
+    // than that wall is cut away so the shot always reaches the player.
+    const float wallClip = ModernCamera_WallClipDepth();
+    if (wallClip > nearZ) nearZ = wallClip;
 
     float batch[kTrianglesPerBatch * 30];
     int batchCount = 0;
     MarniHandle batchTexture = MARNI_NULL_HANDLE;
     for (size_t i = 0; i < s_triangles.size(); ++i) {
-        if ((unsigned int)g_roomCameraId < 32 &&
+        // Per-camera hides were authored for the fixed cameras; a free
+        // camera sees the whole room.
+        if (!modern && (unsigned int)g_roomCameraId < 32 &&
             (s_triangles[i].hiddenCameras & (1u << g_roomCameraId)) != 0)
             continue;
+        if (modern && s_triangles[i].shell) {
+            // A free camera can end up behind a wall; the shell faces into the
+            // room, so drop the faces turned away from the viewer rather than
+            // let a wall's back fill the screen.
+            const Vertex* t = s_triangles[i].v;
+            const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
+            const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
+            const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1],
+                                 e1[2] * e2[0] - e1[0] * e2[2],
+                                 e1[0] * e2[1] - e1[1] * e2[0] };
+            const float toEye[3] = { camera.from[0] - t[0].x, camera.from[1] - t[0].y,
+                                     camera.from[2] - t[0].z };
+            if (n[0] * toEye[0] + n[1] * toEye[1] + n[2] * toEye[2] < 0.0f) continue;
+        }
         const MarniHandle texture = s_materials[s_triangles[i].material].texture;
         // The camera sits inside the room, so large floor/wall triangles often
         // cross its near plane. Clip them in room space before perspective
@@ -915,4 +980,46 @@ void Room3D_Render(void)
                                     MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE,
                                     true);
     }
+}
+
+// ---------------------------------------------------------------------------
+// Queries for the modern follow camera (ModernCamera.cpp).
+
+// True when this room has a usable mesh and the frame is not owned by a door,
+// menu or standalone screen.
+bool Room3D_MeshAvailable(void)
+{
+    if ((g_main_state_flags & (MSF_ROOM_TRANSITION | MSF_MENU_ACTIVE |
+                               MSF_SCREEN_STANDALONE)) != 0) return false;
+    return LoadRoomMesh() && Marni_DX() != NULL;
+}
+
+// Distance along `dir` (unit) from `origin` to the nearest mesh triangle, or
+// `maxDistance` when nothing is hit first (two-sided Moller-Trumbore).
+float Room3D_Raycast(const float origin[3], const float dir[3], float maxDistance)
+{
+    float best = maxDistance;
+    for (size_t i = 0; i < s_triangles.size(); ++i) {
+        if (!s_triangles[i].shell) continue;   // props never push the camera in
+        const Vertex* v = s_triangles[i].v;
+        const float e1[3] = { v[1].x - v[0].x, v[1].y - v[0].y, v[1].z - v[0].z };
+        const float e2[3] = { v[2].x - v[0].x, v[2].y - v[0].y, v[2].z - v[0].z };
+        const float p[3] = { dir[1] * e2[2] - dir[2] * e2[1],
+                             dir[2] * e2[0] - dir[0] * e2[2],
+                             dir[0] * e2[1] - dir[1] * e2[0] };
+        const float det = e1[0] * p[0] + e1[1] * p[1] + e1[2] * p[2];
+        if (fabsf(det) < 1e-6f) continue;
+        const float inv = 1.0f / det;
+        const float t0[3] = { origin[0] - v[0].x, origin[1] - v[0].y, origin[2] - v[0].z };
+        const float u = (t0[0] * p[0] + t0[1] * p[1] + t0[2] * p[2]) * inv;
+        if (u < 0.0f || u > 1.0f) continue;
+        const float q[3] = { t0[1] * e1[2] - t0[2] * e1[1],
+                             t0[2] * e1[0] - t0[0] * e1[2],
+                             t0[0] * e1[1] - t0[1] * e1[0] };
+        const float w = (dir[0] * q[0] + dir[1] * q[1] + dir[2] * q[2]) * inv;
+        if (w < 0.0f || u + w > 1.0f) continue;
+        const float t = (e2[0] * q[0] + e2[1] * q[1] + e2[2] * q[2]) * inv;
+        if (t > 1.0f && t < best) best = t;
+    }
+    return best;
 }

@@ -1382,12 +1382,39 @@ void MarniDX::SetPresentation(MarniPresentationMode mode, float verticalPan)
     }
 }
 
+// Opt-in scripted-test hook (not in the original): RE1_TEST_SHOT_EVERY=N saves
+// every Nth presented frame as shotNNNN.ppm in the working directory, up to
+// RE1_TEST_SHOT_MAX (default 40). Scripted runs cannot press PrintScreen
+// because test keys bypass the window's message loop.
+static void SaveTestShot(MarniDX* dx)
+{
+    static const int every = std::getenv("RE1_TEST_SHOT_EVERY")
+        ? std::atoi(std::getenv("RE1_TEST_SHOT_EVERY")) : 0;
+    static const int maxShots = std::getenv("RE1_TEST_SHOT_MAX")
+        ? std::atoi(std::getenv("RE1_TEST_SHOT_MAX")) : 40;
+    static int frame = 0, saved = 0;
+    if (every <= 0 || saved >= maxShots || (++frame % every) != 0) return;
+    void* pixels = nullptr;
+    DWORD w = 0, h = 0;
+    if (!dx->CaptureBackbufferToRGBA(&pixels, &w, &h) || !pixels) return;
+    char name[32];
+    snprintf(name, sizeof(name), "shot%04d.ppm", saved++);
+    if (FILE* f = fopen(name, "wb")) {
+        fprintf(f, "P6\n%lu %lu\n255\n", (unsigned long)w, (unsigned long)h);
+        const BYTE* px = (const BYTE*)pixels;
+        for (DWORD i = 0; i < w * h; ++i) fwrite(px + i * 4, 1, 3, f);
+        fclose(f);
+    }
+    free(pixels);
+}
+
 void MarniDX::Present()
 {
     Impl* p = m_pImpl;
     if (!p || !p->swapChain) return;
 
     if (p->smaaEnabled) p->RenderSmaa();
+    SaveTestShot(this);
 
     if (p->frameInterpolation) {
         // Pose interpolation renders two complete scene passes per 30 Hz

@@ -476,6 +476,7 @@ extern bool          g_bSkipDoorAnimations;    // [Game] SkipDoorAnimations
 // Port-added camera-relative analogue movement. Keyboard and D-pad retain the
 // original tank controls; only the left analogue stick uses this mode.
 extern bool          g_bAlternateControls;     // [Input] AlternateControls
+extern bool          g_bModernCamera;          // [Game] ModernCamera (ModernCamera.cpp)
 // Port-added 16:9 presentation. Gameplay uses a vertically panned crop while
 // standalone screens and menus retain their authored 4:3 proportions.
 extern bool          g_bWidescreen;            // [Display] Widescreen

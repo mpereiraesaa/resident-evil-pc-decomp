@@ -23,6 +23,7 @@ extern void room_event_item_pickup(void);        // 0x00451700
 extern void display_room_camera_bg(void);
 extern void rearrange_item_slots(void);
 extern bool Room3D_IsActive(void);
+extern bool ModernCamera_Active(void);   // ModernCamera.cpp
 extern void Room3D_Render(void);
 
 // ============================================================================
@@ -102,7 +103,8 @@ static void UpdatePresentation(void)
     // returns smoothly to player follow. This only changes presentation of the
     // authored frame, so camera logic, masks and collision stay untouched.
     float rightY = 0.0f;
-    if (MarniXInput::GetRightStick(NULL, &rightY, NULL)) {
+    // (The modern follow camera uses the right stick to orbit instead.)
+    if (!ModernCamera_Active() && MarniXInput::GetRightStick(NULL, &rightY, NULL)) {
         target -= rightY * travelLimit;
     }
     if (target < 0.0f) target = 0.0f;

@@ -6,6 +6,758 @@
 #include "FileLoader.h"
 #include "../DebugPrint.h"
 #include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <array>
+#include <cmath>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
+
+// Optional geometry pass over the Marni viewport buffers. Register the EMD
+// allocation after LoadEntityEMD (0x00462370); animations and source data stay
+// untouched. Overlapping allocations are invalidated when the load arena is
+// reused, so an old model cannot accidentally refine a different TMD.
+struct EntityMeshSource {
+    unsigned int begin, end;
+    int mode;
+    bool chris;
+    std::string path;
+};
+static std::vector<EntityMeshSource> g_entityMeshSources;
+
+static unsigned int EntityTmdHash(CMarniDirect3DTMD* object)
+{
+    // FNV-1a over the exact viewport buffers. A sculpt patch must match the
+    // subdivision mode and original EMD it was authored against.
+    unsigned int hash = 2166136261u;
+    const auto add = [&hash](const void* data, size_t bytes) {
+        const unsigned char* cursor = (const unsigned char*)data;
+        for (size_t i = 0; i < bytes; ++i)
+            hash = (hash ^ cursor[i]) * 16777619u;
+    };
+    BYTE* slot = (BYTE*)object;
+    const int elementCount = *(int*)(slot + 0x4C0);
+    add(&elementCount, sizeof(elementCount));
+    for (int e = 0; e < elementCount && e < 16; ++e) {
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        add(&elem->m_primitiveType, sizeof(elem->m_primitiveType));
+        add(&elem->m_vertexCount, sizeof(elem->m_vertexCount));
+        add(&elem->m_listCount, sizeof(elem->m_listCount));
+        if (elem->m_pVertexBuffer != NULL && elem->m_pIndexBuffer != NULL) {
+            add(elem->m_pVertexBuffer, (size_t)elem->m_vertexCount * 11 * sizeof(float));
+            add(elem->m_pIndexBuffer, (size_t)elem->m_listCount *
+                elem->m_primitiveType * sizeof(WORD));
+        }
+    }
+    return hash;
+}
+
+// Port-only lookup for the model viewer's rig manifest. The joint's animation
+// object stores its TMD pointer, which can be matched to the EMD allocation.
+bool EntityMeshSourceInfo(unsigned int address, const char** path,
+                          unsigned int* offset)
+{
+    for (size_t i = 0; i < g_entityMeshSources.size(); ++i) {
+        const EntityMeshSource& source = g_entityMeshSources[i];
+        if (address >= source.begin && address < source.end) {
+            if (path) *path = source.path.c_str();
+            if (offset) *offset = address - source.begin;
+            return true;
+        }
+    }
+    return false;
+}
+
+void RegisterEntityMeshSourceRange(unsigned int begin, unsigned int end,
+                                   const char* emdPath)
+{
+    for (size_t i = 0; i < g_entityMeshSources.size();) {
+        const EntityMeshSource& source = g_entityMeshSources[i];
+        if (begin < source.end && source.begin < end)
+            g_entityMeshSources.erase(g_entityMeshSources.begin() + i);
+        else
+            ++i;
+    }
+    if (begin >= end) return;
+    const bool chris = emdPath && strcmp(emdPath, "enemy/char10.emd") == 0;
+    const char* setting = chris ? getenv("RE1_CHRIS_MESH") : NULL;
+    if (!setting) setting = getenv("RE1_ENTITY_MESH");
+    const int mode = setting && (setting[0] == '1' || setting[0] == '2' ||
+        setting[0] == '3') && setting[1] == 0 ? setting[0] - '0' : 0;
+    if (mode == 0 && getenv("RE1_ENTITY_OBJ_EXPORT_DIR") == NULL &&
+        getenv("RE1_ENTITY_MESH_PATCH_DIR") == NULL &&
+        getenv("RE1_ENTITY_MESH_REPLACE_DIR") == NULL)
+        return;
+    if (g_entityMeshSources.size() == 64)
+        g_entityMeshSources.erase(g_entityMeshSources.begin());
+    EntityMeshSource source = {begin, end, mode, chris, emdPath ? emdPath : "unknown"};
+    g_entityMeshSources.push_back(source);
+}
+
+static void ExportEntityTmdObj(CMarniDirect3DTMD* object,
+                               const EntityMeshSource& source,
+                               unsigned int sourceOffset, const char* stage)
+{
+    const char* directory = getenv("RE1_ENTITY_OBJ_EXPORT_DIR");
+    if (directory == NULL || directory[0] == 0) return;
+    const char* requestedStage = getenv("RE1_ENTITY_OBJ_EXPORT_STAGE");
+    if (requestedStage != NULL && strcmp(requestedStage, stage) != 0) return;
+    if (requestedStage == NULL && strcmp(stage, "source") != 0) return;
+
+    const char* base = strrchr(source.path.c_str(), '/');
+    base = base ? base + 1 : source.path.c_str();
+    char stem[64];
+    size_t length = strlen(base);
+    if (length >= 4 && strcmp(base + length - 4, ".emd") == 0)
+        length -= 4;
+    if (length >= sizeof(stem)) length = sizeof(stem) - 1;
+    for (size_t i = 0; i < length; ++i) {
+        const char c = base[i];
+        stem[i] = (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') ||
+                  (c >= '0' && c <= '9') ? c : '_';
+    }
+    stem[length] = 0;
+    char filename[1024];
+    const int pathLength = snprintf(filename, sizeof(filename), "%s/%s_%08x_%s.obj",
+                                    directory, stem, sourceOffset, stage);
+    if (pathLength < 0 || pathLength >= (int)sizeof(filename)) return;
+    FILE* out = fopen(filename, "wb");
+    if (out == NULL) {
+        fprintf(stderr, "RE1_ENTITY_OBJ_EXPORT: cannot create %s\n", filename);
+        return;
+    }
+    fprintf(out, "# RE1 TMD viewport geometry: %s offset 0x%08x (%s)\n",
+            source.path.c_str(), sourceOffset, stage);
+    fprintf(out, "# Each v/vt/vn index is identical; UV V is flipped for OBJ viewers.\n");
+    fprintf(out, "# re1_mesh_hash %08x\n", EntityTmdHash(object));
+    BYTE* slot = (BYTE*)object;
+    const int elementCount = *(int*)(slot + 0x4C0);
+    fprintf(out, "# re1_element_count %d\n", elementCount);
+    int vertexBase = 1;
+    for (int e = 0; e < elementCount && e < 16; ++e) {
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        const bool drawable = elem->m_pVertexBuffer != NULL &&
+            elem->m_pIndexBuffer != NULL &&
+            (elem->m_primitiveType == 3 || elem->m_primitiveType == 4);
+        fprintf(out, "# re1_element %d %u %u %u\n", e,
+                drawable ? elem->m_vertexCount : 0u,
+                drawable ? elem->m_listCount : 0u,
+                drawable ? elem->m_primitiveType : 0u);
+        if (!drawable)
+            continue;
+        const float* vertices = (const float*)elem->m_pVertexBuffer;
+        const WORD* indices = (const WORD*)elem->m_pIndexBuffer;
+        const int count = (int)elem->m_vertexCount;
+        const int sides = (int)elem->m_primitiveType;
+        fprintf(out, "g element_%d\n", e);
+        for (int v = 0; v < count; ++v) {
+            const float* p = vertices + v * 11;
+            fprintf(out, "v %.9g %.9g %.9g\n", p[0], p[1], p[2]);
+        }
+        for (int v = 0; v < count; ++v) {
+            const float* p = vertices + v * 11;
+            fprintf(out, "vt %.9g %.9g\n", p[9], 1.0f - p[10]);
+        }
+        for (int v = 0; v < count; ++v) {
+            const float* p = vertices + v * 11;
+            fprintf(out, "vn %.9g %.9g %.9g\n", p[3], p[4], p[5]);
+        }
+        for (int v = 0; v < count; ++v) {
+            const float* p = vertices + v * 11;
+            fprintf(out, "# re1_color %.9g %.9g %.9g\n",
+                    p[6], p[7], p[8]);
+        }
+        for (int p = 0; p < (int)elem->m_listCount; ++p) {
+            const WORD* face = indices + p * sides;
+            bool valid = true;
+            for (int c = 0; c < sides; ++c)
+                if (face[c] >= count) valid = false;
+            if (!valid) continue;
+            for (int tri = 0; tri < sides - 2; ++tri) {
+                const int a = vertexBase + face[0];
+                const int b = vertexBase + face[tri + 1];
+                const int c = vertexBase + face[tri + 2];
+                fprintf(out, "f %d/%d/%d %d/%d/%d %d/%d/%d\n",
+                        a, a, a, b, b, b, c, c, c);
+            }
+        }
+        vertexBase += count;
+    }
+    fclose(out);
+    fprintf(stderr, "RE1_ENTITY_OBJ_EXPORT: %s\n", filename);
+}
+
+static void ApplyEntityTmdDelta(CMarniDirect3DTMD* object,
+                                const EntityMeshSource& source,
+                                unsigned int sourceOffset)
+{
+    const char* directory = getenv("RE1_ENTITY_MESH_PATCH_DIR");
+    if (directory == NULL || directory[0] == 0) return;
+    const char* base = strrchr(source.path.c_str(), '/');
+    base = base ? base + 1 : source.path.c_str();
+    size_t length = strlen(base);
+    if (length >= 4 && strcmp(base + length - 4, ".emd") == 0) length -= 4;
+    char filename[1024];
+    const int pathLength = snprintf(filename, sizeof(filename),
+                                    "%s/%.*s_%08x.r1delta", directory,
+                                    (int)length, base, sourceOffset);
+    if (pathLength < 0 || pathLength >= (int)sizeof(filename)) return;
+    FILE* in = fopen(filename, "rb");
+    if (in == NULL) return;
+
+    BYTE* slot = (BYTE*)object;
+    const int elementCount = *(int*)(slot + 0x4C0);
+    char magic[8];
+    unsigned int hash = 0, fileElements = 0;
+    bool valid = elementCount > 0 && elementCount <= 16 &&
+        fread(magic, 1, sizeof(magic), in) == sizeof(magic) &&
+        memcmp(magic, "R1DELTA1", 8) == 0 &&
+        fread(&hash, sizeof(hash), 1, in) == 1 &&
+        fread(&fileElements, sizeof(fileElements), 1, in) == 1 &&
+        fileElements == (unsigned int)elementCount &&
+        hash == EntityTmdHash(object);
+    unsigned int totalVertices = 0;
+    for (int e = 0; valid && e < elementCount; ++e) {
+        unsigned int count = 0;
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        valid = fread(&count, sizeof(count), 1, in) == 1 &&
+                count == elem->m_vertexCount &&
+                count <= 262144u &&
+                (count == 0 || elem->m_pVertexBuffer != NULL) &&
+                totalVertices <= 262144u - count;
+        if (valid) totalVertices += count;
+    }
+    float* values = NULL;
+    if (valid && totalVertices > 0) {
+        values = (float*)malloc((size_t)totalVertices * 6 * sizeof(float));
+        valid = values != NULL &&
+                fread(values, 6 * sizeof(float), totalVertices, in) == totalVertices &&
+                fgetc(in) == EOF;
+        for (unsigned int i = 0; valid && i < totalVertices * 6; ++i)
+            valid = std::isfinite(values[i]);
+    } else {
+        valid = false;
+    }
+    fclose(in);
+    if (!valid) {
+        free(values);
+        fprintf(stderr, "RE1_ENTITY_MESH_PATCH: rejected %s (source or format mismatch)\n",
+                filename);
+        return;
+    }
+    unsigned int cursor = 0;
+    for (int e = 0; e < elementCount; ++e) {
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        float* vertices = (float*)elem->m_pVertexBuffer;
+        for (unsigned int v = 0; v < elem->m_vertexCount; ++v, ++cursor) {
+            const float* sculpt = values + cursor * 6;
+            float* dst = vertices + v * 11;
+            dst[0] = sculpt[0]; dst[1] = sculpt[1]; dst[2] = sculpt[2];
+            const float normalLength = sqrtf(sculpt[3]*sculpt[3] +
+                                             sculpt[4]*sculpt[4] +
+                                             sculpt[5]*sculpt[5]);
+            const float inverseLength = normalLength > 0.00001f ?
+                                        1.0f / normalLength : 0.0f;
+            dst[3] = sculpt[3] * inverseLength;
+            dst[4] = sculpt[4] * inverseLength;
+            dst[5] = sculpt[5] * inverseLength;
+        }
+    }
+    free(values);
+    fprintf(stderr, "RE1_ENTITY_MESH_PATCH: applied %s (%u vertices)\n",
+            filename, totalVertices);
+}
+
+// Port-only replacement mesh. Each original TMD element keeps its material and
+// texture handle; only its viewport triangles change. This means arbitrary
+// authored detail can be attached to the original rigid animation joint.
+// Validate the entire file and allocate every new buffer before touching the
+// source model, so a corrupt or incompatible replacement cannot erase a part.
+static bool ApplyEntityTmdReplacement(CMarniDirect3DTMD* object,
+                                      const EntityMeshSource& source,
+                                      unsigned int sourceOffset)
+{
+    const char* directory = getenv("RE1_ENTITY_MESH_REPLACE_DIR");
+    if (directory == NULL || directory[0] == 0) return false;
+    const char* base = strrchr(source.path.c_str(), '/');
+    base = base ? base + 1 : source.path.c_str();
+    size_t length = strlen(base);
+    if (length >= 4 && strcmp(base + length - 4, ".emd") == 0) length -= 4;
+    char filename[1024];
+    const int pathLength = snprintf(filename, sizeof(filename),
+                                    "%s/%.*s_%08x.r1mesh", directory,
+                                    (int)length, base, sourceOffset);
+    if (pathLength < 0 || pathLength >= (int)sizeof(filename)) return false;
+    FILE* in = fopen(filename, "rb");
+    if (in == NULL) return false;
+
+    BYTE* slot = (BYTE*)object;
+    const int elementCount = *(int*)(slot + 0x4C0);
+    char magic[8];
+    unsigned int hash = 0, fileElements = 0;
+    bool valid = elementCount > 0 && elementCount <= 16 &&
+        fread(magic, 1, sizeof(magic), in) == sizeof(magic) &&
+        memcmp(magic, "R1MESH01", 8) == 0 &&
+        fread(&hash, sizeof(hash), 1, in) == 1 &&
+        fread(&fileElements, sizeof(fileElements), 1, in) == 1 &&
+        fileElements == (unsigned int)elementCount &&
+        hash == EntityTmdHash(object);
+
+    struct ElementData {
+        std::vector<float> vertices;
+        std::vector<WORD> indices;
+        unsigned int vertexCount;
+        unsigned int triangleCount;
+    };
+    std::array<ElementData, 16> data;
+    unsigned int totalVertices = 0, totalTriangles = 0;
+    for (int e = 0; valid && e < elementCount; ++e) {
+        unsigned int vertexCount = 0, triangleCount = 0;
+        CMarniViewport2* original = (CMarniViewport2*)(slot + e * 0x4C);
+        valid = fread(&vertexCount, sizeof(vertexCount), 1, in) == 1 &&
+                fread(&triangleCount, sizeof(triangleCount), 1, in) == 1 &&
+                vertexCount <= 65535u && triangleCount <= 131072u &&
+                totalVertices <= 524288u - vertexCount &&
+                totalTriangles <= 524288u - triangleCount &&
+                ((vertexCount == 0 && triangleCount == 0 &&
+                  original->m_pVertexBuffer == NULL) ||
+                 (vertexCount >= 3 && triangleCount >= 1 &&
+                  original->m_pVertexBuffer != NULL &&
+                  original->m_pIndexBuffer != NULL));
+        if (!valid) break;
+        data[e].vertexCount = vertexCount;
+        data[e].triangleCount = triangleCount;
+        totalVertices += vertexCount;
+        totalTriangles += triangleCount;
+        if (vertexCount == 0) continue;
+        data[e].vertices.resize((size_t)vertexCount * 11);
+        data[e].indices.resize((size_t)triangleCount * 3);
+        valid = fread(data[e].vertices.data(), 11 * sizeof(float),
+                      vertexCount, in) == vertexCount &&
+                fread(data[e].indices.data(), 3 * sizeof(WORD),
+                      triangleCount, in) == triangleCount;
+        for (size_t i = 0; valid && i < data[e].vertices.size(); ++i)
+            valid = std::isfinite(data[e].vertices[i]);
+        for (size_t i = 0; valid && i < data[e].indices.size(); ++i)
+            valid = data[e].indices[i] < vertexCount;
+    }
+    if (valid) valid = totalTriangles > 0 && fgetc(in) == EOF;
+    fclose(in);
+    if (!valid) {
+        fprintf(stderr, "RE1_ENTITY_MESH_REPLACE: rejected %s (source or format mismatch)\n",
+                filename);
+        return false;
+    }
+
+    std::array<CMarniViewport2, 16> replacements;
+    for (int e = 0; e < elementCount; ++e) {
+        if (data[e].vertexCount == 0) continue;
+        CMarniViewport2& replacement = replacements[e];
+        if (!replacement.CreateWork((int)data[e].vertexCount,
+                                    (int)data[e].triangleCount, 3)) {
+            fprintf(stderr, "RE1_ENTITY_MESH_REPLACE: allocation failed %s\n",
+                    filename);
+            return false;
+        }
+        memcpy(replacement.m_pVertexBuffer, data[e].vertices.data(),
+               data[e].vertices.size() * sizeof(float));
+        memcpy(replacement.m_pIndexBuffer, data[e].indices.data(),
+               data[e].indices.size() * sizeof(WORD));
+    }
+    for (int e = 0; e < elementCount; ++e) {
+        if (data[e].vertexCount == 0) continue;
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        CMarniViewport2& replacement = replacements[e];
+        elem->Release();
+        elem->m_pVertexBuffer = replacement.m_pVertexBuffer;
+        elem->m_pIndexBuffer = replacement.m_pIndexBuffer;
+        elem->m_bHasBuffers = replacement.m_bHasBuffers;
+        elem->m_flag10 = replacement.m_flag10;
+        elem->m_flag18 = replacement.m_flag18;
+        elem->m_vertexCount = replacement.m_vertexCount;
+        elem->m_vertexCapacity = replacement.m_vertexCapacity;
+        elem->m_listCount = replacement.m_listCount;
+        elem->m_listCapacity = replacement.m_listCapacity;
+        elem->m_primitiveType = replacement.m_primitiveType;
+        replacement.m_pVertexBuffer = NULL;
+        replacement.m_pIndexBuffer = NULL;
+        replacement.m_bHasBuffers = 0;
+    }
+    fprintf(stderr, "RE1_ENTITY_MESH_REPLACE: applied %s (%u vertices, %u triangles)\n",
+            filename, totalVertices, totalTriangles);
+    return true;
+}
+
+struct ChrisMeshPosition {
+    float x, y, z;
+    bool operator<(const ChrisMeshPosition& other) const {
+        if (x != other.x) return x < other.x;
+        if (y != other.y) return y < other.y;
+        return z < other.z;
+    }
+};
+
+struct ChrisMeshNormal { float x, y, z; };
+struct ChrisMeshEdge {
+    ChrisMeshPosition a, b;
+    bool operator<(const ChrisMeshEdge& other) const {
+        if (a < other.a) return true;
+        if (other.a < a) return false;
+        return b < other.b;
+    }
+};
+typedef std::array<float, 11> ChrisMeshVertex;
+struct ChrisMeshTriangle { ChrisMeshVertex v[3]; int element; };
+
+static ChrisMeshPosition ChrisPosition(const ChrisMeshVertex& v)
+{
+    ChrisMeshPosition p = { v[0], v[1], v[2] };
+    return p;
+}
+
+static ChrisMeshNormal ChrisNormalize(ChrisMeshNormal n)
+{
+    float len = sqrtf(n.x * n.x + n.y * n.y + n.z * n.z);
+    if (len > 0.00001f) { n.x /= len; n.y /= len; n.z /= len; }
+    return n;
+}
+
+static ChrisMeshEdge ChrisEdge(ChrisMeshPosition a, ChrisMeshPosition b)
+{
+    if (b < a) { ChrisMeshPosition t = a; a = b; b = t; }
+    ChrisMeshEdge edge = {a, b};
+    return edge;
+}
+
+static ChrisMeshVertex ChrisMidpoint(const ChrisMeshVertex& a,
+                                     const ChrisMeshVertex& b)
+{
+    ChrisMeshVertex m;
+    for (int i = 0; i < 11; i++) m[i] = (a[i] + b[i]) * 0.5f;
+    // Cubic Hermite edge midpoint: tangents lie in the endpoint tangent
+    // planes. This adds curvature where the original broad polygon chords
+    // flattened Chris's silhouette, while both endpoints remain fixed.
+    float ex = b[0] - a[0], ey = b[1] - a[1], ez = b[2] - a[2];
+    float da = ex * a[3] + ey * a[4] + ez * a[5];
+    float db = ex * b[3] + ey * b[4] + ez * b[5];
+    for (int i = 0; i < 3; i++)
+        m[i] += 0.125f * (-da * a[i + 3] + db * b[i + 3]);
+    ChrisMeshNormal n = ChrisNormalize({m[3], m[4], m[5]});
+    m[3] = n.x; m[4] = n.y; m[5] = n.z;
+    return m;
+}
+
+static void ExtendJointEnd(ChrisMeshVertex& vertex, float lowY,
+                           float highY, float extension)
+{
+    const float span = highY - lowY;
+    if (span <= 0.0f) return;
+    const float t = (vertex[1] - lowY) / span;
+    // Fade the extra length into the middle of the rigid piece; UVs stay on
+    // their original vertices, so the end texture stretches only locally.
+    if (t < 0.3f) {
+        const float w = (0.3f - t) / 0.3f;
+        vertex[1] -= extension * w * w;
+    } else if (t > 0.7f) {
+        const float w = (t - 0.7f) / 0.3f;
+        vertex[1] += extension * w * w;
+    }
+}
+
+static void RefineEntityTmd(CMarniDirect3DTMD* object, bool loopSmoothing,
+                            bool chris)
+{
+    // A joint's open rim is shared visually with another rigid TMD object,
+    // but the refiner has no matching vertices from that other object here.
+    // Keep rim points fixed in both passes so smoothing cannot enlarge the
+    // sleeve, neck, or other joint gaps during animation.
+    BYTE* slot = (BYTE*)object;
+    const int elementCount = *(int*)(slot + 0x4C0);
+    if (elementCount <= 0 || elementCount > 16) return;
+
+    std::vector<ChrisMeshTriangle> triangles;
+    std::map<ChrisMeshPosition, std::vector<ChrisMeshNormal> > normals;
+    std::map<ChrisMeshPosition, std::set<ChrisMeshPosition> > neighbors;
+    std::map<ChrisMeshEdge, std::vector<ChrisMeshPosition> > edgeOpposites;
+    int originalPolygons = 0;
+    for (int e = 0; e < elementCount; e++) {
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        if (!elem->m_pVertexBuffer || !elem->m_pIndexBuffer) continue;
+        const int n = (int)elem->m_primitiveType;
+        if (n != 3 && n != 4) continue;
+        const float* vertices = (const float*)elem->m_pVertexBuffer;
+        const WORD* indices = (const WORD*)elem->m_pIndexBuffer;
+        for (int p = 0; p < (int)elem->m_listCount; p++) {
+            originalPolygons++;
+            for (int half = 0; half < n - 2; half++) {
+                int corners[3] = {0, half + 1, half + 2};
+                ChrisMeshTriangle tri;
+                tri.element = e;
+                bool valid = true;
+                for (int c = 0; c < 3; c++) {
+                    WORD index = indices[p * n + corners[c]];
+                    if (index >= elem->m_vertexCount) { valid = false; break; }
+                    memcpy(tri.v[c].data(), vertices + index * 11, 11 * sizeof(float));
+                }
+                if (!valid) continue;
+                ChrisMeshNormal face = {tri.v[0][3], tri.v[0][4], tri.v[0][5]};
+                if (face.x == 0 && face.y == 0 && face.z == 0) {
+                    float ax = tri.v[1][0] - tri.v[0][0];
+                    float ay = tri.v[1][1] - tri.v[0][1];
+                    float az = tri.v[1][2] - tri.v[0][2];
+                    float bx = tri.v[2][0] - tri.v[0][0];
+                    float by = tri.v[2][1] - tri.v[0][1];
+                    float bz = tri.v[2][2] - tri.v[0][2];
+                    face = {ay*bz-az*by, az*bx-ax*bz, ax*by-ay*bx};
+                }
+                face = ChrisNormalize(face);
+                for (int c = 0; c < 3; c++) {
+                    ChrisMeshNormal current = {tri.v[c][3], tri.v[c][4], tri.v[c][5]};
+                    if (current.x == 0 && current.y == 0 && current.z == 0)
+                        current = face;
+                    current = ChrisNormalize(current);
+                    tri.v[c][3] = current.x;
+                    tri.v[c][4] = current.y;
+                    tri.v[c][5] = current.z;
+                    normals[ChrisPosition(tri.v[c])].push_back(current);
+                }
+                if (loopSmoothing) {
+                    for (int c = 0; c < 3; c++) {
+                        ChrisMeshPosition a = ChrisPosition(tri.v[c]);
+                        ChrisMeshPosition b = ChrisPosition(tri.v[(c + 1) % 3]);
+                        ChrisMeshPosition opposite = ChrisPosition(tri.v[(c + 2) % 3]);
+                        neighbors[a].insert(b);
+                        neighbors[b].insert(a);
+                        edgeOpposites[ChrisEdge(a, b)].push_back(opposite);
+                    }
+                }
+                triangles.push_back(tri);
+            }
+        }
+    }
+
+    ChrisMeshPosition partMin = {0, 0, 0}, partMax = {0, 0, 0};
+    if (!triangles.empty()) {
+        partMin = partMax = ChrisPosition(triangles[0].v[0]);
+        for (size_t t = 0; t < triangles.size(); ++t)
+            for (int c = 0; c < 3; ++c) {
+                const ChrisMeshPosition p = ChrisPosition(triangles[t].v[c]);
+                if (p.x < partMin.x) partMin.x = p.x;
+                if (p.y < partMin.y) partMin.y = p.y;
+                if (p.z < partMin.z) partMin.z = p.z;
+                if (p.x > partMax.x) partMax.x = p.x;
+                if (p.y > partMax.y) partMax.y = p.y;
+                if (p.z > partMax.z) partMax.z = p.z;
+            }
+    }
+    if (getenv("RE1_ENTITY_GEOMETRY_AUDIT") != NULL)
+        fprintf(stderr, "RE1_ENTITY_PART: polygons=%d bounds=(%.1f..%.1f,"
+                " %.1f..%.1f, %.1f..%.1f)\n", originalPolygons,
+                partMin.x, partMax.x, partMin.y, partMax.y,
+                partMin.z, partMax.z);
+
+    const char* overlapSetting = getenv("RE1_ENTITY_JOINT_OVERLAP");
+    const int overlapMode = overlapSetting && overlapSetting[0] >= '1' &&
+        overlapSetting[0] <= '3' && overlapSetting[1] == 0 ?
+        overlapSetting[0] - '0' : 0;
+    const float spanY = partMax.y - partMin.y;
+    const float spanX = partMax.x - partMin.x;
+    const float spanZ = partMax.z - partMin.z;
+    const float transverse = spanX > spanZ ? spanX : spanZ;
+    const float jointExtension = overlapMode && spanY > 200.0f &&
+        spanY > 1.5f * transverse ? spanY * (0.02f * overlapMode) : 0.0f;
+
+    const bool roundHeadOrSleeve = chris &&
+        (originalPolygons == 155 || originalPolygons == 28 || originalPolygons == 30);
+    const float geometryStrength = roundHeadOrSleeve ? 0.4f :
+                                   chris ? 0.15f : 0.25f;
+    std::map<ChrisMeshPosition, ChrisMeshPosition> loopPositions;
+    if (loopSmoothing) {
+        std::map<ChrisMeshPosition, std::set<ChrisMeshPosition> > boundary;
+        for (std::map<ChrisMeshEdge, std::vector<ChrisMeshPosition> >::const_iterator
+             it = edgeOpposites.begin(); it != edgeOpposites.end(); ++it) {
+            if (it->second.size() == 1) {
+                boundary[it->first.a].insert(it->first.b);
+                boundary[it->first.b].insert(it->first.a);
+            }
+        }
+        if (getenv("RE1_ENTITY_GEOMETRY_AUDIT") != NULL && !neighbors.empty()) {
+            ChrisMeshPosition partCenter = {0, 0, 0};
+            for (std::map<ChrisMeshPosition, std::set<ChrisMeshPosition> >::const_iterator
+                 it = neighbors.begin(); it != neighbors.end(); ++it) {
+                partCenter.x += it->first.x; partCenter.y += it->first.y;
+                partCenter.z += it->first.z;
+            }
+            const float invCount = 1.0f / (float)neighbors.size();
+            partCenter.x *= invCount; partCenter.y *= invCount;
+            partCenter.z *= invCount;
+            std::set<ChrisMeshPosition> seen;
+            int rimIndex = 0;
+            for (std::map<ChrisMeshPosition, std::set<ChrisMeshPosition> >::const_iterator
+                 it = boundary.begin(); it != boundary.end(); ++it) {
+                if (!seen.insert(it->first).second) continue;
+                std::vector<ChrisMeshPosition> stack(1, it->first);
+                ChrisMeshPosition rimCenter = {0, 0, 0};
+                int rimCount = 0;
+                while (!stack.empty()) {
+                    const ChrisMeshPosition p = stack.back(); stack.pop_back();
+                    rimCenter.x += p.x; rimCenter.y += p.y; rimCenter.z += p.z;
+                    ++rimCount;
+                    const std::set<ChrisMeshPosition>& links = boundary[p];
+                    for (std::set<ChrisMeshPosition>::const_iterator q = links.begin();
+                         q != links.end(); ++q)
+                        if (seen.insert(*q).second) stack.push_back(*q);
+                }
+                rimCenter.x /= rimCount; rimCenter.y /= rimCount;
+                rimCenter.z /= rimCount;
+                fprintf(stderr, "RE1_ENTITY_RIM: polygons=%d rim=%d vertices=%d "
+                        "part=(%.1f,%.1f,%.1f) center=(%.1f,%.1f,%.1f)\n",
+                        originalPolygons, rimIndex++, rimCount,
+                        partCenter.x, partCenter.y, partCenter.z,
+                        rimCenter.x, rimCenter.y, rimCenter.z);
+            }
+        }
+        for (std::map<ChrisMeshPosition, std::set<ChrisMeshPosition> >::const_iterator
+             it = neighbors.begin(); it != neighbors.end(); ++it) {
+            ChrisMeshPosition p = it->first;
+            ChrisMeshPosition smooth = p;
+            const std::set<ChrisMeshPosition>& ring = it->second;
+            const std::set<ChrisMeshPosition>& rim = boundary[p];
+            if (!rim.empty()) {
+                loopPositions[p] = p;
+                continue;
+            }
+            if (ring.size() >= 3) {
+                const float beta = ring.size() == 3 ? 0.1875f :
+                                   0.375f / (float)ring.size();
+                smooth.x = p.x * (1.0f - beta * ring.size());
+                smooth.y = p.y * (1.0f - beta * ring.size());
+                smooth.z = p.z * (1.0f - beta * ring.size());
+                for (std::set<ChrisMeshPosition>::const_iterator n = ring.begin();
+                     n != ring.end(); ++n) {
+                    smooth.x += beta*n->x; smooth.y += beta*n->y;
+                    smooth.z += beta*n->z;
+                }
+            }
+            // Interior points can round toward their neighbours. Open rims
+            // returned above because adjacent rigid pieces are not skinned.
+            loopPositions[p] = {p.x + geometryStrength*(smooth.x-p.x),
+                                p.y + geometryStrength*(smooth.y-p.y),
+                                p.z + geometryStrength*(smooth.z-p.z)};
+        }
+    }
+
+    // Compare a crease-aware normal blend against the earlier all-neighbours
+    // blend. Positions can be shared by skin and a sharply folded collar, or
+    // by opposite faces of a thin part; those should not shade as one plane.
+    const char* creaseSetting = getenv("RE1_ENTITY_CREASE_GUARD");
+    const bool creaseGuard = creaseSetting && strcmp(creaseSetting, "1") == 0;
+    int refinedTriangles = 0;
+    for (int e = 0; e < elementCount; e++) {
+        int count = 0;
+        for (size_t t = 0; t < triangles.size(); t++)
+            if (triangles[t].element == e) count++;
+        if (count == 0 || count * 12 > 65535) continue;
+
+        CMarniViewport2* elem = (CMarniViewport2*)(slot + e * 0x4C);
+        // Allocate the replacement before releasing the original viewport.
+        // A failed allocation must leave the game's source mesh drawable.
+        CMarniViewport2 refined;
+        if (!refined.CreateWork(count * 12, count * 4, 3)) continue;
+        float* dst = (float*)refined.m_pVertexBuffer;
+        WORD* dstIndices = (WORD*)refined.m_pIndexBuffer;
+        int out = 0;
+        for (size_t t = 0; t < triangles.size(); t++) {
+            if (triangles[t].element != e) continue;
+            ChrisMeshVertex v[3] = {triangles[t].v[0], triangles[t].v[1],
+                                      triangles[t].v[2]};
+            for (int c = 0; c < 3; c++) {
+                const std::vector<ChrisMeshNormal>& samples = normals[ChrisPosition(v[c])];
+                ChrisMeshNormal total = {0.0f, 0.0f, 0.0f};
+                for (size_t s = 0; s < samples.size(); ++s) {
+                    const ChrisMeshNormal& sample = samples[s];
+                    const float dot = v[c][3]*sample.x + v[c][4]*sample.y +
+                                      v[c][5]*sample.z;
+                    if (!creaseGuard || dot >= 0.5f) {
+                        total.x += sample.x;
+                        total.y += sample.y;
+                        total.z += sample.z;
+                    }
+                }
+                ChrisMeshNormal n = ChrisNormalize(total);
+                v[c][3] = n.x; v[c][4] = n.y; v[c][5] = n.z;
+            }
+            ChrisMeshVertex m01, m12, m20;
+            if (loopSmoothing) {
+                ChrisMeshVertex* mids[3] = {&m01, &m12, &m20};
+                for (int c = 0; c < 3; c++) {
+                    const ChrisMeshVertex& a = v[c];
+                    const ChrisMeshVertex& b = v[(c + 1) % 3];
+                    ChrisMeshVertex& m = *mids[c];
+                    m = ChrisMidpoint(a, b);
+                    const std::vector<ChrisMeshPosition>& opposite =
+                        edgeOpposites[ChrisEdge(ChrisPosition(a), ChrisPosition(b))];
+                    if (opposite.size() == 2) {
+                        const ChrisMeshPosition& c0 = opposite[0];
+                        const ChrisMeshPosition& c1 = opposite[1];
+                        float loopX = 0.375f*(a[0]+b[0])+0.125f*(c0.x+c1.x);
+                        float loopY = 0.375f*(a[1]+b[1])+0.125f*(c0.y+c1.y);
+                        float loopZ = 0.375f*(a[2]+b[2])+0.125f*(c0.z+c1.z);
+                        float edgeStrength = roundHeadOrSleeve ? 0.4f :
+                                             chris ? 0.2f : 0.25f;
+                        m[0] += edgeStrength*(loopX-m[0]);
+                        m[1] += edgeStrength*(loopY-m[1]);
+                        m[2] += edgeStrength*(loopZ-m[2]);
+                    }
+                    ChrisMeshNormal n = ChrisNormalize({m[3], m[4], m[5]});
+                    m[3] = n.x; m[4] = n.y; m[5] = n.z;
+                }
+                for (int c = 0; c < 3; c++) {
+                    ChrisMeshPosition p = loopPositions[ChrisPosition(v[c])];
+                    v[c][0] = p.x; v[c][1] = p.y; v[c][2] = p.z;
+                }
+            } else {
+                m01 = ChrisMidpoint(v[0], v[1]);
+                m12 = ChrisMidpoint(v[1], v[2]);
+                m20 = ChrisMidpoint(v[2], v[0]);
+            }
+            if (jointExtension > 0.0f) {
+                for (int c = 0; c < 3; ++c)
+                    ExtendJointEnd(v[c], partMin.y, partMax.y, jointExtension);
+                ExtendJointEnd(m01, partMin.y, partMax.y, jointExtension);
+                ExtendJointEnd(m12, partMin.y, partMax.y, jointExtension);
+                ExtendJointEnd(m20, partMin.y, partMax.y, jointExtension);
+            }
+            const ChrisMeshVertex* sub[12] = {
+                &v[0], &m01, &m20, &m01, &v[1], &m12,
+                &m20, &m12, &v[2], &m01, &m12, &m20
+            };
+            for (int c = 0; c < 12; c++, out++) {
+                memcpy(dst + out * 11, sub[c]->data(), 11 * sizeof(float));
+                dstIndices[out] = (WORD)out;
+            }
+            refinedTriangles += 4;
+        }
+        elem->Release();
+        elem->m_pVertexBuffer = refined.m_pVertexBuffer;
+        elem->m_pIndexBuffer = refined.m_pIndexBuffer;
+        elem->m_bHasBuffers = refined.m_bHasBuffers;
+        elem->m_flag10 = refined.m_flag10;
+        elem->m_flag18 = refined.m_flag18;
+        elem->m_vertexCount = refined.m_vertexCount;
+        elem->m_vertexCapacity = refined.m_vertexCapacity;
+        elem->m_listCount = refined.m_listCount;
+        elem->m_listCapacity = refined.m_listCapacity;
+        elem->m_primitiveType = refined.m_primitiveType;
+        refined.m_pVertexBuffer = NULL;
+        refined.m_pIndexBuffer = NULL;
+        refined.m_bHasBuffers = 0;
+    }
+    fprintf(stderr, "RE1_ENTITY_MESH: %d polygons -> %d curved triangles, %d elements\n",
+            originalPolygons, refinedTriangles, elementCount);
+}
 
 // ============================================================================
 // TMD texture header struct (output of FUN_00482d40 / ParseTmdTextureHeader)
@@ -383,6 +1135,27 @@ slotFound:
     // FUN_004450e0: parse the TMD into the slot's embedded viewport elements
     // (ECX = objSlot in the original; args: hdr, 0, 1, bankID, texRef)
     PSXObject_Store((CMarniDirect3DTMD*)objSlot, (int*)hdrPtr, 0, bankID, (int)texRef);
+    for (size_t i = 0; i < g_entityMeshSources.size(); i++) {
+        const EntityMeshSource& source = g_entityMeshSources[i];
+        if ((unsigned int)tmdDataPtr >= source.begin &&
+            (unsigned int)tmdDataPtr < source.end) {
+            const unsigned int sourceOffset = (unsigned int)tmdDataPtr - source.begin;
+            ExportEntityTmdObj((CMarniDirect3DTMD*)objSlot, source, sourceOffset, "source");
+            if (source.mode != 0) {
+                RefineEntityTmd((CMarniDirect3DTMD*)objSlot,
+                                source.mode >= 2, source.chris);
+                if (source.mode == 3)
+                    RefineEntityTmd((CMarniDirect3DTMD*)objSlot,
+                                    false, source.chris);
+            }
+            ExportEntityTmdObj((CMarniDirect3DTMD*)objSlot, source, sourceOffset, "refined");
+            if (!ApplyEntityTmdReplacement((CMarniDirect3DTMD*)objSlot,
+                                           source, sourceOffset))
+                ApplyEntityTmdDelta((CMarniDirect3DTMD*)objSlot, source, sourceOffset);
+            ExportEntityTmdObj((CMarniDirect3DTMD*)objSlot, source, sourceOffset, "patched");
+            break;
+        }
+    }
 
     // Restore header
     hdrPtr[0] = saved0;

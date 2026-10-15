@@ -69,6 +69,7 @@ set(RE1_SOURCES
     src/game/LabSlides.cpp
     src/game/LogosScreen.cpp
     src/game/MainLoop.cpp
+    src/game/ModelViewer.cpp
     src/game/MainMenu.cpp
     src/game/MenuData.cpp
     src/game/ObjectManager.cpp

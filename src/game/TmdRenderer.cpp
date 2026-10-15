@@ -30,6 +30,7 @@
 #include "SpriteRenderer.h"
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include "../Globals.h"
 #include "../marni/MarniDX.h"
 #include "../marni/MarniSystem.h"
@@ -67,7 +68,7 @@ extern void FUN_00483580(int* joint, MATRIX* out);          // 0x00483580 item_v
 #define TMD_FAR_Z      (131072.0f)    // depth-buffer range; every scene z fits
 #define TMD_MAX_QUEUE       2048
 #define TMD_MAX_TRIS_FLUSH  1024      // MarniDX::DrawTriangles3D per-call cap
-#define TMD_MAX_TRIS_COLLECT 8192     // per-frame triangle pool for the depth sort
+#define TMD_MAX_TRIS_COLLECT 65536    // fixed first block; crowded 16x scenes spill to heap
 
 // View-space Z -> normalised [0,1] depth for the depth buffer. Linear: a D24
 // buffer over TMD_FAR_Z still resolves better than a hundredth of a world unit,
@@ -438,6 +439,15 @@ void TmdQueueComplexObject(void* objData, void* elem, int depth)
 static void TmdComputeLight(const TmdLightState* ls, const float* n, const float* rot,
                             float* outR, float* outG, float* outB)
 {
+    // Port-only lighting study. The original RDT lights remain the base and
+    // the default path below is unchanged. These camera-space softboxes are a
+    // deliberately small character fill for comparing HD skins in dark rooms.
+    static const int modelLighting = []() {
+        const char* value = getenv("RE1_MODEL_LIGHTING");
+        if (value != NULL && strcmp(value, "cinematic") == 0) return 1;
+        if (value != NULL && strcmp(value, "remake-study") == 0) return 2;
+        return 0;
+    }();
     // Normal into view space (rotation part of the objData matrix)
     float nx = rot[0] * n[0] + rot[4] * n[1] + rot[8]  * n[2];
     float ny = rot[1] * n[0] + rot[5] * n[1] + rot[9]  * n[2];
@@ -468,6 +478,34 @@ static void TmdComputeLight(const TmdLightState* ls, const float* n, const float
             r += d * L[6];
             g += d * L[7];
             b += d * L[8];
+        }
+    }
+
+    if (modelLighting != 0) {
+        // In view space a front-facing normal points toward -Z. Keep the room
+        // colour and intensity while giving curved faces a readable shape.
+        float key = nx * -0.38f + ny * 0.52f - nz * 0.76f;
+        float fill = nx * 0.72f + ny * 0.18f - nz * 0.67f;
+        float upper = ny > 0.0f ? ny : 0.0f;
+        if (key < 0.0f) key = 0.0f;
+        if (fill < 0.0f) fill = 0.0f;
+        if (modelLighting == 1) {
+            r = r * 0.68f + 0.28f * key + 0.085f * fill + 0.035f * upper;
+            g = g * 0.68f + 0.245f * key + 0.100f * fill + 0.038f * upper;
+            b = b * 0.68f + 0.210f * key + 0.135f * fill + 0.045f * upper;
+        } else {
+            // Broader key/fill and a restrained edge light expose the denser
+            // mesh's face and fabric shape in dark room cameras. Keep the
+            // room's latched lights as the base; this is a visual study rather
+            // than a rewrite of RDT lighting or the background image.
+            float facing = -nz;
+            if (facing < 0.0f) facing = 0.0f;
+            if (facing > 1.0f) facing = 1.0f;
+            float edge = 1.0f - facing;
+            edge = edge * edge * edge;
+            r = r * 0.57f + 0.40f * key + 0.14f * fill + 0.075f * edge + 0.025f * upper;
+            g = g * 0.57f + 0.34f * key + 0.17f * fill + 0.087f * edge + 0.030f * upper;
+            b = b * 0.57f + 0.28f * key + 0.22f * fill + 0.110f * edge + 0.038f * upper;
         }
     }
 
@@ -516,6 +554,14 @@ void TmdInterpolationEndFrame(void)
 
 void FlushTmdObjects(float poseAlpha)
 {
+    // Port-only comparison switch. The original texture pages use point
+    // sampling; linear filtering softens texels but cannot add model detail.
+    static const bool smoothTextures = []() {
+        const char* value = getenv("RE1_MODEL_TEXTURE_FILTER");
+        return value != NULL && strcmp(value, "linear") == 0;
+    }();
+    const MarniSampler modelSampler = smoothTextures ? MARNI_SAMPLER_LINEAR : MARNI_SAMPLER_POINT;
+
     int queued = g_tmdQueueCount;
 
     unsigned int maskDepths[TMD_MAX_SCENE_DEPTHS];
@@ -597,6 +643,33 @@ void FlushTmdObjects(float poseAlpha)
         // no Z, so without this the far side of each limb paints over its own
         // near side and the model renders as a dark shell.
         int collected = 0;
+        TmdTri* overflowTris = NULL;
+        int overflowCount = 0;
+        int overflowCapacity = 0;
+        bool collectionExhausted = false;
+        int droppedTris = 0;
+        // Keep the original fixed arrays and their .bss placement. Only a
+        // crowded high-density frame allocates an overflow block on the heap.
+        const auto appendTri = [&]() -> TmdTri* {
+            if (collectionExhausted) { ++droppedTris; return NULL; }
+            if (collected >= TMD_MAX_TRIS_COLLECT) {
+                if (overflowCount == overflowCapacity) {
+                    const int nextCapacity = overflowCapacity ? overflowCapacity * 2 : 4096;
+                    TmdTri* grown = (TmdTri*)realloc(overflowTris,
+                        (size_t)nextCapacity * sizeof(TmdTri));
+                    if (grown == NULL) {
+                        collectionExhausted = true;
+                        ++droppedTris;
+                        return NULL;
+                    }
+                    overflowTris = grown;
+                    overflowCapacity = nextCapacity;
+                }
+                ++collected;
+                return &overflowTris[overflowCount++];
+            }
+            return &g_tmdTris[collected++];
+        };
 
         for (int i = 0; i < queued; i++) {
             TmdDrawEntry* e = &g_tmdQueue[i];
@@ -865,9 +938,8 @@ void FlushTmdObjects(float poseAlpha)
                     x1 = sx[i1]; y1 = sy[i1];
                     x2 = sx[i2]; y2 = sy[i2];
 
-                    if (collected >= TMD_MAX_TRIS_COLLECT) continue;
-
-                    TmdTri* t3 = &g_tmdTris[collected];
+                    TmdTri* t3 = appendTri();
+                    if (t3 == NULL) continue;
                     float* o = t3->v;
                     const float* v0 = vbuf + i0 * 11;
                     const float* v1 = vbuf + i1 * 11;
@@ -888,8 +960,8 @@ void FlushTmdObjects(float poseAlpha)
                     t3->tex   = tex;
                     t3->alpha = triAlpha;
                     t3->otDepth = e->depth;
-                    g_tmdTriOrder[collected] = collected;
-                    collected++;
+                    if (collected <= TMD_MAX_TRIS_COLLECT)
+                        g_tmdTriOrder[collected - 1] = collected - 1;
 
                     // Second, opaque pass over the same geometry with the STP
                     // texels knocked out (see knockTex above). It carries the
@@ -909,18 +981,21 @@ void FlushTmdObjects(float poseAlpha)
                     // reaches later, and the interior of a case this size is
                     // exactly where a mis-ordered triangle would then punch a
                     // hole instead of just painting in the wrong order.
-                    if (knockTex != MARNI_NULL_HANDLE &&
-                        collected < TMD_MAX_TRIS_COLLECT) {
-                        TmdTri* k3 = &g_tmdTris[collected];
-                        memcpy(k3->v, t3->v, sizeof(k3->v));
+                    if (knockTex != MARNI_NULL_HANDLE) {
+                        // appendTri may reallocate overflow storage and invalidate
+                        // t3; retain its completed data before that happens.
+                        TmdTri source = *t3;
+                        TmdTri* k3 = appendTri();
+                        if (k3 == NULL) continue;
+                        memcpy(k3->v, source.v, sizeof(k3->v));
                         for (int v = 0; v < 3; v++)
                             k3->v[v * TMD_VERT_FLOATS + 9] = 1.0f;
-                        k3->depth   = t3->depth;
+                        k3->depth   = source.depth;
                         k3->tex     = (DWORD)knockTex;
                         k3->alpha   = triAlpha;
                         k3->otDepth = e->depth;
-                        g_tmdTriOrder[collected] = collected;
-                        collected++;
+                        if (collected <= TMD_MAX_TRIS_COLLECT)
+                            g_tmdTriOrder[collected - 1] = collected - 1;
                     }
                 }
             }
@@ -950,9 +1025,28 @@ void FlushTmdObjects(float poseAlpha)
         // wash first, opaque over the top, punched texels keeping the wash. The
         // collection index is the last resort, so the whole order is
         // deterministic frame to frame.
-        std::sort(g_tmdTriOrder, g_tmdTriOrder + collected, [](int a, int b) {
-            const TmdTri& ta = g_tmdTris[a];
-            const TmdTri& tb = g_tmdTris[b];
+        int* order = g_tmdTriOrder;
+        if (collected > TMD_MAX_TRIS_COLLECT) {
+            order = (int*)malloc((size_t)collected * sizeof(int));
+            if (order != NULL) {
+                for (int i = 0; i < collected; ++i) order[i] = i;
+            } else {
+                order = g_tmdTriOrder;
+                droppedTris += collected - TMD_MAX_TRIS_COLLECT;
+                collected = TMD_MAX_TRIS_COLLECT;
+            }
+        }
+        if (droppedTris > 0)
+            dbg_printf("FlushTmdObjects: dropped %d triangles (out of memory)\n",
+                       droppedTris);
+        if (getenv("RE1_TMD_TRI_AUDIT") != NULL && collected > 0)
+            fprintf(stderr, "RE1_TMD_TRI_AUDIT: %d triangles, %d overflow, %d dropped\n",
+                    collected, overflowCount, droppedTris);
+        std::sort(order, order + collected, [overflowTris](int a, int b) {
+            const TmdTri& ta = a < TMD_MAX_TRIS_COLLECT ?
+                               g_tmdTris[a] : overflowTris[a - TMD_MAX_TRIS_COLLECT];
+            const TmdTri& tb = b < TMD_MAX_TRIS_COLLECT ?
+                               g_tmdTris[b] : overflowTris[b - TMD_MAX_TRIS_COLLECT];
             if (ta.depth != tb.depth)     return ta.depth > tb.depth;
             if (ta.otDepth != tb.otDepth) return ta.otDepth > tb.otDepth;
             return a < b;
@@ -964,7 +1058,10 @@ void FlushTmdObjects(float poseAlpha)
         bool  triWrite = true;   // depth-WRITE mode of the batch in flight
 
         for (int k = 0; k < collected; k++) {
-            const TmdTri* t3 = &g_tmdTris[g_tmdTriOrder[k]];
+            const int triIndex = order[k];
+            const TmdTri* t3 = triIndex < TMD_MAX_TRIS_COLLECT ?
+                               &g_tmdTris[triIndex] :
+                               &overflowTris[triIndex - TMD_MAX_TRIS_COLLECT];
             const bool triWriteThis = t3->alpha >= 0.999f;
 
             // Every scene sprite farther than this triangle has to be on
@@ -973,7 +1070,7 @@ void FlushTmdObjects(float poseAlpha)
             while (maskIdx < maskCount && (float)maskDepths[maskIdx] > t3->depth) {
                 if (triCount > 0) {
                     Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
-                                                MARNI_SAMPLER_POINT, MARNI_BLEND_ALPHA,
+                                                modelSampler, MARNI_BLEND_ALPHA,
                                                 triWrite);
                     triCount = 0;
                 }
@@ -985,7 +1082,7 @@ void FlushTmdObjects(float poseAlpha)
             if ((triCount > 0 && (t3->tex != triTex || triWriteThis != triWrite)) ||
                 triCount >= TMD_MAX_TRIS_FLUSH) {
                 Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
-                                            MARNI_SAMPLER_POINT, MARNI_BLEND_ALPHA,
+                                            modelSampler, MARNI_BLEND_ALPHA,
                                             triWrite);
                 triCount = 0;
             }
@@ -996,9 +1093,11 @@ void FlushTmdObjects(float poseAlpha)
         }
         if (triCount > 0) {
             Marni_DX()->DrawTriangles3D(triVerts, triCount, (MarniHandle)triTex,
-                                        MARNI_SAMPLER_POINT, MARNI_BLEND_ALPHA,
+                                        modelSampler, MARNI_BLEND_ALPHA,
                                         triWrite);
         }
+        if (order != g_tmdTriOrder) free(order);
+        free(overflowTris);
     }
 
     // The scene sprites nearer than the last triangle - and, when no entity was

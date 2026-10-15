@@ -409,6 +409,7 @@ BOOL MarniLoadClassicHdPixels(const void* pixelData, const WORD* palette,
     }
     crc = ~crc;
     if (crc == 0) return FALSE;
+    const bool auditHd = getenv("RE1_HD_TEXTURE_AUDIT") != NULL;
 
     static const char* categories[] = { "misc", "skin2", "skin" };
     for (int category = 0; category < 3; category++) {
@@ -454,9 +455,15 @@ BOOL MarniLoadClassicHdPixels(const void* pixelData, const WORD* palette,
                   "[hd] %s pixels: %s (%dx%d, logical %dx%d)\n",
                   categories[category], imagePath, imageWidth, imageHeight,
                   width, height);
+        if (auditHd)
+            fprintf(stderr, "RE1_HD_TEXTURE_AUDIT: %08X hit %s %dx%d\n",
+                    crc, categories[category], width, height);
         OutputDebugStringA(message);
         return TRUE;
     }
+    if (auditHd)
+        fprintf(stderr, "RE1_HD_TEXTURE_AUDIT: %08X miss %dx%d\n",
+                crc, width, height);
     return FALSE;
 }
 

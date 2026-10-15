@@ -75,11 +75,13 @@ stay unchanged. For example, USA GOG's `Data/STATUS.TIM` resolves to
 `hires/misc/97DE3E43.webp`, the Spanish HD menu sheet.
 
 The Japanese and USA model atlases sometimes contain the same art but produce
-different hashes. The committed skin map supplies 26 high-confidence USA
+different hashes. The committed skin map supplies 33 high-confidence USA
 aliases selected by comparing the decoded embedded TIM surfaces with the pack
 art; this includes both palettes used by Chris and Jill. The importer copies
-those aliases alongside the original pack names. Missing or ambiguous hashes
-fall back to the original texture without changing startup or requiring
+those aliases alongside the original pack names. A viewer audit of the 67
+distinct USA EMDs found 94 of 112 atlas-page loads covered with these aliases
+installed. The remaining nine distinct missing atlases have no verified match
+in this pack and fall back to the original texture without requiring
 `bio1hd.asi`.
 
 The Spanish translation is stored as a 7z resource inside the pack's

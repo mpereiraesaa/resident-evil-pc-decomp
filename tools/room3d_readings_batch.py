@@ -48,6 +48,15 @@ def install(built_dir, name, mods_root, stage):
     (dst / f"{name}.mtl").write_text("\n".join(mtl_lines) + "\n")
     (dst / f"{name}.obj").write_text(obj)
     shutil.copy2(built_dir / f"{name}.cameras", dst / f"{name}.cameras")
+    # The trailing digit is the character variant (0 Chris, 1 Jill). Every
+    # ROOMxxx1.RDT has the same cameras and collision as its ROOMxxx0, so the
+    # Jill name gets the same mesh; its mtllib still names the shared library.
+    if name.endswith("0"):
+        jill = name[:-1] + "1"
+        for stale in dst.glob(f"{jill}.*"):
+            stale.unlink()
+        (dst / f"{jill}.obj").write_text(obj)
+        shutil.copy2(built_dir / f"{name}.cameras", dst / f"{jill}.cameras")
 
 
 def runtime_check(exe, assets, mesh, out, stage, room, checker):

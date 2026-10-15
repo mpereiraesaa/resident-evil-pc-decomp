@@ -1,13 +1,15 @@
-# Power room: rust-red concrete, the big generator in the centre with
-# hazard-striped railings, computer desks along the south wall, the double
-# door on the north wall.
+# Power room: a tall rust-red concrete hall, the big generator in the
+# centre (copper-brown housings, drums and pots on a hazard-striped plinth
+# with a red railing), computer desks along the south wall, the double door
+# on the north wall. Generator parts are placed from the camera views and
+# simplified; cabling, gauges and small fittings are left out.
 room = "ROOM5110"
 title = "Power room"
 seed = 5170
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -7600
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
@@ -23,8 +25,17 @@ concrete = { color = [0.50, 0.30, 0.22], stains = 0.5 }
 "double_door.lab" = [0.52, 0.50, 0.46]
 steel = [0.60, 0.62, 0.64]
 wood = [0.70, 0.56, 0.14]
-"hedge" = [0.14, 0.27, 0.25]
-copper = [0.46, 0.28, 0.16]
+copper = [0.50, 0.28, 0.13]
+"copper.dark" = [0.32, 0.18, 0.09]
+"copper.tan" = [0.62, 0.46, 0.30]
+"copper.rib" = [0.48, 0.35, 0.22]
+"steel.green" = [0.44, 0.52, 0.46]
+"steel.rim" = [0.56, 0.60, 0.55]
+"rust.rail" = [0.48, 0.12, 0.06]
+"stripes.hazard" = { color = [0.08, 0.07, 0.05], stripe = [0.72, 0.56, 0.10], count = 40 }
+plastic = [0.70, 0.66, 0.56]
+"glass_dark.green" = [0.45, 0.85, 0.75]
+glass_dark = [0.12, 0.14, 0.16]
 
 [lighting]
 ambient = [0.195, 0.143, 0.117]
@@ -49,55 +60,345 @@ top = -3600
 material = "double_door.lab"
 frame = "steel"
 
-[[object]]          # generator mass
+# The generator (collision block 2): a hazard-striped plinth with a red
+# railing round it, carrying copper-brown housings, a ribbed tan drum lying
+# east-west along the south side that runs into an upright turbine, a
+# grey-green drum along the north side whose round end (with a lens) faces
+# west, a flanged exhaust stack at its west end, big elbow pipes and two
+# lidded copper pots at the north-east.
+
+[[object]]          # hazard-striped plinth
 kind = "box"
-box = [5700, 5500, 19554, 12642]
-top = -1800
-material = "hedge"
-omit = ["bottom"]
+box = [5400, 5202, 19854, 12942]
+top = -350
+material = "stripes.hazard"
+
+[[object]]          # deck
+kind = "box"
+box = [5480, 5282, 19774, 12862]
+top = -420
+bottom = -350
+material = "iron"
+
 [[object]]
-kind = "cylinder"
-at = [12600, 9000]
-radius = 2600
-top = -3000
-bottom = -1800
-material = "hedge"
+kind = "rail"
+from = [5480, 5282]
+to = [19774, 5282]
+y = -350
+height = 850
+spacing = 1600
+material = "rust.rail"
+newels = [false, false]
+
+[[object]]
+kind = "rail"
+from = [5480, 12862]
+to = [19774, 12862]
+y = -350
+height = 850
+spacing = 1600
+material = "rust.rail"
+newels = [false, false]
+
+[[object]]
+kind = "rail"
+from = [5480, 5282]
+to = [5480, 12862]
+y = -350
+height = 850
+spacing = 1600
+material = "rust.rail"
+newels = [false, false]
+
+[[object]]
+kind = "rail"
+from = [19774, 5282]
+to = [19774, 12862]
+y = -350
+height = 850
+spacing = 1600
+material = "rust.rail"
+newels = [false, false]
+
+[[object]]          # cradle under the tan drum
+kind = "box"
+box = [6200, 6300, 12600, 8500]
+top = -1300
+bottom = -420
+material = "copper"
+
+[[object]]          # ribbed tan drum
+kind = "pipe"
+from = [6000, -2200, 7400]
+to = [12600, -2200, 7400]
+radius = 1000
+material = "copper.tan"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [6500, -2200, 7400]
+to = [6640, -2200, 7400]
+radius = 1080
+material = "copper.rib"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [6800, -2200, 7400]
+to = [6940, -2200, 7400]
+radius = 1080
+material = "copper.rib"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [7100, -2200, 7400]
+to = [7240, -2200, 7400]
+radius = 1080
+material = "copper.rib"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [7400, -2200, 7400]
+to = [7540, -2200, 7400]
+radius = 1080
+material = "copper.rib"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [7700, -2200, 7400]
+to = [7840, -2200, 7400]
+radius = 1080
+material = "copper.rib"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [8000, -2200, 7400]
+to = [8140, -2200, 7400]
+radius = 1080
+material = "copper.rib"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [5850, -2200, 7400]
+to = [6000, -2200, 7400]
+radius = 600
+material = "iron"
 segments = 16
-[[object]]          # turbine housings along the machine
+
+[[object]]          # upright turbine
 kind = "cylinder"
-at = [8200, 9000]
-radius = 1700
-top = -2800
-bottom = -1800
+at = [13600, 7600]
+radius = 1050
+top = -3400
+bottom = -420
 material = "copper"
-segments = 14
+segments = 20
+hoops = [-3200, -2400, -1500]
+
 [[object]]
 kind = "cylinder"
-at = [17000, 9000]
-radius = 1700
-top = -2800
-bottom = -1800
-material = "copper"
-segments = 14
-[[object]]          # hazard-striped base edge
+at = [13600, 7600]
+radius = 600
+top = -3800
+bottom = -3400
+material = "copper.tan"
+segments = 16
+
+[[object]]          # housing under the grey-green drum
 kind = "box"
-box = [5400, 5202, 19854, 5500]
-top = -120
-material = "drum"
+box = [5700, 10900, 10600, 12800]
+top = -1850
+bottom = -420
+material = "copper"
+
+[[object]]          # grey-green drum, round end west
+kind = "pipe"
+from = [5650, -2670, 12050]
+to = [10600, -2670, 12050]
+radius = 820
+material = "steel.green"
+segments = 20
+
 [[object]]
-kind = "rail"
-from = [5300, 5100]
-to = [19950, 5100]
-height = 900
-spacing = 800
-material = "wood"
+kind = "pipe"
+from = [5560, -2670, 12050]
+to = [5650, -2670, 12050]
+radius = 900
+material = "steel.rim"
+segments = 20
+
 [[object]]
-kind = "rail"
-from = [5300, 13050]
-to = [19950, 13050]
-height = 900
-spacing = 800
-material = "wood"
+kind = "pipe"
+from = [5500, -2670, 12050]
+to = [5560, -2670, 12050]
+radius = 560
+material = "steel.green"
+segments = 20
+[[object]]
+kind = "pipe"
+from = [5420, -2670, 12050]
+to = [5500, -2670, 12050]
+radius = 280
+material = "glass_dark"
+segments = 14
+
+[[object]]          # flanged exhaust stack
+kind = "cylinder"
+at = [6300, 11000]
+radius = 450
+top = -4600
+bottom = -2600
+material = "copper"
+segments = 18
+
+[[object]]
+kind = "cylinder"
+at = [6300, 11000]
+radius = 760
+top = -4850
+bottom = -4600
+material = "copper.tan"
+segments = 20
+
+[[object]]
+kind = "cylinder"
+at = [6300, 11000]
+radius = 760
+top = -3100
+bottom = -2850
+material = "copper.tan"
+segments = 20
+
+[[object]]          # middle housing
+kind = "box"
+box = [8800, 8700, 12800, 10700]
+top = -2400
+bottom = -420
+material = "copper"
+
+[[object]]
+kind = "box"
+box = [9200, 9000, 12400, 10400]
+top = -2700
+bottom = -2400
+material = "copper.dark"
+
+[[object]]          # elbow pipes
+kind = "pipe"
+from = [13600, -2900, 8600]
+to = [13600, -2900, 10200]
+radius = 380
+material = "copper"
+via = [[13600, -2900, 10200], [11000, -2900, 10200]]
+
+[[object]]
+kind = "pipe"
+from = [11000, -2900, 10200]
+to = [11000, -1900, 10200]
+radius = 380
+material = "copper"
+
+[[object]]          # east housings
+kind = "box"
+box = [14800, 5600, 19400, 9600]
+top = -1500
+bottom = -420
+material = "copper"
+
+[[object]]
+kind = "box"
+box = [15200, 6000, 17200, 9200]
+top = -2300
+bottom = -1500
+material = "copper.dark"
+
+[[object]]
+kind = "pipe"
+from = [17600, -1900, 6000]
+to = [17600, -1900, 9200]
+radius = 420
+material = "copper.tan"
+segments = 16
+
+[[object]]          # lidded pots, north-east
+kind = "cylinder"
+at = [17300, 11100]
+radius = 950
+top = -1500
+bottom = -420
+material = "copper"
+segments = 20
+hoops = [-1100]
+
+[[object]]
+kind = "cylinder"
+at = [17300, 11100]
+radius = 600
+top = -1650
+bottom = -1500
+material = "copper.tan"
+segments = 20
+
+[[object]]
+kind = "cylinder"
+at = [15800, 11650]
+radius = 620
+top = -1500
+bottom = -420
+material = "copper"
+segments = 18
+hoops = [-1100]
+
+[[object]]
+kind = "cylinder"
+at = [15800, 11650]
+radius = 380
+top = -1650
+bottom = -1500
+material = "copper.tan"
+segments = 16
+
+[[object]]
+kind = "box"
+box = [14200, 10200, 15000, 12600]
+top = -1200
+bottom = -420
+material = "iron"
+
+[[object]]          # red pipe run
+kind = "pipe"
+from = [12800, -1500, 11800]
+to = [19400, -1500, 11800]
+radius = 180
+material = "rust.rail"
+
+[[object]]          # CRT monitor and keyboard on block 8
+kind = "box"
+box = [6500, 4600, 7800, 5100]
+top = -2200
+bottom = -1300
+material = "plastic"
+
+[[object]]
+kind = "box"
+box = [6560, 4560, 7740, 4600]
+top = -2100
+bottom = -1400
+material = "glass_dark.green"
+
+[[object]]
+kind = "box"
+box = [6450, 4300, 7850, 4600]
+top = -1350
+bottom = -1300
+material = "plastic"
+
 [[object]]          # computer desks on the south wall
 kind = "box"
 box = [10386, 918, 19206, 2718]

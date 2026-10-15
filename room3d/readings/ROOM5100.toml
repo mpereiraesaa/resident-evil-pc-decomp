@@ -7,7 +7,8 @@
 # door at its end. A small bay at the east end of the south corridor holds a
 # desk with a clipboard and barrels (blocks 6/7). Yellow railings and hazard
 # stripes line the walkways; white-and-orange vertical pipes stand at the
-# corners. Machine detail (louvres, WARNING plates, gauges) is left out.
+# corners. Block 5 is a zone of its own carrying its machines (see below);
+# gauges, cabling and the smaller plates are left out.
 room = "ROOM5100"
 title = "Power maze 2"
 seed = 5160
@@ -36,6 +37,11 @@ iron = [0.10, 0.07, 0.05]
 plastic = [0.80, 0.74, 0.62]
 copper = [0.62, 0.30, 0.12]
 paper = [0.62, 0.58, 0.50]
+"concrete.dark" = { color = [0.16, 0.10, 0.05], stains = 0.5, panels = 3, tile = [2600, 2600] }
+"steel.pale" = [0.48, 0.44, 0.38]
+"iron.slat" = [0.30, 0.27, 0.22]
+"copper.tank" = [0.68, 0.30, 0.09]
+glass_dark = [0.14, 0.17, 0.20]
 
 [lighting]
 ambient = [0.19, 0.12, 0.06]
@@ -54,6 +60,8 @@ floor_along = "x"
 box = [20736, 2034, 23274, 17172]
 [[zone]]            # east bay (desk and barrels)
 box = [18864, 2034, 20736, 4500]
+[[zone]]            # block 5 machinery
+box = [7380, 4500, 20736, 9306]
 
 [[door]]            # door at the north end of the east leg
 wall = "north"
@@ -62,18 +70,307 @@ top = -3300
 material = "door.lab"
 frame = "iron"
 
-# Machinery housings just proud of the block faces.
-[[object]]          # block 5 (between the south and north corridors)
+# Machinery. Block 5 (between the south and north corridors) is a zone of
+# its own so no cage wall hides its machines: a dark lower housing with a
+# catwalk deck at -2600 (railed on the north side) and a caged upper
+# housing set back from the deck; on the south face a louvred housing
+# overhanging the walkway, a lying orange tank and orange risers, a dark
+# control box with a screen and a WARNING board.
+
+[[object]]          # block 5 lower housing (recessed behind the lying tank)
 kind = "box"
-box = [7340, 4460, 20776, 9346]
+box = [7380, 4500, 8600, 9306]
 top = -2600
-material = "concrete.machine"
+material = "concrete.dark"
 [[object]]
 kind = "box"
-box = [9000, 5500, 19500, 8400]
-top = -4200
+box = [11400, 4500, 20736, 9306]
+top = -2600
+material = "concrete.dark"
+[[object]]
+kind = "box"
+box = [8600, 5700, 11400, 9306]
+top = -2600
+material = "concrete.dark"
+[[object]]
+kind = "box"
+box = [8600, 4500, 11400, 5700]
+top = -2600
+bottom = -2000
+material = "concrete.dark"
+
+[[object]]          # catwalk deck lip on the north face
+kind = "box"
+box = [7380, 9306, 20736, 9460]
+top = -2760
 bottom = -2600
+material = "iron"
+
+[[object]]          # catwalk railing
+kind = "rail"
+from = [7600, 9200]
+to = [20500, 9200]
+y = -2600
+height = 800
+spacing = 1500
+material = "brass"
+newels = [false, false]
+
+[[object]]          # caged upper housing
+kind = "box"
+box = [7800, 5000, 20300, 8800]
+top = -5200
+bottom = -2600
+material = "grating.cage"
+
+[[object]]          # louvred housing
+kind = "box"
+box = [8300, 4100, 9600, 5200]
+top = -3400
+bottom = -1900
+material = "steel.pale"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2050
+bottom = -2000
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2050
+bottom = -2000
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2180
+bottom = -2130
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2180
+bottom = -2130
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2310
+bottom = -2260
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2310
+bottom = -2260
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2440
+bottom = -2390
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2440
+bottom = -2390
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2570
+bottom = -2520
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2570
+bottom = -2520
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2700
+bottom = -2650
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2700
+bottom = -2650
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2830
+bottom = -2780
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2830
+bottom = -2780
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -2960
+bottom = -2910
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -2960
+bottom = -2910
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -3090
+bottom = -3040
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -3090
+bottom = -3040
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -3220
+bottom = -3170
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -3220
+bottom = -3170
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4040, 9600, 4100]
+top = -3350
+bottom = -3300
+material = "iron.slat"
+
+[[object]]
+kind = "box"
+box = [8240, 4100, 8300, 5200]
+top = -3350
+bottom = -3300
+material = "iron.slat"
+
+[[object]]          # lying orange tank
+kind = "pipe"
+from = [8750, -900, 5050]
+to = [11250, -900, 5050]
+radius = 760
+material = "copper.tank"
+segments = 20
+
+[[object]]          # orange risers
+kind = "pipe"
+from = [9800, -1800, 4380]
+to = [9800, -5200, 4380]
+radius = 110
+material = "copper.tank"
+via = [[9800, -3800, 4380]]
+
+[[object]]
+kind = "pipe"
+from = [10500, -1700, 4380]
+to = [10500, -5200, 4650]
+radius = 110
+material = "copper.tank"
+via = [[10500, -4200, 4380]]
+
+[[object]]          # dark control box
+kind = "box"
+box = [9600, 4400, 11800, 5000]
+top = -3100
+bottom = -1700
+material = "concrete.dark"
+
+[[object]]
+kind = "box"
+box = [10900, 4380, 11300, 4400]
+top = -2750
+bottom = -2400
+material = "glass_dark"
+
+[[object]]          # WARNING board
+kind = "box"
+box = [11000, 4440, 11700, 4500]
+top = -1300
+bottom = -850
+material = "stripes.hazard"
+
+[[object]]          # second louvred housing
+kind = "box"
+box = [12400, 4300, 13800, 5000]
+top = -2400
+bottom = -1500
+material = "steel.pale"
+
+[[object]]
+kind = "pipe"
+from = [12000, -2200, 4600]
+to = [14600, -2200, 4600]
+radius = 90
+material = "steel"
+
+[[object]]
+kind = "box"
+box = [16000, 9200, 16900, 9306]
+top = -2200
+bottom = -900
 material = "concrete.machine"
+
+[[object]]
+kind = "box"
+box = [17500, 9200, 18400, 9306]
+top = -2200
+bottom = -900
+material = "concrete.machine"
+
+[[object]]
+kind = "box"
+box = [19000, 9200, 19900, 9306]
+top = -2200
+bottom = -900
+material = "concrete.machine"
+
+[[object]]
+kind = "pipe"
+from = [7600, -2300, 9250]
+to = [20500, -2300, 9250]
+radius = 100
+material = "copper"
+
 [[object]]          # block 4 (west of the west leg; the tank stands at its south end)
 kind = "box"
 box = [1890, 7600, 4720, 11214]

@@ -1,12 +1,18 @@
 # Power maze 1: walkways threaded between big orange-brown generator
 # blocks, all under amber light. The outer walls are dark steel cages (a fine
-# diamond mesh over darkness); the machinery blocks (collision blocks 2, 3,
-# 5, 7) stand as riveted dark orange-brown housings about 2.6 m tall with
-# the cage rising above them, yellow railings along the walkways, hazard
-# stripes on the floor edges and grating panels at the corners. A computer
-# console hangs on the west wall of the south-west bay; a door in the north
-# wall of the north corridor and one at the south end of the east corridor
-# (on block 7). Pipes, gauges and signs on the machines are left out.
+# diamond mesh over darkness). Machinery blocks 2, 3 and 5 are zones of their
+# own (no cage wall in front of them) carrying their machines: block 5 a dark
+# lower housing with beige upper housings, a red tank lying along its top
+# and yellow drop pipes; block 2 a riveted drum with red/white risers at its
+# north-west corner, a red-topped tank at the north end, a tall middle
+# housing, a beige control box and white risers on the east face; block 3 a
+# housing ringed with cooling fins, a yellow rail round its top and a gauge
+# disc. Yellow railings along the walkways, hazard stripes and grating
+# panels on the floor. A computer console hangs on the west wall of the
+# south-west bay; a door in the north wall of the north corridor and one at
+# the south end of the east corridor (on block 7). Machine positions and
+# heights are read off the camera views; WARNING plates, cabling and gauges
+# beyond the one disc are left out.
 room = "ROOM50F0"
 title = "Power maze 1"
 seed = 5150
@@ -33,6 +39,13 @@ brass = [0.72, 0.56, 0.12]
 iron = [0.10, 0.07, 0.05]
 plastic = [0.66, 0.58, 0.44]
 glass_dark = [0.40, 0.40, 0.62]
+"concrete.dark" = { color = [0.16, 0.10, 0.05], stains = 0.5, panels = 3, tile = [2600, 2600] }
+"concrete.fin" = { color = [0.46, 0.30, 0.13], stains = 0.3, panels = 1, tile = [3000, 400] }
+"plastic.beige" = [0.46, 0.36, 0.20]
+"tank.red" = [0.62, 0.16, 0.05]
+"tank.yellow" = [0.50, 0.34, 0.10]
+"steel.white" = [0.80, 0.78, 0.72]
+copper = [0.55, 0.30, 0.12]
 
 [lighting]
 ambient = [0.19, 0.12, 0.06]
@@ -54,6 +67,12 @@ box = [17586, 6876, 23274, 9000]
 floor_along = "x"
 [[zone]]
 box = [20790, 9000, 23274, 17640]
+[[zone]]            # block 5 machinery
+box = [2124, 6408, 4788, 17640]
+[[zone]]            # block 2 machinery
+box = [7470, 2034, 14688, 17640]
+[[zone]]            # block 3 machinery (with the strip west of it)
+box = [17406, 9000, 20790, 17640]
 
 [[door]]            # door in the north wall of the north corridor
 wall = "north"
@@ -69,52 +88,490 @@ top = -3300
 material = "door.lab"
 frame = "iron"
 
-# Machinery housings standing just proud of the block faces.
-[[object]]          # block 5 (west of the west corridor)
+# Machinery. Blocks 2, 3 and 5 are zones of their own (so no cage wall
+# stands in front of them); their machines are the objects below.
+
+# Block 5 (west of the west corridor): dark lower housing, beige upper
+# housings and a red tank high at the north end, yellow drop pipes.
+
+[[object]]          # block 5 lower housing
 kind = "box"
-box = [2124, 6408, 4830, 17640]
-top = -2600
+box = [2124, 6408, 4788, 17640]
+top = -2000
+material = "concrete.dark"
+
+[[object]]          # beige upper housings
+kind = "box"
+box = [3000, 12600, 4788, 17640]
+top = -4300
+bottom = -3100
+[[object]]
+kind = "box"
+box = [3300, 12600, 4600, 17640]
+top = -3100
+bottom = -2000
+material = "concrete.dark"
+[[object]]          # angled hoods on the beige housings
+kind = "box"
+box = [3200, 13000, 4500, 14600]
+top = -4700
+bottom = -4300
+material = "plastic.beige"
+[[object]]
+kind = "box"
+box = [3200, 15200, 4500, 16900]
+top = -4700
+bottom = -4300
+material = "plastic.beige"
+
+[[object]]
+kind = "box"
+box = [3400, 8000, 4700, 12600]
+top = -3000
+bottom = -2000
 material = "concrete.machine"
-[[object]]          # block 2 (between the west and middle corridors)
+
+[[object]]          # red tank lying along the top
+kind = "pipe"
+from = [3500, -4700, 11800]
+to = [3500, -4700, 17500]
+radius = 520
+material = "tank.red"
+
+[[object]]          # red upright tank
+kind = "cylinder"
+at = [2700, 16800]
+radius = 380
+top = -4900
+bottom = -2000
+material = "tank.red"
+segments = 20
+
+[[object]]
+kind = "pipe"
+from = [4650, -4300, 15000]
+to = [4650, -2300, 15000]
+radius = 95
+material = "brass"
+
+[[object]]
+kind = "pipe"
+from = [4650, -4300, 15900]
+to = [4650, -2300, 15900]
+radius = 95
+material = "brass"
+
+[[object]]
+kind = "pipe"
+from = [4650, -4300, 16800]
+to = [4650, -2300, 16800]
+radius = 95
+material = "brass"
+
+[[object]]
+kind = "pipe"
+from = [4720, -2200, 6600]
+to = [4720, -2200, 17500]
+radius = 110
+material = "copper"
+
+[[object]]
+kind = "pipe"
+from = [4720, -1500, 6600]
+to = [4720, -1500, 17500]
+radius = 70
+material = "steel"
+
+[[object]]
+kind = "pipe"
+from = [2300, -2000, 6500]
+to = [4700, -2000, 6500]
+radius = 120
+material = "copper"
+
+# Block 2 (the big central block): housing with a riveted drum at the
+# north-west corner, a red-topped tank at the north end, a tall middle
+# housing, a beige control box and white risers on the east face.
+
+[[object]]          # block 2 housing
 kind = "box"
-box = [7430, 2034, 14730, 17680]
-top = -2600
+box = [7470, 2034, 14688, 17640]
+top = -2300
+material = "concrete.dark"
+
+[[object]]          # riveted drum, north-west corner
+kind = "cylinder"
+at = [8550, 16500]
+radius = 1000
+top = -3000
+bottom = -2300
 material = "concrete.machine"
-[[object]]          # block 3 (between the middle and east corridors)
+segments = 20
+hoops = [-2900, -2450]
+
+[[object]]
+kind = "pipe"
+from = [8000, -3000, 16800]
+to = [8000, -5200, 16800]
+radius = 85
+material = "tank.red"
+
+[[object]]
+kind = "pipe"
+from = [8500, -3000, 17300]
+to = [8500, -5200, 17300]
+radius = 85
+material = "steel.white"
+
+[[object]]
+kind = "pipe"
+from = [9100, -3000, 17200]
+to = [9100, -5200, 17200]
+radius = 85
+material = "brass"
+
+[[object]]
+kind = "pipe"
+from = [8250, -3000, 15900]
+to = [8250, -5200, 15900]
+radius = 85
+material = "tank.red"
+
+[[object]]          # tank at the north end
 kind = "box"
-box = [17546, 9000, 20830, 17680]
+box = [9500, 15600, 13200, 17500]
+top = -3900
+bottom = -2300
+material = "tank.yellow"
+
+[[object]]
+kind = "box"
+box = [9500, 15600, 13200, 17500]
+top = -4100
+bottom = -3900
+material = "tank.red"
+
+[[object]]          # tall middle housing
+kind = "box"
+box = [8600, 3400, 13600, 15200]
+top = -3800
+bottom = -2300
+material = "concrete.machine"
+
+[[object]]
+kind = "box"
+box = [9200, 4200, 13000, 14400]
+top = -4300
+bottom = -3800
+material = "concrete.dark"
+
+[[object]]          # beige control box, east face
+kind = "box"
+box = [14100, 10800, 14688, 12400]
+top = -3000
+bottom = -1700
+material = "plastic.beige"
+
+[[object]]
+kind = "box"
+box = [14660, 11000, 14700, 11800]
 top = -2800
+bottom = -2300
+material = "stripes.hazard"
+
+[[object]]
+kind = "pipe"
+from = [14550, 0, 7600]
+to = [14550, -5200, 7600]
+radius = 65
+material = "steel.white"
+
+[[object]]
+kind = "pipe"
+from = [14550, 0, 7950]
+to = [14550, -5200, 7950]
+radius = 65
+material = "steel.white"
+
+[[object]]
+kind = "pipe"
+from = [14550, 0, 8300]
+to = [14550, -5200, 8300]
+radius = 65
+material = "steel.white"
+
+[[object]]          # warning board
+kind = "box"
+box = [14600, 7300, 14688, 8200]
+top = -3500
+bottom = -2800
+material = "stripes.hazard"
+
+[[object]]
+kind = "pipe"
+from = [14600, -2450, 2300]
+to = [14600, -2450, 17500]
+radius = 110
+material = "copper"
+
+[[object]]
+kind = "pipe"
+from = [7560, -2450, 2300]
+to = [7560, -2450, 17500]
+radius = 110
+material = "copper"
+
+[[object]]
+kind = "pipe"
+from = [7700, -2450, 17560]
+to = [14500, -2450, 17560]
+radius = 110
+material = "copper"
+
+[[object]]
+kind = "pipe"
+from = [7560, -1400, 6500]
+to = [7560, -1400, 17500]
+radius = 70
+material = "steel"
+
+[[object]]
+kind = "pipe"
+from = [14600, -1400, 2300]
+to = [14600, -1400, 17500]
+radius = 70
+material = "steel"
+
+# Block 3 (between the middle and east corridors): a long housing ringed
+# with stacked cooling fins, a yellow rail round its top, an upper housing
+# and a round gauge disc at the north-west corner.
+
+[[object]]          # block 3 housing
+kind = "box"
+box = [17586, 9000, 20790, 17640]
+top = -3500
 material = "concrete.machine"
-[[object]]          # block 7 (south-east)
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -890
+bottom = -800
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -1170
+bottom = -1080
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -1450
+bottom = -1360
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -1730
+bottom = -1640
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -2010
+bottom = -1920
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -2290
+bottom = -2200
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17476, 9100, 17586, 17540]
+top = -2570
+bottom = -2480
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -890
+bottom = -800
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -1170
+bottom = -1080
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -1450
+bottom = -1360
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -1730
+bottom = -1640
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -2010
+bottom = -1920
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -2290
+bottom = -2200
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [20790, 9100, 20900, 17540]
+top = -2570
+bottom = -2480
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -890
+bottom = -800
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -1170
+bottom = -1080
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -1450
+bottom = -1360
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -1730
+bottom = -1640
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -2010
+bottom = -1920
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -2290
+bottom = -2200
+material = "concrete.fin"
+
+[[object]]
+kind = "box"
+box = [17680, 17640, 20700, 17750]
+top = -2570
+bottom = -2480
+material = "concrete.fin"
+
+[[object]]          # yellow top edge
+kind = "box"
+box = [17586, 9000, 20790, 17640]
+top = -3560
+bottom = -3500
+material = "brass"
+
+[[object]]
+kind = "rail"
+from = [17700, 9150]
+to = [17700, 17520]
+y = -3500
+height = 600
+spacing = 1400
+material = "brass"
+newels = [false, false]
+
+[[object]]
+kind = "rail"
+from = [17700, 17520]
+to = [20680, 17520]
+y = -3500
+height = 600
+spacing = 1400
+material = "brass"
+newels = [false, false]
+
+[[object]]
+kind = "rail"
+from = [20680, 9150]
+to = [20680, 17520]
+y = -3500
+height = 600
+spacing = 1400
+material = "brass"
+newels = [false, false]
+
+[[object]]          # upper housing
+kind = "box"
+box = [18300, 10000, 20200, 16200]
+top = -4300
+bottom = -3500
+material = "concrete.machine"
+
+[[object]]          # gauge disc
+kind = "pipe"
+from = [17900, -4500, 16900]
+to = [18150, -4500, 16900]
+radius = 470
+material = "plastic.beige"
+
+[[object]]
+kind = "pipe"
+from = [18150, -4500, 16900]
+to = [18300, -4500, 16900]
+radius = 520
+material = "iron"
+
+[[object]]
+kind = "pipe"
+from = [18000, -3800, 10200]
+to = [18000, -3800, 16000]
+radius = 130
+material = "copper"
+
+# Block 7 (south-east): cage-faced housing carrying the east corridor door.
+
+[[object]]
 kind = "box"
 box = [17366, 2034, 23274, 6916]
 top = -2600
 material = "concrete.machine"
 omit = ["bottom"]
-[[object]]          # big housings rising higher on blocks 2 and 3
-kind = "box"
-box = [8500, 9000, 13600, 16600]
-top = -4200
-bottom = -2600
-material = "concrete.machine"
-[[object]]
-kind = "box"
-box = [18000, 10000, 20400, 16600]
-top = -4000
-bottom = -2800
-material = "concrete.machine"
-[[object]]          # yellow edge rails on top of the housings
-kind = "box"
-box = [17546, 9000, 20830, 9080]
-top = -2900
-bottom = -2800
-material = "brass"
-[[object]]
-kind = "box"
-box = [7430, 17600, 14730, 17680]
-top = -2700
-bottom = -2600
-material = "brass"
 
 # Yellow railings along the walkways.
 [[object]]

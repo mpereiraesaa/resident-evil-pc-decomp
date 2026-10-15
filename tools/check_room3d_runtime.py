@@ -20,7 +20,7 @@ PATTERN = re.compile(
 )
 
 
-def observations(log, room, stage=1):
+def observations(log, room, stage=1, variant=0):
     events = [
         tuple(int(v, 16 if i == 1 else 10) for i, v in enumerate(m.groups()))
         for m in PATTERN.finditer(log)
@@ -37,7 +37,7 @@ def observations(log, room, stage=1):
         "menu_opened": menu_index is not None,
         "menu_closed": closed,
         "mesh_loaded": bool(
-            re.search(rf"\[room3d\] loaded .*room{stage}{room:02x}0\.obj", log, re.IGNORECASE)
+            re.search(rf"\[room3d\] loaded .*room{stage}{room:02x}{variant}\.obj", log, re.IGNORECASE)
         ),
         "cameras_seen": len(cameras),
     }
@@ -54,7 +54,7 @@ def menu_rooms(stage):
     return [r for r in range(MENU_ROOM_COUNT[stage]) if r not in MENU_UNSELECTABLE.get(stage, set())]
 
 
-def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1):
+def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1, character="chris"):
     """Load `mesh` for (stage, target_room) through the debug menu.
 
     The three original scenarios (stage 1 rooms 0x18, 0x0B, 0x06) also require
@@ -63,7 +63,9 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
     """
     if not (assets / "USA" / f"Stage{stage}").is_dir():
         raise ValueError("Assets must name the parent containing USA/StageN")
-    mesh_name = f"room{stage}{target_room:02x}0"
+    # The mesh file's last digit is the character variant (0 Chris, 1 Jill).
+    variant = 1 if character == "jill" else 0
+    mesh_name = f"room{stage}{target_room:02x}{variant}"
     scripted = stage == 1 and target_room in (0x18, 0x0B, 0x06)
     required = ("mesh_loaded",) + (("camera_transition",) if scripted else ()) + (
         ("menu_opened", "menu_closed") if (stage == 1 and target_room == 0x18) else ()
@@ -136,6 +138,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
     env.pop("RE1_TEST_KEYS", None)
     valid_rooms = menu_rooms(stage)
     phase = "boot"
+    jill_chosen = False
 
     result = {}
     with (output / "wine.log").open("w") as stream:
@@ -151,6 +154,15 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
             while time.monotonic() - start < timeout and process.poll() is None:
                 logpath = output / "re1_debug.log"
                 log = logpath.read_text(errors="replace") if logpath.exists() else ""
+                if variant and not jill_chosen and "[CharSelection] Entered" in log:
+                    # RIGHT swaps to Jill once, then the same F1/C loop
+                    # confirms her and runs on through the opening.
+                    send_keys([(39, 100, 120)] + [
+                        (key, 1500 + i * 1000 + offset, 150)
+                        for i in range(60)
+                        for key, offset in [(112, 0), (67, 500)]
+                    ])
+                    jill_chosen = True
                 if phase == "boot" and "[room3d-test] stage=1" in log:
                     # During the opening event, C advances dialogue. F1 is
                     # retried until the debug menu actually reports opening.
@@ -186,7 +198,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
                     sequence.append((13, t + 300, 150))
                     send_keys(sequence)
                     phase = "await_mesh"
-                observed = observations(log, target_room, stage)
+                observed = observations(log, target_room, stage, variant)
                 ready = (
                     observed["mesh_loaded"]
                     and observed["room_events"]
@@ -200,7 +212,7 @@ def run(executable, assets, mesh, output, timeout=150, target_room=0x18, stage=1
                         else [(38, 1500, 18000)]
                     )
                     phase = "interaction"
-                result = observations(log, target_room, stage)
+                result = observations(log, target_room, stage, variant)
                 if all(result[k] for k in required) and (scripted or phase == "interaction" and time.monotonic() - start > 40):
                     break
                 time.sleep(0.5)
@@ -238,7 +250,10 @@ if __name__ == "__main__":
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--room", type=lambda v: int(v, 16), default=0x18)
     parser.add_argument("--stage", type=int, default=1, help="RDT stage digit (ROOM<stage>xx0)")
+    parser.add_argument("--character", choices=("chris", "jill"), default="chris",
+                        help="new-game character; Jill loads the ROOMxxx1 variant mesh name")
     args = parser.parse_args()
-    report = run(args.exe, args.assets, args.mesh, args.out, target_room=args.room, stage=args.stage)
+    report = run(args.exe, args.assets, args.mesh, args.out, target_room=args.room, stage=args.stage,
+                 character=args.character)
     print(json.dumps(report, indent=2))
     raise SystemExit(0 if report["passed"] else 1)

@@ -869,6 +869,8 @@ class Builder:
         mesh.set_group("walls")
         wm_default = shell.get("wall_material", "plaster")
         for index, (side, fixed, a, b, zone) in enumerate(exposed_edges(self.zones)):
+            if side in zone.get("open_sides", ()):  # no wall on that side (machinery, drops)
+                continue
             ceiling = zone.get("ceiling", shell.get("ceiling", -6000))
             wm = self.use(zone.get("wall_materials", {}).get(side, zone.get("wall_material", wm_default)))
             group = zone.get("wall_groups", {}).get(side, zone.get("wall_group"))

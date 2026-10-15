@@ -147,6 +147,12 @@ class BuilderKindTests(unittest.TestCase):
         self.assertIn('usemtl panel', a.build().lines)
         self.assertNotIn('usemtl panel', b.build().lines)
 
+    def test_open_sides_drop_a_zone_wall(self):
+        reading = 'room = "ROOM4020"\nseed = 1\n[shell]\nfloor = 0\nceiling = -4200\nskirting = 0\ncornice = 0\n'
+        walls = Builder(load_reading_text(reading + '[[zone]]\nbox = [1764, 2250, 7074, 8136]\n'), ASSETS / 'Stage4' / 'ROOM4020.RDT').build()
+        open_ = Builder(load_reading_text(reading + '[[zone]]\nbox = [1764, 2250, 7074, 8136]\nopen_sides = ["west", "north"]\n'), ASSETS / 'Stage4' / 'ROOM4020.RDT').build()
+        self.assertLess(open_.triangles, walls.triangles)
+
     def test_solid_variants_take_their_own_tint(self):
         builder, _ = self.build('[materials]\n"iron.tread" = [0.5, 0.4, 0.3]\n'
                                 '[[object]]\nkind = "box"\nbox = [2000, 3000, 2500, 3500]\ntop = -300\nmaterial = "iron.tread"\n')

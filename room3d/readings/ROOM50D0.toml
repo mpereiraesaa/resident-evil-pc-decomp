@@ -1,4 +1,6 @@
-# Escape elevator cage: a small steel cell with steel posts and a grated floor.
+# Escape elevator cage: a small cell of
+# wire-mesh panels to shoulder height between steel posts, open above to the
+# dark shaft, a steel floor with a grated plate.
 room = "ROOM50D0"
 title = "Escape elevator"
 seed = 5130
@@ -6,16 +8,20 @@ seed = 5130
 [shell]
 floor = 0
 ceiling = -4000
-floor_material = "grating"
-wall_material = "concrete"
+floor_material = "concrete.floor"
+wall_material = "soot"
 ceiling_material = "grating"
-skirting = 0
+dado = 2000
+dado_material = "grating"
+chair_rail = true
+skirting = 120
+cornice = 160
 trim = "steel"
 cell = 600
 
 [materials]
 concrete = { color = [0.42, 0.44, 0.44], stains = 0.5 }
-"concrete.floor" = { color = [0.36, 0.38, 0.38], stains = 0.4 }
+"concrete.floor" = { color = [0.52, 0.50, 0.46], stains = 0.4 }
 "concrete.ceiling" = { color = [0.26, 0.28, 0.28], stains = 0.3 }
 "door.lab" = [0.50, 0.46, 0.40]
 "double_door.lab" = [0.52, 0.50, 0.46]
@@ -24,11 +30,10 @@ wood = [0.60, 0.62, 0.64]
 grating = [0.50, 0.52, 0.52]
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.22, 0.21, 0.19]
 
 [[zone]]
 box = [2412, 1890, 7002, 7200]
-wall_material = "grating"
 
 [[column]]
 at = [2600, 2000]
@@ -57,10 +62,12 @@ square = true
 
 [[light]]
 at = [4700, -3600, 4500]
-color = [0.95, 0.98, 1.0]
-strength = 0.5
+color = [1.0, 0.94, 0.82]
+strength = 0.8
 reach = 5000
 
-[[object]]          # strip light
-kind = "strip"
-at = [4700, 4500]
+[[object]]          # grated plate in the middle of the floor
+kind = "box"
+box = [3100, 2800, 6300, 6300]
+top = -12
+material = "grating"

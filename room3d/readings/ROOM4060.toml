@@ -1,9 +1,13 @@
-# Room 002: plank bedroom with a bed in the south-west, a desk by the west
-# wall, a dresser north, a wardrobe in the north-east, the bathroom door
-# west and the room door on the north-west; a curtained window east.
+# Room 002: L-shaped plank bedroom (the block in the north-west is solid): a
+# metal-framed bed with a blanket in the south-east corner, a desk with a
+# chair on the south wall (camera 6 is a close-up of its drawer and keeps the
+# original background), a floor recess with a barbell in the north-east, a
+# rug, the bathroom door west and the room door on the north side of the
+# south passage; a curtained window/mirror on the east wall.
 room = "ROOM4060"
 title = "Room 002"
 seed = 4060
+backdrop = [6]
 
 [shell]
 floor = 0
@@ -27,9 +31,10 @@ glass = [0.62, 0.62, 0.56]
 [lighting]
 ambient = [0.24, 0.20, 0.14]
 
-[[zone]]
-box = [2034, 1908, 14832, 10458]
-[[zone]]
+[[zone]]            # south passage
+box = [2034, 1908, 14832, 4050]
+floor_along = "x"
+[[zone]]            # east part
 box = [9594, 4050, 14832, 10458]
 
 [[door]]
@@ -38,15 +43,40 @@ span = [2000, 3800]
 top = -3300
 material = "door"
 [[door]]
-wall = "south"
+wall = "north"
 span = [2500, 4100]
 top = -3300
 material = "door"
 
-[[object]]
+[[object]]          # metal-framed bed with a blanket
 kind = "bed"
-box = [11574, 8928, 15984, 11556]
-head = "east"
+box = [12726, 1908, 14832, 5742]
+head = "south"
+[[object]]          # floor recess with a barbell
+kind = "box"
+box = [11574, 8928, 14832, 10458]
+top = -20
+material = "soot"
+[[object]]
+kind = "box"
+box = [12000, 9500, 14200, 9700]
+top = -260
+bottom = -180
+material = "iron"
+[[object]]
+kind = "cylinder"
+at = [12300, 9600]
+radius = 260
+top = -420
+bottom = -20
+material = "iron"
+[[object]]
+kind = "cylinder"
+at = [13900, 9600]
+radius = 260
+top = -420
+bottom = -20
+material = "iron"
 [[object]]
 kind = "table"
 box = [10152, 1908, 11916, 2898]
@@ -56,15 +86,9 @@ thickness = 100
 kind = "chair"
 at = [11000, 3600]
 facing = "south"
-[[object]]          # wardrobe
-kind = "box"
-box = [12726, 864, 16002, 5742]
-top = -2800
-material = "wood"
-omit = ["bottom", "east", "south"]
 [[object]]
 kind = "rug"
-box = [3000, 4600, 9000, 9600]
+box = [9900, 4300, 12400, 8600]
 [[object]]
 kind = "wall_band"
 wall = "east"

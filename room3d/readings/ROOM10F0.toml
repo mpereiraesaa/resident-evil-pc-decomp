@@ -1,6 +1,6 @@
 # Mansion bar: tan plaster over a dark red dado, red planks, the bar counter
 # along the west wall with its curved end, stools, a round table, the grand
-# piano and a plant, red door on the south wall; a passage leads north.
+# piano and a plant, red door in the south-east pocket; a glazed ivy passage leads north to a bust.
 room = "ROOM10F0"
 title = "Mansion bar"
 seed = 1500
@@ -26,6 +26,9 @@ wood = [0.30, 0.17, 0.10]
 "door.red" = [0.60, 0.12, 0.10]
 door = [0.28, 0.17, 0.10]
 stone = [0.46, 0.46, 0.42]
+"books.bottles" = { color = [0.22, 0.10, 0.07], shelves = 4 }
+"stone.floor" = { color = [0.40, 0.40, 0.36], tile = [1600, 1600] }
+leaves = [0.22, 0.30, 0.20]
 
 [lighting]
 ambient = [0.15, 0.12, 0.09]
@@ -41,12 +44,15 @@ box = [14630, 8742, 16002, 12348]
 box = [16002, 8742, 20325, 11538]
 [[zone]]            # opening into the passage
 box = [8356, 12348, 9720, 12810]
-[[zone]]            # passage north to the terrace door
+[[zone]]            # glazed passage north to the bust niche: stone floor, ivy on the glass
 box = [7704, 12810, 10818, 19170]
+floor_material = "stone.floor"
+wall_materials = { west = "leaves", east = "leaves" }
 
-[[door]]
-wall = "south"
-span = [13700, 15400]
+[[door]]            # red door on the east wall of the south-east pocket
+wall = "east"
+line = 17161
+span = [2700, 4600]
 top = -3400
 material = "door.red"
 [[door]]
@@ -69,39 +75,69 @@ radius = 1200
 top = -1100
 material = "wood"
 segments = 16
-[[object]]
-kind = "wall_band"
-wall = "west"
-span = [2400, 9400]
-y = [-3600, -1400]
-material = "panel.red"
-rail = false
+[[object]]          # counter top (stone)
+kind = "box"
+box = [4600, 2210, 5300, 9512]
+top = -1160
+bottom = -1100
+material = "marble_dark"
+[[object]]          # bottle shelves on the west wall behind the bar
+kind = "bookcase"
+box = [3502, 2400, 3800, 9400]
+top = -3200
+bottom = -1300
+front = "east"
+books = "books.bottles"
+[[object]]          # bar stool: red seat on a thin post
+kind = "cylinder"
+at = [5500, 8150]
+radius = 220
+top = -820
+bottom = -700
+material = "velvet"
+segments = 10
 [[object]]
 kind = "cylinder"
 at = [5500, 8150]
-radius = 200
-top = -760
-material = "wood"
-segments = 8
+radius = 40
+top = -700
+material = "brass"
+segments = 6
+[[object]]          # bar stool: red seat on a thin post
+kind = "cylinder"
+at = [5600, 4500]
+radius = 220
+top = -820
+bottom = -700
+material = "velvet"
+segments = 10
 [[object]]
 kind = "cylinder"
 at = [5600, 4500]
-radius = 200
-top = -760
-material = "wood"
-segments = 8
+radius = 40
+top = -700
+material = "brass"
+segments = 6
+[[object]]          # bar stool: red seat on a thin post
+kind = "cylinder"
+at = [5400, 2700]
+radius = 220
+top = -820
+bottom = -700
+material = "velvet"
+segments = 10
 [[object]]
 kind = "cylinder"
 at = [5400, 2700]
-radius = 200
-top = -760
-material = "wood"
-segments = 8
+radius = 40
+top = -700
+material = "brass"
+segments = 6
 # Round table, piano, plant
 [[object]]
 kind = "cylinder"
 at = [8346, 4768]
-radius = 760
+radius = 380
 top = -800
 bottom = -720
 material = "wood"

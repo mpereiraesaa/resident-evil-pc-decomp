@@ -1,0 +1,3 @@
+# Camera 1 sits outside the door wall. The original shot omits that wall
+# and the nearby typewriter table, while retaining the side walls.
+hide 1 door_end

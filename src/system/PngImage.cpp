@@ -283,12 +283,14 @@ int Paeth(int a, int b, int c)
 
 }  // namespace
 
-bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
-                           std::vector<unsigned char>* out,
-                           int* width, int* height)
+static bool PngDecodeInternal(const unsigned char* data, size_t size,
+                              std::vector<unsigned char>* firstChannel,
+                              std::vector<unsigned char>* rgbaOut,
+                              int* width, int* height)
 {
     static const unsigned char kSig[8] = { 0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A };
-    if (data == NULL || out == NULL || size < 8 || memcmp(data, kSig, 8) != 0) {
+    if (data == NULL || (firstChannel == NULL && rgbaOut == NULL) ||
+        size < 8 || memcmp(data, kSig, 8) != 0) {
         return false;
     }
 
@@ -297,7 +299,11 @@ bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
     int depth = 0;
     int colorType = -1;
     unsigned char palette[256 * 3];
+    unsigned char paletteAlpha[256];
+    memset(paletteAlpha, 255, sizeof(paletteAlpha));
     int paletteCount = 0;
+    unsigned char transparency[6] = {};
+    size_t transparencySize = 0;
     std::vector<unsigned char> idat;
 
     size_t pos = 8;
@@ -320,6 +326,10 @@ bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
             if (len % 3 != 0 || len > sizeof(palette)) return false;
             memcpy(palette, body, len);
             paletteCount = static_cast<int>(len / 3);
+        } else if (memcmp(type, "tRNS", 4) == 0) {
+            if (len > sizeof(transparency)) return false;
+            memcpy(transparency, body, len);
+            transparencySize = len;
         } else if (memcmp(type, "IDAT", 4) == 0) {
             idat.insert(idat.end(), body, body + len);
         } else if (memcmp(type, "IEND", 4) == 0) {
@@ -328,6 +338,13 @@ bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
         pos += 12 + len;
     }
     if (w == 0 || h == 0 || w > 16384 || h > 16384 || idat.empty()) return false;
+    if (colorType == 3 && transparencySize > static_cast<size_t>(paletteCount)) return false;
+    if (colorType == 0 && transparencySize != 0 && transparencySize != 2) return false;
+    if (colorType == 2 && transparencySize != 0 && transparencySize != 6) return false;
+    if (colorType != 0 && colorType != 2 && colorType != 3 && transparencySize != 0) return false;
+    if (colorType == 3 && transparencySize != 0) {
+        memcpy(paletteAlpha, transparency, transparencySize);
+    }
 
     int channels;
     switch (colorType) {
@@ -348,6 +365,7 @@ bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
     const size_t rowBytes = (static_cast<size_t>(w) * channels * depth + 7) / 8;
     const size_t pixelBytes = (channels * depth + 7) / 8;  // filter stride, >= 1
     const size_t rawSize = (rowBytes + 1) * h;
+    if (rawSize > 256u * 1024u * 1024u) return false;
 
     std::vector<unsigned char> raw;
     raw.reserve(rawSize);
@@ -377,40 +395,101 @@ bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
         }
     }
 
-    out->assign(static_cast<size_t>(w) * h, 0);
+    const size_t pixelCount = static_cast<size_t>(w) * h;
+    // Bound output allocation as well as inflated scanlines: indexed PNGs can
+    // expand from one byte per pixel to four bytes per pixel here.
+    if (pixelCount > 16u * 1024u * 1024u) return false;
+    if (firstChannel != NULL) firstChannel->assign(pixelCount, 0);
+    if (rgbaOut != NULL) rgbaOut->assign(pixelCount * 4, 0);
     const int sampleBytes = depth == 16 ? 2 : 1;
     for (unsigned int y = 0; y < h; ++y) {
         const unsigned char* row = &raw[y * (rowBytes + 1) + 1];
-        unsigned char* dst = &(*out)[static_cast<size_t>(y) * w];
         for (unsigned int x = 0; x < w; ++x) {
+            unsigned int sample = 0;
+            unsigned char red = 0, green = 0, blue = 0, alpha = 255;
             if (depth < 8) {
                 const unsigned int bit = x * depth;
                 const int mask = (1 << depth) - 1;
-                const int v = (row[bit >> 3] >> (8 - depth - (bit & 7))) & mask;
+                sample = (row[bit >> 3] >> (8 - depth - (bit & 7))) & mask;
                 if (colorType == 3) {
-                    dst[x] = v < paletteCount ? palette[v * 3] : 0;
+                    if (sample < static_cast<unsigned int>(paletteCount)) {
+                        red = palette[sample * 3];
+                        green = palette[sample * 3 + 1];
+                        blue = palette[sample * 3 + 2];
+                        alpha = paletteAlpha[sample];
+                    }
                 } else {
-                    dst[x] = static_cast<unsigned char>(v * 255 / mask);
+                    red = green = blue = static_cast<unsigned char>(sample * 255 / mask);
+                    if (transparencySize == 2 && transparency[0] == 0 &&
+                        transparency[1] == sample) alpha = 0;
                 }
-                continue;
+            } else {
+                const unsigned char* px = row + static_cast<size_t>(x) * channels * sampleBytes;
+                const unsigned int s0 = sampleBytes == 2
+                    ? (static_cast<unsigned int>(px[0]) << 8) | px[1] : px[0];
+                const unsigned int s1 = channels > 1 ? (sampleBytes == 2
+                    ? (static_cast<unsigned int>(px[sampleBytes]) << 8) | px[sampleBytes + 1]
+                    : px[sampleBytes]) : 0;
+                const unsigned int s2 = channels > 2 ? (sampleBytes == 2
+                    ? (static_cast<unsigned int>(px[2 * sampleBytes]) << 8) | px[2 * sampleBytes + 1]
+                    : px[2 * sampleBytes]) : 0;
+                const unsigned char c0 = px[0];
+                if (colorType == 0) {
+                    red = green = blue = c0;
+                    if (transparencySize == 2 &&
+                        ((static_cast<unsigned int>(transparency[0]) << 8) |
+                         transparency[1]) == s0) alpha = 0;
+                } else if (colorType == 2) {
+                    red = c0; green = px[sampleBytes]; blue = px[2 * sampleBytes];
+                    if (transparencySize == 6 &&
+                        ((static_cast<unsigned int>(transparency[0]) << 8) | transparency[1]) == s0 &&
+                        ((static_cast<unsigned int>(transparency[2]) << 8) | transparency[3]) == s1 &&
+                        ((static_cast<unsigned int>(transparency[4]) << 8) | transparency[5]) == s2) alpha = 0;
+                } else if (colorType == 3) {
+                    sample = c0;
+                    if (sample < static_cast<unsigned int>(paletteCount)) {
+                        red = palette[sample * 3];
+                        green = palette[sample * 3 + 1];
+                        blue = palette[sample * 3 + 2];
+                        alpha = paletteAlpha[sample];
+                    }
+                } else if (colorType == 4) {
+                    red = green = blue = c0;
+                    alpha = px[sampleBytes];
+                } else { // RGBA
+                    red = c0; green = px[sampleBytes]; blue = px[2 * sampleBytes];
+                    alpha = px[3 * sampleBytes];
+                }
             }
-            const unsigned char* px = row + static_cast<size_t>(x) * channels * sampleBytes;
-            unsigned char v = px[0];
-            if (colorType == 3) {
-                v = v < paletteCount ? palette[v * 3] : 0;
-            } else if (colorType == 4 || colorType == 6) {
-                // Alpha is the last sample; a 16-bit one is clear only when
-                // both of its bytes are.
-                const unsigned char* alpha = px + (channels - 1) * sampleBytes;
-                const bool clear = sampleBytes == 2 ? (alpha[0] | alpha[1]) == 0
-                                                    : alpha[0] == 0;
-                if (clear) v = 0;
+
+            const size_t index = static_cast<size_t>(y) * w + x;
+            if (firstChannel != NULL) {
+                (*firstChannel)[index] = alpha == 0 ? 0 : red;
             }
-            dst[x] = v;
+            if (rgbaOut != NULL) {
+                unsigned char* dst = &(*rgbaOut)[index * 4];
+                dst[0] = red; dst[1] = green; dst[2] = blue; dst[3] = alpha;
+            }
         }
     }
 
     if (width != NULL) *width = static_cast<int>(w);
     if (height != NULL) *height = static_cast<int>(h);
     return true;
+}
+
+bool PngDecodeFirstChannel(const unsigned char* data, size_t size,
+                           std::vector<unsigned char>* out,
+                           int* width, int* height)
+{
+    if (out == NULL) return false;
+    return PngDecodeInternal(data, size, out, NULL, width, height);
+}
+
+bool PngDecodeRGBA(const unsigned char* data, size_t size,
+                   std::vector<unsigned char>* out,
+                   int* width, int* height)
+{
+    if (out == NULL) return false;
+    return PngDecodeInternal(data, size, NULL, out, width, height);
 }

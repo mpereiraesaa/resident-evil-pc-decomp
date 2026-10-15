@@ -18,5 +18,9 @@ dist/
 config.ini
 re1.lock
 
+# Authored room reconstruction fixtures, not extracted game assets.
+!tests/fixtures/room3d/Stage1/room1180_atlas.png
+!tests/fixtures/room3d/Stage1/room1180_plaster.png
+
 # Python bytecode caches
 __pycache__/

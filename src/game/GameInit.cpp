@@ -10,6 +10,7 @@
 // Forward declarations for task function registered from init_and_start_game
 extern void load_global_assets(void);
 extern void logos_state(void);                     // LogosScreen.cpp
+extern void ModelViewer_Run(void);                  // Port-only EMD preview task
 
 extern void SetupTexturePageHandles(int, int);
 extern void LoadTexturePage(void*, short, short, int, int, short, short, unsigned);
@@ -225,5 +226,11 @@ void load_global_assets(void)
     };
     CreateTexturedQuad(0, 0x2F, rectConfig);
 
+    // Port-only inspection mode: enter the normal EMD/TMD pipeline after the
+    // original global textures have been loaded, without starting gameplay.
+    // This is intentionally opt-in; the retail boot path remains the default.
+    if (getenv("RE1_MODEL_VIEW") != NULL) {
+        Task_chain((void*)ModelViewer_Run);
+    }
     Task_chain((void*)logos_state);
 }

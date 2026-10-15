@@ -41,26 +41,26 @@ struct DisplayModeInfo;
 struct D3DRendererInfo;
 
 // ============================================================================
-// Shader sources (compiled at runtime via D3DCompile). Identical to the
-// previous build's embedded sources so behaviour is byte-for-byte the same.
+// Shader sources (compiled at runtime via D3DCompile).
 // ============================================================================
 static const char* g_QuadVS_Source = R"(
 cbuffer SpriteCB : register(b0) { row_major float4x4 g_MVP; };
 struct VS_INPUT  { float2 pos:POSITION; float2 tex:TEXCOORD0; float4 col:COLOR0; };
-struct VS_OUTPUT { float4 pos:SV_Position; float2 tex:TEXCOORD0; float4 col:COLOR0; };
+struct VS_OUTPUT { float4 pos:SV_Position; float2 tex:TEXCOORD0; float4 col:COLOR0; float depth:TEXCOORD1; };
 VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT o;
     o.pos = mul(float4(input.pos.x, input.pos.y, 0.0f, 1.0f), g_MVP);
     o.tex = input.tex;
     o.col = input.col;
+    o.depth = 0.0f;
     return o;
 }
 )";
 
 // 3D model VS: same screen-space ortho for x/y, but the vertex carries a
-// pre-normalised [0,1] depth that goes straight into NDC z so the depth buffer
-// can resolve the model. The original leaned on a real Z-buffer for this
+// pre-normalised [0,1] linear depth. NDC z provides clip coordinates; the
+// pixel shader writes the perspective-correct depth used by the depth buffer. The original leaned on a real Z-buffer for this
 // ("MarniSystem Direct3D::MD3DCreateZBuffer"); a per-triangle painter sort
 // cannot, and made faces pop in and out as a model turned.
 //
@@ -75,7 +75,7 @@ VS_OUTPUT main(VS_INPUT input)
 static const char* g_Model3DVS_Source = R"(
 cbuffer SpriteCB : register(b0) { row_major float4x4 g_MVP; };
 struct VS_INPUT  { float4 pos:POSITION; float2 tex:TEXCOORD0; float4 col:COLOR0; };
-struct VS_OUTPUT { float4 pos:SV_Position; float2 tex:TEXCOORD0; float4 col:COLOR0; };
+struct VS_OUTPUT { float4 pos:SV_Position; float2 tex:TEXCOORD0; float4 col:COLOR0; float depth:TEXCOORD1; };
 VS_OUTPUT main(VS_INPUT input)
 {
     VS_OUTPUT o;
@@ -84,15 +84,27 @@ VS_OUTPUT main(VS_INPUT input)
     o.pos = float4(p.x * w, p.y * w, input.pos.z * w, w);
     o.tex = input.tex;
     o.col = input.col;
+    o.depth = input.pos.z;
     return o;
 }
 )";
 
+// Callers supply LINEAR view-depth. Hardware SV_Position.z interpolation is
+// affine in screen space, so it cannot interpolate that depth across an oblique
+// polygon. Carry it as a perspective-correct varying and write pixel depth.
+// This keeps models, room meshes and shadows on their shared linear ramp.
 static const char* g_QuadPS_Source = R"(
 Texture2D    g_Texture : register(t0);
 SamplerState g_Sampler  : register(s0);
-struct PS_INPUT { float4 pos:SV_Position; float2 tex:TEXCOORD0; float4 col:COLOR0; };
-float4 main(PS_INPUT i) : SV_Target { return g_Texture.Sample(g_Sampler, i.tex) * i.col; }
+struct PS_INPUT { float4 pos:SV_Position; float2 tex:TEXCOORD0; float4 col:COLOR0; float depth:TEXCOORD1; };
+struct PS_OUTPUT { float4 color:SV_Target; float depth:SV_Depth; };
+PS_OUTPUT main(PS_INPUT i)
+{
+    PS_OUTPUT o;
+    o.color = g_Texture.Sample(g_Sampler, i.tex) * i.col;
+    o.depth = i.depth;
+    return o;
+}
 )";
 
 // ============================================================================

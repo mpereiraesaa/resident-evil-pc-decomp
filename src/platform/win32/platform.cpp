@@ -11,6 +11,8 @@
 #endif
 #include <windows.h>
 #include <mmsystem.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>   // malloc/free for plat_file_read_all
 
 // Cached system wave-out volume, owned by Globals.cpp. Declared here rather
@@ -29,18 +31,18 @@ extern DWORD g_CachedWaveOutVolume;
 // movement) the same way main.cpp's --press does, so the two builds can
 // be exercised identically. Unset by default; the parse runs once.
 struct PlatTestKey { int vk; DWORD from; DWORD to; };
-static PlatTestKey s_testKeys[16];
+static const int kMaxTestKeys = 128;
+static PlatTestKey s_testKeys[kMaxTestKeys];
 static int   s_testKeyCount = -1;
 static DWORD s_testT0 = 0;
 
-static void PlatLoadTestKeys(void)
+static void PlatLoadTestKeys(const char* spec)
 {
     s_testKeyCount = 0;
-    const char* spec = getenv("RE1_TEST_KEYS");
     if (spec == NULL) return;
 
     const char* p = spec;
-    while (*p != '\0' && s_testKeyCount < 16) {
+    while (*p != '\0' && s_testKeyCount < kMaxTestKeys) {
         int vk = (int)strtol(p, (char**)&p, 0);
         if (*p != ':') break;
         p++;
@@ -60,7 +62,30 @@ int plat_key_state(int vk)
 {
     if (s_testKeyCount < 0) {
         s_testT0 = timeGetTime();
-        PlatLoadTestKeys();
+        PlatLoadTestKeys(getenv("RE1_TEST_KEYS"));
+    }
+    // Optional feedback-driven test input. Read at most twenty times a second,
+    // reset the relative clock only when the small command file changes.
+    // Atomic file replacement lets a runner wait for real game observations.
+    static const char* testFile = getenv("RE1_TEST_KEYS_FILE");
+    static DWORD lastPoll = 0;
+    static char previousSpec[8192] = {};
+    const DWORD currentTime = timeGetTime();
+    if (testFile != NULL && currentTime - lastPoll >= 50) {
+        lastPoll = currentTime;
+        FILE* f = fopen(testFile, "rb");
+        if (f != NULL) {
+            static char spec[8192];
+            const size_t count = fread(spec, 1, sizeof(spec) - 1, f);
+            const bool complete = fgetc(f) == EOF && !ferror(f);
+            fclose(f);
+            spec[count] = '\0';
+            if (complete && strcmp(spec, previousSpec) != 0) {
+                memcpy(previousSpec, spec, count + 1);
+                PlatLoadTestKeys(spec);
+                s_testT0 = currentTime;
+            }
+        }
     }
     if (s_testKeyCount > 0) {
         DWORD now = timeGetTime() - s_testT0;
@@ -71,6 +96,8 @@ int plat_key_state(int vk)
             }
         }
     }
+    // Scripted runs are isolated from concurrent desktop input.
+    if (s_testKeyCount > 0 || testFile != NULL) return 0;
     return (int)GetAsyncKeyState(vk);
 }
 

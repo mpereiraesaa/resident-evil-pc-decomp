@@ -5,6 +5,7 @@
 #include "../marni/PSXTexture.h"
 #include "FileLoader.h"
 #include <cstdio>
+#include <cstdlib>
 #include "../system/AssetPath.h"
 #include "dc/EntityModels.h"
 #include "dc/Items.h"        // DC_ITEM_BERETTA_CUSTOM
@@ -275,6 +276,8 @@ extern unsigned char QueueTextureForProcessing(char param1, unsigned char param2
 extern void ParseTmdTextureHeader(void* data, TmdTextureHeader* header);
 extern void TmdProcessingCallback(void);
 extern void ProcessTmdAsync(unsigned int param1);
+extern void RegisterEntityMeshSourceRange(unsigned int begin, unsigned int end,
+                                          const char* emdPath);
 
 // ============================================================================
 // FUN_00462790 (0x00462790) - Adjust weapon animation positions
@@ -491,9 +494,15 @@ void LoadEntityEMD(Entity* em, unsigned char entity_id)
 
     // The port's table is the OG's; in DC mode a handful of indices name a
     // different file (dc/EntityModels.cpp). NULL = the table entry stands.
-    const char* emdPath = g_emdPathTable[(g_playerEntity.id & 1) * 53 + entity_id];
+    int emdBlock = g_playerEntity.id & 1;
+    // The port-only model viewer holds an enemy's actual type in id so its
+    // texture queue follows gameplay. Its selected player block lives in the
+    // same scenario flag used when choosing the preview room/background.
+    if (getenv("RE1_MODEL_VIEW") != NULL)
+        emdBlock = (g_main_state_flags & MSF_CHAR_VARIANT) != 0 ? 1 : 0;
+    const char* emdPath = g_emdPathTable[emdBlock * 53 + entity_id];
     if (g_bDcMode) {
-        const char* dcPath = dc_emd_path(entity_id, (unsigned char)(g_playerEntity.id & 1));
+        const char* dcPath = dc_emd_path(entity_id, (unsigned char)emdBlock);
         if (dcPath != NULL) {
             emdPath = dcPath;
         }
@@ -504,6 +513,10 @@ void LoadEntityEMD(Entity* em, unsigned char entity_id)
 
     unsigned int fileSize = LoadFile(FILE_PATH, g_loadDataDestPointer, 32);
     int data_pointer = (int)g_loadDataDestPointer;
+    // The optional render-only refinement applies to any loaded entity EMD.
+    // Register even when disabled, to invalidate stale ranges in the load arena.
+    RegisterEntityMeshSourceRange((unsigned int)data_pointer,
+                                  (unsigned int)data_pointer + fileSize, emdPath);
 
     if ((g_main_state_flags2 & MSF2_COSTUME_VARIANT) != 0 && (unsigned int)g_bCostumeVariant - entity_id == -51) {
         entity_id = g_playerEntity.id & 1;

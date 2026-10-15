@@ -1,0 +1,30 @@
+newmtl room
+Kd 1 1 1
+map_Kd room1180_atlas.png
+
+newmtl trim
+Kd 0.045 0.055 0.065
+
+newmtl brass
+Kd 0.30 0.27 0.15
+
+newmtl paper
+Kd 0.55 0.60 0.56
+
+# Neutral plaster; vertex colors carry the authored blue lighting.
+newmtl plaster
+Kd 0.43 0.51 0.63
+map_Kd room1180_plaster.png
+
+# Furniture colors estimated from the original storeroom backgrounds.
+newmtl trunk
+Kd 0.24 0.25 0.24
+
+newmtl iron
+Kd 0.30 0.32 0.33
+
+newmtl enamel
+Kd 0.14 0.15 0.16
+
+newmtl keycap
+Kd 0.55 0.53 0.46

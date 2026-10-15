@@ -131,6 +131,7 @@
     <ClCompile Include="src\game\FileLoader.cpp" />
     <ClCompile Include="src\game\DoorSystem.cpp" />
     <ClCompile Include="src\game\GameInit.cpp" />
+    <ClCompile Include="src\game\ModelViewer.cpp" />
     <ClCompile Include="src\game\MainLoop.cpp" />
     <ClCompile Include="src\game\LogosScreen.cpp" />
     <ClCompile Include="src\game\DebugScreens.cpp" />
@@ -152,6 +153,7 @@
     <ClCompile Include="src\game\RoomInit.cpp" />
     <ClCompile Include="src\game\EffectSprites.cpp" />
     <ClCompile Include="src\game\Room.cpp" />
+    <ClCompile Include="src\game\Room3D.cpp" />
     <ClCompile Include="src\game\RoomEvents.cpp" />
     <ClCompile Include="src\game\CmdFunctions.cpp" />
     <ClCompile Include="src\game\PathTrail.cpp" />

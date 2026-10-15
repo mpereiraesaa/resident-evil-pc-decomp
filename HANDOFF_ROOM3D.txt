@@ -1,0 +1,411 @@
+RE1 ROOM3D HANDOFF — 2026-10-14
+
+CURRENT USER DIRECTION
+Stop open-ended inference/model improvements. Use the stable batcher as the
+automatic starting point, implement durable manual corrections, then finish
+rooms individually. Approximate reconstruction and creative replacement objects
+are acceptable; identical reproduction of every detail is not required.
+The user requested temporary-file cleanup and this handoff, not further feature
+implementation during this turn. No active goal: the previous goal was cleared.
+Do not recreate a goal unless explicitly requested. PS5 testing is out of scope.
+
+WORKSPACE AND SAFETY
+Root: /home/manuel/personal/ing_pereira/engineering/resident-evil-pc-decomp
+Fork: https://github.com/mpereiraesaa/resident-evil-pc-decomp
+Upstream: https://github.com/ecruells/resident-evil-pc-decomp
+Read the current AGENTS.md and latest user-provided instructions before editing.
+The root branch modern-base/windows-cross-build is dirty with unrelated runtime
+changes. Other agents share this workspace. Never reset, clean, stage or commit
+that work wholesale. No inference/batch jobs were found running at handoff.
+The user prefers local models; do not send game images to external services.
+
+CODE BASELINE / PUBLICATION
+Stable worktree: build/room3d-publication/29
+Branch: room3d/29-ceiling-linear-fitting
+HEAD: 8b402ea (clean when checked). Functional ceiling-fitting commit: 71fa33a.
+Stable room-tool suite: 235 tests passed, 110.663 seconds.
+Log: /tmp/re1-ceiling-fixture-fit-suite.log
+Lint, diff checks and platform-boundary checks previously passed for stage29.
+This does NOT validate the unfinished changes in stage30.
+Last verified published branches: stages01–16, through 6fd3890.
+Stages17–29 are committed locally, unpublished. No PRs were opened for them.
+Publication records: build/room3d-fork-branches-published.json and
+build/room3d-publication-push-execution.json. Recheck remote state before claiming
+the fork is current; the records are historical, not live remote verification.
+Do not push or publish merely because this document discusses publication.
+
+UNFINISHED EXPERIMENT — KEEP SEPARATE
+Worktree: build/room3d-publication/30
+Branch: room3d/30-observed-panel-appearance
+HEAD still 8b402ea; seven modified/new files, no stage30 commits:
+  tools/room3d_panel_appearance.py (new)
+  tools/room3d_fixture_appearance.py
+  tools/room3d_reconstruct.py
+  tools/batch_room3d.py
+  tools/room3d_retouch.py
+  tests/test_room3d_panel_appearance.py (new)
+  docs/ROOM3D_FOUNDATION.md
+Opt-in observed_panel_appearance samples owned, visible source pixels into a
+ceiling-panel underside atlas. It attempts mask/confidence/depth/occlusion and
+excluded-camera checks, preserving unknown texels as estimated appearance.
+Four focused tests ran; ONE FAILED:
+test_foreign_masks_and_actual_scene_occlusion_cannot_supply_detail, around line115.
+Expected an occluded panel to produce no atlas; an atlas was returned.
+Investigate test occluder geometry and actual scene visibility before deciding
+whether this is an implementation or fixture error. Do not claim it is solved.
+The full suite never ran because the focused failure stopped the chained command.
+No native stage30 trial ran. Driver prepared but unvalidated:
+build/run_panel_appearance_fixed_mesh_pair.py
+Do not merge this experiment into the manual-corrections baseline by default.
+
+WHAT EXISTS / WHAT DOES NOT
+The modern 32-bit Windows/Wine runtime was previously positively play-tested by
+the user. Room tools are a reconstruction workflow, not a completed playable
+all-room 3D replacement. No end-to-end shoulder-camera validation exists.
+Automatic pipeline includes DA3 depth, local semantic masks, approximate
+architecture, projected appearance, shared-object fitting and procedural detail.
+Advanced recent fitting/appearance features are opt-in, not enabled globally.
+Old whole-batch manifest: build/room3d-all-generated/manifest.json
+348 scenario/RDT entries: 318 image_assisted, 28 empty_slot, 2 error.
+These are not 348 unique rooms; variants must be identified before scheduling
+manual work. The errors were previously ROOM3100/ROOM3101; inspect manifest.
+That batch was NOT rerun using all latest changes.
+There is no measured global fidelity percentage. Prior 50–65% was only a rough
+visual impression of reviewed examples. Object silhouette IoU is not fidelity.
+Known room-level defects: distorted walls/doors, projected furniture, stretched
+textures, missing objects, gray occluders and dark/incomplete views.
+Some rooms need substantial reconstruction, not just tiny retouches.
+Current visual edits do not update native collisions or room scripts.
+
+EXISTING MANUAL WORKFLOW (START HERE)
+Read tools/room3d_retouch.py, room3d_additions.py, room3d_editor.py and
+room3d_catalog.py inside worktree29, plus docs/ROOM3D_FOUNDATION.md sections
+"Non-destructive room retouching" and "Offline editor and integrity-checked catalog".
+Retouch edits generated OBJ groups in separate output directories; never writes
+over automatic exports. Supported edits: translate, positive scale, yaw, pivot,
+hide, plus explicit procedural additions. Optional reprojection updates textures.
+It saves retouch.json with source OBJ SHA256, edits, group bounds, additions and
+appearance mode. retouch-appearance.json carries appearance semantics through
+sequential edits. Existing tests cover actual rendering, source immutability,
+sequential reprojection, additions and fixture material roles.
+Browser editor exports edits for the CLI; it is a wireframe/object-transform
+editor, not a complete arbitrary mesh-modeling application.
+Current retouch persistence is export-based. No batch integration automatically
+replays a versioned correction chain after regeneration. Source hash is recorded
+but replay compatibility and stable identity must be designed/enforced.
+Current primitive_N group names can shift when automatic inference changes;
+blindly applying an old edit to the same index risks editing the wrong object.
+Do not advertise current retouch.json as a complete portable override format:
+it contains an absolute source path, and addition records need inspection for
+whether they preserve full reproducible parameters.
+
+RECOMMENDED NEXT TASK
+1. Create an isolated branch/worktree from stable29. Preserve stage30 untouched.
+2. Freeze generator/version/settings and define a portable versioned override
+   schema: room/scenario identity, source fingerprints, stable object identity,
+   transformations, additions/replacements, ordered edit history and material/
+   projection settings. No machine-local absolute paths as identity.
+3. Integrate replay after generation and before final previews/texture baking.
+   Keep automatic and corrected outputs distinct. Detect incompatible source or
+   object identity and report a conflict; never silently retarget a correction.
+   Define replay from a fresh baseline so transforms cannot accumulate twice.
+4. Prove one representative room end to end: correct it, save overrides, rebuild
+   from original game inputs into a fresh directory, replay, compare geometry
+   and rendered views. Reimport/rebake must preserve manual geometry.
+5. Test material/UV preservation or deterministic reprojection, source immutability,
+   missing-object conflicts, repeated replay, additions and scenario variants.
+6. Catalog unique geometry vs scenario variants. Track unreviewed / needs work /
+   visually approved; keep gameplay validation as a separate status.
+7. Then proceed room by room. Improve automation only when a recurring manual
+   correction has a clear reusable solution. Do not restart broad model trials.
+Useful existing targeted commands from worktree29 (choose interpreter with numpy/PIL):
+  python -m unittest discover -s tests -p test_room3d_retouch.py
+  python -m unittest discover -s tests -p test_room3d_additions.py
+  python -m unittest discover -s tests -p test_room3d_fixture_appearance.py
+Environments preserved: build/room3d-tools-venv and build/room3d-vision-venv.
+Read CLI --help and test dependencies before launching; do not assume root tools
+are the latest stable staged tools.
+
+LATEST VALIDATION ARTIFACTS
+ROOM512 full paired ceiling trial:
+  build/room5120-ceiling-fixture-batch-validation/index.html
+  views-0-2.png, comparison-measurements.json, validation-status.json, bound-audits/
+  Both OFF/ON batches completed; all3 views explicitly reviewed. Cleaner shared
+  rectangular panel but a flat pale face loses tube/frame/highlight detail.
+  Source-mask IoU .898/.910 -> .922/.926, not room fidelity. Third camera unchanged.
+  No independent positive validation; status needs_further_geometry_work.
+  Ceiling DOES exist as fitted primitive_1; an earlier missing-ceiling claim was
+  corrected. Its estimate used all3 camera detections; do not claim fully withheld
+  geometry evidence. Actual depth changed in views0/1 even though depth-gate errors
+  did not, so do not call those depth images identical.
+ROOM715 independent negative:
+  build/room7150-ceiling-fixture-independent-validation/index.html
+  views-0-3.png, views-4-7.png, comparison-measurements.json, validation-status.json
+  All8 OFF/ON RGB and rendered depths identical: fitting safely abstained.
+  No improvement/generalization claim. Whole-room defects remain.
+  Camera pairs0/4,1/5,2/6,3/7 share projection but source lighting differs; static
+  output materials do not reproduce both light states. Diagnostic:
+  camera-variant-diagnostic.json. This is not an established cutaway bug; repeated
+  poses must not count as independent geometric observations. No fix implemented.
+Earlier useful paired trials include ROOM502 ladders and ROOM303 negative control.
+See build/room5020-ladder-material-full-batch-validation and
+build/room3030-ladder-materials-fixed-mesh-validation. Full room defects persist.
+
+PUBLICATION INTENT / LIMITS
+User wants source, original procedural components and corrected room definitions
+in the fork, with players providing purchased game files and textures generated
+locally. Manual overrides must preserve/share the correction work, not require
+each user to edit the rooms again. Exclude original game assets and third-party
+HD/voice mod assets from publication. Local comparisons can contain copyrighted
+images; do not blindly commit generated HTML/PNGs or derived textured meshes.
+Upstream GPLv3 covers its source, not Capcom rights. Keep notices and attribution.
+Faithful geometry and decompiled code can still raise rights issues; requiring
+game files reduces distribution risk but is not a legal guarantee. Do not claim
+Capcom approval based on upstream releases remaining online. Original components
+can be credited to the contributor without claiming ownership of Resident Evil.
+Capcom's older video policy explicitly does not license mods/derivative works.
+Newer fan-content guidelines exist but the official page returned403 during
+research; their current conditions were not verified. Do not treat older policy
+as exhaustive or give categorical legal clearance.
+
+CLEANUP DONE THIS TURN
+Manifest: build/room3d-cleanup-20261014.json
+Removed14 confirmed disposable directories, 5,927,643 logical bytes total:
+Python bytecode caches under staged room worktrees / map-anything code, and the
+old /tmp/re1-room-editor-headless-20261011 browser profile.
+Preserved all model weights, environments, room outputs, comparisons, checkpoints,
+scripts, Git worktrees, unfinished edits and validation/test logs. Most of the
+48GB build tree is retained deliberately as useful assets/dependencies/evidence.
+Unidentified /tmp files may belong to other agents; they were not deleted.
+
+STAGE31 UPDATE — 2026-10-14 (portable overrides and replay; recommended task items1–6 done, 7 started)
+Worktree: build/room3d-publication/31, branch room3d/31-portable-overrides,
+commit 56c62c8 on top of stable29 (8b402ea). Stage30 untouched. Unpublished.
+New: tools/room3d_overrides.py (init/add/replay/check/compare), tools/room3d_rooms.py
+(catalog/status), batch_room3d.py --overrides DIR -> <out>/corrected/<room>/,
+room3d_checkpoint excludes overrides from the batch key, room3d_retouch refactored
+into apply_edits/serialize/prepare/materialize (behaviour unchanged).
+Tracked data: room3d/overrides/ROOM1180.json, room3d/status.json, room3d/README.md.
+Docs: docs/ROOM3D_FOUNDATION.md "Portable overrides and replay".
+Override schema: room identity (rdt/stage/room/player), source fingerprints (RDT
+sha, layout sha, background hashes), frozen baseline (tools digest, bool settings,
+mesh sha), ordered history with per-object identity (kind, source_offset, bounds),
+edits, additions; no absolute paths (validated). Replay from fresh export only;
+later steps recorded against the replayed state (history hash); conflicts
+(missing/ambiguous/changed/source_mismatch) fail with no output unless
+--allow-partial; scenario variant with the same layout accepted and reported.
+Proof (build/room3d-overrides-proof/, local, not committed): ROOM1180 regenerated
+twice from game files with cached detections/masks/depth (auto-a, auto-b): byte-
+identical. One step (wall sconce addition + small barrel scale y1.5, reprojected)
+replayed on both: corrected-a == corrected-b byte-identical; only primitive_4 and
+added_wall_lamp differ from automatic. Batch --resume --overrides hook produced
+the same bytes (auto-b/corrected/room1180). Visual result approximate; ROOM1180
+status needs_work / not_validated. Not a fidelity or gameplay claim.
+Catalog over assets/USA (build/room3d-rooms/): 348 RDT, 28 empty, 116 unique
+layouts; all320 non-empty rooms have a scenario variant with identical layout
+and backgrounds (so one override per pair; replay still checks fingerprints).
+Tests: 246 room-tool tests pass (log build/room3d-overrides-proof/suite-stage31.log).
+ruff clean on changed files; platform boundary OK.
+Next: continue room by room (item7): generate editor from the automatic export
+(or from a replay for later steps), `overrides add`, `replay`, review, set status.
+Editor-exported pivots are absolute and shift with relocated objects on replay.
+Not done: publication/push of stages17–31; stage30 failing test untouched.
+
+STAGE31 ROOM PASS — 2026-10-14 (second commit on room3d/31-portable-overrides)
+Stage30 failing test diagnosed (not modified, not merged): fixture error, not
+implementation. tests/test_room3d_panel_appearance.py builds the occluder with
+kind 'cabinet', which batch_room3d.generate_mesh does not extrude (only parts,
+staircase, barrel, door_panel, chest_body, ceiling, lamp, typewriter_table), so
+occluded.obj has no occluder (0 rendered pixels) and the panel is truly visible.
+With kind 'chest_body' and the same box the occluder renders (47,074 px per
+camera) and textures() abstains (returns {}). One-word fixture fix; the full
+stage30 suite still has not run. Not claimed solved.
+Added: 'block' addition family (width/depth/height/elevation); replay accepts
+layout_variant (same layout + same background hashes, e.g. stage6/7 revisits of
+stage1/2 rooms) and resolves anchored objects by kind+bounds when the RDT
+differs (script offsets differ per RDT); batch --overrides shares the single
+matching override file by fingerprint (manifest 'shared_from'); catalog lists
+shared_layout_with. 116 unique layout+image combinations among 320 rooms.
+First room pass (build/room3d-rooms-pass1/, 16 one/two-camera rooms, ~20s each
+with cached evidence, batch --resume --overrides room3d/overrides):
+  visually_approved (approximate): ROOM4100, ROOM50E0
+  corrected + needs_work: ROOM1180 (sconce, barrel; shared to 6180),
+    ROOM4070 and ROOM40B0 (tub collision slab scaled to 600 high about the floor;
+    ray casts from both cameras located the tub on boundary_4 / boundary_5)
+  needs_work with notes in room3d/status.json: 1120, 6120, 2080, 7080, 10D0,
+    60D0, 4020, 50D0, 5150, 6180, 7000, 7190
+Recurring defects: 1.5m collision slabs as furniture (bathrooms), furniture
+merged into wall-height slabs (1120 bed), single-camera duct views (50D0, 7000),
+whole-room distortion needing reconstruction (10D0). Reusable fix: scale the
+furniture slab to its real height about the floor (pivot [cx,0,cz]).
+Scratch locator used for ray casts is not committed; a pixel-to-plane helper
+would be the next reusable tool if slab scaling keeps recurring.
+Remaining: 303 RDTs unreviewed (about 100 unique layouts). No gameplay
+validation. Stages17–31 still unpublished.
+
+STAGE31 SECOND PASS — 2026-10-14 (third commit on room3d/31-portable-overrides)
+Stage30: tests/test_room3d_panel_appearance.py fixture fixed in worktree30
+('cabinet' -> 'chest_body'); 4 focused tests pass and the full stage30 suite
+passes (239 tests, log build/room3d-overrides-proof/suite-stage30.log).
+Still uncommitted in worktree30; not merged into stage31.
+Second room pass: build/room3d-rooms-pass2/ = one representative RDT per unique
+layout+images (103 rooms, --jobs 4, 80 min, cached evidence). 102 exported,
+ROOM3100 fails (no cached DA3 depth; needs a depth rerun). All 116 unique
+layouts now reviewed: 47 visually_approved (approximate), 73 needs_work with
+notes in room3d/status.json. `room3d_rooms.py propagate` inherits status to the
+200 identical-layout siblings (marked inherited_from; gameplay never inherited).
+Catalog: 0 unreviewed, 128 approved, 192 needs_work, 320 not gameplay-validated.
+New overrides: ROOM1050 (table slab scaled), ROOM20F0 (table block). 16 rooms
+covered by 6 override files via layout sharing. All replays applied.
+Contact sheets used for review are scratch (not committed); sheet builder is
+$SCRATCH/sheet.py — a tools/ version would help the next pass.
+Open: 73 needs_work rooms need geometry work beyond retouch (slabs for
+furniture, empty/black cameras, caves); no gameplay validation; stages17–31
+unpublished (no push without explicit request).
+
+STAGE31 RUNTIME PROBES — 2026-10-14 (fourth commit; stage30 committed as 94e9886)
+tools/check_room3d_runtime.py (root checkout, untracked) Wine smoke test with
+build/windows-cross/residentevil.exe: corrected ROOM1180 replay PASSED
+(mesh loaded, camera transition, chest menu open/close, 49s); automatic
+ROOM10B0 PASSED (mesh loaded, camera transition, 43s). Evidence:
+build/room3d-runtime-corrected-1180/, build/room3d-runtime-auto-10b0/.
+Recorded as gameplay 'validated' with smoke-test scope in the note; these are
+not human play-tests and no other room has a runtime scenario.
+Stage30 experiment committed on its own branch (94e9886) with the fixture
+fix; still not merged into stage31.
+Remaining work needs the user: publication of stages17–31 (no push without
+explicit request), human play-testing, and geometry work beyond retouch for
+the 73 directly reviewed needs_work layouts (192 RDTs with siblings).
+
+STAGE31 THIRD PASS — 2026-10-14 (fifth commit)
+Slab-scaling corrections for ROOM4010, 40A0, 4060, 5070, 2090 (beds 0.4,
+desks 0.5-0.7 of the 1.5m slab, pivot on floor at slab centre, --reproject).
+Four approved as approximate; 2090 bed tops partly gray. propagate now
+refreshes inherited siblings. Catalog: 136 approved / 184 needs_work / 0
+unreviewed; 28 rooms covered by 11 override files; gameplay 2 smoke-tested.
+Candidates for the same fix next (slabs listed, mapping uncertain without a
+look): ROOM1080 (piano/bar), ROOM1110 (sofa/cabinet), ROOM2030 (benches),
+ROOM7160 (library table), ROOM4020/1120/7190 (pass1 dirs).
+
+STAGE31 FOURTH PASS — 2026-10-14 (sixth commit)
+Slab corrections: ROOM1080, 1110, 7160, 4020, 7190, 1120 (slab->object mapping
+by projecting slab top centres into cameras; scratch $S/slabs.py). 1080, 4020,
+7190 approved as approximate; 1110/7160/1120 keep defects beyond slab fixes.
+Catalog after propagate: see room3d/status.json and build/room3d-rooms/.
+
+STAGE31 FIFTH PASS — 2026-10-14 (seventh commit)
+Slab corrections: ROOM4040, 1130, 71C0, 6190 approved as approximate; 30E0 and
+5060 remain needs_work. Slab-scaling candidates are now exhausted: every
+remaining needs_work room's defect is black/empty cameras, caves, stairs,
+scattered fixtures or a wall-height slab, none of which the retouch tools fix.
+Catalog: see build/room3d-rooms/rooms.json counts (approved 154 / needs_work
+166 / 60 rooms covered by 23 overrides / gameplay 2 smoke-tested).
+
+STAGE31 SIXTH PASS — 2026-10-14 (ninth commit)
+Hide corrections for scattered fixtures: ROOM10E0, 10B0, 2010, 2080, 1160,
+1130 (step 2), 1110 (step 2, globe removed). 10E0/1110/10B0/1160 approved as
+approximate; 2010/2080 remain needs_work. Corrected 10B0 passes the Wine smoke
+test (build/room3d-runtime-corrected-10b0/). Catalog: approved 166 / needs_work
+154 / 80 rooms covered by 30 overrides / gameplay 2 smoke-tested (both on
+corrected meshes now). Remaining needs_work defects: black/empty cameras,
+caves, flat stairs, wall-height slabs, close-ups — geometry work, not retouch.
+
+== 2026-10-14 play-test session: hand-authored ROOM10B0 and colour decode fix ==
+- Play-test folder: build/room3d-playtest (run.sh, config.ini, mods/Stage1 with
+  ROOM1180 corrected batcher mesh and the hand-authored ROOM10B0). F1 -> ROOM
+  CHANGE -> Mansion 1F -> ROOM 118 / ROOM 10B.
+- User play-tested both rooms in Wine: ROOM1180 corrected (2 cameras, menu),
+  ROOM10B0 (4 cameras, stair trigger to ROOM2070 and back). No crash; the
+  FAudio init exception in crash.log is present in every run and unrelated.
+- User asked for ROOM10B0 redone by hand ("inspired is fine"). Done:
+  tools/build_room10b_mesh.py (worktree 31, committed). Procedural textures,
+  baked vertex lighting, chandelier fitted to the game's overlaid globe sprites.
+  Output: build/room3d-publication/31/build/room3d-handmade/room10b0 (compare.png
+  shows channel-corrected originals next to previews). Smoke test
+  build/room3d-runtime-handmade-10b0 passed.
+- FINDING: tools/pak_view.py and tools/dump_tim.py decoded 15-bit pixels with
+  red/blue swapped (engine: blue at bits 10-14). All camera*-original.png,
+  reprojected textures and cached detections/segmentation/depth/stair caches in
+  build/room3d-all-generated were produced from swapped colours. Fixed in
+  worktree 31; 249 tests pass. Caches are hash-pinned, so regenerating a room
+  with correct colours requires --local-models --vision-python
+  build/room3d-vision-venv/bin/python (CPU). ROOM1180 regeneration with the
+  fix: build/room3d-colorfix (in progress at time of writing).
+- Full 320-room regeneration with correct colours NOT done; needs a user
+  decision (hours of CPU vision runs; approvals in room3d/status.json were
+  made on swapped-colour contact sheets and judged layout only).
+
+== 2026-10-14 (late): main hall by hand, stopped ==
+- tools/room3d_handmade.py (shared mesh/lighting/texture/preview module) and
+  tools/build_room1060_mesh.py committed on worktree 31 (latest 986479b + status
+  commit). Hall layout derived from ROOM1060 collision + mask sprites (floor-cast
+  through each camera, see build/room3d-publication/31/build/scratch/*.py) and
+  ROOM2030 (2F hall) collision/views. Loads in-engine (smoke test 0x06, added to
+  tools/check_room3d_runtime.py in the root checkout), 18318 tris, 2.6 MB.
+- User play-tested three rounds and rejected the hall's look; work on it is
+  STOPPED at their request. Known gaps: finish quality (flat vertex lighting, no
+  turned balusters, no fanlight tracery), the sprite overlays of the original
+  stair/newels are drawn over the mesh so any geometry mismatch shows as
+  floating sprites. Two real bugs were fixed in the last round (2F wainscot
+  height, missing slab bands).
+- Lessons recorded: extract mask sprites and adjoining-room data BEFORE
+  modelling; check OBJ size (<4 MiB) in the build; inspect each camera at full
+  size, not thumbnails. room3d_handmade.edge_agreement() gives a coarse
+  per-camera edge score (not sufficient to catch wrong geometry).
+- Play-test folder build/room3d-playtest holds ROOM1180 (colour-corrected
+  batcher + partial override replay), ROOM10B0 (hand-authored, accepted), and
+  ROOM1060 (hand-authored, rejected). Remove room1060* from mods/Stage1 to fall
+  back to the original backdrop.
+- Status file updated: ROOM10B0 validated (user), ROOM1180 validated (user),
+  ROOM1060 needs_work. Nothing pushed.
+
+== 2026-10-14 (final): main hall accepted once mask sprites were disabled ==
+- The three rejected rounds were dominated by the ORIGINAL BACKDROP'S MASK
+  SPRITES (per-camera overlay tables in the RDT, drawn by DrawRoomSpr over the
+  mesh). With a copy of ROOM1060.RDT whose mask group counts are zeroed placed
+  in build/room3d-playtest/mods/Stage1 (mod roots override RDTs too; log shows
+  "[assets] mod[0] active: stage1\room1060.rdt"), the user approved the hall:
+  "ok NOW ITS LOOKING NICE! good job". Status: ROOM1060 visually_approved,
+  gameplay validated (cameras 0-6 walked).
+- Implication for every Room3D room: mask sprites must be suppressed when a
+  mesh is active (the mesh already depth-occludes the player). Cleanest fix is
+  in the engine: skip DrawRoomSpr() in GameLoop.cpp when Room3D_IsActive(),
+  behind a config/env toggle so backdrop-only rooms keep their masks. NOT done
+  yet; the RDT-copy trick is the interim workaround (also applies to ROOM10B0's
+  chandelier globes and ROOM1180).
+
+== 2026-10-14 (engine): mask sprites suppressed when a Room3D mesh is active ==
+- ROOT CHECKOUT (uncommitted, shared): src/game/Room3D.cpp (untracked file) gains
+  Room3D_SuppressRoomMasks(); src/game/GameLoop.cpp calls it before DrawRoomSpr()
+  (`if (!Room3D_SuppressRoomMasks()) DrawRoomSpr();`). Default: the RDT's
+  per-camera overlay sprites are skipped whenever the room mesh renders; set
+  RE1_ROOM3D_KEEP_MASKS=1 to restore them. Logs once per room:
+  "[room3d] room mask sprites suppressed for stage N room XX".
+- Rebuilt build/windows-cross/residentevil.exe (tools/build_windows_cross.py,
+  incremental). Smoke tests pass on the new exe for 0x06, 0x0B and 0x18 and each
+  log the suppression line. Copied into build/room3d-playtest; the sprite-free
+  ROOM1060.RDT workaround copy was removed from mods/Stage1.
+- Not committed anywhere: the Room3D runtime lives only in the root checkout as
+  an untracked file, so this change needs whoever owns that to commit it.
+
+== 2026-10-14/15: room readings for ALL rooms ==
+- Pipeline: room3d/readings/ROOMxxxx.toml (160 files, every non-empty RDT)
+  + tools/room3d_reading.py (build) + tools/room3d_readings_batch.py (build
+  all, score, install, in-engine load) + tools/room3d_evidence.py (collision
+  blocks drawn on the original views; floor point under a pixel). Worktree 31,
+  branch room3d/31-portable-overrides, not pushed.
+- Final batch 2026-10-15: 160/160 built, 160/160 loaded in the Wine build,
+  0 weak cameras, after every room was re-read against its originals and two
+  full compare-sheet reviews (28 findings, all fixed and reloaded). Output build/room3d-readings-final (report.md, compare
+  sheets in built/<room>/compare.png).
+- Installed in build/room3d-playtest/mods (Stage1-7, each mesh also under the
+  Jill name roomXXX1; all 160 Jill RDTs share cameras/collision) with the
+  current exe. Run build/room3d-playtest/run.sh.
+- Runtime (root checkout, f68fda0, 752fe3c): ".cameras" line "backdrop N"
+  keeps the original background for camera N (86 close-up/cutscene cameras);
+  "shade N F" dims the baked colours for lights-off camera sets.
+- Smoke test (root, 8ba34b1): tools/check_room3d_runtime.py --character jill.
+- Known approximations: outdoor terrain, pipes and spiral stair (no
+  horizontal cylinders / spiral kind), lights-off camera sets bake the lit
+  state, a few steep top-down cameras. See docs/ROOM3D_FOUNDATION.md
+  "Readings for every room" in worktree 31.

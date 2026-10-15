@@ -879,11 +879,17 @@ class Builder:
             if group:
                 mesh.set_group(group)
             base = floor
-            if dado:
-                wall_rect(mesh, side, fixed, a, b, floor, floor - dado, dado_material)
-                base = floor - dado
-                if rail:
-                    skirting_box(mesh, side, fixed, a, b, 80, 40, trim, floor=floor - dado + 80)
+            # Per-zone dado: `dado = 0` turns it off for a zone's walls,
+            # `dado_material` changes its finish there.
+            zdado = zone.get("dado", dado)
+            zdado_mat = self.use(zone["dado_material"]) if zone.get("dado_material") else dado_material
+            if zdado and zdado_mat is None:
+                zdado_mat = self.use("panel")
+            if zdado:
+                wall_rect(mesh, side, fixed, a, b, floor, floor - zdado, zdado_mat)
+                base = floor - zdado
+                if zone.get("chair_rail", rail):
+                    skirting_box(mesh, side, fixed, a, b, 80, 40, trim, floor=floor - zdado + 80)
             wall_rect(mesh, side, fixed, a, b, base, ceiling, wm)
             if skirt:
                 skirting_box(mesh, side, fixed, a, b, skirt, 55, skirt_mat, floor)

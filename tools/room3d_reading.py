@@ -939,7 +939,7 @@ class Builder:
         for w in self.reading.get("window", []):
             side, kind = w["wall"], w.get("kind", "arch")
             along = w["at"]
-            line = self._wall_line(side, along)
+            line = w.get("line", self._wall_line(side, along))
             d = SIDES[side]
             stone = self.use(w.get("frame", "stone"))
             if kind == "fanlight":

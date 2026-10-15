@@ -424,6 +424,11 @@ static void DebugRoomChange_Trigger(void)
     g_pendingDoorRecord = (int)s_dbgDoorRecord;
     g_main_state_flags |= MSF_GAMEPLAY_ACTIVE;
     g_message_flags = 0;
+    // Leaving mid-cutscene (e.g. during the main hall opening) would keep its
+    // cinematic letterbox: the script that clears MSF_INTENSITY_RAMP never
+    // runs, and the bars stay drawn in every room after.
+    g_main_state_flags &= ~MSF_INTENSITY_RAMP;
+    g_spriteAnimIntensity = 0;
 
     g_rect.textureId = 0;
     g_rect.x = -160;

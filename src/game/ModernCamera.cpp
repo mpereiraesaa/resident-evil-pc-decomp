@@ -46,6 +46,8 @@ const float kEyeHeight = 2700.0f;      // pivot at eye level (RE1 doors ~3300 ta
 const float kShoulder = 620.0f;        // over-the-right-shoulder offset (player sits left of centre)
 const float kDistance = 2400.0f;       // boom length
 const float kWallMargin = 220.0f;
+const float kSideClearance = 900.0f;  // walls beside the camera fill the frame closer than this
+const float kMaxSideShift = 1200.0f;
 const float kMinDistance = 800.0f;     // tight over-the-shoulder; closer would be inside the player
 const float kDefaultPitch = 0.12f;     // radians, positive looks down (nearly level, RE5-like)
 const float kMinPitch = -0.45f;
@@ -65,6 +67,9 @@ int   s_lastStage = -1, s_lastRoom = -1;
 bool  s_justEntered = true;
 float s_wallClip = 0.0f;
 float s_lastShoulder = 0.0f;
+float s_sideShift = 0.0f;      // sideways slide away from walls beside the camera
+float s_sideRoom[2] = { 0.0f, 0.0f }, s_sideFree[2] = { 0.0f, 0.0f };   // trace only
+bool  s_snapSide = true;
 int   s_entryTick = 0;
 int   s_lastLoggedRoom = -1;
 
@@ -91,7 +96,32 @@ float WrapAngle(float a)
 // Port addition: evaluate an entry view with the same shoulder and boom
 // constraints as the live camera. A floor below the camera is required, but
 // a ceiling is not: courtyards and other outdoor rooms also use this camera.
-float EntryViewClearance(float yaw, float pitch, float* ahead = NULL)
+// Room on the tighter side of a camera at `at` looking along `yaw`: the
+// least hit * sin(angle) of level rays 25, 45 and 90 degrees off the line of
+// sight on either side, against walls and furniture alike (a surface the
+// view meets close up at the frame's edge is magnified into a few texels of
+// art).
+float SideRoom(const float at[3], float yaw)
+{
+    static const float kAngles[3] = { 0.436f, 0.785f, 1.571f };
+    const float flat[3] = { cosf(yaw), 0.0f, -sinf(yaw) };
+    const float right[3] = { -sinf(yaw), 0.0f, -cosf(yaw) };
+    const float reach = kSideClearance + kMaxSideShift;
+    float least = reach;
+    for (int sideIndex = 0; sideIndex < 2; ++sideIndex) {
+        const float sign = sideIndex == 0 ? 1.0f : -1.0f;
+        for (int a = 0; a < 3; ++a) {
+            const float c = cosf(kAngles[a]), sn = sinf(kAngles[a]);
+            const float dir[3] = { flat[0] * c + right[0] * sign * sn, 0.0f,
+                                   flat[2] * c + right[2] * sign * sn };
+            const float room = Room3D_Raycast(at, dir, reach / sn, 0) * sn;
+            if (room < least) least = room;
+        }
+    }
+    return least;
+}
+
+float EntryViewClearance(float yaw, float pitch, float* ahead = NULL, float* sideRoom = NULL)
 {
     const float head[3] = { (float)g_playerEntity.position.x,
         (float)g_playerEntity.position.y - kEyeHeight,
@@ -120,6 +150,7 @@ float EntryViewClearance(float yaw, float pitch, float* ahead = NULL)
             const float forward[3] = { -back[0], -back[1], -back[2] };
             *ahead = Room3D_Raycast(pivot, forward, 4000.0f, 1);
         }
+        if (sideRoom && pass == 2) *sideRoom = SideRoom(camera, yaw);
     }
     const float down[3] = { 0.0f, 1.0f, 0.0f };
     const float floorLimit = kEyeHeight + 3500.0f;
@@ -154,12 +185,16 @@ void SelectEntryView(void)
             for (int side = 0; side < (step == 0 || step == 9 ? 1 : 2); ++side) {
                 const float offset = (float)step * kPi / 9.0f;
                 const float yaw = WrapAngle(heading + (side == 0 ? offset : -offset));
-                const float clearance = EntryViewClearance(yaw, pitches[p], &ahead);
+                float room = 0.0f;
+                const float clearance = EntryViewClearance(yaw, pitches[p], &ahead, &room);
                 if (clearance < kMinDistance) continue;
                 // Prefer the level shoulder view; a steeper pitch can fit a
                 // doorway without turning all the way around to face it.
-                const float score = clearance + ahead * 0.75f - offset * 400.0f -
-                                    (pitches[p] - kDefaultPitch) * 1000.0f;
+                // Room at the frame's sides counts too: a view out of a
+                // corner beats one into it.
+                const float sideScore = room < kSideClearance ? room : kSideClearance;
+                const float score = clearance + ahead * 0.75f + sideScore -
+                                    offset * 400.0f - (pitches[p] - kDefaultPitch) * 1000.0f;
                 if (score > bestScore) {
                     bestScore = score;
                     best = clearance;
@@ -240,6 +275,8 @@ void ModernCamera_Update(void)
         s_pitch = kDefaultPitch;
         s_distance = kDistance;
         s_justEntered = true;
+        s_sideShift = 0.0f;
+        s_snapSide = true;
         s_entryTick = 0;
         s_lastStage = g_stageId;
         s_lastRoom = g_roomId;
@@ -311,14 +348,98 @@ void ModernCamera_Update(void)
     float wanted = shellHit - kWallMargin;
     if (wanted > kDistance) wanted = kDistance;
     if (wanted < kMinDistance) wanted = kMinDistance;
+
+    // Side clearance: a wall beside the camera, or one the view meets at an
+    // angle just ahead of it, fills that side of the frame with a few
+    // magnified texels of art. Rays across the view (25, 45 and 90 degrees
+    // off the line of sight, each side) measure the room on each side as
+    // hit * sin(angle). The camera slides sideways by the least amount that
+    // clears both sides, or to the middle when the gap is too narrow; if even
+    // the middle is cramped, the boom is pulled in to where the space opens
+    // up around the player.
+    const float flat[3] = { fwd[0] / h, 0.0f, fwd[2] / h };
+    const auto measure = [&](const float at[3], float room[2], float free[2]) {
+        static const float kAngles[3] = { 0.436f, 0.785f, 1.571f };
+        const float reach = kSideClearance + kMaxSideShift;
+        for (int sideIndex = 0; sideIndex < 2; ++sideIndex) {
+            const float sign = sideIndex == 0 ? 1.0f : -1.0f;
+            room[sideIndex] = free[sideIndex] = reach;
+            for (int a = 0; a < 3; ++a) {
+                const float c = cosf(kAngles[a]), sn = sinf(kAngles[a]);
+                const float dir[3] = { flat[0] * c + right[0] * sign * sn, 0.0f,
+                                       flat[2] * c + right[2] * sign * sn };
+                const float hit = Room3D_Raycast(at, dir, reach / sn, 0);
+                if (hit * sn < room[sideIndex]) room[sideIndex] = hit * sn;
+                if (a == 2) free[sideIndex] = hit;
+            }
+        }
+    };
+    // Slide (+ right) for measured room; *cleared = the room left on the
+    // tighter side afterwards.
+    const auto solve = [&](const float room[2], const float free[2], float* cleared) {
+        float target;
+        if (room[0] + room[1] >= 2.0f * kSideClearance) {
+            const float low = kSideClearance - room[1], high = room[0] - kSideClearance;
+            target = 0.0f < low ? low : (0.0f > high ? high : 0.0f);
+        } else {
+            target = (room[0] - room[1]) * 0.5f;
+        }
+        if (target > free[0] - kWallMargin) target = free[0] - kWallMargin;
+        if (target < -(free[1] - kWallMargin)) target = -(free[1] - kWallMargin);
+        if (target > kMaxSideShift) target = kMaxSideShift;
+        if (target < -kMaxSideShift) target = -kMaxSideShift;
+        const float r = room[0] - target, l = room[1] + target;
+        *cleared = r < l ? r : l;
+        return target;
+    };
+    // Evaluated at the boom's target length (not its eased length), so the
+    // choice is stable while the player stands still.
+    float sideRoom[2], sideFree[2], cleared = 0.0f;
+    float onBoom[3];
+    for (int i = 0; i < 3; ++i) onBoom[i] = pivot[i] + back[i] * wanted;
+    measure(onBoom, sideRoom, sideFree);
+    float target = solve(sideRoom, sideFree, &cleared);
+    if (cleared < kSideClearance && wanted > kMinDistance) {
+        float bestDistance = wanted, bestCleared = cleared, bestTarget = target;
+        static const float kFractions[3] = { 0.75f, 0.5f, 0.0f };
+        for (int k = 0; k < 3 && bestCleared < kSideClearance; ++k) {
+            float d = wanted * kFractions[k];
+            if (d < kMinDistance) d = kMinDistance;
+            if (d >= bestDistance) continue;
+            float at[3], room[2], free[2], c;
+            for (int i = 0; i < 3; ++i) at[i] = pivot[i] + back[i] * d;
+            measure(at, room, free);
+            const float t = solve(room, free, &c);
+            if (c > bestCleared + 50.0f) {
+                bestDistance = d; bestCleared = c; bestTarget = t;
+                sideRoom[0] = room[0]; sideRoom[1] = room[1];
+            }
+        }
+        wanted = bestDistance;
+        target = bestTarget;
+    }
     if (wanted < s_distance || s_justEntered) s_distance = wanted;
     else s_distance += (wanted - s_distance) * 0.12f;
     s_justEntered = false;
-
+    // The slide is clamped against the walls where the camera actually is.
+    for (int i = 0; i < 3; ++i) onBoom[i] = pivot[i] + back[i] * s_distance;
+    for (int sideIndex = 0; sideIndex < 2; ++sideIndex) {
+        const float sign = sideIndex == 0 ? 1.0f : -1.0f;
+        const float dir[3] = { right[0] * sign, 0.0f, right[2] * sign };
+        sideFree[sideIndex] = Room3D_Raycast(onBoom, dir, kSideClearance + kMaxSideShift, 1);
+    }
+    for (int k = 0; k < 2; ++k) { s_sideRoom[k] = sideRoom[k]; s_sideFree[k] = sideFree[k]; }
+    if (s_snapSide) s_sideShift = target;
+    else s_sideShift += (target - s_sideShift) * 0.15f;
+    s_snapSide = false;
+    // Easing can lag behind a wall that is getting closer: clamp to the space
+    // actually available this tick.
+    if (s_sideShift > sideFree[0] - kWallMargin) s_sideShift = sideFree[0] - kWallMargin;
+    if (s_sideShift < -(sideFree[1] - kWallMargin)) s_sideShift = -(sideFree[1] - kWallMargin);
     const float camera[3] = {
-        pivot[0] + back[0] * s_distance,
-        pivot[1] + back[1] * s_distance,
-        pivot[2] + back[2] * s_distance,
+        onBoom[0] + right[0] * s_sideShift,
+        onBoom[1],
+        onBoom[2] + right[2] * s_sideShift,
     };
     // When even the shortest boom is outside the room (a door just walked
     // through), the wall behind faces away from the camera and the room
@@ -367,13 +488,13 @@ void ModernCamera_Update(void)
     if (s_lastLoggedRoom != (int)g_roomId) { s_traceTicks = 12; s_lastLoggedRoom = g_roomId; }
     if (s_traceTicks > 0) {
         --s_traceTicks;
-        dbg_printf("[modern-camera] tick player=(%d,%d,%d) yaw=%.2f pitch=%.2f hit=%.0f dist=%.0f clip=%.0f shoulder=%.0f right=(%.2f,%.2f)\n",
+        dbg_printf("[modern-camera] tick player=(%d,%d,%d) yaw=%.2f pitch=%.2f hit=%.0f dist=%.0f clip=%.0f shoulder=%.0f side=%.0f room=%.0f/%.0f free=%.0f/%.0f right=(%.2f,%.2f)\n",
                    (int)g_playerEntity.position.x, (int)g_playerEntity.position.y,
-                   (int)g_playerEntity.position.z, s_yaw, pitch, hit, s_distance, s_wallClip, s_lastShoulder, right[0], right[2]);
+                   (int)g_playerEntity.position.z, s_yaw, pitch, hit, s_distance, s_wallClip, s_lastShoulder, s_sideShift, s_sideRoom[0], s_sideRoom[1], s_sideFree[0], s_sideFree[1], right[0], right[2]);
     }
 
     for (int i = 0; i < 3; ++i) {
-        s_from[i] = pivot[i] + back[i] * s_distance;
+        s_from[i] = camera[i];
         s_to[i] = pivot[i] + fwd[i] * 4000.0f;
     }
     s_valid = true;

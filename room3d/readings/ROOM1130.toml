@@ -91,6 +91,7 @@ material = "panel"
 omit = ["bottom"]
 [[object]]          # toilet in the south-east corner (block 9)
 kind = "toilet"
+scale = 1.3
 at = [9500, 2300]
 back = "south"
 [[object]]          # pot by the partition (block 10)

@@ -25,7 +25,7 @@ cell = 600
 "plaster.stain" = { color = [0.44, 0.40, 0.22], stains = 0.6 }
 wood = [0.32, 0.20, 0.11]
 door = [0.36, 0.24, 0.12]
-porcelain = [0.42, 0.48, 0.36]
+porcelain = [0.60, 0.66, 0.52]
 linen = [0.56, 0.52, 0.44]
 carpet = { color = [0.44, 0.30, 0.20], motif = [0.56, 0.46, 0.30] }
 
@@ -52,10 +52,12 @@ bottom = -150
 material = "linen"
 [[object]]          # toilet in the north-west (block 3)
 kind = "toilet"
+scale = 1.3
 at = [2600, 7700]
 back = "north"
 [[object]]          # wall basin in the north-east (block 6)
 kind = "sink"
+mirror = true
 wall = "north"
 at = 6300
 [[object]]          # radiator on the south wall beside the door

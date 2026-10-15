@@ -1500,38 +1500,57 @@ class Builder:
                 mesh.box((x - 100, o.get("top", -1200), z - 100), (x + 100, floor, z + 100), wood, omit=("bottom",))
                 mesh.sphere((x, o.get("top", -1200) - 100, z), 110, wood, rings=4, segments=8)
             elif kind == "tub":
-                # Free-standing roll-top bath: hollow basin on a dark plinth.
+                # Free-standing roll-top bath: hollow basin with a rounded rim
+                # on four feet, its inside the same enamel a little darker.
                 x0, z0, x1, z1 = o["box"]
                 top = o.get("top", -750)
-                shell_m, water = self.use(o.get("material", "porcelain")), self.use(o.get("inside", "water"))
-                rim = o.get("rim", 90)
-                mesh.box((x0 + 80, -160, z0 + 80), (x1 - 80, floor, z1 - 80), self.use("iron"), omit=("bottom", "top"))
-                mesh.box((x0, top, z0), (x1, -160, z1), shell_m, omit=("top",))
+                shell_m = self.use(o.get("material", "porcelain"))
+                inside = self.use(o.get("inside", o.get("material", "porcelain")))
+                rim = o.get("rim", 110)
+                feet = self.use(o.get("feet", "iron"))
+                for fx, fz in ((x0 + 200, z0 + 200), (x1 - 200, z0 + 200), (x0 + 200, z1 - 200), (x1 - 200, z1 - 200)):
+                    mesh.cylinder(fx, fz, 70, -180, floor, feet, segments=6)
+                mesh.box((x0 + 60, top + 60, z0 + 60), (x1 - 60, -180, z1 - 60), shell_m, omit=("top",))
                 for bx in ((x0, z0, x1, z0 + rim), (x0, z1 - rim, x1, z1), (x0, z0, x0 + rim, z1), (x1 - rim, z0, x1, z1)):
-                    mesh.box((bx[0], top - 20, bx[1]), (bx[2], top, bx[3]), shell_m, omit=("bottom",))
-                mesh.box((x0 + rim, top + 260, z0 + rim), (x1 - rim, top + 280, z1 - rim), water, omit=("bottom",))
+                    mesh.box((bx[0], top, bx[1]), (bx[2], top + 90, bx[3]), shell_m)
+                mesh.box((x0 + rim, top + 420, z0 + rim), (x1 - rim, top + 440, z1 - rim), inside, omit=("bottom",))
+                for side_box in ((x0 + rim, z0 + rim, x1 - rim, z0 + rim + 1), (x0 + rim, z1 - rim - 1, x1 - rim, z1 - rim),
+                                 (x0 + rim, z0 + rim, x0 + rim + 1, z1 - rim), (x1 - rim - 1, z0 + rim, x1 - rim, z1 - rim)):
+                    mesh.box((side_box[0], top + 90, side_box[1]), (side_box[2], top + 420, side_box[3]), inside)
+                if o.get("water"):
+                    w = self.use(o["water"])
+                    mesh.box((x0 + rim, top + 300, z0 + rim), (x1 - rim, top + 310, z1 - rim), w, omit=("bottom",))
             elif kind == "toilet":
+                # Pedestal bowl with a seat, a cistern against the wall behind.
                 x, z = o["at"]
                 back = o.get("back", "north")
                 d = SIDES[back]  # points into the room from that wall
+                k = o.get("scale", 1.0)
                 p = self.use(o.get("material", "porcelain"))
-                mesh.cylinder(x, z, 230, -420, floor, p, segments=10)
-                mesh.cylinder(x, z, 280, -460, -420, self.use(o.get("seat", "wood")), segments=12)
-                tx, tz = x - d[0] * 300, z - d[2] * 300
-                hw = 300
+                mesh.cylinder(x, z, 200 * k, -350 * k, floor, p, segments=10)
+                mesh.cylinder(x, z, 330 * k, -480 * k, -350 * k, p, segments=12)
+                mesh.cylinder(x, z, 350 * k, -520 * k, -480 * k, self.use(o.get("seat", "wood")), segments=12)
+                tx, tz = x - d[0] * 380 * k, z - d[2] * 380 * k
+                hw, hd = 380 * k, 140 * k
                 if back in ("north", "south"):
-                    mesh.box((tx - hw, -1000, tz - 100), (tx + hw, -460, tz + 100), p)
+                    mesh.box((tx - hw, -1150 * k, tz - hd), (tx + hw, -520 * k, tz + hd), p)
                 else:
-                    mesh.box((tx - 100, -1000, tz - hw), (tx + 100, -460, tz + hw), p)
+                    mesh.box((tx - hd, -1150 * k, tz - hw), (tx + hd, -520 * k, tz + hw), p)
             elif kind == "sink":
-                # Wall basin on a bracket.
+                # Wall basin on two legs, with a mirror above when asked.
                 side = o["wall"]
                 along = o["at"]
-                top = o.get("top", -850)
+                top = o.get("top", -900)
+                k = o.get("scale", 1.0)
                 line = o.get("line", self._wall_line(side, along))
                 p = self.use(o.get("material", "porcelain"))
-                self._wall_box(side, line, -330, 330, top, top + 220, 0, 480, p, along=along)
-                self._wall_box(side, line, -60, 60, top + 220, top + 600, 0, 200, self.use("iron"), along=along)
+                half, depth = 450 * k, 560 * k
+                self._wall_box(side, line, -half, half, top, top + 240, 0, depth, p, along=along)
+                for u in (-half + 60, half - 120):
+                    self._wall_box(side, line, u, u + 60, top + 240, floor, depth - 120, depth - 60, self.use("iron"), along=along)
+                self._wall_box(side, line, -80, 80, top - 260, top, 0, 120, self.use("steel"), along=along)
+                if o.get("mirror"):
+                    self._wall_box(side, line, -half + 60, half - 60, top - 1500, top - 500, 0, 30, self.use("mirror"), along=along)
             elif kind == "pipe":
                 # Straight pipe, lying tank or rolled carpet between two points.
                 points = [tuple(o["from"])] + [tuple(p) for p in o.get("via", [])] + [tuple(o["to"])]

@@ -29,7 +29,7 @@ carpet = { color = [0.44, 0.30, 0.20], motif = [0.56, 0.46, 0.30] }
 
 linen = [0.56, 0.52, 0.44]
 
-porcelain = [0.42, 0.48, 0.36]
+porcelain = [0.60, 0.66, 0.52]
 
 [lighting]
 ambient = [0.144, 0.132, 0.096]
@@ -54,10 +54,12 @@ bottom = -150
 material = "linen"
 [[object]]          # toilet in the north-east (block 7)
 kind = "toilet"
+scale = 1.3
 at = [7600, 10300]
 back = "north"
 [[object]]          # wall basin in the south-east (block 5)
 kind = "sink"
+mirror = true
 wall = "east"
 at = 6000
 [[object]]          # radiator on the west wall
@@ -82,3 +84,10 @@ at = [5000, -3100, 8000]
 color = [1.0, 0.95, 0.80]
 strength = 0.45
 reach = 4500
+
+[[object]]          # small wall basin on the west wall by the tub's end (cast from camera 0)
+kind = "sink"
+wall = "west"
+at = 8700
+scale = 0.6
+top = -1000

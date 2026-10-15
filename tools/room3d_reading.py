@@ -840,6 +840,7 @@ class Builder:
         dado_material = self.use(shell.get("dado_material", "panel")) if dado else None
         rail = shell.get("chair_rail", False)
         trim = self.use(shell.get("trim", "wood"))
+        skirt_mat = self.use(shell["skirting_material"]) if shell.get("skirting_material") else trim
         for zone in self.zones:
             x0, z0, x1, z1 = zone["box"]
             group = zone.get("group", "floor")
@@ -885,7 +886,7 @@ class Builder:
                     skirting_box(mesh, side, fixed, a, b, 80, 40, trim, floor=floor - dado + 80)
             wall_rect(mesh, side, fixed, a, b, base, ceiling, wm)
             if skirt:
-                skirting_box(mesh, side, fixed, a, b, skirt, 55, trim, floor)
+                skirting_box(mesh, side, fixed, a, b, skirt, 55, skirt_mat, floor)
             # Cornice where the wall meets the ceiling (interiors: skirting set).
             cornice = zone.get("cornice", shell.get("cornice", 200 if skirt else 0))
             if cornice and ceiling is not None:

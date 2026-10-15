@@ -8,8 +8,9 @@ from pathlib import Path
 import numpy as np
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
-from room3d_projection import (View, assign_polygon, box_axes, clip_polygon,  # noqa: E402
-                               fit_square, polygon_area, write_proj)
+from room3d_projection import (View, _plane, _plane_key, _same_plane,  # noqa: E402
+                               assign_polygon, box_axes, clip_polygon, fit_square,
+                               polygon_area, write_proj)
 
 SETTINGS = dict(min_density=0.000015, depth_slack=0.03, min_facing=0.2, max_depth=6,
                 min_piece=150.0 ** 2)
@@ -115,6 +116,27 @@ class PatchTests(unittest.TestCase):
         np.testing.assert_allclose(corner_a - origin, [900, 0, 0])
         np.testing.assert_allclose(corner_b - origin, [0, -900, 0])
 
+    def test_wall_pieces_group_by_plane(self):
+        left, right = wall(0, 600)[:, :3], wall(600, 1200)[:, :3]
+        offset = wall(0, 600, z=400)[:, :3]
+        self.assertEqual(_plane_key(_plane(left)), _plane_key(_plane(right)))
+        self.assertTrue(_same_plane(_plane(left), _plane(right)))
+        self.assertFalse(_same_plane(_plane(left), _plane(offset)))
+        floor = np.array([[0, 0, 0], [600, 0, 0], [600, 0, 600], [0, 0, 600]], dtype=float)
+        self.assertFalse(_same_plane(_plane(left), _plane(floor)))
+
+    def test_fit_square_with_a_view_spans_faces_on_the_seen_surface(self):
+        # One 500-unit face, but the camera's depth map shows the whole wall
+        # plane at z = 0: the square may grow past the face.
+        cam = camera()
+        depth = np.full((240, 320), 6000.0)
+        face = wall(-250, 250, -1250, -1750)[:, :3]
+        side, origin, corner_a, corner_b = fit_square(face, np.array([0, 0, -1.0]), view(cam, depth))
+        self.assertEqual(side, 1600)
+        # Nothing at that depth (an opening): no square at all.
+        empty = np.full((240, 320), np.inf)
+        self.assertIsNone(fit_square(face, np.array([0, 0, -1.0]), view(cam, empty)))
+
     def test_fit_square_rejects_faces_smaller_than_any_size(self):
         self.assertIsNone(fit_square(wall(0, 200, 0, -200)[:, :3], np.array([0, 0, -1.0])))
 
@@ -123,14 +145,16 @@ class SidecarTests(unittest.TestCase):
     def test_proj_lists_one_character_per_face_then_tints(self):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / 'room1000.proj'
-            patch = dict(camera=3, side=500.0, origin=np.array([1.0, 2, 3]), a=np.array([501.0, 2, 3]),
-                         b=np.array([1.0, -498, 3]), tint=np.array([2.0, 2.5, 3.0]))
+            patch = dict(material='wallpaper', camera=3, side=500.0, origin=np.array([1.0, 2, 3]),
+                         a=np.array([501.0, 2, 3]), b=np.array([1.0, -498, 3]),
+                         tint=np.array([2.0, 2.5, 3.0]))
             write_proj(path, np.array([0, -1, 10, 31]), {'wallpaper': np.array([0.5, 0.25, 1.0])},
-                       {'wallpaper': patch})
+                       [patch], np.array([-1, 0, -1, -1]))
             self.assertEqual(path.read_text().splitlines(),
                              ['proj1 4', '0-av', 'tint wallpaper 0.500 0.250 1.000',
-                              'patch wallpaper 3 500 1.0 2.0 3.0 501.0 2.0 3.0 1.0 -498.0 3.0 '
-                              '2.000 2.500 3.000'])
+                              'patch 0 wallpaper 3 500 1.0 2.0 3.0 501.0 2.0 3.0 1.0 -498.0 3.0 '
+                              '2.000 2.500 3.000',
+                              'tiles -0--'])
 
 
 if __name__ == '__main__':

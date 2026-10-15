@@ -1308,18 +1308,36 @@ so it shows the original image exactly, with the mesh's depth behind the
 actors. `RE1_ROOM3D_PROJECTION=0` ignores the sidecars.
 
 The faces no camera saw would otherwise keep the generic procedural
-textures next to sharp original (or HD) art. For every material that has
-both, the tool also picks an exemplar: the largest square (350 to 1600
-units, aligned to the wall's horizontal axis and up, or x/z on floors) inside
-a projected piece that a camera sees squarely and sharply, penalising
-squares whose block means vary (a lamp or painting inside would repeat).
-`patch <material> <camera> <side> <origin> <a> <b> <r g b>` records it. At
-load the game resamples that square from the camera's background as loaded
-(so from the HD image when a pack provides one), divides out its
-large-scale lighting, mirrors it into a seamless 2x2 tile and box-maps it
-over the material's unprojected faces with the bilinear wrapping sampler
-(`MARNI_SAMPLER_LINEAR_WRAP`); the colour factor scales it so that, under
-the faces' procedural vertex lighting, it matches the projected pieces.
-Unseen walls then show the room's own wallpaper or plaster rather than a
-procedural stand-in. Materials no camera shows at all (most ceilings) still
-use the procedural texture and tint.
+textures next to sharp original (or HD) art. They repeat a square of the
+room's own art instead (an exemplar):
+
+- Unseen pieces are grouped by wall (material and plane). A wall larger than
+  1 m^2 (1e6 square units) takes its exemplar from its own projected part,
+  even when a camera sees that wall at a slant, so the pattern's scale and
+  colour carry on across the edge with the projected part. Smaller surfaces,
+  and walls no camera paints, use the material's best square anywhere: seen
+  square-on (|cos| >= 0.5) and sharp.
+- A square (350 to 1600 units, aligned to the wall's horizontal axis and up,
+  or x/z on floors) may span several of the builder's ~600-unit faces. Every
+  sample of it must be inside the camera's frame and on the surface that
+  camera's depth map recorded for that material alone (a per-material depth
+  render), so it never takes in a neighbouring door, sconce or painting.
+- Squares whose art does not look like the material are rejected: hue
+  more than 0.08 (chromaticity L1) from, or brightness more than 2x off, the
+  material's area-weighted median over its projected pieces. This catches
+  spots where the reading and the art disagree (ROOM1090's first wallpaper
+  exemplar sat on a door painted where the mesh has wall).
+- The tiled vertices are lit from the art: each takes the colour of the
+  nearby projected pieces of its material (inverse square distance, 600-unit
+  softening), fading to the material's median 4000 units away, over the
+  exemplar's colour. These factors are baked into the split OBJ's vertex
+  colours, scaled into 0..1 by the patch's colour factor.
+
+`patch <index> <material> <camera> <side> <origin> <a> <b> <r g b>` lines
+record the exemplars (at most 62 per room) and `tiles <string>` the patch of
+every face (`0`-`9`, `a`-`z`, `A`-`Z`, `-` none). At load the game resamples
+each square from its camera's background as loaded (so from the HD image
+when a pack provides one), divides out its large-scale lighting, mirrors it
+into a seamless 2x2 tile and box-maps it over its faces with the bilinear
+wrapping sampler (`MARNI_SAMPLER_LINEAR_WRAP`). Materials no camera shows at
+all (most ceilings) still use the procedural texture and tint.

@@ -20,14 +20,14 @@ skirting = 360
 cell = 700
 
 [materials]
-wallpaper = { color = [0.44, 0.58, 0.46], motif = [0.28, 0.42, 0.32], repeats = 4 }
+wallpaper = { color = [0.42, 0.56, 0.50], motif = [0.26, 0.40, 0.34], repeats = 4 }
 planks = [0.30, 0.17, 0.12]
 "plaster.dark" = [0.24, 0.24, 0.20]
 wood = [0.22, 0.13, 0.08]
 door = [0.26, 0.16, 0.10]
 
 [lighting]
-ambient = [0.16, 0.20, 0.17]
+ambient = [0.14, 0.18, 0.16]
 
 [[zone]]            # west leg
 box = [1550, 1250, 4450, 26850]

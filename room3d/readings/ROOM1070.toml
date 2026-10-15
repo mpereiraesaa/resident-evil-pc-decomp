@@ -1,8 +1,16 @@
-# Art room: a blue-grey marble gallery with the statue on its pedestal,
-# paintings under spotlights and a red-curtained doorway east; beyond it a
-# lower red-walled passage and storeroom reached by short stairs.
-# Gallery from ROOM1070.RDT blocks 8,14,15,17; pedestal from block 18; the
-# lower rooms from blocks 3,4,5,6,16 and the type-4 stair rectangles.
+# Art room: a dark blue-grey gallery with the jade statue (a woman carrying a
+# vase on her head) on a tall dark-green marble pedestal, paintings under
+# spotlights, a red-curtained doorway east and a wooden door south of it;
+# beyond the curtain a red-walled passage and, north of it past a slim
+# column, the red storeroom with a curio cabinet across its west end, busts
+# and paintings leaning on its south wall.
+# Gallery from ROOM1070.RDT blocks 8,14,15,17 (east wall pushed out to where
+# cams 1/2 put it); pedestal from block 18; statue heights from cams 0/1.
+# Passage from blocks 4,5,16; the column is circle 7; the storeroom's east
+# half from blocks 4,5,6 (cam5), its west half and the cabinet from floor
+# picks on cam6 (wider than the collision, which stops at the cabinet front).
+# The statue is stacked cylinders, not a figure; the rolled carpet lying on
+# the storeroom floor is left out.
 room = "ROOM1070"
 title = "Art room"
 seed = 1070
@@ -18,70 +26,157 @@ trim = "marble_dark"
 cell = 800
 
 [materials]
-"marble.blue" = { color = [0.46, 0.52, 0.62], tile = [2400, 2400] }
-"plaster.blue" = { color = [0.40, 0.44, 0.56], stains = 0.3 }
-"plaster.night" = [0.10, 0.10, 0.14]
-wallpaper = { color = [0.46, 0.08, 0.08], motif = [0.60, 0.14, 0.12], repeats = 6 }
-planks = [0.44, 0.18, 0.10]
-"plaster.cream" = [0.66, 0.62, 0.52]
-stone = [0.26, 0.40, 0.34]
-wood = [0.30, 0.17, 0.10]
-door = [0.14, 0.14, 0.16]
-velvet = [0.52, 0.08, 0.08]
-marble_dark = [0.18, 0.20, 0.24]
-statue = [0.30, 0.52, 0.44]
+"marble.blue" = { color = [0.24, 0.27, 0.32], tile = [3000, 3000] }
+"plaster.blue" = { color = [0.24, 0.28, 0.40], stains = 0.3 }
+"plaster.night" = [0.05, 0.05, 0.07]
+wallpaper = { color = [0.42, 0.04, 0.05], motif = [0.55, 0.10, 0.10], repeats = 8 }
+planks = [0.46, 0.16, 0.08]
+"plaster.cream" = [0.62, 0.62, 0.50]
+"marble.green" = { color = [0.20, 0.30, 0.24], tile = [1600, 1600] }
+stone = [0.62, 0.62, 0.58]
+wood = [0.26, 0.13, 0.07]
+door = [0.30, 0.17, 0.08]
+"door.west" = [0.14, 0.16, 0.20]
+velvet = [0.50, 0.04, 0.05]
+marble_dark = [0.14, 0.16, 0.20]
+statue = [0.36, 0.58, 0.50]
+porcelain = [0.78, 0.78, 0.74]
+"books.curio" = { color = [0.12, 0.07, 0.04], shelves = 3 }
 
 [lighting]
-ambient = [0.10, 0.11, 0.15]
+ambient = [0.05, 0.055, 0.08]
 
 [[zone]]            # gallery
-box = [2029, 1850, 15507, 11400]
-[[zone]]            # red passage, lower level, east of the gallery
-box = [15507, 7448, 23669, 10817]
+box = [2029, 1850, 15900, 11400]
+[[zone]]            # curtained doorway through the gallery's east wall
+box = [15900, 7300, 16700, 10600]
+floor_material = "planks"
+wall_material = "plaster.cream"
+ceiling = -3700
+ceiling_material = "plaster.cream"
+[[zone]]            # red passage east of the gallery (cream west end wall)
+box = [16700, 7300, 23669, 10817]
 floor_along = "x"
 floor_material = "planks"
 wall_material = "wallpaper"
-ceiling = -4000
+wall_materials = { west = "plaster.cream" }
+ceiling = -4200
 ceiling_material = "plaster.cream"
-[[zone]]            # red storeroom, north-east
-box = [15469, 12077, 23669, 15836]
+[[zone]]            # link north from the passage's east end, past the column
+box = [19800, 10817, 23669, 11650]
 floor_material = "planks"
 wall_material = "wallpaper"
-ceiling = -4000
+ceiling = -4200
 ceiling_material = "plaster.cream"
-[[zone]]            # link between passage and storeroom
-box = [20732, 10817, 23669, 12077]
+[[zone]]            # storeroom (back wall behind the curio cabinet)
+box = [12500, 11650, 23669, 15950]
 floor_material = "planks"
 wall_material = "wallpaper"
-ceiling = -4000
+ceiling = -4200
+ceiling_material = "plaster.cream"
+[[zone]]            # storeroom's north-west bay
+box = [12500, 15950, 14706, 16700]
+floor_material = "planks"
+wall_material = "wallpaper"
+ceiling = -4200
 ceiling_material = "plaster.cream"
 
-[[door]]
+[[door]]            # west door of the gallery (cam0 far wall)
 wall = "west"
 span = [4700, 8800]
-top = -3400
-material = "door"
-[[door]]            # east door of the gallery (to the L passage)
+top = -3800
+material = "door.west"
+[[door]]            # wooden door south of the curtain (cam2)
 wall = "east"
-span = [2900, 5500]
-top = -3400
+span = [3500, 5000]
+line = 15900
+top = -3800
 material = "door"
-[[object]]          # red curtain over the passage opening
-kind = "wall_band"
-wall = "east"
-span = [7448, 10817]
-y = [-3600, -3000]
-material = "velvet"
-rail = false
 
-[[object]]          # statue on its pedestal (painted into the backdrop)
-kind = "urn"
+# red curtains: valance and side drapes in the doorway
+[[object]]
+kind = "box"
+box = [15900, 7300, 16100, 10600]
+top = -3700
+bottom = -3150
+material = "velvet"
+group = "curtain"
+[[object]]
+kind = "box"
+box = [15900, 7300, 16100, 8300]
+top = -3150
+material = "velvet"
+group = "curtain"
+[[object]]
+kind = "box"
+box = [15900, 9600, 16100, 10600]
+top = -3150
+material = "velvet"
+group = "curtain"
+
+[[object]]          # blue wall face over the curtain (the soffit would take the black ceiling)
+kind = "box"
+box = [15880, 7300, 15900, 10600]
+top = -5600
+bottom = -3700
+material = "plaster.blue"
+
+[[hide]]            # camera 4 stands just inside the curtain, looking down the passage
+camera = 4
+groups = ["curtain"]
+
+# the statue: dark-green marble pedestal (block 18), jade figure on top
+[[object]]
+kind = "box"
+box = [8350, 5950, 9850, 7280]
+top = -1950
+material = "marble.green"
+[[object]]
+kind = "box"
+box = [8270, 5870, 9930, 7360]
+top = -2100
+bottom = -1950
+material = "marble.green"
+[[object]]          # base ring
+kind = "cylinder"
 at = [9094, 6613]
-radius = 620
-top = -3600
-pedestal = 1700
-pedestal_top = -1500
+radius = 430
+top = -2300
+bottom = -2100
 material = "statue"
+segments = 16
+[[object]]          # legs / skirt
+kind = "cylinder"
+at = [9094, 6613]
+radius = 220
+top = -3000
+bottom = -2300
+material = "statue"
+segments = 12
+[[object]]          # body and raised arms
+kind = "cylinder"
+at = [9094, 6613]
+radius = 420
+top = -3700
+bottom = -3000
+material = "statue"
+segments = 14
+[[object]]          # the vase she carries
+kind = "cylinder"
+at = [9094, 6613]
+radius = 560
+top = -4350
+bottom = -3700
+material = "statue"
+segments = 16
+[[object]]          # vase rim
+kind = "cylinder"
+at = [9094, 6613]
+radius = 450
+top = -4550
+bottom = -4350
+material = "statue"
+segments = 16
 
 [[painting]]
 wall = "west"
@@ -107,53 +202,117 @@ y = [-4000, -2200]
 wall = "north"
 span = [12000, 14400]
 y = [-3800, -2500]
-[[painting]]
+[[painting]]        # oval portrait between the door and the curtain
 wall = "east"
 span = [5700, 7200]
 y = [-3800, -2600]
 
-# Storeroom shelf unit (the two circles) and the passage's high shelf
-[[object]]
-kind = "box"
-box = [16200, 14900, 19100, 15836]
-top = -2600
-material = "wood"
-omit = ["bottom", "north"]
-[[object]]
-kind = "box"
-box = [15469, 13000, 15900, 15836]
-top = -2200
-material = "wood"
-omit = ["bottom", "west"]
+# slim column at the passage/storeroom link (circle 7)
+[[column]]
+at = [20922, 11551]
+top = -4200
+radius = 240
+material = "plaster.cream"
 
+# storeroom: curio cabinet across the west end, busts, leaning paintings
+[[object]]
+kind = "bookcase"
+box = [12500, 11900, 13400, 16400]
+top = -3400
+front = "east"
+books = "books.curio"
+[[object]]          # bust on a column in front of the cabinet
+kind = "urn"
+at = [14700, 12600]
+radius = 260
+top = -2700
+pedestal = 380
+pedestal_top = -1800
+material = "porcelain"
+[[object]]          # bust on the cabinet's lower shelf end
+kind = "urn"
+at = [13700, 15000]
+radius = 230
+top = -1500
+pedestal = 360
+pedestal_top = -800
+material = "porcelain"
+[[object]]          # framed paintings leaning on the south wall
+kind = "box"
+box = [17000, 11650, 18700, 11950]
+top = -2300
+material = "painting"
+[[object]]
+kind = "box"
+box = [15700, 11650, 16900, 11900]
+top = -1800
+material = "painting"
+
+# cream frieze above the red walls (walls the band can find unambiguously)
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [14706, 23669]
+y = [-4200, -3300]
+material = "plaster.cream"
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [12500, 14706]
+y = [-4200, -3300]
+material = "plaster.cream"
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [7300, 15950]
+y = [-4200, -3300]
+material = "plaster.cream"
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [16700, 23669]
+y = [-4200, -3300]
+material = "plaster.cream"
+
+# spotlights on the gallery paintings
 [[light]]
-at = [5000, -5000, 4000]
+at = [5000, -5000, 3000]
 color = [0.90, 0.95, 1.0]
-strength = 0.4
-reach = 6000
+strength = 0.45
+reach = 4500
 [[light]]
-at = [12000, -5000, 4000]
+at = [11000, -5000, 3000]
 color = [0.90, 0.95, 1.0]
-strength = 0.4
-reach = 6000
+strength = 0.45
+reach = 4500
 [[light]]
-at = [6000, -5000, 9500]
+at = [5000, -5000, 10200]
 color = [0.90, 0.95, 1.0]
-strength = 0.4
-reach = 6000
+strength = 0.45
+reach = 4500
 [[light]]
-at = [12500, -5000, 9500]
+at = [11000, -5000, 10200]
 color = [0.90, 0.95, 1.0]
-strength = 0.4
-reach = 6000
+strength = 0.45
+reach = 4500
+[[light]]           # on the statue
+at = [9094, -5400, 8000]
+color = [0.85, 0.95, 0.95]
+strength = 0.5
+reach = 5000
 [[sconce]]
 wall = "south"
-at = [-3200, 19000]
+at = [-3200, 21800]
 candles = 1
-strength = 0.4
+strength = 0.2
 reach = 4000
+[[light]]           # storeroom
+at = [17500, -3800, 14000]
+color = [1.0, 0.88, 0.75]
+strength = 0.45
+reach = 6000
 [[light]]
-at = [19500, -3400, 14000]
-color = [1.0, 0.92, 0.78]
-strength = 0.4
+at = [21500, -3800, 9000]
+color = [1.0, 0.88, 0.75]
+strength = 0.1
 reach = 5000

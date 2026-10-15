@@ -1,7 +1,11 @@
 # Return-visit copy of ROOM1080.toml: stage 6 shares its collision and cameras exactly.
-# Mansion 1F "L passage": striped wallpaper, stone floor, display cabinets
-# along the walls, arched windows on the east side. Corridors from
-# ROOM1080.RDT blocks 1,2,7,13,0; cabinets from the flags-512 blocks.
+# Mansion 1F "L passage": cream wallpaper with red floral stripes, mottled
+# cream stone floor with dark blotches, a dark lattice dado on the south and
+# east-end walls only, glass-topped display cabinets on legs (some with red
+# lamps) along the inner walls, full-height dark arched windows on the east
+# side (drawn square-headed), dark statue niches at the two corridor ends.
+# Corridors from ROOM1080.RDT blocks 1,2,7,13,0; cabinets from the flags-512
+# blocks; niche and window positions picked from cam1/cam2.
 room = "ROOM6080"
 title = "L passage (return)"
 seed = 1080
@@ -9,24 +13,25 @@ seed = 1080
 [shell]
 floor = 0
 ceiling = -5200
-floor_material = "stone.floor"
+floor_material = "plaster.floor"
 wall_material = "stripes"
 ceiling_material = "planks.ceiling"
-dado = 1200
-dado_material = "panel.iron"
-chair_rail = true
 skirting = 200
 cell = 800
 
 [materials]
-stripes = { color = [0.84, 0.78, 0.66], stripe = [0.70, 0.42, 0.36], count = 12 }
-"stone.floor" = { color = [0.62, 0.58, 0.48], tile = [2000, 2000] }
+stripes = { color = [0.84, 0.76, 0.64], stripe = [0.64, 0.32, 0.27], count = 10 }
+"plaster.floor" = { color = [0.47, 0.39, 0.29], peel = 0.72, under = [0.16, 0.12, 0.09], stains = 1.4, tile = [2800, 2800] }
+"grating.lattice" = [0.16, 0.13, 0.10]
+"glass_dark" = [0.16, 0.20, 0.24]
+"glass_dark.case" = [0.22, 0.18, 0.14]
+"marble_dark.niche" = [0.20, 0.19, 0.18]
+shade = [0.62, 0.22, 0.16]
 "planks.ceiling" = { color = [0.46, 0.30, 0.18], count = 12 }
 "panel.iron" = [0.10, 0.09, 0.08]
 wood = [0.22, 0.14, 0.09]
 stone = [0.74, 0.70, 0.60]
 door = [0.26, 0.17, 0.10]
-glass = [0.70, 0.75, 0.80]
 
 [lighting]
 ambient = [0.13, 0.11, 0.08]
@@ -51,33 +56,42 @@ group = "north_door"
 
 [[window]]
 wall = "east"
-kind = "arch"
+kind = "rect"
 at = 11000
 half = 900
-sill = -1500
-height = 3200
-color = [0.75, 0.80, 0.90]
-strength = 0.22
+sill = -150
+height = 3850
+panes = 2
+transom = -2900
+glass = "glass_dark"
+color = [0.55, 0.60, 0.70]
+strength = 0.14
 reach = 5000
 [[window]]
 wall = "east"
-kind = "arch"
+kind = "rect"
 at = 16500
 half = 900
-sill = -1500
-height = 3200
-color = [0.75, 0.80, 0.90]
-strength = 0.22
+sill = -150
+height = 3850
+panes = 2
+transom = -2900
+glass = "glass_dark"
+color = [0.55, 0.60, 0.70]
+strength = 0.14
 reach = 5000
 [[window]]
 wall = "east"
-kind = "arch"
+kind = "rect"
 at = 22000
 half = 900
-sill = -1500
-height = 3200
-color = [0.75, 0.80, 0.90]
-strength = 0.22
+sill = -150
+height = 3850
+panes = 2
+transom = -2900
+glass = "glass_dark"
+color = [0.55, 0.60, 0.70]
+strength = 0.14
 reach = 5000
 
 [[column]]
@@ -85,43 +99,175 @@ at = [21250, 6850]
 top = -4750
 radius = 320
 
-# Display cabinets: dark wood cases with a lamp on top
+# Display cabinets: dark wood cases on legs with a glass body, lamps on some
+[[object]]
+kind = "table"
+box = [4501, 5183, 7173, 6577]
+top = -700
+thickness = 120
+leg = 110
+[[object]]
+kind = "box"
+box = [4561, 5243, 7113, 6517]
+top = -1300
+bottom = -700
+material = "glass_dark.case"
 [[object]]
 kind = "box"
 box = [4501, 5183, 7173, 6577]
-top = -1000
+top = -1380
+bottom = -1300
 material = "wood"
-omit = ["bottom", "north"]
+[[object]]
+kind = "lamp"
+at = [4901, 5880]
+base = -1380
+height = 850
+shade_radius = 240
+[[object]]
+kind = "table"
+box = [8410, 5129, 11611, 6577]
+top = -700
+thickness = 120
+leg = 110
+[[object]]
+kind = "box"
+box = [8470, 5189, 11551, 6517]
+top = -1300
+bottom = -700
+material = "glass_dark.case"
 [[object]]
 kind = "box"
 box = [8410, 5129, 11611, 6577]
-top = -1000
+top = -1380
+bottom = -1300
 material = "wood"
-omit = ["bottom", "north"]
+[[object]]
+kind = "lamp"
+at = [8810, 5853]
+base = -1380
+height = 850
+shade_radius = 240
+[[object]]
+kind = "table"
+box = [16910, 5116, 19532, 6577]
+top = -700
+thickness = 120
+leg = 110
+[[object]]
+kind = "box"
+box = [16970, 5176, 19472, 6517]
+top = -1300
+bottom = -700
+material = "glass_dark.case"
 [[object]]
 kind = "box"
 box = [16910, 5116, 19532, 6577]
-top = -1000
+top = -1380
+bottom = -1300
 material = "wood"
-omit = ["bottom", "north"]
+[[object]]
+kind = "lamp"
+at = [17310, 5846]
+base = -1380
+height = 850
+shade_radius = 240
+[[object]]
+kind = "table"
+box = [20967, 8380, 22394, 10875]
+top = -700
+thickness = 120
+leg = 110
+[[object]]
+kind = "box"
+box = [21027, 8440, 22334, 10815]
+top = -1300
+bottom = -700
+material = "glass_dark.case"
 [[object]]
 kind = "box"
 box = [20967, 8380, 22394, 10875]
-top = -1000
+top = -1380
+bottom = -1300
 material = "wood"
-omit = ["bottom", "west"]
+[[object]]
+kind = "table"
+box = [20967, 17581, 22390, 19790]
+top = -700
+thickness = 120
+leg = 110
+[[object]]
+kind = "box"
+box = [21027, 17641, 22330, 19730]
+top = -1300
+bottom = -700
+material = "glass_dark.case"
 [[object]]
 kind = "box"
 box = [20967, 17581, 22390, 19790]
-top = -1000
+top = -1380
+bottom = -1300
 material = "wood"
-omit = ["bottom", "west"]
+[[object]]
+kind = "lamp"
+at = [21678, 17981]
+base = -1380
+height = 850
+shade_radius = 240
+[[object]]
+kind = "table"
+box = [20967, 21428, 22492, 24511]
+top = -700
+thickness = 120
+leg = 110
+[[object]]
+kind = "box"
+box = [21027, 21488, 22432, 24451]
+top = -1300
+bottom = -700
+material = "glass_dark.case"
 [[object]]
 kind = "box"
 box = [20967, 21428, 22492, 24511]
-top = -1000
+top = -1380
+bottom = -1300
 material = "wood"
-omit = ["bottom", "west"]
+[[object]]
+kind = "lamp"
+at = [21729, 21828]
+base = -1380
+height = 850
+shade_radius = 240
+
+# Dark lattice dado on the south wall and the east end
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [2545, 25678]
+y = [-1300, 0]
+material = "grating.lattice"
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [1645, 8200]
+y = [-1300, 0]
+material = "grating.lattice"
+line = 25678
+
+# Arched statue niches closing the two corridor ends (cam1, cam2)
+[[painting]]
+wall = "south"
+span = [21550, 22650]
+y = [-4300, -1500]
+material = "marble_dark.niche"
+frame = "wood"
+[[painting]]
+wall = "east"
+span = [5700, 6800]
+y = [-4300, -1500]
+material = "marble_dark.niche"
+frame = "wood"
+line = 25678
 
 [[chandelier]]
 at = [9000, 4100]

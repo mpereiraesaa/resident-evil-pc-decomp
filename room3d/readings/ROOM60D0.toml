@@ -1,6 +1,8 @@
 # Return-visit copy of ROOM10D0.toml: stage 6 shares its collision and cameras exactly.
-# Mansion 1F tiger statue room: small brown-marble cell with a framed alcove
-# on the west wall (the statue is a game object) and candle sconces.
+# Mansion 1F tiger statue room: small cell of mottled brown marble (no
+# joints) with a tall pale moulded skirting, a big half-round column built
+# into the west wall (circle 5; the statue is a game object in front of it),
+# dark red door on the south wall and candle sconces high up.
 room = "ROOM60D0"
 title = "Tiger statue room (return)"
 seed = 1300
@@ -8,16 +10,18 @@ seed = 1300
 [shell]
 floor = 0
 ceiling = -5000
-floor_material = "marble.floor"
-wall_material = "marble"
-ceiling_material = "marble"
-skirting = 240
+floor_material = "plaster.floor"
+wall_material = "plaster"
+ceiling_material = "plaster.dark"
+skirting = 380
 trim = "stone"
 cell = 600
 
 [materials]
-marble = [0.50, 0.38, 0.26]
-"marble.floor" = { color = [0.40, 0.30, 0.20], tile = [1800, 1800] }
+plaster = { color = [0.46, 0.39, 0.26], stains = 1.3, tile = [1100, 1100] }
+"plaster.floor" = { color = [0.36, 0.30, 0.20], stains = 0.7, tile = [1100, 1100] }
+"plaster.dark" = [0.22, 0.18, 0.12]
+"plaster.column" = { color = [0.54, 0.44, 0.29], stains = 1.2, tile = [1100, 1100] }
 stone = [0.72, 0.70, 0.64]
 door = [0.36, 0.14, 0.10]
 
@@ -25,34 +29,29 @@ door = [0.36, 0.14, 0.10]
 ambient = [0.12, 0.10, 0.07]
 
 [[zone]]
-box = [3562, 2214, 6447, 6217]
+box = [3300, 1500, 6870, 6590]   # visible skirting line from cam0 (blocks are inset by the player radius)
 
 [[door]]
 wall = "south"
-span = [4600, 6400]
+span = [4400, 6200]
 top = -3300
 material = "door"
 
-# Alcove frame on the west wall
+# Half-round column set into the west wall, floor to ceiling
 [[object]]
-kind = "box"
-box = [3562, 3000, 3700, 3160]
-top = -3400
+kind = "cylinder"
+at = [3380, 4120]
+radius = 580
+top = -6700
+material = "plaster.column"
+segments = 20
+[[object]]          # pale moulded base round the column
+kind = "cylinder"
+at = [3380, 4120]
+radius = 630
+top = -380
 material = "stone"
-omit = ["west"]
-[[object]]
-kind = "box"
-box = [3562, 5260, 3700, 5420]
-top = -3400
-material = "stone"
-omit = ["west"]
-[[object]]
-kind = "box"
-box = [3562, 3000, 3700, 5420]
-top = -3560
-bottom = -3400
-material = "stone"
-omit = ["west"]
+segments = 20
 
 [[sconce]]
 wall = "south"
@@ -66,3 +65,9 @@ at = [-4200, 5200]
 candles = 3
 strength = 0.40
 reach = 3600
+
+[[light]]           # lights the column's face (cylinder sides take light from behind)
+at = [1800, -2800, 3000]
+color = [1.0, 0.86, 0.62]
+strength = 1.1
+reach = 4500

@@ -1,5 +1,8 @@
-# Deer room: blue wallpaper, a patterned ceiling, rug on planks, a cabinet
-# by the west door, chandelier; the mounted deer head is a game sprite.
+# Deer room: dark blue-grey wallpaper, a painted ceiling at -4400 (fixed:
+# cam0 looks down through it), a dark Persian rug with a border on dark
+# planks, the mounted deer head high on the south wall (part of the original
+# backgrounds, placed from cam1), candle chandelier near the north wall
+# (cam0; cam1 does not see it). Doors west, north and east.
 room = "ROOM2080"
 title = "Deer room"
 seed = 2080
@@ -9,24 +12,29 @@ floor = 0
 ceiling = -4400
 floor_material = "planks"
 wall_material = "wallpaper"
-ceiling_material = "carpet.ceiling"
+ceiling_material = "plaster.ceiling"
 skirting = 240
 cell = 600
 
 [materials]
-wallpaper = { color = [0.34, 0.44, 0.56], motif = [0.26, 0.34, 0.46], repeats = 7 }
-"carpet.ceiling" = { color = [0.40, 0.20, 0.14], motif = [0.60, 0.46, 0.30], tile = [3000, 3000] }
+wallpaper = { color = [0.23, 0.29, 0.36], motif = [0.18, 0.23, 0.29], repeats = 9 }
+"plaster.ceiling" = { color = [0.52, 0.33, 0.18], stains = 1.0, tile = [3000, 3000] }
 planks = [0.26, 0.16, 0.10]
 wood = [0.24, 0.13, 0.08]
 door = [0.14, 0.12, 0.12]
-carpet = { color = [0.24, 0.20, 0.30], motif = [0.56, 0.46, 0.32] }
+"wallpaper.rug" = { color = [0.22, 0.12, 0.09], motif = [0.38, 0.22, 0.13], repeats = 10, tile = [3400, 3400] }
+"border.rug" = { color = [0.28, 0.14, 0.10], motif = [0.50, 0.38, 0.26] }
+"door.red" = [0.26, 0.12, 0.08]
+rust = [0.40, 0.24, 0.14]
+paper = [0.86, 0.82, 0.72]
 
 [lighting]
-ambient = [0.11, 0.12, 0.15]
+ambient = [0.09, 0.10, 0.12]
 
 [[zone]]
 box = [2110, 2034, 10728, 6822]
 floor_along = "x"
+fixed_ceiling = true
 
 [[door]]
 wall = "west"
@@ -37,7 +45,7 @@ material = "door"
 wall = "north"
 span = [5700, 7100]
 top = -3300
-material = "door"
+material = "door.red"
 [[door]]
 wall = "east"
 span = [4000, 5100]
@@ -45,18 +53,20 @@ top = -3300
 material = "door"
 
 [[object]]
-kind = "box"
-box = [2110, 5400, 2900, 6822]
-top = -1500
-material = "wood"
-omit = ["bottom", "west", "north"]
-[[object]]
 kind = "rug"
-box = [3200, 2600, 9800, 6300]
+box = [3000, 2700, 9900, 6200]
+material = "wallpaper.rug"
+border = 240
+border_material = "border.rug"
+[[object]]          # mounted deer head
+kind = "trophy"
+wall = "south"
+at = [-3200, 7100]
+scale = 1.9
 
 [[chandelier]]
-at = [6400, 4400]
-y = -3200
+at = [7500, 6100]
+y = -3300
 radius = 420
 globes = 4
 globe_radius = 130

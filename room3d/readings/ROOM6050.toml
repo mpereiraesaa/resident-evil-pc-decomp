@@ -1,15 +1,19 @@
 # Return-visit copy of ROOM1050.toml: stage 6 shares its collision and cameras exactly.
 # Mansion dining room. Shell from ROOM1050.RDT blocks 0,3,4,7; table from
 # block 8; chairs from circles 9,11,13,14,19-22; columns from circles 1,6,10,18;
-# fireplace from block 16; urn from circle 15. Gallery and heights from the
-# views (cameras 0-2 show the upper balustrade and the east arches).
+# fireplace from block 16; urn from circle 15; corner cabinets blocks 5, 17.
+# Gallery on all four sides (red runner on its floor, seen from cam0), arches
+# on columns at both ends, stained-glass window above the west gallery
+# (cam2). Tapestries and shield are flat approximations; cam6 is the shield
+# close-up and keeps the original background.
 room = "ROOM6050"
 title = "Dining room (return)"
 seed = 1050
+backdrop = [6]
 
 [shell]
 floor = 0
-ceiling = -11000
+ceiling = -12500
 floor_material = "checker"
 wall_material = "marble"
 ceiling_material = "coffer"
@@ -30,13 +34,21 @@ planks = [0.30, 0.20, 0.12]
 double_door = [0.26, 0.17, 0.10]
 "panel.shield" = [0.16, 0.30, 0.26]
 velvet = [0.42, 0.10, 0.12]
+runner = { color = [0.40, 0.07, 0.07], motif = [0.22, 0.04, 0.04] }
+"wallpaper.tapestry" = { color = [0.44, 0.09, 0.11], motif = [0.70, 0.52, 0.40], repeats = 4 }
+"wallpaper.shield" = { color = [0.18, 0.32, 0.28], motif = [0.08, 0.14, 0.12], repeats = 5 }
+"panel.carved" = [0.30, 0.07, 0.06]
+"wood.counter" = [0.50, 0.36, 0.18]
+"stone.column" = [0.82, 0.68, 0.50]
+"stone.fire" = [0.62, 0.52, 0.36]
+"porcelain.vase" = [0.46, 0.54, 0.58]
 door = [0.26, 0.17, 0.10]
 
 [lighting]
 ambient = [0.13, 0.115, 0.09]
 
 [[zone]]
-box = [2581, 2303, 32016, 14454]
+box = [2100, 2303, 32016, 14454]   # west wall set back behind the counters (block 4 is their front)
 
 # Doors: tea room (north), main hall (east, double)
 [[door]]
@@ -52,83 +64,140 @@ material = "double_door"
 frame = "stone"
 frame_depth = 160
 
-# Windows: two arched on the south wall, stained glass over the east door
+# Windows: two dark arched windows on the south wall (drawn square-headed),
+# stained glass high on the west wall behind the gallery
 [[window]]
 wall = "south"
-kind = "arch"
+kind = "rect"
 at = 13000
 half = 1100
 sill = -2000
 height = 3600
-color = [0.70, 0.75, 0.85]
-strength = 0.26
+panes = 3
+transom = -4600
+glass = "glass_dark"
+color = [0.50, 0.55, 0.65]
+strength = 0.18
 reach = 6000
 [[window]]
 wall = "south"
-kind = "arch"
+kind = "rect"
 at = 21000
 half = 1100
 sill = -2000
 height = 3600
-color = [0.70, 0.75, 0.85]
-strength = 0.26
+panes = 3
+transom = -4600
+glass = "glass_dark"
+color = [0.50, 0.55, 0.65]
+strength = 0.18
 reach = 6000
 [[window]]
-wall = "east"
+wall = "west"
 kind = "arch"
-at = 8300
-half = 1000
-sill = -7300
-height = 3400
+at = 8420
+half = 1450
+sill = -8200
+height = 3700
 strength = 0.30
 reach = 9000
 
 # Upper gallery around three sides, open to the fireplace end
 [[slab]]
-box = [2581, 2303, 32016, 4600]
+box = [2100, 2303, 32016, 4600]
 top = -6500
-thickness = 400
-top_material = "planks"
+thickness = 850
+top_material = "runner"
 bottom_material = "plaster"
 edges = ["north"]
-rails = [{ side = "north", span = [4800, 29300] }]
+rails = [{ side = "north", span = [4800, 29300], height = 1200 }]
 [[slab]]
-box = [2581, 12150, 32016, 14454]
+box = [2100, 12150, 32016, 14454]
 top = -6500
-thickness = 400
-top_material = "planks"
+thickness = 850
+top_material = "runner"
 bottom_material = "plaster"
 edges = ["south"]
-rails = [{ side = "south", span = [4800, 29300] }]
+rails = [{ side = "south", span = [4800, 29300], height = 1200 }]
 [[slab]]
-box = [29700, 4600, 32016, 12150]
+box = [28850, 4600, 32016, 12150]
 top = -6500
-thickness = 400
-top_material = "planks"
+thickness = 850
+top_material = "runner"
 bottom_material = "plaster"
 edges = ["west"]
-rails = [{ side = "west" }]
+rails = [{ side = "west", height = 1200 }]
 
-# East arches under the gallery, columns at the circles
-[[arcade]]
-axis = "z"
-line = 29320
-columns = [4765, 12000]
-spring = -4300
-top = -6100
-ends = [2303, 14454]
+[[slab]]
+box = [2100, 4600, 5150, 12150]
+top = -6500
+thickness = 850
+top_material = "runner"
+bottom_material = "plaster"
+edges = ["east"]
+rails = [{ side = "east", height = 1200 }]
+
+# Flat fascias on columns at both ends (cam0, cam2: no arches)
+[[column]]
+at = [29315, 12000]
+top = -5650
+material = "stone.column"
+[[column]]
+at = [29324, 4765]
+top = -5650
+material = "stone.column"
 [[column]]
 at = [4709, 4814]
 top = -5650
+material = "stone.column"
 [[column]]
 at = [4633, 12018]
 top = -5650
+material = "stone.column"
+[[column]]          # pilasters flanking the fireplace bay
+at = [2400, 6250]
+top = -5650
+radius = 180
+material = "wood"
+[[column]]
+at = [2400, 10600]
+top = -5650
+radius = 180
+material = "wood"
+[[object]]          # low counters along the west wall either side of the fireplace
+kind = "box"
+box = [2100, 3445, 2581, 6545]
+top = -1500
+material = "wood.counter"
+[[object]]
+kind = "box"
+box = [2100, 10302, 2581, 13190]
+top = -1500
+material = "wood.counter"
+[[object]]          # corner cabinets (blocks 17 and 5)
+kind = "box"
+box = [2100, 2303, 3700, 3445]
+top = -1500
+material = "wood.counter"
+[[object]]
+kind = "box"
+box = [2100, 13190, 3700, 14454]
+top = -1500
+material = "wood.counter"
+[[object]]          # carved red screen above the east gallery (cam0, cam1)
+kind = "wall_band"
+wall = "east"
+span = [5600, 11000]
+y = [-9800, -6700]
+material = "panel.carved"
+rail = false
 
 [[object]]
 kind = "fireplace"
 wall = "west"
 span = [6545, 10302]
-depth = 775
+depth = 1256
+material = "stone.fire"
 mantel = -1600
 opening = [1500, 1150]
 
@@ -137,7 +206,7 @@ kind = "wall_band"
 wall = "west"
 span = [7900, 8900]
 y = [-4300, -2600]
-material = "panel.shield"
+material = "wallpaper.shield"
 rail = false
 [[object]]          # crossed swords behind it
 kind = "wall_band"
@@ -149,16 +218,16 @@ rail = false
 [[object]]          # red tapestries either side
 kind = "wall_band"
 wall = "west"
-span = [5600, 6700]
-y = [-4800, -2400]
-material = "velvet"
+span = [5300, 6500]
+y = [-5000, -2600]
+material = "wallpaper.tapestry"
 rail = false
 [[object]]
 kind = "wall_band"
 wall = "west"
-span = [10100, 11200]
-y = [-4800, -2400]
-material = "velvet"
+span = [10400, 11600]
+y = [-5000, -2600]
+material = "wallpaper.tapestry"
 rail = false
 
 [[object]]
@@ -171,43 +240,78 @@ thickness = 140
 kind = "chair"
 at = [10615, 6371]
 facing = "north"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [14538, 6423]
 facing = "north"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [19222, 6201]
 facing = "north"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [23813, 6289]
 facing = "north"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [10836, 10566]
 facing = "south"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [14310, 10422]
 facing = "south"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [18909, 10485]
 facing = "south"
+seat_y = -650
+back = -1900
+half = 300
 [[object]]
 kind = "chair"
 at = [23184, 10584]
 facing = "south"
+seat_y = -650
+back = -1900
+half = 300
 
-[[object]]
-kind = "urn"
+[[object]]          # blue-grey vase on a small round table (circle 15)
+kind = "table_round"
 at = [12415, 2742]
-radius = 520
-top = -1900
-pedestal = 700
-pedestal_top = -950
-material = "iron"
+radius = 560
+top = -950
+[[object]]
+kind = "cylinder"
+at = [12415, 2742]
+radius = 380
+top = -1650
+bottom = -950
+material = "porcelain.vase"
+[[object]]
+kind = "cylinder"
+at = [12415, 2742]
+radius = 200
+top = -1950
+bottom = -1650
+material = "porcelain.vase"
 
 [[painting]]
 wall = "south"
@@ -250,3 +354,9 @@ at = [-3500, 4000]
 [[sconce]]
 wall = "east"
 at = [-3500, 12800]
+
+[[light]]           # fill under the west gallery (cam3 shows its columns lit;
+at = [3000, -3200, 8400]   # cylinder sides take light from behind, hence west of them)
+color = [1.0, 0.90, 0.72]
+strength = 0.32
+reach = 6500

@@ -1,6 +1,6 @@
 # Return-visit copy of ROOM20B0.toml: stage 7 shares its collision and cameras exactly.
 # Front lesson room: yellowed stained plaster, dark planks with a rug, a
-# fireplace with a mirror over it on the south wall, a red door west and a
+# chimney breast on the south wall with a fireplace and a mirror over it, a red door west and a
 # teal door north, patterned ceiling.
 room = "ROOM70B0"
 title = "Front lesson room (return)"
@@ -16,18 +16,20 @@ skirting = 200
 cell = 600
 
 [materials]
-plaster = { color = [0.70, 0.62, 0.40], stains = 0.5 }
+plaster = { color = [0.80, 0.72, 0.44], stains = 0.5 }
 "carpet.ceiling" = { color = [0.36, 0.22, 0.16], motif = [0.56, 0.44, 0.30], tile = [3000, 3000] }
 planks = [0.30, 0.17, 0.10]
 wood = [0.26, 0.14, 0.08]
 "door.red" = [0.50, 0.12, 0.08]
 "door.teal" = [0.12, 0.40, 0.42]
-stone = [0.46, 0.34, 0.22]
-carpet = { color = [0.40, 0.14, 0.14], motif = [0.66, 0.52, 0.34] }
+carpet = { color = [0.62, 0.36, 0.18], motif = [0.26, 0.30, 0.38] }
+border = [0.50, 0.30, 0.16]
+"plaster.chimney" = { color = [0.56, 0.40, 0.24], stains = 0.7, peel = 0.4 }
+stone = [0.58, 0.54, 0.38]
 glass = [0.70, 0.74, 0.76]
 
 [lighting]
-ambient = [0.13, 0.12, 0.08]
+ambient = [0.17, 0.16, 0.11]
 
 [[zone]]
 box = [2056, 1998, 8910, 8748]
@@ -43,30 +45,49 @@ span = [7200, 8500]
 top = -3300
 material = "door.teal"
 
-[[object]]
+[[object]]          # chimney breast (block 4): fireplace below, breast up to the ceiling
 kind = "fireplace"
 wall = "south"
 span = [4392, 6390]
 depth = 900
 mantel = -1500
-opening = [900, 900]
+opening = [800, 950]
+material = "plaster.chimney"
 [[object]]
-kind = "wall_band"
+kind = "box"
+box = [4392, 1998, 6390, 2898]
+top = -4400
+bottom = -1650
+material = "plaster.chimney"
+omit = ["south"]
+[[object]]          # cap under the ceiling
+kind = "box"
+box = [4300, 1998, 6480, 2990]
+top = -4400
+bottom = -4150
+material = "wood"
+[[painting]]        # mirror over the mantel
 wall = "south"
-span = [4700, 6100]
-y = [-2900, -1700]
+line = 2898
+span = [4800, 6000]
+y = [-3200, -2150]
 material = "mirror"
-rail = false
+frame = "wood"
 [[object]]
 kind = "rug"
-box = [3000, 3200, 8000, 7800]
+box = [2600, 3000, 7300, 7400]
+border = 150
 
-[[chandelier]]
-at = [5500, 5400]
-y = -3400
-radius = 300
-globes = 3
-globe_radius = 100
-ceiling = -4400
-strength = 0.40
+[[painting]]        # dark frame on the east wall, seen edge-on by cameras 0 and 1
+wall = "east"
+span = [5900, 7300]
+y = [-3000, -1400]
+material = "mirror"
+frame = "wood"
+
+[[sconce]]
+wall = "east"
+at = [-3300, 5600]
+candles = 1
+strength = 0.4
 reach = 5000

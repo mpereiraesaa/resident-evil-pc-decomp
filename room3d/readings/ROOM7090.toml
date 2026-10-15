@@ -1,6 +1,9 @@
 # Return-visit copy of ROOM2090.toml: stage 7 shares its collision and cameras exactly.
-# 2F bedroom: grey stained plaster, dark planks, two beds against the south
-# wall with a nightstand between, a dresser on the north wall, one sconce.
+# 2F bedroom: dark grey-brown patterned walls, dark planks, two beds with
+# wooden head- and footboards against the south wall and a low nightstand
+# between them, a glass-fronted cabinet on the north wall under a sconce, a
+# round mirror and three framed pictures on the west wall, a small rug in
+# front of the east door. Wallpaper pattern and the bed frames are approximate.
 room = "ROOM7090"
 title = "2F bedroom (return)"
 seed = 2090
@@ -15,13 +18,15 @@ skirting = 200
 cell = 600
 
 [materials]
-plaster = { color = [0.46, 0.44, 0.40], stains = 0.4 }
+plaster = { color = [0.40, 0.37, 0.35], stains = 0.4 }
 "plaster.dark" = [0.22, 0.21, 0.19]
 planks = [0.28, 0.16, 0.10]
-wood = [0.26, 0.14, 0.08]
+wood = [0.20, 0.11, 0.07]
 door = [0.22, 0.13, 0.08]
 linen = [0.66, 0.60, 0.58]
-"carpet.spread" = { color = [0.70, 0.66, 0.62], motif = [0.70, 0.36, 0.30], tile = [1600, 1600] }
+"carpet.spread" = { color = [0.74, 0.70, 0.66], motif = [0.66, 0.42, 0.40], tile = [1200, 1200] }
+"carpet.rug" = { color = [0.46, 0.18, 0.10], motif = [0.70, 0.50, 0.28] }
+books = [0.40, 0.36, 0.32]
 
 [lighting]
 ambient = [0.15, 0.15, 0.14]
@@ -31,62 +36,88 @@ box = [2344, 1998, 9648, 10278]
 
 [[door]]
 wall = "east"
-span = [7200, 8200]
+span = [7000, 8300]
 top = -3300
 material = "door"
 
+# beds (collision blocks 7 and 5): spread over a wooden base, boards at both ends
 [[object]]
 kind = "box"
-box = [3474, 1998, 5094, 6048]
-top = -600
+box = [3474, 2100, 5094, 5948]
+top = -650
 material = "carpet.spread"
-omit = ["bottom", "south"]
+omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [3474, 1998, 5094, 2100]
-top = -1100
-bottom = -600
+top = -1200
 material = "wood"
 [[object]]
 kind = "box"
-box = [6390, 1998, 8154, 6066]
-top = -600
+box = [3474, 5948, 5094, 6048]
+top = -950
+material = "wood"
+[[object]]
+kind = "box"
+box = [6390, 2100, 8154, 5966]
+top = -650
 material = "carpet.spread"
-omit = ["bottom", "south"]
+omit = ["bottom"]
 [[object]]
 kind = "box"
 box = [6390, 1998, 8154, 2100]
-top = -1100
-bottom = -600
+top = -1200
 material = "wood"
 [[object]]
 kind = "box"
-box = [5200, 1998, 6300, 2394]
-top = -800
+box = [6390, 5966, 8154, 6066]
+top = -950
+material = "wood"
+[[object]]          # nightstand between the beds (block 6)
+kind = "box"
+box = [5300, 1998, 6200, 2394]
+top = -700
 material = "wood"
 omit = ["bottom", "south"]
-[[object]]          # dresser on the north wall
-kind = "box"
-box = [2344, 9432, 4410, 10278]
-top = -1600
-material = "wood"
-omit = ["bottom", "north", "west"]
+[[object]]          # glass-fronted cabinet on the north wall (block 3)
+kind = "bookcase"
+box = [2344, 9100, 4250, 10278]
+top = -2600
+front = "south"
 [[object]]
 kind = "rug"
-box = [6500, 7200, 8500, 8600]
+box = [8450, 6750, 9500, 8450]
+material = "carpet.rug"
 
+# pictures on the west wall (camera 1) and the round mirror (camera 0)
 [[painting]]
-wall = "east"
-span = [3600, 4400]
-y = [-3000, -2200]
+wall = "west"
+span = [2750, 3400]
+y = [-3500, -2950]
 [[painting]]
-wall = "east"
-span = [4800, 6000]
-y = [-3200, -2000]
+wall = "west"
+span = [2900, 3550]
+y = [-2600, -2150]
+[[painting]]
+wall = "west"
+span = [3700, 5300]
+y = [-3400, -2000]
+[[painting]]
+wall = "west"
+span = [6850, 7550]
+y = [-3150, -2450]
+material = "mirror"
+frame = "wood"
 
 [[sconce]]
 wall = "north"
-at = [-3300, 6500]
+at = [-3300, 3060]
+candles = 1
+strength = 0.5
+reach = 4000
+[[sconce]]
+wall = "south"
+at = [-3300, 5700]
 candles = 1
 strength = 0.5
 reach = 4000

@@ -1,14 +1,18 @@
-# Mansion trap room: cream marble panels over a grey frieze and red velvet
-# dado, stone tiles, the spiked iron ceiling. Doors west and south.
+# Mansion trap room: cracked cream marble walls with brown-framed panels
+# (paintings whose canvas is the wall marble), a white and blue frieze over
+# a red velvet dado, small stone tiles, the black spiked ceiling. Doors west
+# and south. cam4 looks out over the corridor beyond the north wall (another
+# room) and keeps the original background.
 room = "ROOM1150"
 title = "Trap room"
 seed = 2100
+backdrop = [4]
 
 [shell]
 floor = 0
 ceiling = -4200
-floor_material = "stone.tiles"
-wall_material = "panel.cream"
+floor_material = "tiles.floor"
+wall_material = "plaster.cream"
 ceiling_material = "coffer.iron"
 dado = 900
 dado_material = "velvet"
@@ -18,8 +22,10 @@ trim = "stone"
 cell = 600
 
 [materials]
-"panel.cream" = { color = [0.72, 0.66, 0.54], tile = [2200, 3000] }
-"stone.tiles" = { color = [0.60, 0.56, 0.46], tile = [1600, 1600] }
+"plaster.cream" = { color = [0.88, 0.82, 0.68], stains = 0.4, tile = [2400, 2400] }
+"tiles.floor" = { color = [0.62, 0.58, 0.50], count = 6, grout = [0.38, 0.36, 0.32], grime = 0.3, tile = [3600, 3600] }
+"border.frieze" = { color = [0.72, 0.72, 0.70], motif = [0.26, 0.32, 0.46] }
+wood = [0.32, 0.20, 0.11]
 "coffer.iron" = { color = [0.12, 0.11, 0.10], tile = [1200, 1200] }
 stone = [0.62, 0.60, 0.54]
 velvet = [0.42, 0.08, 0.08]
@@ -45,5 +51,79 @@ material = "door"
 [[light]]
 at = [4800, -3000, 4800]
 color = [1.0, 0.96, 0.86]
-strength = 0.4
+strength = 0.65
 reach = 5000
+
+# Frieze over the dado on every wall
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [1885, 7818]
+y = [-1250, -930]
+material = "border.frieze"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [1885, 7818]
+y = [-1250, -930]
+material = "border.frieze"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [1823, 7717]
+y = [-1250, -930]
+material = "border.frieze"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [1823, 7717]
+y = [-1250, -930]
+material = "border.frieze"
+rail = false
+
+# Framed marble panels (brown mouldings)
+[[painting]]
+wall = "east"
+span = [2400, 4600]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"
+[[painting]]
+wall = "east"
+span = [5100, 7300]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"
+[[painting]]
+wall = "north"
+span = [2350, 4550]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"
+[[painting]]
+wall = "north"
+span = [5000, 7200]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"
+[[painting]]
+wall = "west"
+span = [2400, 3500]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"
+[[painting]]
+wall = "west"
+span = [7000, 7400]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"
+[[painting]]
+wall = "south"
+span = [2400, 4700]
+y = [-3800, -1550]
+material = "plaster.cream"
+frame = "wood"

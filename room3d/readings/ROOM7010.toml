@@ -1,7 +1,12 @@
 # Return-visit copy of ROOM2010.toml: stage 7 shares its collision and cameras exactly.
-# 2F right stairs: the top of ROOM10B0's switchback. Olive damask corridor
-# with red-brown trim, a landing with the stairwell and its balustrade, doors
-# at both ends and on the west side. From ROOM2010.RDT blocks.
+# 2F right stairs: the top of ROOM10B0's switchback. Olive-gold damask
+# corridor with glossy red-wood trim and pilasters, a landing round the
+# stairwell. The well holds the switchback: the upper flight (south half)
+# drops west from the landing to a half landing, the lower flight (north
+# half) drops back east to 1F. Rails sit on the centre lines of the low
+# blocks 3, 4, 10 (those blocks are footprint plus walking margin). Doors:
+# corridor north end, corridor west wall (picked from cam5), the south wall
+# of the south-east pocket (open in cam4), landing west wall.
 room = "ROOM7010"
 title = "2F right stairs (return)"
 seed = 2010
@@ -9,7 +14,7 @@ backdrop = [7]  # camera 7 is a close-up of the door keypad
 
 [shell]
 floor = 0
-ceiling = -5000
+ceiling = -8000
 floor_material = "planks"
 wall_material = "wallpaper"
 ceiling_material = "plaster.dark"
@@ -18,14 +23,15 @@ chair_rail = true
 cell = 700
 
 [materials]
-wallpaper = { color = [0.58, 0.54, 0.30], motif = [0.40, 0.36, 0.18], repeats = 4 }
-"plaster.dark" = [0.26, 0.22, 0.14]
-planks = [0.36, 0.20, 0.11]
-wood = [0.42, 0.14, 0.08]
-door = [0.34, 0.18, 0.09]
+wallpaper = { color = [0.52, 0.48, 0.17], motif = [0.25, 0.23, 0.06], repeats = 3, tile = [1800, 1800] }
+"plaster.dark" = [0.20, 0.17, 0.08]
+planks = [0.30, 0.14, 0.07]
+wood = [0.56, 0.17, 0.08]
+door = [0.36, 0.20, 0.10]
+"wood.stair" = [0.16, 0.08, 0.04]
 
 [lighting]
-ambient = [0.12, 0.11, 0.06]
+ambient = [0.12, 0.11, 0.05]
 
 [[zone]]            # long corridor
 box = [14454, 2232, 16596, 26262]
@@ -33,21 +39,24 @@ box = [14454, 2232, 16596, 26262]
 box = [16596, 2232, 21312, 4590]
 floor_along = "x"
 [[zone]]            # landing west strip
-box = [2340, 7328, 5976, 15156]
+box = [2340, 7328, 6350, 15156]
 [[zone]]            # landing south strip
-box = [5976, 7328, 14454, 8964]
+box = [6350, 7328, 14454, 9480]
 floor_along = "x"
 [[zone]]            # landing north strip
-box = [5976, 13302, 14454, 15156]
+box = [6350, 12740, 14454, 15156]
 floor_along = "x"
-[[zone]]            # the well itself
-box = [5976, 8964, 14454, 13302]
+[[zone]]            # landing east strip, where the upper flight arrives
+box = [14100, 9480, 14454, 12740]
+[[zone]]            # the well itself, down to 1F
+box = [6350, 9480, 14100, 12740]
 open_floor = true
-depth = 3000
+depth = 6000
+shaft_material = "plaster.dark"
 
-[[door]]
-wall = "east"
-span = [2232, 4590]
+[[door]]            # pocket door, south wall (cam4)
+wall = "south"
+span = [17700, 19800]
 top = -3300
 material = "door"
 [[door]]
@@ -57,7 +66,7 @@ top = -3300
 material = "door"
 [[door]]
 wall = "west"
-span = [16500, 18300]
+span = [17300, 19100]
 top = -3300
 material = "door"
 [[door]]
@@ -66,66 +75,148 @@ span = [9000, 11000]
 top = -3300
 material = "door"
 
-# The well: flight down to the 1F landing (reaches the room below)
-[[stair]]
-x = [5976, 14454]
-z = [9432, 12798]
-direction = "west"
+# The well: switchback down to 1F
+[[stair]]           # upper flight, south half: top at the east end on the landing
+x = [8400, 14100]
+z = [9480, 11000]
+direction = "east"
 base = 3000
 top = 0
-steps = 10
-tread_material = "wood"
-under = false
+steps = 12
+tread_material = "wood.stair"
+rails = [{ side = "north" }]
+[[stair]]           # lower flight, north half: from the half landing back east down
+x = [8400, 14100]
+z = [11220, 12740]
+direction = "west"
+base = 6000
+top = 3000
+steps = 12
+tread_material = "wood.stair"
+[[slab]]            # half landing at the west end
+box = [6350, 9480, 8400, 12740]
+top = 3000
+thickness = 300
+top_material = "wood.stair"
+bottom_material = "wood.stair"
+[[object]]          # spine between the flights
+kind = "box"
+box = [8400, 11000, 14100, 11220]
+top = 2400
+bottom = 6000
+material = "wood"
 [[object]]
 kind = "rail"
-from = [5976, 9100]
-to = [14300, 9100]
+from = [6350, 9480]
+to = [14100, 9480]
 height = 950
 [[object]]
 kind = "rail"
-from = [5976, 13100]
-to = [14300, 13100]
+from = [6350, 12740]
+to = [14100, 12740]
 height = 950
 [[object]]
 kind = "rail"
-from = [14300, 9100]
-to = [14300, 13100]
+from = [6350, 9480]
+to = [6350, 12740]
 height = 950
 newels = [false, false]
+[[object]]          # east end over the lower flight (newel circle 8)
+kind = "rail"
+from = [14100, 11000]
+to = [14100, 12740]
+height = 950
+newels = [true, false]
+
+# Red-wood pilasters at the corners of the landing and the corridor
+[[column]]
+at = [14454, 7328]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]
+at = [14454, 15156]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]
+at = [16596, 7328]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]
+at = [16596, 15156]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]          # framing the north door (cam6)
+at = [14454, 25400]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]
+at = [16596, 25400]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]
+at = [2340, 7328]
+top = -8000
+radius = 160
+square = true
+material = "wood"
+[[column]]
+at = [2340, 15156]
+top = -8000
+radius = 160
+square = true
+material = "wood"
 
 [[sconce]]
 wall = "east"
 at = [-3500, 6000]
 candles = 1
-strength = 0.40
-reach = 3400
+strength = 0.45
+reach = 4000
 [[sconce]]
 wall = "east"
 at = [-3500, 12000]
 candles = 1
-strength = 0.40
-reach = 3400
+strength = 0.45
+reach = 4000
 [[sconce]]
 wall = "east"
 at = [-3500, 19000]
 candles = 1
-strength = 0.40
-reach = 3400
+strength = 0.45
+reach = 4000
 [[sconce]]
 wall = "west"
-at = [-3500, 22500]
+at = [-3500, 24500]
 candles = 1
-strength = 0.40
-reach = 3400
+strength = 0.45
+reach = 4000
 [[sconce]]
 wall = "west"
 at = [-3500, 9500]
 candles = 1
-strength = 0.40
-reach = 3400
+strength = 0.45
+reach = 4000
 [[sconce]]
 wall = "north"
 at = [-3500, 8000]
 candles = 1
-strength = 0.40
-reach = 3400
+strength = 0.45
+reach = 4000
+[[sconce]]           # pair flanking the north door (cam6)
+wall = "east"
+at = [-3500, 24500]
+candles = 1
+strength = 0.45
+reach = 4000

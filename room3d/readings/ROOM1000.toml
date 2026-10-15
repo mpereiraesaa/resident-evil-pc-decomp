@@ -1,6 +1,7 @@
 # Mansion 1F save room: pale plaster over a wooden chair rail, dark planks,
-# cot against the north wall, desk with the typewriter, bookshelf on the east
-# wall and the item box by the south wall. From ROOM1000.RDT blocks.
+# iron cot against the north wall, desk with the typewriter and its chair,
+# open (nearly empty) shelves with jars on the east wall, mauve item box by
+# the south wall. From ROOM1000.RDT blocks.
 room = "ROOM1000"
 title = "1F save room"
 seed = 1000
@@ -18,13 +19,16 @@ skirting = 160
 cell = 600
 
 [materials]
-plaster = [0.72, 0.70, 0.62]
-"plaster.low" = [0.58, 0.56, 0.48]
+plaster = [0.74, 0.71, 0.58]
+"plaster.low" = [0.62, 0.59, 0.47]
 "plaster.ceiling" = [0.40, 0.40, 0.36]
 planks = [0.26, 0.20, 0.13]
 wood = [0.40, 0.27, 0.15]
 door = [0.42, 0.28, 0.15]
-chest = [0.46, 0.16, 0.12]
+chest = [0.38, 0.20, 0.21]
+linen = [0.44, 0.44, 0.42]
+"wood.dark" = [0.34, 0.22, 0.12]
+glass_dark = [0.32, 0.48, 0.26]
 
 [lighting]
 ambient = [0.16, 0.16, 0.14]
@@ -38,39 +42,94 @@ span = [2700, 4400]
 top = -3300
 material = "door"
 
-[[object]]          # cot
-kind = "box"
+[[object]]          # iron cot along the north wall, head at the east end
+kind = "bed"
 box = [4582, 8338, 8490, 10078]
 top = -620
-material = "linen"
-omit = ["bottom", "north"]
-[[object]]          # cot frame rail
+head = "east"
+headboard = -1150
+[[object]]          # low iron foot rail
 kind = "box"
-box = [4582, 8338, 8490, 8400]
-top = -1000
+box = [4582, 8338, 4642, 10078]
+top = -900
 bottom = -620
 material = "iron"
-[[object]]          # desk
+[[object]]          # desk with the typewriter
 kind = "table"
 box = [1934, 8676, 3654, 10078]
 top = -1500
 thickness = 100
-[[object]]
-kind = "box"
-box = [2200, 9200, 3300, 9900]
-top = -1800
-bottom = -1500
-material = "enamel"
+with = "typewriter"
+typewriter_at = [3000, 9400]
 [[object]]
 kind = "chair"
-at = [2900, 8100]
-facing = "south"
-[[object]]          # bookshelf on the east wall
+at = [2800, 8250]
+facing = "north"
+seat = "wood"
+half = 280
+seat_y = -760
+back = -1400
+# Open bookshelf on the east wall (block 3): the original's shelves are
+# nearly empty (a few jars), so it is built from boards, not the books kind.
+[[object]]          # back panel
+kind = "box"
+box = [8420, 2808, 8490, 7416]
+top = -3000
+material = "wood.dark"
+[[object]]          # south side
+kind = "box"
+box = [7686, 2808, 8490, 2888]
+top = -3000
+material = "wood"
+[[object]]          # north side
+kind = "box"
+box = [7686, 7336, 8490, 7416]
+top = -3000
+material = "wood"
+[[object]]          # top
 kind = "box"
 box = [7686, 2808, 8490, 7416]
-top = -2700
+top = -3000
+bottom = -2920
 material = "wood"
-omit = ["bottom", "east"]
+[[object]]          # plinth
+kind = "box"
+box = [7686, 2808, 8490, 7416]
+top = -160
+material = "wood"
+[[object]]          # shelf
+kind = "box"
+box = [7700, 2888, 8420, 7336]
+top = -1060
+bottom = -1000
+material = "wood"
+[[object]]          # shelf
+kind = "box"
+box = [7700, 2888, 8420, 7336]
+top = -1960
+bottom = -1900
+material = "wood"
+[[object]]          # jars on the upper shelf
+kind = "cylinder"
+at = [8050, 4300]
+radius = 110
+top = -2240
+bottom = -1960
+material = "glass_dark"
+[[object]]
+kind = "cylinder"
+at = [8050, 4600]
+radius = 110
+top = -2200
+bottom = -1960
+material = "glass_dark"
+[[object]]
+kind = "cylinder"
+at = [8050, 4900]
+radius = 100
+top = -2220
+bottom = -1960
+material = "glass_dark"
 [[object]]          # item box
 kind = "chest"
 box = [6156, 1940, 8490, 3438]

@@ -1,7 +1,8 @@
 # Return-visit copy of ROOM1040.toml: stage 6 shares its collision and cameras exactly.
 # Tea-room corridor and lounge. Corridor from ROOM1040.RDT blocks 0,1,2,8;
-# lounge opening north of its west end (block 0 starts at x=7133), sofa from
-# block 3, side table from circle 6. Doors from the door records.
+# lounge north of its west end (block 0 starts at x=7133) with the tapestry
+# sofas (blocks 3, 4), castle painting on tapestry panels, rug picked from
+# cam4, plant stand from circle 6. Corridor ceiling height is approximate.
 room = "ROOM6040"
 title = "Tea room passage (return)"
 seed = 1040
@@ -18,33 +19,46 @@ cell = 700
 [materials]
 plaster = [0.64, 0.64, 0.60]
 "plaster.dark" = [0.26, 0.24, 0.20]
-planks = [0.42, 0.19, 0.10]
+planks = [0.50, 0.22, 0.11]
 wood = [0.22, 0.14, 0.09]
 door = [0.46, 0.28, 0.14]
-carpet = { color = [0.70, 0.58, 0.46], motif = [0.55, 0.30, 0.20] }
-velvet = [0.40, 0.32, 0.24]
+carpet = { color = [0.66, 0.60, 0.48], motif = [0.24, 0.12, 0.12], tile = [1625, 3000] }
+"border.rug" = { color = [0.40, 0.18, 0.12], motif = [0.66, 0.58, 0.44] }
+"wallpaper.sofa" = { color = [0.52, 0.44, 0.32], motif = [0.26, 0.16, 0.10], repeats = 6 }
+"wallpaper.tapestry" = { color = [0.40, 0.36, 0.28], motif = [0.20, 0.15, 0.10], repeats = 10 }
+"door.red" = [0.30, 0.08, 0.10]
+"door.dark" = [0.24, 0.15, 0.09]
+"glass_dark" = [0.14, 0.15, 0.18]
 
 [lighting]
 ambient = [0.10, 0.10, 0.09]
 
-[[zone]]            # corridor
+[[zone]]            # corridor (ceiling auto-raised over cam0)
 box = [1843, 1817, 31998, 4642]
 floor_along = "x"
-[[zone]]            # lounge
+[[zone]]            # lounge, taller
 box = [1843, 4642, 7133, 8694]
+ceiling = -5000
+fixed_ceiling = true
 
-[[beam]]
-box = [1843, 3180, 31998, 3300]
-top = -6000
+# Cross beams; the far east end drops to a deep soffit (cam2 sees the end
+# wall's top near -4400).
 [[beam]]
 box = [7133, 1817, 7253, 4642]
-top = -6000
+top = -4600
+depth = 250
 [[beam]]
 box = [15800, 1817, 15920, 4642]
-top = -6000
+top = -4600
+depth = 250
 [[beam]]
 box = [24400, 1817, 24520, 4642]
-top = -6000
+top = -4600
+depth = 250
+[[beam]]
+box = [31300, 1817, 31998, 4642]
+top = -6600
+depth = 2200
 
 [[door]]            # to the dining room
 wall = "south"
@@ -56,44 +70,84 @@ wall = "north"
 span = [14800, 17800]
 top = -3500
 material = "door"
-[[door]]
+[[door]]            # maroon plank door at the far end
 wall = "north"
 span = [29800, 31500]
 top = -3400
-material = "door"
+material = "door.red"
 [[door]]
 wall = "east"
 span = [1900, 3700]
 top = -3400
-material = "door"
+material = "door.dark"
 
-[[object]]
+[[object]]          # tapestry-covered sofa along the north wall (block 3)
 kind = "sofa"
-box = [3000, 7900, 6600, 8694]
+box = [2300, 7900, 6300, 8694]
 back = "north"
-[[object]]
+material = "wallpaper.sofa"
+[[object]]          # second sofa along the east wall (block 4)
+kind = "sofa"
+box = [6300, 5900, 7133, 8694]
+back = "east"
+material = "wallpaper.sofa"
+[[object]]          # patterned rug, cream ground with dark medallions
 kind = "rug"
-box = [2400, 5200, 6300, 7700]
-[[object]]
+box = [2300, 4650, 5550, 7650]
+border = 160
+border_material = "border.rug"
+[[object]]          # side stand with a pot plant (circle 6)
 kind = "cylinder"
 at = [6912, 5526]
 radius = 320
 top = -700
 material = "wood"
 segments = 10
+[[object]]
+kind = "plant"
+at = [6912, 5526]
+base = -700
+height = 500
+spread = 260
+pot_radius = 150
+pot_height = 250
+material = "hedge"
+[[object]]          # pot plant in the north-west corner
+kind = "plant"
+at = [2150, 8350]
+height = 900
+spread = 300
+pot_radius = 160
+pot_height = 300
+[[painting]]        # tapestry panel behind the castle painting
+wall = "north"
+span = [2500, 6450]
+y = [-4420, -1850]
+material = "wallpaper.tapestry"
+frame = "wood"
 [[painting]]
 wall = "north"
-span = [3400, 6200]
-y = [-4300, -2300]
-[[window]]
+span = [3150, 5800]
+y = [-4150, -2100]
+line = 8620
+[[painting]]        # tapestry panel with the oval mirror on the east wall
+wall = "east"
+span = [6000, 8300]
+y = [-4300, -1500]
+material = "wallpaper.tapestry"
+frame = "wood"
+[[window]]          # dark night window (arched in the original)
 wall = "west"
-kind = "arch"
+kind = "rect"
 at = 6400
 half = 600
 sill = -1400
 height = 2800
-color = [0.60, 0.65, 0.75]
-strength = 0.22
+panes = 2
+transom = -3400
+glass = "glass_dark"
+color = [0.40, 0.44, 0.52]
+strength = 0.16
 reach = 4000
 
 [[sconce]]
@@ -126,3 +180,9 @@ at = [-3400, 28200]
 candles = 1
 strength = 0.42
 reach = 3400
+
+[[light]]           # the lounge reads brighter than the corridor (cam4, cam5)
+at = [4500, -3600, 6400]
+color = [1.0, 0.92, 0.78]
+strength = 0.35
+reach = 5000

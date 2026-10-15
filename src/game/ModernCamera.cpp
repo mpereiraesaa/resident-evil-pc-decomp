@@ -134,8 +134,12 @@ void SelectEntryView(void)
 {
     const float heading = s_yaw;
     float ahead = 0.0f;
-    const float initial = EntryViewClearance(heading, kDefaultPitch, &ahead);
-    const bool roomy = initial >= 1600.0f && ahead >= 2400.0f;
+    EntryViewClearance(heading, kDefaultPitch, &ahead);
+    // Keep the arrival view whenever the player looks into open space, even
+    // when the shortest boom still sits just behind the door's wall (that
+    // wall faces away and is culled, so corridor entries keep looking down
+    // the corridor). Search only when the arrival heading faces a wall.
+    const bool roomy = ahead >= 2400.0f;
     const float pitches[] = { kDefaultPitch, 0.35f, 0.60f, 0.85f };
     float best = -1.0f;
     float bestScore = -1.0f;

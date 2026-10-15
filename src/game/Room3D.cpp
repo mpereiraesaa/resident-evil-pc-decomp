@@ -44,6 +44,8 @@ struct Vertex {
     float x, y, z;
     float u, v;
     float r, g, b;
+    float a;        // opacity (projected faces fading into their tile)
+    float tu, tv;   // tile UVs under a fading projected face
 };
 
 struct Triangle {
@@ -514,13 +516,13 @@ struct MaterialPatch {
 // the faces no camera saw match their neighbours.
 bool LoadProjection(const std::string& objPath, std::string* faces, size_t* faceCount,
                     std::vector<MaterialTint>* tints, std::vector<MaterialPatch>* patches,
-                    std::string* tiles)
+                    std::string* tiles, std::string* fades)
 {
     static const char* env = std::getenv("RE1_ROOM3D_PROJECTION");
     if (env != NULL && env[0] == '0') return false;
     std::string source;
     if (!ReadTextFile(objPath.substr(0, objPath.size() - 4) + ".proj",
-                      kMaxTriangles + 16384, &source))
+                      16 * 1024 * 1024, &source))
         return false;
     size_t offset = 0, tokenOffset = 0;
     TextToken header, magic, countToken, body;
@@ -557,6 +559,12 @@ bool LoadProjection(const std::string& objPath, std::string* faces, size_t* face
         if (NextToken(line, &tokenOffset, &command) && TokenEquals(command, "tiles") &&
             NextToken(line, &tokenOffset, &text)) {
             tiles->assign(text.data, text.size);
+            continue;
+        }
+        // "fade <digits>": per face corner, in face order, the opacity 0-9
+        // of projected faces that cross-fade into their tile.
+        if (TokenEquals(command, "fade") && NextToken(line, &tokenOffset, &text)) {
+            fades->assign(text.data, text.size);
             continue;
         }
         tokenOffset = 0;
@@ -686,6 +694,31 @@ void BoxAxes(const float normal[3], float a[3], float b[3])
     } else {
         a[0] = 1.0f; b[1] = -1.0f;
     }
+}
+
+// Box-mapped tile coordinates of a triangle's corners (2 x side per
+// mirrored repeat), written to u/v or, under a fading projected face, tu/tv.
+void TileUVs(Vertex t[3], float side, bool underlay)
+{
+    const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
+    const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
+    const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2],
+                         e1[0] * e2[1] - e1[1] * e2[0] };
+    float a[3], b[3];
+    BoxAxes(n, a, b);
+    const float scale = 1.0f / (2.0f * side);
+    for (int v = 0; v < 3; ++v) {
+        const float u = (t[v].x * a[0] + t[v].y * a[1] + t[v].z * a[2]) * scale;
+        const float w = 1.0f - (t[v].x * b[0] + t[v].y * b[1] + t[v].z * b[2]) * scale;
+        if (underlay) { t[v].tu = u; t[v].tv = w; } else { t[v].u = u; t[v].v = w; }
+    }
+}
+
+const MaterialPatch* FindPatch(const std::vector<MaterialPatch>& patches, int index)
+{
+    for (size_t k = 0; index >= 0 && k < patches.size(); ++k)
+        if (patches[k].index == index) return &patches[k];
+    return NULL;
 }
 
 // A seamless tile of the room's own art for one material: the square the
@@ -886,9 +919,10 @@ bool LoadRoomMesh()
     size_t projectionFaces = 0;
     std::vector<MaterialTint> tints;
     std::vector<MaterialPatch> patches;
-    std::string tiles;
+    std::string tiles, fades;
     const bool hasProjection = LoadProjection(path, &projection, &projectionFaces, &tints,
-                                              &patches, &tiles);
+                                              &patches, &tiles, &fades);
+    size_t cornerBase = 0;
     size_t faceIndex = 0;
     unsigned int hiddenCameras = 0;
     bool currentShell = true;   // geometry before any group line is the shell
@@ -928,6 +962,7 @@ bool LoadRoomMesh()
             }
         } else if (TokenEquals(kind, "v")) {
             Vertex v = {};
+            v.a = 1.0f;
             TextToken x, y, z;
             if (!NextToken(line, &tokenOffset, &x) ||
                 !NextToken(line, &tokenOffset, &y) ||
@@ -1013,8 +1048,15 @@ bool LoadRoomMesh()
                 tri.shell = currentShell;
                 tri.projection = (signed char)projectionCamera;
                 tri.patch = (signed char)tile;
+                const size_t corners[3] = { 0, i, i + 1 };
+                for (int v = 0; v < 3; ++v) {
+                    const size_t k = cornerBase + corners[v];
+                    if (k < fades.size() && fades[k] >= '0' && fades[k] <= '9')
+                        tri.v[v].a = (fades[k] - '0') / 9.0f;
+                }
                 triangles.push_back(tri);
             }
+            cornerBase += face.size();
         }
     }
 
@@ -1079,7 +1121,26 @@ bool LoadRoomMesh()
             if (z < 1.0f) z = 1.0f;
             tri.v[v].u = (x / z * focal + 160.0f) / 320.0f;
             tri.v[v].v = 1.0f - (y / z * focal + 120.0f) / 240.0f;
-            tri.v[v].r = tri.v[v].g = tri.v[v].b = 1.0f;
+        }
+        // Near the edge with tiled faces of its wall, a projected face fades
+        // out over its tile (drawn underneath, lit by its vertex colours);
+        // elsewhere it is opaque and white (the lighting is in the image).
+        const MaterialPatch* patch = FindPatch(patches, tri.patch);
+        const bool fading = patch != NULL && s_patchTextures[tri.patch] != MARNI_NULL_HANDLE &&
+            (tri.v[0].a < 0.999f || tri.v[1].a < 0.999f || tri.v[2].a < 0.999f);
+        if (fading) {
+            TileUVs(tri.v, s_patchSide[tri.patch], true);
+            for (int v = 0; v < 3; ++v) {
+                tri.v[v].r *= patch->tint[0];
+                tri.v[v].g *= patch->tint[1];
+                tri.v[v].b *= patch->tint[2];
+            }
+        } else {
+            tri.patch = -1;
+            for (int v = 0; v < 3; ++v) {
+                tri.v[v].r = tri.v[v].g = tri.v[v].b = 1.0f;
+                tri.v[v].a = 1.0f;
+            }
         }
         projectedCameras |= 1u << tri.projection;
         ++projectedTriangles;
@@ -1095,28 +1156,16 @@ bool LoadRoomMesh()
         if (!mat.hasDiffuseColor && mat.texture == MARNI_NULL_HANDLE)
             MaterialColor(mat.name, &r, &g, &b);
         const int tile = triangles[i].patch;
-        const MaterialPatch* patch = NULL;
-        for (size_t k = 0; tile >= 0 && k < patches.size(); ++k)
-            if (patches[k].index == tile) patch = &patches[k];
+        const MaterialPatch* patch = FindPatch(patches, tile);
+        for (int v = 0; v < 3; ++v) triangles[i].v[v].a = 1.0f;
         if (!projectionValid || patch == NULL || s_patchTextures[tile] == MARNI_NULL_HANDLE) {
             triangles[i].patch = -1;
             patch = NULL;
         }
         if (patch != NULL) {
-            // Tiled art: box-mapped, 2 x side per mirrored repeat; the vertex
-            // colours carry the art's lighting, scaled by the patch's factor.
-            Vertex* t = triangles[i].v;
-            const float e1[3] = { t[1].x - t[0].x, t[1].y - t[0].y, t[1].z - t[0].z };
-            const float e2[3] = { t[2].x - t[0].x, t[2].y - t[0].y, t[2].z - t[0].z };
-            const float n[3] = { e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2],
-                                 e1[0] * e2[1] - e1[1] * e2[0] };
-            float a[3], bAxis[3];
-            BoxAxes(n, a, bAxis);
-            const float scale = 1.0f / (2.0f * s_patchSide[tile]);
-            for (int v = 0; v < 3; ++v) {
-                t[v].u = (t[v].x * a[0] + t[v].y * a[1] + t[v].z * a[2]) * scale;
-                t[v].v = 1.0f - (t[v].x * bAxis[0] + t[v].y * bAxis[1] + t[v].z * bAxis[2]) * scale;
-            }
+            // Tiled art; the vertex colours carry the art's lighting, scaled
+            // by the patch's factor.
+            TileUVs(triangles[i].v, s_patchSide[tile], false);
             r = patch->tint[0];
             g = patch->tint[1];
             b = patch->tint[2];
@@ -1240,7 +1289,7 @@ bool Project(const Vertex& v, const RoomCameraBasis& camera,
     out[6] = v.r * s_activeShade;
     out[7] = v.g * s_activeShade;
     out[8] = v.b * s_activeShade;
-    out[9] = 1.0f;
+    out[9] = v.a;
     return true;
 }
 
@@ -1262,6 +1311,9 @@ Vertex InterpolateVertex(const Vertex& a, const Vertex& b, float t)
     result.r = a.r + (b.r - a.r) * t;
     result.g = a.g + (b.g - a.g) * t;
     result.b = a.b + (b.b - a.b) * t;
+    result.a = a.a + (b.a - a.a) * t;
+    result.tu = a.tu + (b.tu - a.tu) * t;
+    result.tv = a.tv + (b.tv - a.tv) * t;
     return result;
 }
 
@@ -1390,6 +1442,55 @@ void Room3D_Render(void)
     int batchCount = 0;
     MarniHandle batchTexture = MARNI_NULL_HANDLE;
     MarniSampler batchSampler = MARNI_SAMPLER_POINT;
+    MarniBlend batchBlend = MARNI_BLEND_DISABLE;
+    const auto flush = [&]() {
+        if (batchCount > 0) {
+            // Blended layers test depth but do not write it.
+            Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture, batchSampler,
+                                        batchBlend, batchBlend == MARNI_BLEND_DISABLE);
+            batchCount = 0;
+        }
+    };
+    const auto emit = [&](const Vertex source[3], MarniHandle texture, MarniSampler sampler,
+                          MarniBlend blend) {
+        // The camera sits inside the room, so large floor/wall triangles
+        // often cross its near plane. Clip them in room space before
+        // perspective projection; dropping a triangle with one behind-camera
+        // corner erased the entire floor and left only distant wall fragments.
+        Vertex clipped[4];
+        const int clippedCount = ClipTriangleToNearPlane(source, camera, nearZ, clipped);
+        for (int fan = 1; fan + 1 < clippedCount; ++fan) {
+            const Vertex* triangle[3] = { &clipped[0], &clipped[fan], &clipped[fan + 1] };
+            float vertices[30];
+            bool visible = true;
+            for (int v = 0; v < 3; ++v) {
+                if (!Project(*triangle[v], camera, scaleX, scaleY, centerX, centerY, focal,
+                             nearZ, vertices + v * 10)) {
+                    visible = false;
+                    break;
+                }
+            }
+            if (!visible) continue;
+            if (fixedBackground != MARNI_NULL_HANDLE) {
+                for (int v = 0; v < 3; ++v) {
+                    float* out = vertices + v * 10;
+                    out[4] = ((out[0] - centerX) / scaleX + 160.0f) / 320.0f;
+                    out[5] = ((out[1] - centerY) / scaleY + 120.0f) / 240.0f;
+                    out[6] = out[7] = out[8] = 1.0f;
+                }
+            }
+            if (batchCount > 0 && (texture != batchTexture || sampler != batchSampler ||
+                                   blend != batchBlend))
+                flush();
+            batchTexture = texture;
+            batchSampler = sampler;
+            batchBlend = blend;
+            memcpy(batch + batchCount * 30, vertices, sizeof(vertices));
+            if (++batchCount == kTrianglesPerBatch) flush();
+        }
+    };
+
+    std::vector<size_t> fading;
     for (size_t i = 0; i < s_triangles.size(); ++i) {
         // Per-camera hides were authored for the fixed cameras; a free
         // camera sees the whole room.
@@ -1410,75 +1511,49 @@ void Room3D_Render(void)
                                      camera.from[2] - t[0].z };
             if (n[0] * toEye[0] + n[1] * toEye[1] + n[2] * toEye[2] < 0.0f) continue;
         }
-        const int projection = s_triangles[i].projection;
-        MarniHandle texture = s_materials[s_triangles[i].material].texture;
-        MarniSampler sampler = MARNI_SAMPLER_POINT;
+        const Triangle& tri = s_triangles[i];
+        const int projection = tri.projection;
         if (fixedBackground != MARNI_NULL_HANDLE) {
-            texture = fixedBackground;
+            emit(tri.v, fixedBackground, MARNI_SAMPLER_POINT, MARNI_BLEND_DISABLE);
         } else if (modern && projection >= 0 &&
                    s_projectionTextures[projection] != MARNI_NULL_HANDLE) {
-            // Seen from a new angle the 320x240 art is magnified; filter it.
-            texture = s_projectionTextures[projection];
-            sampler = MARNI_SAMPLER_LINEAR;
-        } else if (s_triangles[i].patch >= 0) {
-            texture = s_patchTextures[s_triangles[i].patch];
-            sampler = MARNI_SAMPLER_LINEAR_WRAP;
-        }
-        // The camera sits inside the room, so large floor/wall triangles often
-        // cross its near plane. Clip them in room space before perspective
-        // projection; dropping a triangle with one behind-camera corner erased
-        // the entire floor and left only distant wall fragments.
-        Vertex clipped[4];
-        const int clippedCount = ClipTriangleToNearPlane(
-            s_triangles[i].v, camera, nearZ, clipped);
-
-        for (int fan = 1; fan + 1 < clippedCount; ++fan) {
-            const Vertex* triangle[3] = {
-                &clipped[0], &clipped[fan], &clipped[fan + 1]
-            };
-            float vertices[30];
-            bool visible = true;
-            for (int v = 0; v < 3; ++v) {
-                if (!Project(*triangle[v], camera, scaleX, scaleY,
-                             centerX, centerY, focal, nearZ,
-                             vertices + v * 10)) {
-                    visible = false;
-                    break;
-                }
-            }
-            if (!visible) continue;
-            if (fixedBackground != MARNI_NULL_HANDLE) {
+            if (tri.patch >= 0) {
+                // Fading into the wall's tile: the tile first, the art over
+                // it in the second pass.
+                Vertex under[3];
                 for (int v = 0; v < 3; ++v) {
-                    float* out = vertices + v * 10;
-                    out[4] = ((out[0] - centerX) / scaleX + 160.0f) / 320.0f;
-                    out[5] = ((out[1] - centerY) / scaleY + 120.0f) / 240.0f;
-                    out[6] = out[7] = out[8] = 1.0f;
+                    under[v] = tri.v[v];
+                    under[v].u = tri.v[v].tu;
+                    under[v].v = tri.v[v].tv;
                 }
+                emit(under, s_patchTextures[tri.patch], MARNI_SAMPLER_LINEAR_WRAP,
+                     MARNI_BLEND_DISABLE);
+                fading.push_back(i);
+            } else {
+                // Seen from a new angle the 320x240 art is magnified; filter it.
+                emit(tri.v, s_projectionTextures[projection], MARNI_SAMPLER_LINEAR,
+                     MARNI_BLEND_DISABLE);
             }
-
-            if (batchCount > 0 && (texture != batchTexture || sampler != batchSampler)) {
-                Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture,
-                                            batchSampler, MARNI_BLEND_DISABLE,
-                                            true);
-                batchCount = 0;
-            }
-            batchTexture = texture;
-            batchSampler = sampler;
-
-            memcpy(batch + batchCount * 30, vertices, sizeof(vertices));
-            if (++batchCount == kTrianglesPerBatch) {
-                Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture,
-                                            batchSampler, MARNI_BLEND_DISABLE,
-                                            true);
-                batchCount = 0;
-            }
+        } else if (tri.patch >= 0) {
+            emit(tri.v, s_patchTextures[tri.patch], MARNI_SAMPLER_LINEAR_WRAP,
+                 MARNI_BLEND_DISABLE);
+        } else {
+            emit(tri.v, s_materials[tri.material].texture, MARNI_SAMPLER_POINT,
+                 MARNI_BLEND_DISABLE);
         }
     }
-    if (batchCount > 0) {
-        Marni_DX()->DrawTriangles3D(batch, batchCount, batchTexture,
-                                    batchSampler, MARNI_BLEND_DISABLE,
-                                    true);
+    flush();
+    for (size_t k = 0; k < fading.size(); ++k) {
+        const Triangle& tri = s_triangles[fading[k]];
+        Vertex over[3];
+        for (int v = 0; v < 3; ++v) {
+            over[v] = tri.v[v];
+            over[v].r = over[v].g = over[v].b = 1.0f;
+        }
+        emit(over, s_projectionTextures[tri.projection], MARNI_SAMPLER_LINEAR,
+             MARNI_BLEND_ALPHA);
     }
+    flush();
 }
 
 // ---------------------------------------------------------------------------

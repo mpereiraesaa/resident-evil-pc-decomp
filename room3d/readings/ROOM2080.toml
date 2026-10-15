@@ -1,7 +1,7 @@
 # Deer room: dark blue-grey wallpaper, a painted ceiling at -4400 (fixed:
 # cam0 looks down through it), a dark Persian rug with a border on dark
-# planks, the mounted deer head high on the south wall (part of the original
-# backgrounds, placed from cam1), candle chandelier near the north wall
+# planks, the large mounted deer head high on the south wall (placed from
+# cam0's snout and cam1's plaque corner), candle chandelier near the north wall
 # (cam0; cam1 does not see it). Doors west, north and east.
 room = "ROOM2080"
 title = "Deer room"
@@ -58,11 +58,28 @@ box = [3000, 2700, 9900, 6200]
 material = "wallpaper.rug"
 border = 240
 border_material = "border.rug"
-[[object]]          # mounted deer head
+# Mounted deer head. Camera 0 (overhead, close) shows it huge with wide-spread
+# antlers, camera 1 only the lower corner of its plaque; the blocky trophy kind
+# cannot do both at one scale, so camera 0 gets a large one (antler tips reach
+# a little above the ceiling plane) and camera 1 the smaller one.
+[[object]]
+kind = "trophy"
+wall = "south"
+at = [-3500, 7000]
+scale = 2.6
+group = "deer_large"
+[[object]]
 kind = "trophy"
 wall = "south"
 at = [-3200, 7100]
 scale = 1.9
+group = "deer_small"
+[[hide]]
+camera = 0
+groups = ["deer_small"]
+[[hide]]
+camera = 1
+groups = ["deer_large"]
 
 [[chandelier]]
 at = [7500, 6100]

@@ -21,6 +21,8 @@ cell = 1200
 stone = [0.667, 0.696, 0.638]
 wood = [0.26, 0.14, 0.10]
 door = [0.34, 0.20, 0.12]
+"door.gate" = [0.13, 0.13, 0.12]
+"rust.red" = [0.46, 0.10, 0.06]
 
 [lighting]
 ambient = [0.198, 0.247, 0.222]
@@ -36,11 +38,11 @@ floor_along = "x"
 [[zone]]            # west leg north to the guardhouse
 box = [2376, 18090, 5634, 30744]
 
-[[door]]
-wall = "east"
+[[door]]            # RDT door slot 0 (x 29200, z 2600-5200): the gate in the east wall,
+wall = "east"       # dark behind the red iron wheel of its crank mechanism
 span = [2600, 5200]
-top = -3600
-material = "door"
+top = -3800
+material = "door.gate"
 frame = "stone"
 [[door]]
 wall = "north"
@@ -49,6 +51,66 @@ top = -3400
 material = "door"
 frame = "stone"
 
+# Red iron wheel of the gate's crank mechanism over the doorway (camera 0),
+# between pale stone jambs standing out from the wall
+[[object]]
+kind = "pipe"
+from = [29470, -2300, 5200]
+via = [[29470, -1803, 5101], [29470, -1381, 4819], [29470, -1099, 4397], [29470, -1000, 3900], [29470, -1099, 3403], [29470, -1381, 2981], [29470, -1803, 2699], [29470, -2300, 2600], [29470, -2797, 2699], [29470, -3219, 2981], [29470, -3501, 3403], [29470, -3600, 3900], [29470, -3501, 4397], [29470, -3219, 4819], [29470, -2797, 5101]]
+to = [29470, -2300, 5200]
+radius = 70
+material = "rust.red"
+segments = 6
+[[object]]
+kind = "pipe"
+from = [29470, -2300, 5200]
+to = [29470, -2300, 2600]
+radius = 45
+material = "rust.red"
+segments = 6
+[[object]]
+kind = "pipe"
+from = [29470, -1381, 4819]
+to = [29470, -3219, 2981]
+radius = 45
+material = "rust.red"
+segments = 6
+[[object]]
+kind = "pipe"
+from = [29470, -1000, 3900]
+to = [29470, -3600, 3900]
+radius = 45
+material = "rust.red"
+segments = 6
+[[object]]
+kind = "pipe"
+from = [29470, -1381, 2981]
+to = [29470, -3219, 4819]
+radius = 45
+material = "rust.red"
+segments = 6
+[[object]]          # hub and axle
+kind = "pipe"
+from = [29574, -2300, 3900]
+to = [29300, -2300, 3900]
+radius = 220
+material = "rust.red"
+[[object]]
+kind = "box"
+box = [29150, 5100, 29574, 5616]
+top = -4200
+material = "stone"
+[[object]]
+kind = "box"
+box = [29150, 2286, 29574, 2700]
+top = -4200
+material = "stone"
+[[object]]          # stone lintel over the gate
+kind = "box"
+box = [29150, 2286, 29574, 5616]
+top = -4600
+bottom = -4200
+material = "stone"
 [[object]]          # hedge bed along the middle passage's south wall
 kind = "box"
 box = [2376, 14886, 23904, 15500]

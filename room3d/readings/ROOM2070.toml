@@ -1,6 +1,12 @@
-# 2F left stairs: tan plaster over a dark dado, planks with a runner, the
-# stair down from the landing with its balustrade and a small chandelier, a
-# long corridor east with paintings and doors. From ROOM2070.RDT.
+# 2F left stairs: tan plaster over a dark dado, planks with a runner, a long
+# corridor east with paintings and doors. North of its west end a two-storey
+# stair hall (blocks 8/9 are its void and the lower flight): the upper flight
+# runs north from the corridor edge (x 8640-10332) down to a half landing in
+# the north-east corner, the lower flight turns west along the north wall down
+# to the 1F floor in six tall steps; a chandelier hangs on a long rod into the hall. Camera 0
+# stands in the hall at 2F floor height. The upper flight's banister is stepped
+# (no sloped rail for north/south flights); the 1F door camera 0 sees under the
+# lower flight is left out (it does not fit under the flight as modelled).
 room = "ROOM2070"
 title = "2F left stairs"
 seed = 2070
@@ -26,6 +32,8 @@ runner = { color = [0.30, 0.22, 0.26], motif = [0.60, 0.52, 0.40] }
 wood = [0.30, 0.12, 0.08]
 door = [0.26, 0.16, 0.10]
 "door.dark" = [0.12, 0.14, 0.16]
+glass_dark = [0.10, 0.13, 0.18]
+"plaster.dim" = [0.17, 0.11, 0.07]
 
 [lighting]
 ambient = [0.13, 0.11, 0.08]
@@ -40,50 +48,204 @@ box = [20000, 10710, 31302, 13100]  # behind the collision edge (camera 6 sits a
 floor_along = "x"
 [[zone]]            # east leg
 box = [29574, 4194, 31302, 10710]
-[[zone]]            # landing west of the well
-box = [1890, 12582, 5472, 20124]
-[[zone]]            # landing north strip
-box = [5472, 16920, 10332, 20124]
-floor_along = "x"
-[[zone]]            # landing strip south of the well
-box = [5472, 12582, 10332, 13608]
-floor_along = "x"
-[[zone]]            # the well down to the 1F stairs room
-box = [5472, 13608, 10332, 16920]
+[[zone]]            # the stair hall: open from the 2F down to the 1F floor
+box = [1890, 12582, 10332, 20124]
 open_floor = true
 depth = 3600
+shaft_material = "plaster"
 
-[[slab]]            # 1F floor seen down the well
-box = [5472, 13608, 10332, 16920]
+[[slab]]            # 1F floor of the stair hall
+box = [1890, 12582, 10332, 20124]
 top = 3600
 thickness = 200
 top_material = "planks"
 bottom_material = "planks"
+[[slab]]            # half landing in the north-east corner of the hall
+box = [6400, 17856, 10332, 20124]
+top = 2000
+thickness = 250
+top_material = "planks"
+bottom_material = "plaster"
+edges = ["south", "west"]
+edge_material = "wood"
 
 [[object]]
 kind = "rug"
 box = [4500, 11200, 29000, 12100]
 material = "runner"
 
+# Upper flight: from the corridor edge north down to the half landing
 [[stair]]
-x = [5472, 10332]
-z = [13608, 16920]
-direction = "west"
-base = 3600
+x = [8640, 10332]
+z = [12582, 17856]
+direction = "south"
+base = 2000
 top = 0
-steps = 12
+steps = 13
 tread_material = "wood"
-under = false
+# Lower flight: from the half landing west down to the 1F floor, open on the south
+[[stair]]
+x = [3132, 6400]
+z = [17856, 20124]
+direction = "east"
+base = 3600
+top = 2000
+steps = 6
+tread_material = "wood"
+rails = [{ side = "south" }]
+# Solid string under the upper flight (stepped), the 1F wall beneath it
+[[object]]
+kind = "box"
+box = [8640, 12582, 10332, 13461]
+top = 160
+bottom = 3600
+material = "plaster"
+[[object]]
+kind = "box"
+box = [8640, 13461, 10332, 14340]
+top = 493
+bottom = 3600
+material = "plaster"
+[[object]]
+kind = "box"
+box = [8640, 14340, 10332, 15219]
+top = 827
+bottom = 3600
+material = "plaster"
+[[object]]
+kind = "box"
+box = [8640, 15219, 10332, 16098]
+top = 1160
+bottom = 3600
+material = "plaster"
+[[object]]
+kind = "box"
+box = [8640, 16098, 10332, 16977]
+top = 1493
+bottom = 3600
+material = "plaster"
+[[object]]
+kind = "box"
+box = [8640, 16977, 10332, 17856]
+top = 1827
+bottom = 3600
+material = "plaster"
+# Banister of the upper flight on its open (west) side, stepped down the slope
 [[object]]
 kind = "rail"
-from = [5472, 13500]
-to = [10200, 13500]
-newels = [true, true]
+from = [8680, 12700]
+to = [8680, 14000]
+y = 291
+newels = [true, false]
 [[object]]
 kind = "rail"
-from = [5472, 17000]
-to = [10200, 17000]
+from = [8680, 14000]
+to = [8680, 15300]
+y = 784
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [8680, 15300]
+to = [8680, 16600]
+y = 1277
+newels = [false, false]
+[[object]]
+kind = "rail"
+from = [8680, 16600]
+to = [8680, 17856]
+y = 1762
+newels = [false, false]
+[[object]]          # landing rail from the upper flight's foot to the lower flight's newel
+kind = "rail"
+from = [6400, 17900]
+to = [8680, 17900]
+y = 2000
 newels = [true, true]
+# Gallery balustrade along the corridor's edge over the hall
+[[object]]
+kind = "rail"
+from = [1890, 12650]
+to = [8640, 12650]
+newels = [true, true]
+# The 2F dado and rail do not run round the hall: plain plaster bands over them
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 20124
+span = [1890, 10332]
+y = [-1150, 0]
+material = "plaster"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+line = 1890
+span = [12582, 20124]
+y = [-1150, 0]
+material = "plaster"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+line = 10332
+span = [12582, 20124]
+y = [-1150, 0]
+material = "plaster"
+rail = false
+
+# Camera 5 stands 36 units from the west leg's east wall, so the wall's near
+# part falls inside the near plane; a dark backing face just behind that wall
+# fills the left third the way the wall reads in the original (hidden from
+# every other camera by the walls in front of it).
+[[object]]
+kind = "wall_band"
+wall = "east"
+line = 4400
+span = [3000, 10710]
+y = [-4800, 1500]
+material = "plaster.dim"
+inset = 0
+rail = false
+group = "cam5_fill"
+[[hide]]
+camera = 0
+groups = ["cam5_fill"]
+[[hide]]
+camera = 1
+groups = ["cam5_fill"]
+[[hide]]
+camera = 2
+groups = ["cam5_fill"]
+[[hide]]
+camera = 3
+groups = ["cam5_fill"]
+[[hide]]
+camera = 6
+groups = ["cam5_fill"]
+# Tall window over the lower flight (bands so camera 4, behind this wall, can hide it)
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 20124
+span = [4250, 6550]
+y = [-3050, 850]
+material = "wood"
+inset = 15
+rail = false
+group = "hall_window"
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 20124
+span = [4400, 6400]
+y = [-2900, 700]
+material = "glass_dark"
+inset = 35
+rail = false
+group = "hall_window"
+[[hide]]            # camera 4 stands behind the hall's north wall
+camera = 4
+groups = ["hall_window", "cam5_fill"]
 
 [[door]]
 wall = "south"
@@ -100,11 +262,19 @@ wall = "south"
 span = [29800, 30500]
 top = -3300
 material = "door"
-[[door]]
-wall = "east"
-span = [13428, 15400]
+[[door]]            # west end of the corridor
+wall = "west"
+line = 1890
+span = [10950, 12350]
 top = -3300
 material = "door"
+[[door]]            # 1F door in the hall's south wall, under the gallery
+wall = "south"
+line = 12582
+span = [3100, 4100]
+top = 400
+bottom = 3600
+material = "door.dark"
 
 [[painting]]
 wall = "north"
@@ -119,9 +289,9 @@ wall = "north"
 span = [20000, 22500]
 y = [-3600, -2200]
 
-[[chandelier]]
-at = [7000, 15000]
-y = -3300
+[[chandelier]]       # hangs on a long rod into the hall, below the 2F floor
+at = [5200, 14800]
+y = 1000
 radius = 420
 globes = 4
 globe_radius = 130

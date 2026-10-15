@@ -1,6 +1,9 @@
 # Mansion bar: tan plaster over a dark red dado, red planks, the bar counter
 # along the west wall with its curved end, stools, a round table, the grand
-# piano and a plant, red door in the south-east pocket; a glazed ivy passage leads north to a bust.
+# piano and two plants, red door in the south-east pocket, a tall dish hutch in
+# the north-east bay; a passage (stone west and end walls, ivy-grown glass on
+# the east) leads north to the bust alcove, which has no door (the wall slides).
+# The passage walls carry the shell dado, covered with stone/ivy bands.
 room = "ROOM10F0"
 title = "Mansion bar"
 seed = 1500
@@ -29,6 +32,9 @@ stone = [0.46, 0.46, 0.42]
 "books.bottles" = { color = [0.22, 0.10, 0.07], shelves = 4 }
 "stone.floor" = { color = [0.40, 0.40, 0.36], tile = [1600, 1600] }
 leaves = [0.22, 0.30, 0.20]
+"stone.pale" = [0.50, 0.48, 0.42]
+"plaster.shade" = [0.10, 0.09, 0.07]
+"books.dishes" = { color = [0.42, 0.44, 0.52], shelves = 3 }
 
 [lighting]
 ambient = [0.15, 0.12, 0.09]
@@ -40,14 +46,15 @@ floor_along = "x"
 box = [14630, 2210, 17161, 5466]
 [[zone]]            # north-east pocket
 box = [14630, 8742, 16002, 12348]
-[[zone]]
-box = [16002, 8742, 20325, 11538]
+[[zone]]            # north-east bay; its north side is the dish hutch
+box = [16002, 8742, 20325, 12348]
 [[zone]]            # opening into the passage
 box = [8356, 12348, 9720, 12810]
 [[zone]]            # glazed passage north to the bust niche: stone floor, ivy on the glass
 box = [7704, 12810, 10818, 19170]
 floor_material = "stone.floor"
-wall_materials = { west = "leaves", east = "leaves" }
+wall_material = "stone.pale"
+wall_materials = { east = "leaves" }
 
 [[door]]            # red door on the east wall of the south-east pocket
 wall = "east"
@@ -55,11 +62,6 @@ line = 17161
 span = [2700, 4600]
 top = -3400
 material = "door.red"
-[[door]]
-wall = "north"
-span = [8400, 10100]
-top = -3400
-material = "door"
 
 # Bar counter with its curved end and the bottle shelf behind it
 [[object]]
@@ -168,6 +170,69 @@ radius = 330
 top = -900
 material = "stone"
 segments = 10
+# North wall east of the passage opening stands in shadow (black in cameras 1 and 7)
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 12348
+span = [9720, 14630]
+y = [-5000, -1500]
+material = "plaster.shade"
+rail = false
+# Passage walls: hide the shell dado
+[[object]]
+kind = "wall_band"
+wall = "west"
+line = 7704
+span = [12810, 19170]
+y = [-1520, 0]
+material = "stone.pale"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 19170
+span = [7704, 10818]
+y = [-1520, 0]
+material = "stone.pale"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+line = 10818
+span = [12810, 19170]
+y = [-1520, 0]
+material = "leaves"
+rail = false
+# Tall dish hutch filling the north side of the north-east bay (block 11)
+[[object]]
+kind = "box"
+box = [16002, 11538, 20325, 12348]
+top = -1200
+material = "wood"
+omit = ["bottom", "north"]
+[[object]]
+kind = "bookcase"
+box = [16002, 11538, 20325, 12348]
+top = -4100
+bottom = -1200
+front = "south"
+books = "books.dishes"
+[[object]]
+kind = "box"
+box = [16002, 11400, 20325, 12348]
+top = -4500
+bottom = -4100
+material = "wood"
+omit = ["north"]
+[[object]]          # plant beside the piano's tail
+kind = "plant"
+at = [14400, 9100]
+height = 1800
+[[object]]          # plant by the piano keyboard end
+kind = "plant"
+at = [13250, 6700]
+height = 1800
 [[object]]          # bust in the niche at the end of the passage
 kind = "urn"
 at = [9300, 18600]

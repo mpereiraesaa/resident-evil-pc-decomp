@@ -1,13 +1,15 @@
 # Dining room gallery: the balcony ring around the dining room's void, red
 # carpet, marble walls over a red panelled dado, the arched stained window
-# on the east wall. The void shows the dining room floor far below.
+# on the west wall. The void shows the dining room far below; the 1F room runs
+# on under the galleries to the outer walls (cameras 0-2 see its walls and the
+# 1F east door below the gallery door), the galleries rest on wooden posts.
 room = "ROOM2020"
 title = "Dining room 2F"
 seed = 2020
 
 [shell]
 floor = 0
-ceiling = -4500
+ceiling = -6200
 floor_material = "carpet.floor"
 wall_material = "marble"
 ceiling_material = "plaster.ceiling"
@@ -32,8 +34,8 @@ door = [0.26, 0.17, 0.10]
 [lighting]
 ambient = [0.13, 0.115, 0.09]
 
-[[zone]]            # south strip
-box = [1732, 1944, 31986, 4050]
+[[zone]]            # south strip: its wall stands at z 1700 in camera 3's view (the
+box = [1732, 1700, 31986, 4050]  # camera sits at z 1890, just inside it)
 floor_along = "x"
 [[zone]]            # west strip
 box = [1732, 4050, 4914, 13068]
@@ -42,18 +44,111 @@ box = [29178, 4050, 31986, 13068]
 [[zone]]            # north strip
 box = [1732, 13068, 31986, 15174]
 floor_along = "x"
-[[zone]]            # the void over the dining room
-box = [4914, 4050, 29178, 13068]
+[[zone]]            # the void over the dining room (no shaft: the 1F room runs on
+box = [4914, 4050, 29178, 13068]  # under the galleries to the outer walls)
 open_floor = true
-depth = 6500
-shaft_material = "panel.lower"
 
-[[slab]]            # the dining room floor seen through the void
-box = [4914, 4050, 29178, 13068]
+[[slab]]            # the dining room floor, the full footprint below the galleries
+box = [1732, 1700, 31986, 15174]
 top = 6500
 thickness = 200
 top_material = "checker"
 bottom_material = "checker"
+# Undersides and pale fascia of the four gallery strips
+[[slab]]
+box = [1732, 1700, 31986, 4050]
+top = 5
+thickness = 450
+top_material = "carpet.floor"
+bottom_material = "plaster.ceiling"
+edge_material = "stone"
+edges = ["north"]
+[[slab]]
+box = [1732, 13068, 31986, 15174]
+top = 5
+thickness = 450
+top_material = "carpet.floor"
+bottom_material = "plaster.ceiling"
+edge_material = "stone"
+edges = ["south"]
+[[slab]]
+box = [1732, 4050, 4914, 13068]
+top = 5
+thickness = 450
+top_material = "carpet.floor"
+bottom_material = "plaster.ceiling"
+edge_material = "stone"
+edges = ["east"]
+[[slab]]
+box = [29178, 4050, 31986, 13068]
+top = 5
+thickness = 450
+top_material = "carpet.floor"
+bottom_material = "plaster.ceiling"
+edge_material = "stone"
+edges = ["west"]
+
+# 1F walls under the galleries: marble over a red panelled dado
+[[object]]
+kind = "wall_band"
+wall = "west"
+line = 1732
+span = [1700, 15174]
+y = [450, 5300]
+material = "marble"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+line = 31986
+span = [1700, 15174]
+y = [450, 5300]
+material = "marble"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "south"
+line = 1700
+span = [1732, 31986]
+y = [450, 5300]
+material = "marble"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 15174
+span = [1732, 31986]
+y = [450, 5300]
+material = "marble"
+rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+line = 1732
+span = [1700, 15174]
+y = [5300, 6500]
+material = "panel"
+[[object]]
+kind = "wall_band"
+wall = "east"
+line = 31986
+span = [1700, 15174]
+y = [5300, 6500]
+material = "panel"
+[[object]]
+kind = "wall_band"
+wall = "south"
+line = 1700
+span = [1732, 31986]
+y = [5300, 6500]
+material = "panel"
+[[object]]
+kind = "wall_band"
+wall = "north"
+line = 15174
+span = [1732, 31986]
+y = [5300, 6500]
+material = "panel"
 
 [[object]]          # the dining table seen far below
 kind = "box"
@@ -104,6 +199,14 @@ material = "door"
 wall = "east"
 span = [6900, 10200]
 top = -3500
+material = "door"
+
+[[door]]            # 1F double door below the gallery door (camera 0)
+wall = "east"
+line = 31986
+span = [7000, 10000]
+top = 2600
+bottom = 6500
 material = "door"
 
 [[window]]          # stained-glass arch on the west wall (cameras 1 and 2 look west at it)

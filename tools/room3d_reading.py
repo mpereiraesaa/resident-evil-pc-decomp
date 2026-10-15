@@ -704,7 +704,7 @@ class Builder:
         self._raise_ceilings()
         self.floor = reading.get("shell", {}).get("floor", 0)
         header = (
-            f"# Built by tools/room3d_reading.py from a room reading; RE1 room units, -Y up.",
+            "# Built by tools/room3d_reading.py from a room reading; RE1 room units, -Y up.",
             f"# {reading.get('title', reading['room'])}: shell from the reading's zones, kinds from the library.",
         )
         self.mesh = Mesh(reading["room"].lower(), self.palette.spec, self.rig, header=header, cell=reading.get("shell", {}).get("cell", 900.0))

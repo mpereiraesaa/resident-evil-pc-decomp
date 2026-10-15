@@ -1349,3 +1349,11 @@ when a pack provides one), divides out its large-scale lighting, mirrors it
 into a seamless 2x2 tile and box-maps it over its faces with the bilinear
 wrapping sampler (`MARNI_SAMPLER_LINEAR_WRAP`). Materials no camera shows at
 all (most ceilings) still use the procedural texture and tint.
+
+Where the follow camera magnifies the art (the backgrounds can have under 2
+texels per 100 room units, 7 with an HD pack, against ~29 screen pixels at
+play distance), the runtime multiplies in a procedural grain chosen by the
+face's material (wood, fabric weave, brushed metal, or a fine speckle for
+wallpaper, plaster and stone), fading in from 1.5x to 4.5x magnification.
+It is computed from each corner's art density, so sharp art is left alone;
+`RE1_ROOM3D_DETAIL=0` disables it.

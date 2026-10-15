@@ -131,6 +131,7 @@ class BuilderKindTests(unittest.TestCase):
             '[[object]]\nkind = "trophy"\nwall = "west"\nat = [-3000, 5000]\nscale = 1.4\n',
             '[[window]]\nkind = "rect"\nwall = "north"\nat = 4000\nsill = -1200\nheight = 2000\npanes = 3\ntransom = -2600\n',
             '[[object]]\nkind = "table_round"\nat = [4000, 5000]\nradius = 500\ntop = -800\ncloth = "linen"\n',
+            '[[object]]\nkind = "plant"\nat = [4000, 5000]\nheight = 1400\n',
         ):
             with self.subTest(kind=kind.split('\n')[1]):
                 _, mesh = self.build(kind)

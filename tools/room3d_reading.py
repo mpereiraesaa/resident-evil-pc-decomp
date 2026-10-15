@@ -1521,6 +1521,23 @@ class Builder:
                 p = self.use(o.get("material", "porcelain"))
                 self._wall_box(side, line, -330, 330, top, top + 220, 0, 480, p, along=along)
                 self._wall_box(side, line, -60, 60, top + 220, top + 600, 0, 200, self.use("iron"), along=along)
+            elif kind == "plant":
+                # Potted plant: a pot and a crown of overlapping leaf clumps.
+                x, z = o["at"]
+                base = o.get("base", floor)
+                pot_r, pot_h = o.get("pot_radius", 300), o.get("pot_height", 500)
+                height = o.get("height", 1600)
+                spread = o.get("spread", 700)
+                mesh.cylinder(x, z, pot_r, base - pot_h, base, self.use(o.get("pot", "porcelain")), segments=10)
+                leaves = self.use(o.get("material", "hedge"))
+                rng = np.random.default_rng(int(x * 7 + z * 13) % 2**32)
+                for k in range(o.get("clumps", 7)):
+                    t = k / max(1, o.get("clumps", 7) - 1)
+                    ang = rng.random() * math.tau
+                    rad = spread * (0.25 + 0.75 * rng.random()) * (0.6 + 0.4 * t)
+                    cy = base - pot_h - height * (0.25 + 0.75 * t)
+                    mesh.sphere((x + rad * math.cos(ang), cy, z + rad * math.sin(ang)),
+                                spread * (0.45 - 0.15 * t), leaves, rings=4, segments=7)
             elif kind == "bookcase":
                 # Wooden carcass whose open face shows shelves of books.
                 x0, z0, x1, z1 = o["box"]

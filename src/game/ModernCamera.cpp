@@ -88,6 +88,93 @@ float WrapAngle(float a)
     return a;
 }
 
+// Port addition: evaluate an entry view with the same shoulder and boom
+// constraints as the live camera. A floor below the camera is required, but
+// a ceiling is not: courtyards and other outdoor rooms also use this camera.
+float EntryViewClearance(float yaw, float pitch, float* ahead = NULL)
+{
+    const float head[3] = { (float)g_playerEntity.position.x,
+        (float)g_playerEntity.position.y - kEyeHeight,
+        (float)g_playerEntity.position.z };
+    const float back[3] = { -cosf(pitch) * cosf(yaw), -sinf(pitch),
+                            cosf(pitch) * sinf(yaw) };
+    const float right[3] = { -sinf(yaw), 0.0f, -cosf(yaw) };
+    const float side = Room3D_Raycast(head, right, kShoulder + kWallMargin, 1);
+    float distance = kDistance;
+    float clearance = 0.0f;
+    float camera[3];
+    // The shoulder shrinks on a short boom. Resolve that dependency before
+    // testing the camera point rather than evaluating an impossible full offset.
+    for (int pass = 0; pass < 3; ++pass) {
+        const float maximum = kShoulder * (0.35f + 0.65f * distance / kDistance);
+        float shoulder = side - kWallMargin;
+        if (shoulder < 0.0f) shoulder = 0.0f;
+        if (shoulder > maximum) shoulder = maximum;
+        const float pivot[3] = { head[0] + right[0] * shoulder, head[1],
+                                 head[2] + right[2] * shoulder };
+        clearance = Room3D_Raycast(pivot, back, kDistance + kWallMargin, 1) - kWallMargin;
+        distance = clearance < kMinDistance ? kMinDistance : clearance;
+        if (distance > kDistance) distance = kDistance;
+        for (int i = 0; i < 3; ++i) camera[i] = pivot[i] + back[i] * distance;
+        if (ahead && pass == 2) {
+            const float forward[3] = { -back[0], -back[1], -back[2] };
+            *ahead = Room3D_Raycast(pivot, forward, 4000.0f, 1);
+        }
+    }
+    const float down[3] = { 0.0f, 1.0f, 0.0f };
+    const float floorLimit = kEyeHeight + 3500.0f;
+    if (Room3D_Raycast(camera, down, floorLimit, 1) >= floorLimit) return -1.0f;
+    return clearance;
+}
+
+// Score both camera space and space ahead, with a penalty for orbiting away
+// from the arrival heading. A longer boom facing a nearby wall can be worse
+// than a shorter boom looking down the passage the player is entering.
+void SelectEntryView(void)
+{
+    const float heading = s_yaw;
+    float ahead = 0.0f;
+    const float initial = EntryViewClearance(heading, kDefaultPitch, &ahead);
+    const bool roomy = initial >= 1600.0f && ahead >= 2400.0f;
+    const float pitches[] = { kDefaultPitch, 0.35f, 0.60f, 0.85f };
+    float best = -1.0f;
+    float bestScore = -1.0f;
+    float bestAhead = 0.0f;
+    float bestYaw = heading;
+    float bestPitch = kDefaultPitch;
+    for (int p = 0; p < (roomy ? 1 : 4); ++p) {
+        // Only search steeper views when the level candidates cannot give
+        // both a useful boom and space ahead. Avoid extra mesh scans on entry.
+        if (p == 1 && best >= 1600.0f && bestAhead >= 2400.0f) break;
+        for (int step = 0; step <= (roomy ? 0 : 9); ++step) {
+            for (int side = 0; side < (step == 0 || step == 9 ? 1 : 2); ++side) {
+                const float offset = (float)step * kPi / 9.0f;
+                const float yaw = WrapAngle(heading + (side == 0 ? offset : -offset));
+                const float clearance = EntryViewClearance(yaw, pitches[p], &ahead);
+                if (clearance < kMinDistance) continue;
+                // Prefer the level shoulder view; a steeper pitch can fit a
+                // doorway without turning all the way around to face it.
+                const float score = clearance + ahead * 0.75f - offset * 400.0f -
+                                    (pitches[p] - kDefaultPitch) * 1000.0f;
+                if (score > bestScore) {
+                    bestScore = score;
+                    best = clearance;
+                    bestAhead = ahead;
+                    bestYaw = yaw;
+                    bestPitch = pitches[p];
+                }
+            }
+        }
+    }
+    if (best >= kMinDistance) {
+        s_yaw = bestYaw;
+        s_pitch = bestPitch;
+        s_distance = best > kDistance ? kDistance : best;
+    }
+    dbg_printf("[modern-camera] entry view heading=%.2f yaw=%.2f pitch=%.2f clearance=%.0f supported=%d\n",
+               heading, s_yaw, s_pitch, best, best >= kMinDistance ? 1 : 0);
+}
+
 bool Allowed(void)
 {
     if (!Enabled()) return false;
@@ -152,6 +239,7 @@ void ModernCamera_Update(void)
         s_entryTick = 0;
         s_lastStage = g_stageId;
         s_lastRoom = g_roomId;
+        SelectEntryView();
         dbg_printf("[modern-camera] active in stage %u room %02X\n",
                    (unsigned int)g_stageId + 1, (unsigned int)g_roomId);
     }
@@ -173,8 +261,14 @@ void ModernCamera_Update(void)
     const bool moving = (g_PlayerDpadHeld & 0x0f) != 0;
     if (!stick && tank && moving) {
         const float behind = WrapAngle(PlayerHeading() - s_yaw);
-        s_yaw = WrapAngle(s_yaw + behind * 0.08f);
-        s_pitch += (kDefaultPitch - s_pitch) * 0.05f;
+        const float yaw = WrapAngle(s_yaw + behind * 0.08f);
+        const float pitch = s_pitch + (kDefaultPitch - s_pitch) * 0.05f;
+        // Do not ease the chosen entry view back through the arrival wall
+        // before the player has actually made enough space for the boom.
+        if (EntryViewClearance(yaw, pitch) >= kMinDistance) {
+            s_yaw = yaw;
+            s_pitch = pitch;
+        }
     }
 
     // Boom along (yaw, pitch).

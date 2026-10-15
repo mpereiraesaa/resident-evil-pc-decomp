@@ -456,6 +456,27 @@ def tex_tiles(rng, size, color, count=6, grout=(0.30, 0.30, 0.28), grime=0.4):
     return tint(lines.astype(float) * 0.85, image, grout)
 
 
+def tex_brick(rng, size, color, rows=8, per_row=4, mortar=(0.20, 0.19, 0.16), ivy=0.0, stains=0.3):
+    """Running-bond brick with per-brick tone, mortar joints and optional ivy."""
+    yy, xx = np.mgrid[0:size, 0:size] / size
+    row = np.floor(yy * rows)
+    u = xx * per_row + 0.5 * (row % 2)
+    brick = np.floor(u) + row * 17
+    tone = (np.sin(brick * 12.9898 + 3.7) * 43758.5453) % 1
+    fine = value_noise((size, size), rng, octaves=3, base_freq=48, persistence=0.5)
+    level = 0.72 + 0.34 * tone + 0.12 * fine
+    if stains:
+        level -= stains * np.clip(value_noise((size, size), rng, octaves=3, base_freq=3) - 0.5, 0, 1) * 1.6
+    image = np.array(color)[None, None, :] * level[..., None]
+    joint = ((yy * rows) % 1 < 0.10) | ((u % 1) < 0.045)
+    image = tint(joint.astype(float) * 0.9, image, mortar)
+    if ivy:
+        trail = value_noise((size, size), rng, octaves=5, base_freq=6)
+        leaves = trail > (0.70 - 0.30 * ivy)
+        image = tint(leaves.astype(float) * 0.85, image, (0.18, 0.26, 0.10))
+    return image
+
+
 # family -> (generator, default colour, default tile)
 FAMILIES = {
     "plaster": (tex_plaster, (0.70, 0.60, 0.46), (1400, 1400)),
@@ -486,6 +507,7 @@ FAMILIES = {
     "grating": (tex_grating, (0.50, 0.52, 0.52), (1200, 1200)),
     "checker": (tex_checker, (0.78, 0.72, 0.62), (2400, 2400)),
     "crate": (tex_crate, (0.40, 0.28, 0.16), None),
+    "brick": (tex_brick, (0.46, 0.30, 0.20), (2000, 1200)),
     "books": (tex_books, (0.26, 0.15, 0.09), (1800, 2400)),
     "tiles": (tex_tiles, (0.74, 0.74, 0.70), (1200, 1200)),
 }

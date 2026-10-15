@@ -1,6 +1,9 @@
-# Boiler terrace behind the mansion: stone paving with a parapet and iron
-# railing on the open side, ivy-covered brick walls, the copper still and
-# barrels at the east end, a door at the north end of the walkway.
+# Boiler terrace behind the mansion: stone paving with a low parapet and an
+# iron railing on the open south and west sides, ivy-covered brick on the
+# building faces, the copper still on its brick base and barrels at the east
+# end, the walkway running on north (the RDT has no door record here). The cameras hang outside the
+# railing over the drop, so the open sides are drop zones with the forest
+# beyond, not walls.
 room = "ROOM1140"
 title = "Boiler terrace"
 seed = 2000
@@ -8,40 +11,54 @@ seed = 2000
 [shell]
 floor = 0
 ceiling = -20000
-floor_material = "stone.paving"
+floor_material = "rock.paving"
 wall_material = "forest"
-dado = 2600
-dado_material = "stone.brick"
 ceiling_material = "sky"
 skirting = 0
 trim = "stone"
 cell = 1200
 
 [materials]
-"stone.paving" = { color = [0.40, 0.42, 0.34], tile = [1800, 1800] }
-"stone.brick" = { color = [0.42, 0.38, 0.26], tile = [1400, 1400] }
+"rock.paving" = { color = [0.36, 0.36, 0.32], tile = [2600, 2600], slabs = 26, moss = 0.3 }
+"brick.ivy" = { color = [0.40, 0.33, 0.20], ivy = 0.6, tile = [2000, 1200] }
 stone = [0.62, 0.62, 0.58]
 wood = [0.26, 0.10, 0.08]
 door = [0.30, 0.20, 0.12]
 
 [lighting]
-ambient = [0.12, 0.14, 0.13]
+ambient = [0.22, 0.24, 0.22]
 
-[[zone]]            # walkway north to the door
+[[zone]]            # walkway north to the door; its east side is the brick building
 box = [7578, 12886, 10764, 24570]
-wall_materials = { west = "forest" }
-[[zone]]            # east terrace
-box = [10764, 12886, 19710, 14472]
+wall_materials = { east = "brick.ivy", north = "brick.ivy" }
+[[zone]]            # east terrace up to the building's south face (the still stands on it)
+box = [10764, 12886, 19710, 15678]
 floor_along = "x"
-wall_materials = { south = "forest" }
-[[zone]]
-box = [10764, 14472, 13842, 15678]
+wall_materials = { north = "brick.ivy", east = "brick.ivy" }
+[[zone]]            # the drop south of the parapet (all four cameras hang out here)
+box = [1098, 8694, 22614, 12886]
+open_floor = true
+depth = 6000
+shaft_material = "brick.ivy"
+[[zone]]            # the drop west of the walkway parapet
+box = [1098, 12886, 7578, 24570]
+open_floor = true
+depth = 6000
+shaft_material = "brick.ivy"
 
-[[door]]
-wall = "north"
-span = [10500, 11478]
-top = -3000
-material = "door"
+[[slab]]            # wooded ground far below
+box = [1098, 8694, 22614, 12886]
+top = 6000
+thickness = 100
+top_material = "hedge"
+bottom_material = "hedge"
+[[slab]]
+box = [1098, 12886, 7578, 24570]
+top = 6000
+thickness = 100
+top_material = "hedge"
+bottom_material = "hedge"
+
 
 # Parapet and railing along the open sides
 [[object]]
@@ -76,9 +93,9 @@ material = "wood"
 # Still and barrels
 [[object]]
 kind = "box"
-box = [13842, 14472, 20898, 16380]
+box = [13842, 14472, 19710, 15678]
 top = -1100
-material = "stone.brick"
+material = "brick.ivy"
 omit = ["bottom"]
 [[object]]
 kind = "cylinder"
@@ -117,6 +134,11 @@ hoops = [-1900, -1300]
 
 [[light]]
 at = [12000, -5000, 13600]
-color = [0.70, 0.80, 0.75]
-strength = 0.35
+color = [0.80, 0.88, 0.82]
+strength = 0.5
+reach = 10000
+[[light]]
+at = [9000, -5000, 19000]
+color = [0.80, 0.88, 0.82]
+strength = 0.45
 reach = 9000

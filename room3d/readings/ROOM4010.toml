@@ -1,8 +1,11 @@
-# Room 001: a plank-walled bedroom with a bed on the east wall, a desk and
-# chair, a wardrobe and dresser at the north end, a curtained window, two
-# doors on the south wall.
+# Room 001: an L-shaped plank bedroom (the south-west quarter is solid): a
+# corridor runs north from the south door past a second door on its west
+# side; an iron bed in the north-east, a desk with a lamp and chair on the
+# east side, a wardrobe on the west wall, a nightstand, a plain bordered rug,
+# a curtained window on the north wall. Placed from projected collision.
 room = "ROOM4010"
 title = "Room 001"
+backdrop = [3]  # camera 3 is a close-up of the desk drawer
 seed = 4010
 
 [shell]
@@ -24,62 +27,88 @@ linen = [0.52, 0.44, 0.30]
 carpet = { color = [0.56, 0.40, 0.26], motif = [0.66, 0.52, 0.34] }
 glass = [0.62, 0.62, 0.56]
 
+"carpet.plain" = { color = [0.34, 0.22, 0.12], motif = [0.34, 0.22, 0.12] }
+"border.plain" = { color = [0.24, 0.15, 0.08], motif = [0.24, 0.15, 0.08] }
+
 [lighting]
 ambient = [0.192, 0.16, 0.112]
 
-[[zone]]
-box = [1944, 1962, 10782, 15030]
+[[zone]]            # corridor from the south door (the south-west quarter is solid)
+box = [8460, 1962, 10782, 9594]
+floor_along = "z"
+[[zone]]            # the bedroom
+box = [1944, 9594, 10782, 15030]
 
 [[door]]
 wall = "south"
 span = [8800, 10400]
 top = -3300
 material = "door"
-[[door]]
+[[door]]            # second door on the corridor's west wall
 wall = "west"
-span = [2200, 3800]
+line = 8460
+span = [2400, 4200]
 top = -3300
 material = "door"
 
-[[object]]
+# Furniture placed by projecting the collision blocks into the five views.
+[[object]]          # iron bed in the north-east (block 4)
 kind = "bed"
-box = [6858, 12852, 10782, 16074]
-head = "north"
-[[object]]
+box = [6858, 12852, 10782, 15030]
+head = "west"
+[[object]]          # writing desk on the east side (block 3) with a lamp
 kind = "table"
 box = [9576, 10242, 10782, 11736]
-top = -1400
+top = -1300
 thickness = 100
+[[object]]
+kind = "lamp"
+at = [10200, 10600]
+base = -1300
+height = 600
 [[object]]
 kind = "chair"
 at = [9549, 11457]
 facing = "east"
-[[object]]          # wardrobe
-kind = "box"
-box = [1944, 14166, 3150, 15966]
-top = -2800
-material = "wood"
-omit = ["bottom", "west", "north"]
-[[object]]          # dresser
+[[object]]          # wardrobe on the west wall (block 7)
 kind = "box"
 box = [1944, 10548, 2862, 12816]
-top = -1200
+top = -3000
 material = "wood"
 omit = ["bottom", "west"]
+[[object]]          # nightstand in the north-west (block 8)
+kind = "box"
+box = [1944, 14166, 3150, 15030]
+top = -900
+material = "wood"
+omit = ["bottom", "west", "north"]
 [[object]]
 kind = "rug"
-box = [3400, 5000, 9000, 11500]
-[[object]]          # curtained window
-kind = "wall_band"
+box = [3600, 10400, 7400, 14200]
+material = "carpet.plain"
+border = 220
+border_material = "border.plain"
+[[window]]          # curtained window on the north wall
+kind = "rect"
 wall = "north"
-span = [3600, 6200]
-y = [-3600, -1600]
-material = "mirror"
-rail = false
-[[painting]]
-wall = "west"
-span = [6000, 7400]
-y = [-3300, -2200]
+at = 6400
+half = 900
+sill = -1100
+height = 2400
+panes = 2
+glass = "night"
+[[object]]          # curtains
+kind = "box"
+box = [5200, 14850, 5500, 15030]
+top = -3700
+bottom = -900
+material = "linen"
+[[object]]
+kind = "box"
+box = [7300, 14850, 7600, 15030]
+top = -3700
+bottom = -900
+material = "linen"
 
 [[light]]
 at = [6000, -3200, 8000]

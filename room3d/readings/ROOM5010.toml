@@ -1,69 +1,188 @@
-# Emergency tunnel: a winding concrete corridor with strip lights and
-# pipes; from the lab entry (south-east) west and north to the ladder room,
-# with the mesh gate and phone at the far end.
+# Emergency tunnel: a winding corridor of dark blue-grey stained concrete
+# panels with dark pilasters between them and fluorescent strips overhead.
+# From the double door at the east end it runs west, turns north up a riser,
+# west along a cross passage, north again under a big pipe, and ends at the
+# XD-R B1 lift gate (west wall) with the phone beside it (north wall). Zones
+# are the gaps between the collision blocks; pilaster spacing is approximate.
 room = "ROOM5010"
 title = "Emergency tunnel"
 seed = 5010
+backdrop = [7]  # camera 7 is a close-up of the phone
 
 [shell]
 floor = 0
-ceiling = -4200
+ceiling = -4000
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 140
+trim = "iron"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-grating = [0.50, 0.52, 0.52]
+concrete = { color = [0.30, 0.35, 0.40], stains = 0.7, panels = 1, tile = [3200, 4000] }
+"concrete.floor" = { color = [0.50, 0.51, 0.52], stains = 0.8, panels = 1 }
+"concrete.ceiling" = { color = [0.26, 0.26, 0.25], stains = 0.3 }
+"double_door.lab" = [0.24, 0.20, 0.18]
+iron = [0.10, 0.12, 0.14]
+steel = [0.30, 0.32, 0.34]
+"grating.gate" = { color = [0.62, 0.62, 0.60], tile = [600, 600] }
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.13, 0.14, 0.16]
 
-[[zone]]            # south passage
-box = [2304, 2214, 30618, 4842]
+[[zone]]            # south passage (east end: the double door)
+box = [13518, 2214, 30618, 4842]
 floor_along = "x"
-[[zone]]            # middle riser
-box = [6372, 4842, 16272, 19422]
-[[zone]]            # north passage west
-box = [2304, 19422, 8964, 30402]
-[[zone]]            # north pocket
-box = [8964, 25848, 12834, 30402]
+[[zone]]            # riser north
+box = [13518, 4842, 16272, 16722]
+[[zone]]            # cross passage west
+box = [6372, 16722, 16272, 19422]
+floor_along = "x"
+[[zone]]            # north passage
+box = [6372, 19422, 8964, 25848]
+[[zone]]            # lift landing
+box = [2304, 25848, 8964, 30402]
 floor_along = "x"
 
-[[door]]
+[[door]]            # double door at the east end
 wall = "east"
 span = [2500, 4600]
-top = -3600
+top = -3000
 material = "double_door.lab"
-frame = "steel"
-[[door]]
-wall = "north"
-span = [3000, 6000]
-top = -3600
-material = "grating"
-frame = "steel"
+frame = "iron"
+[[door]]            # XD-R B1 lift gate on the west wall of the landing
+wall = "west"
+span = [26300, 29300]
+top = -3400
+material = "grating.gate"
+frame = "iron"
+
+# Dark pilasters between the wall panels.
+[[object]]
+kind = "box"
+box = [25000, 2214, 25400, 2500]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [25000, 4556, 25400, 4842]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [20500, 2214, 20900, 2500]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [20500, 4556, 20900, 4842]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [16272, 4556, 16672, 4842]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [13518, 9000, 13804, 9400]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [15986, 9000, 16272, 9400]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [13518, 13000, 13804, 13400]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [15986, 13000, 16272, 13400]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [11000, 19136, 11400, 19422]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [11000, 16722, 11400, 17008]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [6372, 22500, 6658, 22900]
+top = -4000
+material = "iron"
+[[object]]
+kind = "box"
+box = [8678, 22500, 8964, 22900]
+top = -4000
+material = "iron"
+[[object]]          # big pipe along the west side of the north passage, under the ceiling
+kind = "box"
+box = [6500, 17200, 7000, 27000]
+top = -4000
+bottom = -3500
+material = "steel"
+[[object]]          # phone box on the north wall beside the gate
+kind = "box"
+box = [3500, 30250, 4200, 30402]
+top = -1900
+bottom = -1200
+material = "steel"
+
+[[object]]
+kind = "strip"
+at = [27500, 3500]
+[[object]]
+kind = "strip"
+at = [18500, 3500]
+[[object]]
+kind = "strip"
+at = [14900, 11000]
+[[object]]
+kind = "strip"
+at = [9500, 18000]
+[[object]]
+kind = "strip"
+at = [7700, 22000]
+[[object]]
+kind = "strip"
+at = [5500, 28000]
 
 [[light]]
-at = [16000, -3800, 3500]
-color = [0.95, 0.98, 1.0]
-strength = 0.45
-reach = 8000
+at = [27500, -3600, 3500]
+color = [0.85, 0.92, 1.0]
+strength = 0.6
+reach = 5000
 [[light]]
-at = [11000, -3800, 12000]
-color = [0.95, 0.98, 1.0]
-strength = 0.45
-reach = 8000
+at = [18500, -3600, 3500]
+color = [0.85, 0.92, 1.0]
+strength = 0.6
+reach = 5000
 [[light]]
-at = [5500, -3800, 25000]
-color = [0.95, 0.98, 1.0]
-strength = 0.45
-reach = 8000
+at = [14900, -3600, 11000]
+color = [0.85, 0.92, 1.0]
+strength = 0.6
+reach = 5000
+[[light]]
+at = [9500, -3600, 18000]
+color = [0.85, 0.92, 1.0]
+strength = 0.6
+reach = 5000
+[[light]]
+at = [7700, -3600, 22000]
+color = [0.85, 0.92, 1.0]
+strength = 0.6
+reach = 5000
+[[light]]
+at = [5500, -3600, 28000]
+color = [1.0, 0.70, 0.66]
+strength = 0.5
+reach = 5000

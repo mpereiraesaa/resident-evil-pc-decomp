@@ -1,75 +1,130 @@
-# Lab ladder room: a tall concrete cell with the ladder up on the west wall,
-# a red chest, a crate, a metal door south with its red lamp.
+# Lab ladder room: a tall grey concrete cell with a dark stain band, two
+# deep beams across the ceiling with the hatch between them, a rusty ladder
+# up the north wall to the hatch, a pipe and a wall vent on the east wall,
+# fluorescent tubes on the side walls, and the metal door with its red lamp
+# in the south wall. Collision block 3 by the west wall is the red item chest
+# in cameras 0/1 but a wooden crate in cameras 2/3 (the original backgrounds
+# disagree), so each camera pair hides the other one.
 room = "ROOM5020"
 title = "Lab ladder room"
 seed = 5020
 
 [shell]
 floor = 0
-ceiling = -5200
+ceiling = -5600
 floor_material = "concrete.floor"
 wall_material = "concrete"
 ceiling_material = "concrete.ceiling"
-skirting = 0
-trim = "steel"
+skirting = 160
+trim = "concrete.trim"
 cell = 800
 
 [materials]
-concrete = { color = [0.60, 0.60, 0.56], stains = 0.5 }
-"concrete.floor" = { color = [0.44, 0.44, 0.40], stains = 0.4 }
-"concrete.ceiling" = { color = [0.34, 0.34, 0.32], stains = 0.3 }
-"door.lab" = [0.50, 0.46, 0.40]
-"double_door.lab" = [0.52, 0.50, 0.46]
-steel = [0.60, 0.62, 0.64]
-wood = [0.60, 0.62, 0.64]
-chest = [0.42, 0.14, 0.12]
-crate = [0.46, 0.30, 0.16]
-"panel.ladder" = [0.36, 0.36, 0.34]
+concrete = { color = [0.50, 0.50, 0.47], stains = 0.7, panels = 1, tile = [3000, 3000] }
+"concrete.trim" = { color = [0.36, 0.36, 0.34], stains = 0.2 }
+"concrete.floor" = { color = [0.40, 0.40, 0.38], stains = 0.5 }
+"concrete.ceiling" = { color = [0.24, 0.24, 0.23], stains = 0.3 }
+"concrete.beam" = { color = [0.42, 0.42, 0.40], stains = 0.3 }
+"door.lab" = [0.50, 0.49, 0.46]
+steel = [0.36, 0.37, 0.38]
+chest = [0.40, 0.12, 0.10]
+crate = [0.50, 0.32, 0.16]
+velvet = [0.90, 0.10, 0.08]
+grating = { color = [0.40, 0.40, 0.38], tile = [500, 500] }
 
 [lighting]
-ambient = [0.16, 0.16, 0.15]
+ambient = [0.17, 0.17, 0.16]
 
 [[zone]]
 box = [2436, 2340, 8586, 12438]
 
-[[door]]
+[[door]]            # metal door with the red lamp, south wall
 wall = "south"
-span = [4800, 6300]
-top = -3400
+span = [4700, 6100]
+top = -3300
 material = "door.lab"
 frame = "steel"
-[[door]]
-wall = "north"
-span = [4700, 6000]
-top = -3400
-material = "door.lab"
-frame = "steel"
+[[object]]          # red lamp over the door
+kind = "box"
+box = [5000, 2340, 5800, 2420]
+top = -3800
+bottom = -3500
+material = "velvet"
 
-[[object]]
+[[object]]          # red item chest against the west wall (collision block 3), cameras 0/1
 kind = "chest"
-box = [666, 6516, 3780, 9162]
+box = [2436, 6600, 3700, 9100]
 top = -1200
 back = "west"
-[[object]]
+group = "chest"
+[[object]]          # the wooden crate the later views show in its place, cameras 2/3
 kind = "box"
-box = [6200, 3400, 8000, 5000]
+box = [2600, 6500, 4400, 8700]
 top = -1100
 material = "crate"
-omit = ["bottom"]
-[[object]]          # ladder on the west wall
-kind = "wall_band"
-wall = "west"
-span = [4800, 5400]
-y = [-5200, -200]
-material = "panel.ladder"
-rail = false
+group = "crate"
+[[hide]]
+camera = 0
+groups = ["crate"]
+[[hide]]
+camera = 1
+groups = ["crate"]
+[[hide]]
+camera = 2
+groups = ["chest"]
+[[hide]]
+camera = 3
+groups = ["chest"]
+
+[[object]]          # ladder up the north wall into the ceiling hatch
+kind = "ladder"
+box = [4500, 12150, 5500, 12350]
+top = -5600
+[[object]]          # ceiling beams either side of the hatch
+kind = "box"
+box = [3300, 2340, 4100, 12438]
+top = -5600
+bottom = -4900
+material = "concrete.beam"
+[[object]]
+kind = "box"
+box = [6000, 2340, 6800, 12438]
+top = -5600
+bottom = -4900
+material = "concrete.beam"
+[[object]]          # vertical pipe on the east wall
+kind = "cylinder"
+at = [8450, 10800]
+radius = 110
+top = -5600
+bottom = -300
+material = "steel"
+[[object]]          # wall vent, east wall
+kind = "box"
+box = [8540, 8000, 8586, 8900]
+top = -1700
+bottom = -900
+material = "grating"
+[[object]]          # fluorescent tubes on the side walls
+kind = "box"
+box = [2436, 4200, 2560, 6800]
+top = -3900
+bottom = -3700
+material = "glow"
+[[object]]
+kind = "box"
+box = [8460, 4200, 8586, 6800]
+top = -3900
+bottom = -3700
+material = "glow"
 
 [[light]]
-at = [5500, -4400, 7000]
+at = [5500, -4200, 7500]
 color = [0.95, 0.98, 1.0]
-strength = 0.5
-reach = 6000
-
-[[object]]          # strip light
-kind = "strip"
-at = [5500, 7000]
+strength = 0.55
+reach = 6500
+[[light]]
+at = [5500, -2500, 3500]
+color = [0.95, 0.98, 1.0]
+strength = 0.3
+reach = 4000

@@ -1,14 +1,21 @@
-# Mansion dressing room: pale blue-grey plaster with a frieze, teal-patterned
-# tiles, coffered ceiling, the eagle-and-globe statue, two blue sofas, the
-# dresser with its arched mirror, the long display cabinet and a passage east.
+# Mansion dressing room: pale blue-grey plaster with a frieze, cream tiles
+# with teal medallions, coffered ceiling, the eagle-and-globe statue in the
+# middle, the blue sofa on the south wall under the big landscape, the dresser
+# with its arched mirror on the east wall, the tall dark display cabinet that
+# splits off the north corridor (small writing table at its west end under a
+# sconce) and the passage east. Placements come from the collision blocks
+# (statue = circle 8, sofa = 9, dresser = 4, cabinet = 3, table = 6). The
+# statue is cylinders plus a one-globe "chandelier" standing in for the globe.
+# Camera 4 is a close-up of the table drawer and keeps the original.
 room = "ROOM1110"
 title = "Dressing room"
 seed = 1700
+backdrop = [4]
 
 [shell]
 floor = 0
 ceiling = -5600
-floor_material = "marble.teal"
+floor_material = "carpet.tile"
 wall_material = "plaster"
 ceiling_material = "coffer"
 chair_rail = true
@@ -18,14 +25,19 @@ skirting = 160
 cell = 800
 
 [materials]
-plaster = [0.76, 0.78, 0.76]
-"plaster.low" = [0.68, 0.70, 0.68]
-"marble.teal" = { color = [0.80, 0.88, 0.86], tile = [2000, 2000] }
+plaster = [0.70, 0.74, 0.74]
+"plaster.low" = [0.62, 0.68, 0.68]
+"carpet.tile" = { color = [0.70, 0.76, 0.74], motif = [0.26, 0.52, 0.50], tile = [1800, 1800] }
 coffer = [0.44, 0.30, 0.18]
-wood = [0.36, 0.22, 0.12]
-velvet = [0.22, 0.30, 0.52]
-stone = [0.56, 0.60, 0.60]
-door = [0.34, 0.20, 0.11]
+wood = [0.30, 0.17, 0.09]
+"wood.dark" = [0.10, 0.07, 0.05]
+"books.display" = { color = [0.14, 0.11, 0.09], shelves = 5 }
+velvet = [0.20, 0.27, 0.46]
+statue = [0.40, 0.37, 0.33]
+glow = [0.62, 0.86, 0.80]
+mirror = [0.40, 0.44, 0.40]
+stone = [0.50, 0.48, 0.46]
+door = [0.34, 0.12, 0.08]
 
 [lighting]
 ambient = [0.17, 0.18, 0.18]
@@ -38,7 +50,7 @@ floor_along = "x"
 
 [[door]]
 wall = "west"
-span = [3800, 5900]
+span = [3650, 5560]
 top = -3300
 material = "door"
 [[door]]
@@ -47,67 +59,116 @@ span = [10407, 12249]
 top = -3300
 material = "door"
 
-[[object]]          # eagle and globe
-kind = "urn"
-at = [7281, 5461]
-radius = 760
-top = -2900
-pedestal = 1100
-pedestal_top = -800
-material = "stone"
-[[object]]          # west sofa
-kind = "sofa"
-box = [1864, 9236, 3150, 12249]
-back = "west"
-[[object]]          # east sofa
-kind = "sofa"
-box = [11168, 1899, 12505, 6776]
-back = "east"
-[[object]]          # dresser with mirror on the south wall
-kind = "box"
-box = [5989, 1899, 10152, 3337]
-top = -1100
-material = "wood"
-omit = ["bottom", "south"]
+# Eagle-and-globe statue (collision circle 8): octagonal plinth, shaft,
+# spread wings cupping the glowing globe.
 [[object]]
-kind = "wall_band"
-wall = "south"
-span = [6600, 9500]
-y = [-2900, -1200]
-material = "mirror"
-rail = false
-[[object]]          # long display cabinet
+kind = "cylinder"
+at = [7281, 5461]
+radius = 740
+top = -260
+material = "statue"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [7281, 5461]
+radius = 520
+top = -520
+bottom = -260
+material = "statue"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [7281, 5461]
+radius = 200
+top = -1500
+bottom = -520
+material = "statue"
+segments = 8
+[[object]]
+kind = "cylinder"
+at = [7281, 5461]
+radius = 520
+top = -2350
+bottom = -1500
+material = "statue"
+segments = 8
+[[chandelier]]      # the globe itself (one globe, no arms)
+at = [7281, 5461]
+y = -2720
+ceiling = -3300
+radius = 0
+globes = 1
+globe_radius = 560
+strength = 0.08
+reach = 2500
+
+[[object]]          # blue sofa on the south wall (block 9)
+kind = "sofa"
+box = [6100, 1899, 10100, 3300]
+back = "south"
+back_top = -1150
+[[object]]          # dresser on the east wall (block 4), arched mirror above
 kind = "box"
-box = [1864, 9003, 10456, 10330]
-top = -2400
+box = [11200, 3900, 12505, 6600]
+top = -1750
 material = "wood"
 omit = ["bottom"]
-
-[[painting]]
-wall = "west"
-span = [6500, 8500]
-y = [-3600, -2000]
-[[painting]]
-wall = "north"
-span = [4000, 6000]
-y = [-3800, -2200]
 [[painting]]
 wall = "east"
-span = [7200, 9200]
-y = [-3700, -2100]
-[[painting]]
+span = [4300, 6200]
+y = [-3950, -1850]
+material = "mirror"
+frame = "wood"
+[[object]]
+kind = "lamp"
+at = [11800, 4400]
+base = -1750
+[[object]]
+kind = "lamp"
+at = [11800, 6100]
+base = -1750
+[[object]]          # tall display cabinet (block 3), shelves open to the south
+kind = "bookcase"
+box = [1864, 9003, 10456, 10330]
+top = -4700
+front = "south"
+material = "wood.dark"
+books = "books.display"
+[[object]]          # small writing table at the corridor's west end (block 6)
+kind = "table"
+box = [1950, 10450, 3100, 12150]
+top = -820
+material = "wood"
+
+[[painting]]        # big landscape over the sofa
 wall = "south"
-span = [3200, 4600]
-y = [-3700, -2300]
+span = [6970, 9200]
+y = [-4100, -2700]
+[[painting]]        # oval portrait near the west corner
+wall = "south"
+span = [5750, 6250]
+y = [-3700, -2950]
+[[painting]]        # two small pictures north of the mirror
+wall = "east"
+span = [7900, 8800]
+y = [-3850, -2700]
+[[painting]]
+wall = "east"
+span = [9100, 9700]
+y = [-3800, -3000]
+[[painting]]        # in the north corridor
+wall = "north"
+span = [12800, 14300]
+y = [-3800, -2400]
 
 [[light]]
 at = [7200, -4800, 7000]
 color = [0.95, 1.0, 1.0]
 strength = 0.4
 reach = 7000
-[[sconce]]
-wall = "east"
-at = [-3300, 11300]
+[[sconce]]          # over the writing table
+wall = "west"
+at = [-3130, 11300]
 candles = 1
 strength = 0.4
 reach = 3600

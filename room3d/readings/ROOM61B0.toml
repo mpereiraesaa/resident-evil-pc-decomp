@@ -1,83 +1,343 @@
 # Return-visit copy of ROOM11B0.toml: stage 6 shares its collision and cameras exactly.
-# Mansion storeroom (to the courtyard): whitewashed stone under a timber
-# frame, green flagstones, barrels, a tool shelf and the big double door east.
+# Mansion storeroom (to the courtyard): a tall whitewashed stone room with a
+# timber frame band (dark posts, pale infill panels) high under the ceiling,
+# green flagstones, the tool shelf high on the south wall with tools hung
+# under it, barrels (circles 0, 5, 6), a low crate in the north-west corner
+# (block 4), the plain door west and the big double door east. Heights are
+# from projecting the band, shelf and door tops onto the wall planes (the
+# room is taller than it looks: ceiling about -6600).
 room = "ROOM61B0"
 title = "Mansion storeroom (return)"
 seed = 2700
 
 [shell]
 floor = 0
-ceiling = -4600
-floor_material = "stone.flag"
+ceiling = -6600
+floor_material = "rock.flag"
 wall_material = "plaster"
 ceiling_material = "planks.ceiling"
 skirting = 200
 cell = 700
 
 [materials]
-plaster = { color = [0.70, 0.70, 0.66], stains = 0.3 }
-"stone.flag" = { color = [0.30, 0.40, 0.30], tile = [1600, 1600] }
-"planks.ceiling" = { color = [0.26, 0.18, 0.12], count = 10 }
-wood = [0.26, 0.16, 0.10]
-door = [0.34, 0.22, 0.12]
-double_door = [0.50, 0.26, 0.12]
-panel = [0.22, 0.14, 0.08]
+plaster = { color = [0.62, 0.62, 0.60], stains = 0.6 }
+"plaster.infill" = { color = [0.72, 0.72, 0.70], stains = 0.2 }
+"rock.flag" = { color = [0.17, 0.22, 0.19], tile = [3000, 3000], slabs = 22, moss = 0.0 }
+"planks.ceiling" = { color = [0.22, 0.16, 0.12], count = 10 }
+wood = [0.30, 0.18, 0.10]
+"wood.post" = [0.12, 0.08, 0.06]
+"crate.shelf" = [0.36, 0.26, 0.16]
+door = [0.26, 0.14, 0.08]
+double_door = [0.40, 0.22, 0.12]
 
 [lighting]
-ambient = [0.14, 0.15, 0.14]
+ambient = [0.13, 0.14, 0.13]
 
 [[zone]]
 box = [2178, 2484, 9594, 9486]
 
 [[door]]
 wall = "west"
-span = [5200, 7600]
-top = -3300
+span = [5380, 7450]
+top = -4150
 material = "door"
 [[door]]
 wall = "east"
-span = [4300, 7500]
-top = -3600
+span = [4300, 8000]
+top = -5500
 material = "double_door"
 frame_depth = 160
 
-# Timber frame band under the ceiling on every wall
+# Timber frame band under the ceiling: dark band with pale infill panels
 [[object]]
 kind = "wall_band"
 wall = "north"
 span = [2178, 9594]
-y = [-4600, -3700]
-material = "panel"
+y = [-6600, -5000]
+material = "wood.post"
 rail = false
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [2344, 2938]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [3271, 3865]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [4198, 4792]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [5125, 5719]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [6052, 6646]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [6979, 7573]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [7906, 8500]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "north"
+span = [8833, 9427]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
 [[object]]
 kind = "wall_band"
 wall = "south"
 span = [2178, 9594]
-y = [-4600, -3700]
-material = "panel"
+y = [-6600, -5000]
+material = "wood.post"
 rail = false
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [2344, 2938]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [3271, 3865]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [4198, 4792]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [5125, 5719]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [6052, 6646]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [6979, 7573]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [7906, 8500]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "south"
+span = [8833, 9427]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
 [[object]]
 kind = "wall_band"
 wall = "west"
 span = [2484, 9486]
-y = [-4600, -3700]
-material = "panel"
+y = [-6600, -5000]
+material = "wood.post"
 rail = false
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [2664, 3304]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [3664, 4304]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [4664, 5304]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [5664, 6305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [6665, 7305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [7665, 8305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "west"
+span = [8665, 9305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
 [[object]]
 kind = "wall_band"
 wall = "east"
 span = [2484, 9486]
-y = [-4600, -3700]
-material = "panel"
+y = [-6600, -5000]
+material = "wood.post"
 rail = false
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [2664, 3304]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [3664, 4304]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [4664, 5304]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [5664, 6305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [6665, 7305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [7665, 8305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
+[[object]]
+kind = "wall_band"
+wall = "east"
+span = [8665, 9305]
+y = [-6400, -5200]
+material = "plaster.infill"
+rail = false
+inset = 30
 
-[[object]]          # tool shelf on the north wall
+[[object]]          # tool shelf high on the south wall
+kind = "bookcase"
+box = [4000, 2484, 7100, 2800]
+top = -4500
+bottom = -3500
+front = "north"
+books = "crate.shelf"
+[[object]]          # tools hanging under it
 kind = "box"
-box = [2400, 9100, 5600, 9486]
-top = -2600
-bottom = -2300
+box = [5900, 2484, 5960, 2560]
+top = -3500
+bottom = -1700
 material = "wood"
 [[object]]
+kind = "box"
+box = [6500, 2484, 6560, 2560]
+top = -3500
+bottom = -1400
+material = "wood"
+[[object]]          # low crate in the north-west corner (block 4)
 kind = "box"
 box = [2178, 8946, 4410, 9486]
 top = -900
@@ -109,7 +369,7 @@ segments = 12
 hoops = [-1050, -400]
 
 [[light]]
-at = [6000, -3400, 6000]
+at = [6000, -4400, 6000]
 color = [0.95, 1.0, 1.0]
-strength = 0.4
-reach = 6000
+strength = 0.45
+reach = 7000

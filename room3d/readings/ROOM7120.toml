@@ -1,14 +1,19 @@
 # Return-visit copy of ROOM2120.toml: stage 7 shares its collision and cameras exactly.
-# Terrace: whitewashed walls with ivy, a wooden deck, a balustrade around
-# the open side with the dark forest beyond, a chair and a round table, a
-# small arched window, the door on the west wall. From ROOM2120.RDT.
+# Terrace: a roofed wooden deck against whitewashed walls, with a walkway
+# running south along the east wall (arched window, blood) and a white
+# balustrade around the open bay; below the balustrade a pale mossy garden
+# floor a little under deck level, the night forest beyond. The door is on
+# the west wall of the deck, a wicker chair and potted tree in the north-east
+# corner, a round table by the west wall. Balustrades follow collision blocks
+# 4, 5 and 10; the window was cast from cameras 2 and 4. The garden depth
+# (900) is a guess from camera 4; the wall-top crenellations are not modelled.
 room = "ROOM7120"
 title = "Terrace (return)"
 seed = 2180
 
 [shell]
 floor = 0
-ceiling = -4800
+ceiling = -14000
 floor_material = "planks"
 wall_material = "plaster"
 ceiling_material = "planks.ceiling"
@@ -18,47 +23,84 @@ cell = 800
 
 [materials]
 plaster = { color = [0.72, 0.72, 0.66], stains = 0.3 }
-planks = [0.42, 0.26, 0.14]
+forest = { color = [0.17, 0.25, 0.13] }
+planks = [0.36, 0.22, 0.13]
 "planks.ceiling" = { color = [0.24, 0.16, 0.10], count = 10 }
-wood = [0.60, 0.58, 0.54]
+wood = [0.40, 0.26, 0.14]
 door = [0.46, 0.30, 0.14]
-glass = [0.60, 0.65, 0.70]
-"stone.garden" = { color = [0.30, 0.38, 0.26], tile = [2400, 2400] }
+stone = [0.80, 0.80, 0.76]
+"plaster.moss" = { color = [0.66, 0.68, 0.66], stains = 0.4, ivy = 0.35 }
+night = [0.05, 0.07, 0.09]
 
 [lighting]
-ambient = [0.13, 0.14, 0.12]
+ambient = [0.15, 0.16, 0.15]
 
-[[zone]]            # deck
+# All zones share the open night ceiling (so no soffits are drawn); the deck
+# and walkway roofs are slabs. The garden is drawn wider than its collision
+# (west) so the forest stands back as in cameras 2 and 3.
+[[zone]]            # roofed deck
 box = [18486, 23022, 24894, 29234]
-[[zone]]            # strip along the east side of the open bay
+[[zone]]            # walkway along the east wall
 box = [22284, 17298, 24894, 23022]
-wall_materials = { south = "forest" }
-[[zone]]            # open bay (the garden below)
-box = [18486, 12906, 22284, 23022]
+[[zone]]            # open bay inside the balustrade (garden floor below)
+box = [12000, 17298, 22284, 23022]
 open_floor = true
-depth = 5000
-wall_materials = { south = "forest", west = "forest" }
-ceiling = -4800
+depth = 900
+shaft_material = "leaves"
+wall_materials = { west = "forest", north = "plaster" }
+[[zone]]            # garden south of the walkway, open to the forest
+box = [12000, 12906, 24894, 17298]
+open_floor = true
+depth = 900
+shaft_material = "leaves"
+wall_material = "forest"
 
-[[slab]]            # garden floor far below the bay
-box = [18486, 12906, 22284, 23022]
-top = 5000
-thickness = 200
-top_material = "stone.garden"
-bottom_material = "stone.garden"
-[[object]]
+[[slab]]            # garden floor
+box = [12000, 17298, 22284, 23022]
+top = 900
+thickness = 100
+top_material = "plaster.moss"
+[[slab]]
+box = [12000, 12906, 24894, 17298]
+top = 900
+thickness = 100
+top_material = "plaster.moss"
+[[slab]]            # deck roof
+box = [18486, 23022, 24894, 29234]
+top = -5300
+thickness = 300
+top_material = "planks.ceiling"
+bottom_material = "planks.ceiling"
+edge_material = "wood"
+[[slab]]            # walkway roof
+box = [22284, 17298, 24894, 23022]
+top = -5300
+thickness = 300
+top_material = "planks.ceiling"
+bottom_material = "planks.ceiling"
+edge_material = "wood"
+
+[[object]]          # balustrade along the deck's south edge (block 4)
 kind = "rail"
-from = [18600, 22900]
-to = [22200, 22900]
+from = [18486, 23150]
+to = [22284, 23150]
 height = 1000
 spacing = 300
-[[object]]
+material = "stone"
+[[object]]          # balustrade down the walkway's west side (block 5)
 kind = "rail"
-from = [22200, 13000]
-to = [22200, 22900]
+from = [22420, 17420]
+to = [22420, 23022]
 height = 1000
 spacing = 300
-newels = [true, false]
+material = "stone"
+[[object]]          # balustrade across the walkway's south end (block 10)
+kind = "rail"
+from = [22420, 17820]
+to = [24894, 17820]
+height = 1000
+spacing = 300
+material = "stone"
 
 [[door]]
 wall = "west"
@@ -66,42 +108,49 @@ span = [26400, 28600]
 top = -3300
 material = "door"
 [[window]]
-wall = "west"
+wall = "east"
 kind = "arch"
-at = 24500
-half = 500
-sill = -1600
-height = 2200
+at = 20000
+half = 450
+sill = -2300
+height = 1700
 color = [0.70, 0.75, 0.85]
 strength = 0.2
 reach = 4000
 
-[[object]]
+[[object]]          # wicker chair in the north-east corner (block 3)
 kind = "chair"
-at = [21000, 27500]
-facing = "south"
-[[object]]
-kind = "cylinder"
-at = [19600, 24500]
+at = [24100, 27800]
+facing = "west"
+material = "wood"
+seat = "wood"
+[[object]]          # potted tree beside it
+kind = "plant"
+at = [24400, 28800]
+height = 2600
+spread = 650
+pot_radius = 320
+pot_height = 600
+pot = "rust"
+material = "leaves"
+[[object]]          # round table by the west wall (blocks 7, 8)
+kind = "table_round"
+at = [19400, 24500]
 radius = 700
 top = -800
-bottom = -720
-material = "wood"
-segments = 14
-[[object]]
-kind = "cylinder"
-at = [19600, 24500]
-radius = 100
-top = -720
-material = "wood"
-segments = 8
 [[column]]
 at = [22284, 23022]
-top = -4350
+top = -5000
 radius = 220
+material = "stone"
 
 [[light]]
 at = [21500, -3600, 26000]
 color = [0.90, 0.95, 1.0]
 strength = 0.35
 reach = 6000
+[[light]]
+at = [21000, -3000, 17000]
+color = [0.80, 0.90, 1.0]
+strength = 0.35
+reach = 7000

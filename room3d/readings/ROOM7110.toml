@@ -1,6 +1,11 @@
 # Return-visit copy of ROOM2110.toml: stage 7 shares its collision and cameras exactly.
-# Terrace passage: a narrow corridor, white plaster over a black dado, pale
-# tiles, a cabinet with a vase at the north end, sconces. From ROOM2110.RDT.
+# Terrace passage: a narrow corridor, cream plaster over a black dado, dark
+# boards with a long blue-grey runner. The south end wall holds a small
+# cabinet with a blue vase under an arched mirror; a door on the west wall at
+# the south end (camera 0) and another on the east wall at the north end
+# (cameras 1 and 2). Doors and cabinet placed by projecting the RDT walls into
+# the three views. The west wall is set ~200 west of the collision line so
+# camera 1, which hugs it, does not clip it at the near plane.
 room = "ROOM7110"
 title = "Terrace passage (return)"
 seed = 2170
@@ -8,7 +13,7 @@ seed = 2170
 [shell]
 floor = 0
 ceiling = -4400
-floor_material = "marble.pale"
+floor_material = "planks"
 wall_material = "plaster"
 ceiling_material = "plaster.dark"
 dado = 1200
@@ -20,41 +25,57 @@ cell = 600
 [materials]
 plaster = [0.70, 0.68, 0.62]
 "plaster.dark" = [0.20, 0.18, 0.16]
-"marble.pale" = { color = [0.70, 0.72, 0.76], tile = [1400, 1400] }
+planks = [0.22, 0.13, 0.08]
+runner = [0.42, 0.42, 0.50]
+border = [0.28, 0.27, 0.34]
 "panel.black" = [0.12, 0.10, 0.09]
 wood = [0.30, 0.18, 0.10]
 door = [0.28, 0.16, 0.10]
+porcelain = [0.12, 0.30, 0.58]
 
 [lighting]
 ambient = [0.12, 0.12, 0.11]
 
 [[zone]]
-box = [2016, 1906, 3852, 13410]
+box = [1800, 1906, 3852, 13410]
 
-[[door]]
-wall = "south"
-span = [2016, 3852]
+[[door]]            # west wall at the south end (camera 0, right)
+wall = "west"
+span = [2050, 3350]
 top = -3300
 material = "door"
-[[door]]
+[[door]]            # east wall at the north end (cameras 1 and 2)
 wall = "east"
-span = [11500, 13410]
+span = [11600, 12900]
 top = -3300
 material = "door"
 
-[[object]]          # cabinet at the north end
+[[object]]          # runner down the corridor
+kind = "rug"
+box = [2150, 2000, 3500, 13300]
+material = "runner"
+border = 120
+[[object]]          # small cabinet against the south end wall
 kind = "box"
-box = [2200, 12600, 3700, 13410]
+box = [2300, 1906, 3500, 2400]
 top = -1300
 material = "wood"
-omit = ["bottom", "north"]
-[[object]]
-kind = "wall_band"
-wall = "north"
-span = [2300, 3600]
-y = [-3200, -1500]
-material = "panel.black"
-rail = false
+omit = ["bottom", "south"]
+[[object]]          # blue vase on it
+kind = "cylinder"
+at = [2750, 2150]
+radius = 140
+top = -1900
+bottom = -1300
+material = "porcelain"
+segments = 10
+
+[[painting]]        # arched mirror over the cabinet
+wall = "south"
+span = [2350, 3450]
+y = [-3500, -1700]
+material = "mirror"
+frame = "wood"
 
 [[sconce]]
 wall = "west"

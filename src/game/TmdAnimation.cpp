@@ -82,13 +82,25 @@ void RegisterEntityMeshSourceRange(unsigned int begin, unsigned int end,
     }
     if (begin >= end) return;
     const bool chris = emdPath && strcmp(emdPath, "enemy/char10.emd") == 0;
-    const char* setting = chris ? getenv("RE1_CHRIS_MESH") : NULL;
-    if (!setting) setting = getenv("RE1_ENTITY_MESH");
-    const int mode = setting && (setting[0] == '1' || setting[0] == '2' ||
+    // Player-facing switch: the authored HD model set uses the full curved
+    // subdivision. Keep the original numeric knobs for export/debug tools.
+    const char* hdSetting = getenv("RE1_HD_MODELS");
+    const char* setting = getenv("RE1_ENTITY_MESH");
+    int mode = setting && (setting[0] == '1' || setting[0] == '2' ||
         setting[0] == '3') && setting[1] == 0 ? setting[0] - '0' : 0;
+    if (hdSetting && hdSetting[1] == 0 &&
+        (hdSetting[0] == '0' || hdSetting[0] == '1'))
+        mode = hdSetting[0] == '1' ? 3 : 0;
+    setting = chris && hdSetting == NULL ? getenv("RE1_CHRIS_MESH") : NULL;
+    if (setting &&
+        (setting[0] == '1' || setting[0] == '2' ||
+                    setting[0] == '3') && setting[1] == 0)
+        mode = setting[0] - '0';
     if (mode == 0 && getenv("RE1_ENTITY_OBJ_EXPORT_DIR") == NULL &&
         getenv("RE1_ENTITY_MESH_PATCH_DIR") == NULL &&
-        getenv("RE1_ENTITY_MESH_REPLACE_DIR") == NULL)
+        getenv("RE1_ENTITY_MESH_REPLACE_DIR") == NULL &&
+        getenv("RE1_HD_MODELS_PATCH_DIR") == NULL &&
+        getenv("RE1_HD_MODELS_DIR") == NULL)
         return;
     if (g_entityMeshSources.size() == 64)
         g_entityMeshSources.erase(g_entityMeshSources.begin());
@@ -193,7 +205,11 @@ static void ApplyEntityTmdDelta(CMarniDirect3DTMD* object,
                                 const EntityMeshSource& source,
                                 unsigned int sourceOffset)
 {
-    const char* directory = getenv("RE1_ENTITY_MESH_PATCH_DIR");
+    const char* hdSetting = getenv("RE1_HD_MODELS");
+    if (hdSetting && strcmp(hdSetting, "0") == 0) return;
+    const char* directory = getenv("RE1_HD_MODELS_PATCH_DIR");
+    if (directory == NULL || directory[0] == 0)
+        directory = getenv("RE1_ENTITY_MESH_PATCH_DIR");
     if (directory == NULL || directory[0] == 0) return;
     const char* base = strrchr(source.path.c_str(), '/');
     base = base ? base + 1 : source.path.c_str();
@@ -279,7 +295,11 @@ static bool ApplyEntityTmdReplacement(CMarniDirect3DTMD* object,
                                       const EntityMeshSource& source,
                                       unsigned int sourceOffset)
 {
-    const char* directory = getenv("RE1_ENTITY_MESH_REPLACE_DIR");
+    const char* hdSetting = getenv("RE1_HD_MODELS");
+    if (hdSetting && strcmp(hdSetting, "0") == 0) return false;
+    const char* directory = getenv("RE1_HD_MODELS_DIR");
+    if (directory == NULL || directory[0] == 0)
+        directory = getenv("RE1_ENTITY_MESH_REPLACE_DIR");
     if (directory == NULL || directory[0] == 0) return false;
     const char* base = strrchr(source.path.c_str(), '/');
     base = base ? base + 1 : source.path.c_str();

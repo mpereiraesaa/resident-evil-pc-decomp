@@ -1,6 +1,7 @@
-# Guardhouse save room: plank walls, a cot against the east wall, a desk
-# with the typewriter and lamp by the north wall, a bookshelf in the north-
-# east, a chest by the west wall, a dresser south-west; door on the south.
+# Guardhouse save room: plank walls and floor, an iron bed along the
+# south wall, a small table with a typewriter and lamp, a bookcase on the west
+# wall, a chest on the east side, a dresser in the south-west corner; door on
+# the north wall. Furniture placed by projecting collision into the views.
 room = "ROOM4030"
 title = "Guardhouse save room"
 seed = 4030
@@ -15,7 +16,7 @@ skirting = 160
 cell = 600
 
 [materials]
-"planks.floor" = { color = [0.46, 0.28, 0.14], count = 8 }
+"planks.floor" = { color = [0.30, 0.17, 0.09], count = 8 }
 "planks.wall" = { color = [0.28, 0.18, 0.12], count = 14 }
 "planks.ceiling" = { color = [0.24, 0.15, 0.09], count = 10 }
 wood = [0.36, 0.24, 0.12]
@@ -30,39 +31,39 @@ ambient = [0.156, 0.132, 0.096]
 box = [1494, 1836, 10512, 9648]
 
 [[door]]
-wall = "south"
+wall = "north"
 span = [7400, 9800]
 top = -3300
 material = "door"
 
-[[object]]
+# Furniture placed by projecting the collision blocks into the three views.
+[[object]]          # iron bed along the south wall (block 7), foot to the west
 kind = "bed"
-box = [9054, 4932, 12834, 7218]
+box = [6912, 1836, 10512, 3564]
 head = "east"
-[[object]]
+[[object]]          # small table with the typewriter and lamp (block 6)
 kind = "table"
-box = [6912, 756, 10512, 2400]
-top = -1500
+box = [3636, 1836, 5454, 3186]
+top = -1000
 thickness = 100
 with = "typewriter"
-typewriter_at = [9000, 1600]
+typewriter_at = [4200, 2400]
 [[object]]
 kind = "lamp"
-at = [7600, 1600]
-base = -1500
+at = [5050, 2500]
+base = -1000
 height = 650
-[[object]]          # bookshelf
-kind = "box"
-box = [3636, 540, 5454, 3186]
-top = -2600
-material = "wood"
-omit = ["bottom", "south"]
-[[object]]          # chest
-kind = "chest"
+[[object]]          # bookcase on the west wall (block 4)
+kind = "bookcase"
 box = [1494, 5382, 2718, 8208]
-top = -1200
-back = "west"
-[[object]]          # dresser
+top = -2600
+front = "east"
+[[object]]          # chest at the east side (block 2)
+kind = "chest"
+box = [9054, 4932, 10512, 7218]
+top = -1000
+back = "east"
+[[object]]          # dresser in the south-west corner
 kind = "box"
 box = [1494, 1836, 2718, 4600]
 top = -1100
@@ -70,8 +71,8 @@ material = "wood"
 omit = ["bottom", "west", "south"]
 
 [[chandelier]]
-at = [5000, 4000]
-y = -3400
+at = [6000, 5600]
+y = -4000
 radius = 260
 globes = 3
 globe_radius = 80

@@ -1216,6 +1216,11 @@ and `peel`/`ivy` options on plaster for the ruined rooms. Fireplaces on east
 and north walls used to draw their opening flush with the mantel face (hidden);
 it now sits just in front.
 
+Wall-mounted things (doors, windows, paintings, sconces, wall lamps, wall
+bands, trophies) take an optional `line` naming the wall's coordinate when the
+outermost wall at that span is not the one meant; paintings take `group` for
+per-camera hides.
+
 A reading can inherit another one shifted vertically with
 `base = { reading = "ROOMxxxx", y = dy }`: the base's vertical keys (floors,
 ceilings, tops, sills, springs, light and sconce heights...) move by dy, its

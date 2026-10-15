@@ -759,12 +759,12 @@ class Builder:
     # Lights that fixtures imply are added before any geometry is lit.
     def _lights_from_kinds(self):
         for sconce in self.reading.get("sconce", []):
-            x, y, z = self._wall_point(sconce["wall"], sconce["at"])
+            x, y, z = self._wall_point(sconce["wall"], sconce["at"], sconce.get("line"))
             d = SIDES[sconce["wall"]]
             self.rig.add((x + d[0] * 420, y, z + d[2] * 420), sconce.get("color", (1.0, 0.90, 0.72)),
                          sconce.get("strength", 0.28), sconce.get("reach", 5000))
         for lamp in self.reading.get("wall_lamp", []):
-            x, y, z = self._wall_point(lamp["wall"], lamp["at"])
+            x, y, z = self._wall_point(lamp["wall"], lamp["at"], lamp.get("line"))
             d = SIDES[lamp["wall"]]
             self.rig.add((x + d[0] * 260, y + 150, z + d[2] * 260), lamp.get("color", (1.0, 0.86, 0.62)),
                          lamp.get("strength", 0.9), lamp.get("reach", 4200))
@@ -779,7 +779,7 @@ class Builder:
         for post in self.reading.get("lamp_post", []):
             self.rig.add((post["at"][0], post.get("top", -4600), post["at"][1]), (1.0, 0.92, 0.75), post.get("strength", 0.4), post.get("reach", 7000))
         for win in self.reading.get("window", []):
-            x, y, z = self._wall_point(win["wall"], (win.get("sill", -8000) - win.get("height", 3000) / 2, win["at"]))
+            x, y, z = self._wall_point(win["wall"], (win.get("sill", -8000) - win.get("height", 3000) / 2, win["at"]), win.get("line"))
             d = SIDES[win["wall"]]
             self.rig.add((x + d[0] * 400, y, z + d[2] * 400), win.get("color", (0.75, 0.80, 1.0)), win.get("strength", 0.3), win.get("reach", 9000))
 
@@ -799,10 +799,12 @@ class Builder:
             raise ValueError(f"no zone has a {side} wall at {along}")
         return min(candidates) if side in ("west", "south") else max(candidates)
 
-    def _wall_point(self, side, at):
-        """(x, y, z) on a wall: `at` is (y, coordinate along the wall)."""
+    def _wall_point(self, side, at, line=None):
+        """(x, y, z) on a wall: `at` is (y, coordinate along the wall); `line`
+        names the wall's coordinate when the outermost wall is not the one."""
         y, along = at
-        line = self._wall_line(side, along)
+        if line is None:
+            line = self._wall_line(side, along)
         if side in ("west", "east"):
             return (line, y, along)
         return (along, y, line)
@@ -1034,8 +1036,9 @@ class Builder:
             side = p["wall"]
             a, b = p["span"]
             top, bottom = p["y"]
-            line = self._wall_line(side, (a + b) / 2)
+            line = p.get("line", self._wall_line(side, (a + b) / 2))
             d = SIDES[side]
+            self.mesh.set_group(p.get("group"))
             canvas = self.use(p.get("material", "painting"))
             frame = self.use(p.get("frame", "brass"))
             if side in ("west", "east"):
@@ -1058,12 +1061,13 @@ class Builder:
                     self.mesh.box((xa, top - 110, za), (xb, bottom + 110, zb), frame)
                 for ya, yb in ((top - 110, top), (bottom, bottom + 110)):
                     self.mesh.box((a - 110, ya, za), (b + 110, yb, zb), frame)
+            self.mesh.set_group(None)
 
     def sconces(self):
         mesh = self.mesh
         brass, glow = self.use("brass"), self.use("glow")
         for s in self.reading.get("sconce", []):
-            x, y, z = self._wall_point(s["wall"], s["at"])
+            x, y, z = self._wall_point(s["wall"], s["at"], s.get("line"))
             dx, dz = SIDES[s["wall"]][0], SIDES[s["wall"]][2]
             candles = s.get("candles", 3)
             mesh.box((x + min(0, dx * 120) - 70 * abs(dz), y - 220, z + min(0, dz * 120) - 70 * abs(dx)),
@@ -1074,7 +1078,7 @@ class Builder:
                 mesh.box((ax - 25, y - 30 + (0 if side else -120), az - 25), (ax + 25, y + 30, az + 25), brass)
                 mesh.sphere((ax, y - 160 + (0 if side else -120), az), 95, glow, rings=3, segments=6)
         for lamp in self.reading.get("wall_lamp", []):
-            x, y, z = self._wall_point(lamp["wall"], lamp["at"])
+            x, y, z = self._wall_point(lamp["wall"], lamp["at"], lamp.get("line"))
             dx, dz = SIDES[lamp["wall"]][0], SIDES[lamp["wall"]][2]
             iron = self.use("iron")
             mesh.box((x + min(0, dx * 110) - 100 * abs(dz), y - 60, z + min(0, dz * 110) - 100 * abs(dx)),
@@ -1323,7 +1327,7 @@ class Builder:
                 side = o["wall"]
                 a, b = o["span"]
                 top, bottom = o["y"]
-                line = self._wall_line(side, (a + b) / 2)
+                line = o.get("line", self._wall_line(side, (a + b) / 2))
                 d = SIDES[side]
                 inset = o.get("inset", 20)
                 wall_rect(mesh, side, line + (d[0] + d[2]) * inset, a, b, bottom, top, self.use(o.get("material", "panel")))
@@ -1553,7 +1557,7 @@ class Builder:
                 side = o["wall"]
                 y, along = o["at"]
                 d = SIDES[side]
-                wx, _, wz = self._wall_point(side, (y, along))
+                wx, _, wz = self._wall_point(side, (y, along), o.get("line"))
                 wood, fur, horn = self.use("wood"), self.use(o.get("material", "rust")), self.use("paper")
 
                 k = o.get("scale", 1.0)
